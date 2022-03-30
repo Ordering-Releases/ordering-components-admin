@@ -1,0 +1,390 @@
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { useSession } from '../../contexts/SessionContext'
+import { useApi } from '../../contexts/ApiContext'
+import { useToast, ToastType } from '../../contexts/ToastContext'
+import { useLanguage } from '../../contexts/LanguageContext'
+
+/**
+ * Component to manage product details edit form behavior without UI component
+ */
+export const ProductDetatils = (props) => {
+  const {
+    business,
+    UIComponent,
+    productId,
+    categoryId,
+    handleUpdateBusinessState
+  } = props
+
+  const [ordering] = useApi()
+  const [session] = useSession()
+  const [, { showToast }] = useToast()
+  const [, t] = useLanguage()
+
+  const [productState, setProductState] = useState({ loading: false, product: null, error: null })
+  const [formState, setFormState] = useState({ loading: false, changes: {}, result: { error: false } })
+  const [productCart, setProductCart] = useState({ ingredients: {}, options: {} })
+
+  /**
+   * Clean formState
+   */
+  const cleanFormState = (values) => setFormState({ ...formState, ...values })
+
+  /**
+   * Method to get the product from API
+   */
+  const getProduct = async () => {
+    try {
+      setProductState({
+        ...productState,
+        loading: true
+      })
+      const { content: { error, result } } = await ordering
+        .businesses(business.id)
+        .categories(categoryId)
+        .products(productId)
+        .get()
+      if (!error) {
+        setProductState({
+          loading: false,
+          product: result,
+          error: null
+        })
+      } else {
+        setProductState({
+          ...productState,
+          loading: false,
+          error: result
+        })
+      }
+    } catch (err) {
+      setProductState({
+        ...productState,
+        loading: false,
+        error: [err.message]
+      })
+    }
+  }
+
+  /**
+   * Method to update the product details from API
+   */
+  const handleUpdateClick = async (params) => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setFormState({ ...formState, loading: true })
+      const changes = params ? { ...params } : { ...formState.changes }
+      const { content: { error, result } } = await ordering.businesses(business?.id).categories(productState?.product?.category_id).products(productState?.product?.id).save(changes, {
+        accessToken: session.token
+      })
+      setFormState({
+        ...formState,
+        changes: error ? formState.changes : {},
+        result: result,
+        loading: false
+      })
+
+      if (!error) {
+        handleSuccessUpdate(result)
+        showToast(ToastType.Success, t('PRODUCT_SAVED', 'Product saved'))
+      }
+    } catch (err) {
+      setFormState({
+        ...formState,
+        result: {
+          error: true,
+          result: err.message
+        },
+        loading: false
+      })
+    }
+  }
+
+  /**
+ * Method to edit a product
+ */
+  const handleDeleteProduct = async () => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setFormState({
+        ...formState,
+        loading: true
+      })
+      const { content: { error, result } } = await ordering.businesses(parseInt(business?.id)).categories(parseInt(productState.product?.category_id)).products(productState.product?.id).delete()
+      if (!error) {
+        setFormState({
+          ...formState,
+          loading: false,
+          result: {
+            error: false,
+            result: result
+          }
+        })
+        if (handleUpdateBusinessState) {
+          const _categories = [...business?.categories]
+          _categories.forEach(function iterate (category) {
+            if (category.id === productState.product?.category_id) {
+              const _products = category.products.filter(_product => _product.id !== productState.product.id)
+              category.products = [..._products]
+            }
+            Array.isArray(category?.subcategories) && category.subcategories.forEach(iterate)
+          })
+          handleUpdateBusinessState({ ...business, categories: _categories })
+        }
+        showToast(ToastType.Success, t('PRODUCT_DELETED', 'Product deleted'))
+        props.onClose && props.onClose()
+      } else {
+        setFormState({
+          ...formState,
+          loading: false,
+          result: {
+            error: true,
+            result: result
+          }
+        })
+      }
+    } catch (err) {
+      setFormState({
+        ...formState,
+        loading: false,
+        result: {
+          error: true,
+          result: err
+        }
+      })
+    }
+  }
+
+  /**
+   * Method to change the product enabled state
+   */
+  const handleChangeProductActiveState = () => {
+    const params = { enabled: !productState?.product?.enabled }
+    handleUpdateClick(params)
+  }
+
+  /**
+   * Update credential data
+   * @param {EventTarget} e Related HTML event
+   */
+  const handleChangeInput = (e) => {
+    setFormState({
+      ...formState,
+      changes: {
+        ...formState.changes,
+        [e.target.name]: e.target.value
+      }
+    })
+  }
+
+  /**
+   * Update credential data
+   * @param {Object} changes Related HTML event
+   */
+  const handleChangeFormState = (changes) => {
+    setFormState({
+      ...formState,
+      changes: {
+        ...formState.changes,
+        ...changes
+      }
+    })
+  }
+
+  /**
+   * Update business photo data
+   * @param {File} file Image to change business photo
+   */
+  const handlechangeImage = (file, isSeo) => {
+    const reader = new window.FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => {
+      setFormState({
+        ...formState,
+        changes: {
+          ...formState.changes,
+          [isSeo ? 'seo_image' : 'images']: reader.result
+        }
+      })
+    }
+    reader.onerror = error => console.log(error)
+  }
+
+  /**
+   * Init product cart status
+   * @param {object} product Product to init product cart status
+   */
+  const initProductCart = (product) => {
+    const ingredients = {}
+    for (const key in product.ingredients) {
+      const ingredient = product.ingredients[key]
+      ingredients[`id:${ingredient.id}`] = {
+        selected: true
+      }
+    }
+    const newProductCart = {
+      ...props.productCart,
+      id: product.id,
+      price: product.price,
+      name: product.name,
+      businessId: props.businessId,
+      categoryId: product.category_id,
+      inventoried: product.inventoried,
+      stock: product.quantity,
+      ingredients: props.productCart?.ingredients || ingredients,
+      options: props.productCart?.options || {},
+      comment: props.productCart?.comment || null,
+      quantity: props.productCart?.quantity || 1
+    }
+    newProductCart.unitTotal = getUnitTotal(newProductCart)
+    newProductCart.total = newProductCart.unitTotal * newProductCart.quantity
+    setProductCart(newProductCart)
+  }
+
+  /**
+   * Get unit total for product cart
+   * @param {object} productCart Current product status
+   */
+  const getUnitTotal = (productCart) => {
+    let subtotal = 0
+    for (let i = 0; i < props.product?.extras?.length; i++) {
+      const extra = props.product?.extras[i]
+      for (let j = 0; j < extra.options?.length; j++) {
+        const option = extra.options[j]
+        for (let k = 0; k < option.suboptions?.length; k++) {
+          const suboption = option.suboptions[k]
+          if (productCart.options[`id:${option.id}`]?.suboptions[`id:${suboption.id}`]?.selected) {
+            const suboptionState = productCart.options[`id:${option.id}`].suboptions[`id:${suboption.id}`]
+            const quantity = option.allow_suboption_quantity ? suboptionState.quantity : 1
+            const price = option.with_half_option && suboption.half_price && suboptionState.position !== 'whole' ? suboption.half_price : suboption.price
+            subtotal += price * quantity
+          }
+        }
+      }
+    }
+    return props.product?.price + subtotal
+  }
+
+  /**
+   * Check if option must show
+   * @param {object} option Option to check
+   */
+  const showProductOption = (option) => {
+    let showOption = true
+    if (option.respect_to) {
+      showOption = false
+      if (productCart.options) {
+        const options = productCart.options
+        for (const key in options) {
+          const _option = options[key]
+          if (_option.suboptions[`id:${option.respect_to}`]?.selected) {
+            showOption = true
+            break
+          }
+        }
+      }
+    }
+    return showOption
+  }
+
+  /**
+   * Function to update the product state
+   */
+  const handleSuccessUpdate = (updatedProduct) => {
+    setProductState({
+      ...productState,
+      product: {
+        ...productState.product,
+        ...updatedProduct
+      }
+    })
+    if (handleUpdateBusinessState) {
+      const _categories = [...business?.categories]
+      _categories.forEach(function iterate (category) {
+        if (category.id === productState.product?.category_id) {
+          const _products = category.products.map(_product => {
+            if (_product.id === productState.product.id) {
+              return {
+                ..._product,
+                ...updatedProduct
+              }
+            }
+            return _product
+          })
+          category.products = [..._products]
+        }
+        Array.isArray(category?.subcategories) && category.subcategories.forEach(iterate)
+      })
+      const updatedBusiness = { ...business, categories: _categories }
+      handleUpdateBusinessState(updatedBusiness)
+    }
+  }
+
+  useEffect(() => {
+    if (props.product) {
+      setProductState({ ...productState, product: props.product })
+      initProductCart(props.product)
+    } else {
+      if (productId && categoryId) {
+        getProduct()
+      }
+    }
+  }, [props.product])
+
+  return (
+    <>
+      {UIComponent && (
+        <UIComponent
+          {...props}
+          productState={productState}
+          productCart={productCart}
+          formState={formState}
+          cleanFormState={cleanFormState}
+          handleChangeProductActiveState={handleChangeProductActiveState}
+          handleChangeInput={handleChangeInput}
+          handlechangeImage={handlechangeImage}
+          handleUpdateClick={handleUpdateClick}
+          handleDeleteProduct={handleDeleteProduct}
+          showProductOption={showProductOption}
+          handleChangeFormState={handleChangeFormState}
+          handleSuccessUpdate={handleSuccessUpdate}
+        />
+      )}
+    </>
+  )
+}
+
+ProductDetatils.propTypes = {
+  /**
+   * UI Component, this must be containt all graphic elements and use parent props
+   */
+  UIComponent: PropTypes.elementType,
+  /**
+   * Components types before product details form
+   * Array of type components, the parent props will pass to these components
+   */
+  beforeComponents: PropTypes.arrayOf(PropTypes.elementType),
+  /**
+   * Components types after product details form
+   * Array of type components, the parent props will pass to these components
+   */
+  afterComponents: PropTypes.arrayOf(PropTypes.elementType),
+  /**
+   * Elements before product details form
+   * Array of HTML/Components elements, these components will not get the parent props
+   */
+  beforeElements: PropTypes.arrayOf(PropTypes.element),
+  /**
+   * Elements after product details form
+   * Array of HTML/Components elements, these components will not get the parent props
+   */
+  afterElements: PropTypes.arrayOf(PropTypes.element)
+}
+
+ProductDetatils.defaultProps = {
+  beforeComponents: [],
+  afterComponents: [],
+  beforeElements: [],
+  afterElements: []
+}
