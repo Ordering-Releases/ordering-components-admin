@@ -20,7 +20,7 @@ const configFile = {
 
 Sentry.init({
   environment: window?.location?.hostname === 'localhost' ? 'development' : process.env.NODE_ENV,
-  dsn: 'https://1937ee8a67fd41f29e362ad2244f4368@o460529.ingest.sentry.io/5681465',
+  dsn: "https://35896d739f80421c9da71bf33f00e5fe@o460529.ingest.sentry.io/6302996",
   integrations: [
     new Integrations.BrowserTracing()
   ],
