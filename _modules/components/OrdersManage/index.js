@@ -196,10 +196,10 @@ var OrdersManage = function OrdersManage(props) {
 
   var _useState29 = (0, _react.useState)({
     pending: [0, 13],
-    inProgress: [7, 8, 4, 9, 3, 14, 18, 19, 20, 21],
+    inProgress: [7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23],
     completed: [1, 11, 15],
     cancelled: [2, 5, 6, 10, 12, 16, 17],
-    all: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+    all: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
   }),
       _useState30 = _slicedToArray(_useState29, 2),
       selectedSubOrderStatus = _useState30[0],

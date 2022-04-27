@@ -71,7 +71,8 @@ var UsersList = function UsersList(props) {
       isSearchByUserName = props.isSearchByUserName,
       isBusinessOwners = props.isBusinessOwners,
       deafultUserTypesSelected = props.deafultUserTypesSelected,
-      disabledActiveStateCondition = props.disabledActiveStateCondition;
+      disabledActiveStateCondition = props.disabledActiveStateCondition,
+      isDriver = props.isDriver;
 
   var _useApi = (0, _ApiContext.useApi)(),
       _useApi2 = _slicedToArray(_useApi, 1),
@@ -550,7 +551,9 @@ var UsersList = function UsersList(props) {
               }));
 
               if (!error) {
-                if (!disabledActiveStateCondition) {
+                if (isDriver) {
+                  handleSuccessUpdate(result);
+                } else if (!disabledActiveStateCondition) {
                   users = usersList.users.filter(function (_user) {
                     var valid = true;
 

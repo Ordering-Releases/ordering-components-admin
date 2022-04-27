@@ -74,12 +74,27 @@ var BusinessDeliveryDetails = function BusinessDeliveryDetails(props) {
 
   var _useState = (0, _react.useState)({
     loading: false,
-    changes: {},
     error: null
   }),
       _useState2 = _slicedToArray(_useState, 2),
-      formState = _useState2[0],
-      setFormState = _useState2[1];
+      actionState = _useState2[0],
+      setActionState = _useState2[1];
+
+  var _useState3 = (0, _react.useState)({
+    changes: {}
+  }),
+      _useState4 = _slicedToArray(_useState3, 2),
+      formState = _useState4[0],
+      setFormState = _useState4[1];
+
+  var _useState5 = (0, _react.useState)({
+    changes: {},
+    isCheckAll: false,
+    isDirty: false
+  }),
+      _useState6 = _slicedToArray(_useState5, 2),
+      zoneListState = _useState6[0],
+      setZoneListState = _useState6[1];
   /**
    * Method to update the business from the API
    */
@@ -94,70 +109,303 @@ var BusinessDeliveryDetails = function BusinessDeliveryDetails(props) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
-              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-                loading: true
-              }));
-              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-              _context.next = 5;
+              _context.next = 3;
               return ordering.businesses(business.id).save(formState.changes, {
                 accessToken: session.token
               });
 
-            case 5:
+            case 3:
               _yield$ordering$busin = _context.sent;
               _yield$ordering$busin2 = _yield$ordering$busin.content;
               error = _yield$ordering$busin2.error;
               result = _yield$ordering$busin2.result;
 
-              if (!error) {
-                setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-                  loading: false,
-                  changes: {},
-                  error: null
-                }));
-                handleUpdateBusinessState(result);
-                showToast(_ToastContext.ToastType.Success, t('BUSINESS_UPDATED', 'Business updated'));
-              } else {
-                setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-                  loading: false,
-                  error: error
-                }));
+              if (error) {
+                _context.next = 11;
+                break;
               }
 
-              _context.next = 15;
-              break;
+              return _context.abrupt("return", result);
+
+            case 11:
+              throw {
+                message: error
+              };
 
             case 12:
-              _context.prev = 12;
-              _context.t0 = _context["catch"](0);
-              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-                loading: false,
-                error: [_context.t0.message]
-              }));
+              _context.next = 17;
+              break;
 
-            case 15:
+            case 14:
+              _context.prev = 14;
+              _context.t0 = _context["catch"](0);
+              return _context.abrupt("return", Promise.reject(_context.t0));
+
+            case 17:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 12]]);
+      }, _callee, null, [[0, 14]]);
     }));
 
     return function handleDeliveryStateSave() {
       return _ref.apply(this, arguments);
     };
   }();
+  /**
+   * Method to update the business delivery zone enable state from API
+   */
 
-  var handleChangeForm = function handleChangeForm(updateChange) {
-    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-      changes: _objectSpread(_objectSpread({}, formState.changes), updateChange)
+
+  var handleUpdateDeliveryZoneState = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2(zoneId, enabled) {
+      var requestOptions, response, content;
+      return _regenerator.default.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+              requestOptions = {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(session.token)
+                },
+                body: JSON.stringify({
+                  enabled: enabled
+                })
+              };
+              _context2.next = 4;
+              return fetch("".concat(ordering.root, "/business/").concat(business === null || business === void 0 ? void 0 : business.id, "/deliveryzones/").concat(zoneId), requestOptions);
+
+            case 4:
+              response = _context2.sent;
+              _context2.next = 7;
+              return response.json();
+
+            case 7:
+              content = _context2.sent;
+
+              if (content.error) {
+                _context2.next = 12;
+                break;
+              }
+
+              return _context2.abrupt("return", content.result);
+
+            case 12:
+              throw {
+                message: content.result
+              };
+
+            case 13:
+              _context2.next = 18;
+              break;
+
+            case 15:
+              _context2.prev = 15;
+              _context2.t0 = _context2["catch"](0);
+              return _context2.abrupt("return", Promise.reject(_context2.t0));
+
+            case 18:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, null, [[0, 15]]);
+    }));
+
+    return function handleUpdateDeliveryZoneState(_x, _x2) {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+
+  var onDeliveryStateSave = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+      var _loop, key, zones, _business, result;
+
+      return _regenerator.default.wrap(function _callee3$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.prev = 0;
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              setActionState({
+                loading: true,
+                error: null
+              });
+
+              if (!Object.keys(zoneListState.changes).length) {
+                _context4.next = 15;
+                break;
+              }
+
+              _loop = /*#__PURE__*/_regenerator.default.mark(function _loop(key) {
+                var _business$zones;
+
+                var zoneId, foundZone;
+                return _regenerator.default.wrap(function _loop$(_context3) {
+                  while (1) {
+                    switch (_context3.prev = _context3.next) {
+                      case 0:
+                        zoneId = parseInt(key);
+                        foundZone = business === null || business === void 0 ? void 0 : (_business$zones = business.zones) === null || _business$zones === void 0 ? void 0 : _business$zones.find(function (zone) {
+                          return zone.id === zoneId;
+                        });
+
+                        if (!((foundZone === null || foundZone === void 0 ? void 0 : foundZone.enabled) !== zoneListState.changes[key])) {
+                          _context3.next = 5;
+                          break;
+                        }
+
+                        _context3.next = 5;
+                        return handleUpdateDeliveryZoneState(zoneId, zoneListState.changes[key]);
+
+                      case 5:
+                      case "end":
+                        return _context3.stop();
+                    }
+                  }
+                }, _loop);
+              });
+              _context4.t0 = _regenerator.default.keys(zoneListState.changes);
+
+            case 6:
+              if ((_context4.t1 = _context4.t0()).done) {
+                _context4.next = 11;
+                break;
+              }
+
+              key = _context4.t1.value;
+              return _context4.delegateYield(_loop(key), "t2", 9);
+
+            case 9:
+              _context4.next = 6;
+              break;
+
+            case 11:
+              setZoneListState(_objectSpread(_objectSpread({}, zoneListState), {}, {
+                isDirty: false
+              }));
+              zones = business.zones.filter(function (zone) {
+                if (typeof zoneListState.changes[zone.id] !== 'undefined') {
+                  zone.enabled = zoneListState.changes[zone.id];
+                }
+
+                return true;
+              });
+              _business = _objectSpread(_objectSpread({}, business), {}, {
+                zones: zones
+              });
+              handleUpdateBusinessState(_business);
+
+            case 15:
+              if (!Object.keys(formState.changes).length) {
+                _context4.next = 21;
+                break;
+              }
+
+              _context4.next = 18;
+              return handleDeliveryStateSave();
+
+            case 18:
+              result = _context4.sent;
+              setFormState({
+                changes: {}
+              });
+              handleUpdateBusinessState(result);
+
+            case 21:
+              setActionState({
+                loading: false,
+                error: null
+              });
+              showToast(_ToastContext.ToastType.Success, t('BUSINESS_UPDATED', 'Business updated'));
+              _context4.next = 28;
+              break;
+
+            case 25:
+              _context4.prev = 25;
+              _context4.t3 = _context4["catch"](0);
+              setActionState({
+                loading: false,
+                error: [_context4.t3.message]
+              });
+
+            case 28:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee3, null, [[0, 25]]);
+    }));
+
+    return function onDeliveryStateSave() {
+      return _ref3.apply(this, arguments);
+    };
+  }();
+
+  var handleChangeAllZoneState = function handleChangeAllZoneState(enabled) {
+    var zoneChanges = _objectSpread({}, zoneListState.changes);
+
+    for (var key in zoneChanges) {
+      zoneChanges[key] = enabled;
+    }
+
+    setZoneListState(_objectSpread(_objectSpread({}, zoneListState), {}, {
+      changes: zoneChanges,
+      isCheckAll: enabled,
+      isDirty: true
     }));
   };
 
+  var handleChangeZoneState = function handleChangeZoneState(zoneId, enabled) {
+    setZoneListState(_objectSpread(_objectSpread({}, zoneListState), {}, {
+      changes: _objectSpread(_objectSpread({}, zoneListState.changes), {}, _defineProperty({}, zoneId, enabled)),
+      isDirty: true
+    }));
+  };
+
+  var handleChangeForm = function handleChangeForm(updateChange) {
+    setFormState({
+      changes: _objectSpread(_objectSpread({}, formState.changes), updateChange)
+    });
+  };
+
+  (0, _react.useEffect)(function () {
+    var enabledZones = 0;
+
+    for (var key in zoneListState.changes) {
+      if (zoneListState.changes[key]) enabledZones += 1;
+    }
+
+    setZoneListState(_objectSpread(_objectSpread({}, zoneListState), {}, {
+      isCheckAll: Object.keys(zoneListState.changes).length === enabledZones
+    }));
+  }, [zoneListState.changes]);
+  (0, _react.useEffect)(function () {
+    var _business$zones2;
+
+    var zoneList = (business === null || business === void 0 ? void 0 : (_business$zones2 = business.zones) === null || _business$zones2 === void 0 ? void 0 : _business$zones2.filter(function (zone) {
+      return (zone === null || zone === void 0 ? void 0 : zone.type) !== 3;
+    })) || [];
+    var zoneChanges = {};
+    zoneList.forEach(function (zone) {
+      zoneChanges[zone.id] = zone.enabled;
+    });
+    setZoneListState(_objectSpread(_objectSpread({}, zoneListState), {}, {
+      changes: zoneChanges
+    }));
+  }, [business === null || business === void 0 ? void 0 : business.zones]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
+    actionState: actionState,
     formState: formState,
+    zoneListState: zoneListState,
     handleChangeForm: handleChangeForm,
-    handleDeliveryStateSave: handleDeliveryStateSave
+    onDeliveryStateSave: onDeliveryStateSave,
+    handleChangeAllZoneState: handleChangeAllZoneState,
+    handleChangeZoneState: handleChangeZoneState
   })));
 };
 

@@ -3,13 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.EnterprisePromotionDetails = void 0;
+exports.CampaignDetail = void 0;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
 var _react = _interopRequireWildcard(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _moment = _interopRequireDefault(require("moment"));
 
 var _SessionContext = require("../../contexts/SessionContext");
 
@@ -33,14 +35,6 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
@@ -59,15 +53,15 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
-  var promotion = props.promotion,
-      promotionsList = props.promotionsList,
-      businessesList = props.businessesList,
-      sitesState = props.sitesState,
+var CampaignDetail = function CampaignDetail(props) {
+  var _formState$changes6;
+
+  var campaign = props.campaign,
+      campaignList = props.campaignList,
       UIComponent = props.UIComponent,
-      handleSuccessUpdatePromotions = props.handleSuccessUpdatePromotions,
-      handleSuccessAddPromotion = props.handleSuccessAddPromotion,
-      handleSuccessDeletePromotion = props.handleSuccessDeletePromotion;
+      handleSuccessUpdateCampaign = props.handleSuccessUpdateCampaign,
+      handleSuccessAddCampaign = props.handleSuccessAddCampaign,
+      handleSuccessDeleteCampaign = props.handleSuccessDeleteCampaign;
 
   var _useLanguage = (0, _LanguageContext.useLanguage)(),
       _useLanguage2 = _slicedToArray(_useLanguage, 2),
@@ -86,54 +80,27 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
       showToast = _useToast2[1].showToast;
 
   var _useState = (0, _react.useState)({
-    promotion: promotion,
+    campaign: campaign,
     loading: false,
     error: null
   }),
       _useState2 = _slicedToArray(_useState, 2),
-      promotionState = _useState2[0],
-      setPromotionState = _useState2[1];
+      campaignState = _useState2[0],
+      setCampaignState = _useState2[1];
 
   var _useState3 = (0, _react.useState)({
     loading: false,
-    changes: {}
+    changes: {},
+    error: null
   }),
       _useState4 = _slicedToArray(_useState3, 2),
       formState = _useState4[0],
       setFormState = _useState4[1];
 
-  var _useState5 = (0, _react.useState)({
-    loading: false,
-    error: null
-  }),
+  var _useState5 = (0, _react.useState)(false),
       _useState6 = _slicedToArray(_useState5, 2),
-      actionState = _useState6[0],
-      setActionState = _useState6[1];
-
-  var _useState7 = (0, _react.useState)(false),
-      _useState8 = _slicedToArray(_useState7, 2),
-      isAddMode = _useState8[0],
-      setIsAddMode = _useState8[1];
-
-  var _useState9 = (0, _react.useState)([]),
-      _useState10 = _slicedToArray(_useState9, 2),
-      selectedBusinessIds = _useState10[0],
-      setSelectedBusinessIds = _useState10[1];
-
-  var _useState11 = (0, _react.useState)([]),
-      _useState12 = _slicedToArray(_useState11, 2),
-      selectedSitesIds = _useState12[0],
-      setSelectedSitesIds = _useState12[1];
-
-  var _useState13 = (0, _react.useState)({}),
-      _useState14 = _slicedToArray(_useState13, 2),
-      selectedProductsIds = _useState14[0],
-      setSelectedProductsIds = _useState14[1];
-
-  var _useState15 = (0, _react.useState)({}),
-      _useState16 = _slicedToArray(_useState15, 2),
-      selectedCategoryIds = _useState16[0],
-      setSelectedCategoryIds = _useState16[1];
+      isAddMode = _useState6[0],
+      setIsAddMode = _useState6[1];
   /**
    * Clean formState
    */
@@ -144,28 +111,6 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
       loading: false,
       changes: {}
     });
-  };
-  /**
-   * Update business promotion image data
-   * @param {File} file Image to change business promotion image
-   */
-
-
-  var handleChangeImage = function handleChangeImage(file) {
-    var reader = new window.FileReader();
-    reader.readAsDataURL(file);
-
-    reader.onload = function () {
-      setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-        changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
-          image: reader.result
-        })
-      }));
-    };
-
-    reader.onerror = function (error) {
-      return console.log(error);
-    };
   };
   /**
    * Update credential data
@@ -179,14 +124,37 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
     }));
   };
   /**
-   * Update parameter data
-   * @param {changes} changes parameters to change
+   * Update credential data
+   * @param {EventTarget} e Related HTML event
    */
 
 
-  var handleChangeItem = function handleChangeItem(changes) {
+  var handleChangeContactData = function handleChangeContactData(e) {
+    var _formState$changes, _formState$changes2;
+
+    var changes = (_formState$changes = formState.changes) !== null && _formState$changes !== void 0 && _formState$changes.contact_data ? _objectSpread(_objectSpread({}, (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.contact_data), {}, _defineProperty({}, e.target.name, e.target.value)) : _defineProperty({}, e.target.name, e.target.value);
     setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-      changes: _objectSpread(_objectSpread({}, formState.changes), changes)
+      changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
+        contact_data: changes
+      })
+    }));
+  };
+  /**
+   * Update parameter data
+   * @param {string} key parameters to change
+   * @param {string} value parameters to change
+   */
+
+
+  var handleChangeItem = function handleChangeItem(key, value) {
+    var changes = _objectSpread(_objectSpread({}, formState.changes), {}, _defineProperty({}, key, value));
+
+    if (key === 'scheduled_at') {
+      changes.status = value ? 'scheduled' : 'ended';
+    }
+
+    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+      changes: changes
     }));
   };
   /**
@@ -204,128 +172,132 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
     }));
   };
   /**
-   * Method to change the sites
-   */
-
-
-  var handleSelectSite = function handleSelectSite(checked, siteId) {
-    var _formState$changes;
-
-    var sites = [];
-
-    if ((_formState$changes = formState.changes) !== null && _formState$changes !== void 0 && _formState$changes.sites) {
-      var _formState$changes2;
-
-      sites = _toConsumableArray((_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.sites);
-    } else {
-      if (promotion !== null && promotion !== void 0 && promotion.sites) {
-        sites = promotion === null || promotion === void 0 ? void 0 : promotion.sites.reduce(function (ids, site) {
-          return [].concat(_toConsumableArray(ids), [site.id]);
-        }, []);
-      }
-    }
-
-    if (checked) {
-      sites.push(siteId);
-    } else {
-      sites = sites.filter(function (id) {
-        return id !== siteId;
-      });
-    }
-
-    setSelectedSitesIds(sites);
-    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-      changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
-        sites: sites
-      })
-    }));
-  };
-
-  var handleSelectAllBusiness = function handleSelectAllBusiness(isAll) {
-    var _businessesList$busin;
-
-    var businessIds = businessesList === null || businessesList === void 0 ? void 0 : (_businessesList$busin = businessesList.businesses) === null || _businessesList$busin === void 0 ? void 0 : _businessesList$busin.reduce(function (ids, business) {
-      return [].concat(_toConsumableArray(ids), [business.id]);
-    }, []);
-    var filteredIds = [];
-
-    if (isAll) {
-      filteredIds = _toConsumableArray(businessIds);
-    } else {
-      filteredIds = [];
-    }
-
-    setSelectedBusinessIds(filteredIds);
-    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-      changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
-        businesses: filteredIds
-      })
-    }));
-  };
-
-  var handleSelectBusiness = function handleSelectBusiness(businessId, checked) {
-    var businessIds = _toConsumableArray(selectedBusinessIds);
-
-    var filteredIds = [];
-
-    if (checked) {
-      filteredIds = [].concat(_toConsumableArray(businessIds), [businessId]);
-    } else {
-      filteredIds = businessIds.filter(function (id) {
-        return id !== businessId;
-      });
-    }
-
-    setSelectedBusinessIds(filteredIds);
-    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-      changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
-        businesses: filteredIds
-      })
-    }));
-  };
-
-  var handleSelectAllSites = function handleSelectAllSites(isAll) {
-    var _sitesState$sites;
-
-    var sitesIds = (_sitesState$sites = sitesState.sites) === null || _sitesState$sites === void 0 ? void 0 : _sitesState$sites.reduce(function (ids, site) {
-      return [].concat(_toConsumableArray(ids), [site.id]);
-    }, []);
-    var filteredIds = [];
-
-    if (isAll) {
-      filteredIds = _toConsumableArray(sitesIds);
-    } else {
-      filteredIds = [];
-    }
-
-    setSelectedSitesIds(filteredIds);
-    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-      changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
-        sites: filteredIds
-      })
-    }));
-  };
-  /**
-   * Default fuction for business profile workflow
+   * Default fuction for recovery action workflow
    */
 
 
   var handleUpdateClick = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {
-      var changes, key, requestOptions, response, content, updatedPromotions;
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+      var changes, key, requestOptions, response, content, updatedCampaigns;
       return _regenerator.default.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-              setActionState({
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: true,
                 error: null
-              });
+              }));
               changes = _objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes);
 
               for (key in changes) {
+                if (_typeof(changes[key]) === 'object' && changes[key] !== null || Array.isArray(changes[key])) {
+                  changes[key] = JSON.stringify(changes[key]);
+                }
+              }
+
+              if (changes !== null && changes !== void 0 && changes.conditions) delete changes.conditions;
+              requestOptions = {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                },
+                body: JSON.stringify(changes)
+              };
+              _context.next = 9;
+              return fetch("".concat(ordering.root, "/marketing_campaigns/").concat(campaign.id), requestOptions);
+
+            case 9:
+              response = _context.sent;
+              _context.next = 12;
+              return response.json();
+
+            case 12:
+              content = _context.sent;
+
+              if (!content.error) {
+                setCampaignState(_objectSpread(_objectSpread({}, campaignState), {}, {
+                  campaign: content.result
+                }));
+                setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                  loading: false,
+                  error: null,
+                  changes: {}
+                }));
+
+                if (handleSuccessUpdateCampaign) {
+                  updatedCampaigns = campaignList === null || campaignList === void 0 ? void 0 : campaignList.campaigns.filter(function (_action) {
+                    if (_action.id === campaign.id) {
+                      Object.assign(_action, content.result);
+                    }
+
+                    return true;
+                  });
+                  handleSuccessUpdateCampaign(updatedCampaigns);
+                }
+
+                cleanFormState();
+                showToast(_ToastContext.ToastType.Success, t('CAMPAIGN_SAVED', 'Campaign saved'));
+              } else {
+                setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                  loading: false,
+                  error: content.result
+                }));
+              }
+
+              _context.next = 19;
+              break;
+
+            case 16:
+              _context.prev = 16;
+              _context.t0 = _context["catch"](0);
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                loading: false,
+                error: _context.t0.message
+              }));
+
+            case 19:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, null, [[0, 16]]);
+    }));
+
+    return function handleUpdateClick() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+  /**
+   * Method to add new campaign from API
+   */
+
+
+  var handleAddCampaign = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+      var changes, key, requestOptions, response, content;
+      return _regenerator.default.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                loading: true,
+                error: null
+              }));
+              changes = _objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes);
+
+              for (key in changes) {
+                // if (key === 'conditions' && changes[key].length > 0) {
+                //   changes[key].forEach(change => {
+                //     for (const innerKey in change) {
+                //       if (change[innerKey] === null) delete change[innerKey]
+                //     }
+                //   })
+                // }
                 if (_typeof(changes[key]) === 'object' && changes[key] !== null || Array.isArray(changes[key])) {
                   changes[key] = JSON.stringify(changes[key]);
                 }
@@ -339,103 +311,8 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
                 },
                 body: JSON.stringify(changes)
               };
-              _context.next = 8;
-              return fetch("".concat(ordering.root, "/offers/").concat(promotion.id), requestOptions);
-
-            case 8:
-              response = _context.sent;
-              _context.next = 11;
-              return response.json();
-
-            case 11:
-              content = _context.sent;
-
-              if (!content.error) {
-                setPromotionState(_objectSpread(_objectSpread({}, promotionState), {}, {
-                  promotion: content.result
-                }));
-                setActionState({
-                  loading: false,
-                  error: null
-                });
-
-                if (handleSuccessUpdatePromotions) {
-                  updatedPromotions = promotionsList.filter(function (_promotion) {
-                    if (_promotion.id === promotion.id) {
-                      Object.assign(_promotion, content.result);
-                    }
-
-                    return true;
-                  });
-                  handleSuccessUpdatePromotions(updatedPromotions);
-                }
-
-                cleanFormState();
-                showToast(_ToastContext.ToastType.Success, t('PROMOTION_SAVED', 'Promotion saved'));
-              } else {
-                setActionState({
-                  loading: false,
-                  error: content.result
-                });
-              }
-
-              _context.next = 18;
-              break;
-
-            case 15:
-              _context.prev = 15;
-              _context.t0 = _context["catch"](0);
-              setActionState({
-                loading: false,
-                error: _context.t0.message
-              });
-
-            case 18:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee, null, [[0, 15]]);
-    }));
-
-    return function handleUpdateClick() {
-      return _ref.apply(this, arguments);
-    };
-  }();
-  /**
-   * Method to add new promotion from API
-   */
-
-
-  var handleAddPromotion = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
-      var changes, requestOptions, response, content;
-      return _regenerator.default.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.prev = 0;
-              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-              setActionState({
-                loading: true,
-                error: null
-              });
-              changes = _objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes);
-
-              if (changes !== null && changes !== void 0 && changes.schedule) {
-                changes.schedule = JSON.stringify(changes.schedule);
-              }
-
-              requestOptions = {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: "Bearer ".concat(token)
-                },
-                body: JSON.stringify(changes)
-              };
               _context2.next = 8;
-              return fetch("".concat(ordering.root, "/offers"), requestOptions);
+              return fetch("".concat(ordering.root, "/marketing_campaigns"), requestOptions);
 
             case 8:
               response = _context2.sent;
@@ -446,18 +323,18 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
               content = _context2.sent;
 
               if (!content.error) {
-                setActionState({
-                  error: null,
-                  loading: false
-                });
-                handleSuccessAddPromotion && handleSuccessAddPromotion(content.result);
-                showToast(_ToastContext.ToastType.Success, t('PROMOTION_ADDED', 'Promotion added'));
+                setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                  loading: false,
+                  error: null
+                }));
+                handleSuccessAddCampaign && handleSuccessAddCampaign(content.result);
+                showToast(_ToastContext.ToastType.Success, t('CAMPAIGN_ADDED', 'Campaign added'));
                 props.onClose && props.onClose();
               } else {
-                setActionState({
+                setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                   loading: false,
                   error: content.result
-                });
+                }));
               }
 
               _context2.next = 18;
@@ -466,10 +343,10 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
             case 15:
               _context2.prev = 15;
               _context2.t0 = _context2["catch"](0);
-              setActionState({
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: false,
                 error: _context2.t0.message
-              });
+              }));
 
             case 18:
             case "end":
@@ -479,18 +356,17 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
       }, _callee2, null, [[0, 15]]);
     }));
 
-    return function handleAddPromotion() {
-      return _ref2.apply(this, arguments);
+    return function handleAddCampaign() {
+      return _ref3.apply(this, arguments);
     };
   }();
   /**
-   * Method to delete the business promotion
-   * @param {Number} promotionId promotion id
+   * Method to delete a campaign
    */
 
 
-  var handleDeletePromotion = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+  var handleDeleteCampaign = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
       var requestOptions, response, content;
       return _regenerator.default.wrap(function _callee3$(_context3) {
         while (1) {
@@ -498,8 +374,9 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
             case 0:
               _context3.prev = 0;
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-              setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
-                loading: true
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                loading: true,
+                error: null
               }));
               requestOptions = {
                 method: 'DELETE',
@@ -509,7 +386,7 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
                 }
               };
               _context3.next = 6;
-              return fetch("".concat(ordering.root, "/offers/").concat(promotion.id), requestOptions);
+              return fetch("".concat(ordering.root, "/marketing_campaigns/").concat(campaign.id), requestOptions);
 
             case 6:
               response = _context3.sent;
@@ -520,9 +397,18 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
               content = _context3.sent;
 
               if (!content.error) {
-                handleSuccessDeletePromotion && handleSuccessDeletePromotion(promotion.id);
-                showToast(_ToastContext.ToastType.Success, t('OFFER_DELETED', 'Offer deleted'));
+                handleSuccessDeleteCampaign && handleSuccessDeleteCampaign(campaign.id);
+                showToast(_ToastContext.ToastType.Success, t('CAMPAIGN_DELETED', 'Campaign deleted'));
+                setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                  loading: false,
+                  error: null
+                }));
                 props.onClose && props.onClose();
+              } else {
+                setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                  loading: false,
+                  error: content.result
+                }));
               }
 
               _context3.next = 16;
@@ -531,10 +417,10 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
             case 13:
               _context3.prev = 13;
               _context3.t0 = _context3["catch"](0);
-              setActionState({
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: false,
-                error: [_context3.t0.message]
-              });
+                error: _context3.t0.message
+              }));
 
             case 16:
             case "end":
@@ -544,89 +430,153 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
       }, _callee3, null, [[0, 13]]);
     }));
 
-    return function handleDeletePromotion() {
-      return _ref3.apply(this, arguments);
+    return function handleDeleteCampaign() {
+      return _ref4.apply(this, arguments);
+    };
+  }();
+  /**
+   * Method to delete a campaign
+   */
+
+
+  var handleDeleteCondition = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4(conditionId) {
+      var requestOptions, response, content, updatedCampaigns;
+      return _regenerator.default.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.prev = 0;
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                loading: true,
+                error: null
+              }));
+              requestOptions = {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                }
+              };
+              _context4.next = 6;
+              return fetch("".concat(ordering.root, "/marketing_campaigns/").concat(campaign.id, "/conditions/").concat(conditionId), requestOptions);
+
+            case 6:
+              response = _context4.sent;
+              _context4.next = 9;
+              return response.json();
+
+            case 9:
+              content = _context4.sent;
+
+              if (!content.error) {
+                showToast(_ToastContext.ToastType.Success, t('CONDITION_DELETED', 'Condition deleted'));
+                setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                  loading: false,
+                  error: null
+                }));
+
+                if (handleSuccessUpdateCampaign) {
+                  updatedCampaigns = campaignList === null || campaignList === void 0 ? void 0 : campaignList.campaigns.map(function (_action) {
+                    if (_action.id === campaign.id) {
+                      var conditions = _action.conditions.filter(function (item) {
+                        return item.id !== content.result;
+                      });
+
+                      return _objectSpread(_objectSpread({}, _action), {}, {
+                        conditions: conditions
+                      });
+                    }
+
+                    return _action;
+                  });
+                  handleSuccessUpdateCampaign(updatedCampaigns);
+                }
+              } else {
+                setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                  loading: false,
+                  error: content.result
+                }));
+              }
+
+              _context4.next = 16;
+              break;
+
+            case 13:
+              _context4.prev = 13;
+              _context4.t0 = _context4["catch"](0);
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                loading: false,
+                error: _context4.t0.message
+              }));
+
+            case 16:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4, null, [[0, 13]]);
+    }));
+
+    return function handleDeleteCondition(_x) {
+      return _ref5.apply(this, arguments);
     };
   }();
 
   (0, _react.useEffect)(function () {
-    if (Object.keys(promotion).length === 0) {
+    if (Object.keys(campaign).length === 0) {
       setIsAddMode(true);
       setFormState(_objectSpread(_objectSpread({}, formState), {}, {
         changes: {
           enabled: true,
-          auto: false,
-          public: true,
-          condition_type: 1,
-          type: 1,
-          target: 1,
-          rate_type: 1,
-          stackable: false,
-          rate: 5
+          conditions: []
         }
       }));
-      setSelectedBusinessIds([]);
-      setSelectedSitesIds([]);
-      setSelectedProductsIds({});
-      setSelectedCategoryIds({});
     } else {
-      var _promotion$businesses, _promotion$sites;
-
       setIsAddMode(false);
       cleanFormState();
-      var businessIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$businesses = promotion.businesses) === null || _promotion$businesses === void 0 ? void 0 : _promotion$businesses.reduce(function (ids, business) {
-        return [].concat(_toConsumableArray(ids), [business.id]);
-      }, []);
-      setSelectedBusinessIds(businessIds || []);
-      var sitesIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$sites = promotion.sites) === null || _promotion$sites === void 0 ? void 0 : _promotion$sites.reduce(function (ids, site) {
-        return [].concat(_toConsumableArray(ids), [site.id]);
-      }, []);
-      setSelectedSitesIds(sitesIds || []);
-
-      var _selectedProductsIds = promotion === null || promotion === void 0 ? void 0 : promotion.products.reduce(function (ids, product) {
-        return [].concat(_toConsumableArray(ids), [product.id]);
-      }, []);
-
-      setSelectedProductsIds(_selectedProductsIds);
-
-      var _selectedCategoryIds = promotion === null || promotion === void 0 ? void 0 : promotion.categories.reduce(function (ids, category) {
-        return [].concat(_toConsumableArray(ids), [category.id]);
-      }, []);
-
-      setSelectedCategoryIds(_selectedCategoryIds);
     }
 
-    setPromotionState(_objectSpread(_objectSpread({}, promotionState), {}, {
-      promotion: promotion
+    setCampaignState(_objectSpread(_objectSpread({}, campaignState), {}, {
+      campaign: campaign
     }));
-  }, [promotion]);
+  }, [campaign]);
+  (0, _react.useEffect)(function () {
+    var _formState$changes3, _formState$changes4;
+
+    if (!((_formState$changes3 = formState.changes) !== null && _formState$changes3 !== void 0 && _formState$changes3.audience_type)) return;
+
+    if (((_formState$changes4 = formState.changes) === null || _formState$changes4 === void 0 ? void 0 : _formState$changes4.audience_type) === 'dynamic') {
+      var _ref6, _formState$changes$en, _formState$changes5;
+
+      var changes = _objectSpread(_objectSpread({}, formState.changes), {}, {
+        end_at: (_ref6 = (_formState$changes$en = (_formState$changes5 = formState.changes) === null || _formState$changes5 === void 0 ? void 0 : _formState$changes5.end_at) !== null && _formState$changes$en !== void 0 ? _formState$changes$en : campaign === null || campaign === void 0 ? void 0 : campaign.end_at) !== null && _ref6 !== void 0 ? _ref6 : (0, _moment.default)(new Date()).format('YYYY-MM-DD HH:mm:ss')
+      });
+
+      setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+        changes: changes
+      }));
+    }
+  }, [(_formState$changes6 = formState.changes) === null || _formState$changes6 === void 0 ? void 0 : _formState$changes6.audience_type]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     isAddMode: isAddMode,
-    promotionState: promotionState,
+    campaignState: campaignState,
     formState: formState,
-    actionState: actionState,
-    selectedBusinessIds: selectedBusinessIds,
-    selectedSitesIds: selectedSitesIds,
-    selectedProductsIds: selectedProductsIds,
-    setSelectedProductsIds: setSelectedProductsIds,
-    selectedCategoryIds: selectedCategoryIds,
-    setSelectedCategoryIds: setSelectedCategoryIds,
-    handleChangeImage: handleChangeImage,
-    handleChangeInput: handleChangeInput,
-    handleUpdateClick: handleUpdateClick,
-    handleAddPromotion: handleAddPromotion,
-    handleDeletePromotion: handleDeletePromotion,
     handleChangeItem: handleChangeItem,
+    handleChangeInput: handleChangeInput,
+    handleAddCampaign: handleAddCampaign,
+    handleDeleteCampaign: handleDeleteCampaign,
+    handleUpdateClick: handleUpdateClick,
     handleRemoveKey: handleRemoveKey,
-    handleSelectSite: handleSelectSite,
-    handleSelectAllBusiness: handleSelectAllBusiness,
-    handleSelectBusiness: handleSelectBusiness,
-    handleSelectAllSites: handleSelectAllSites
+    handleChangeContactData: handleChangeContactData,
+    setCampaignState: setCampaignState,
+    handleDeleteCondition: handleDeleteCondition
   })));
 };
 
-exports.EnterprisePromotionDetails = EnterprisePromotionDetails;
-EnterprisePromotionDetails.propTypes = {
+exports.CampaignDetail = CampaignDetail;
+CampaignDetail.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props
    */
@@ -656,7 +606,7 @@ EnterprisePromotionDetails.propTypes = {
   */
   afterElements: _propTypes.default.arrayOf(_propTypes.default.element)
 };
-EnterprisePromotionDetails.defaultProps = {
+CampaignDetail.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],

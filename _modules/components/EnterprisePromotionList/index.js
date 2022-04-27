@@ -209,7 +209,7 @@ var EnterprisePromotionList = function EnterprisePromotionList(props) {
                   Authorization: "Bearer ".concat(token)
                 }
               };
-              fetchEndpoint = where ? "".concat(ordering.root, "/offers?page=").concat(page, "&page_size=").concat(pageSize, "8&params=").concat(propsToFetch.toString(), "&&where=").concat(JSON.stringify(where)) : "".concat(ordering.root, "/offers?page=").concat(page, "&page_size=").concat(pageSize, "8&params=").concat(propsToFetch.toString());
+              fetchEndpoint = where ? "".concat(ordering.root, "/offers?page=").concat(page, "&page_size=").concat(pageSize, "&params=").concat(propsToFetch.toString(), "&&where=").concat(JSON.stringify(where)) : "".concat(ordering.root, "/offers?page=").concat(page, "&page_size=").concat(pageSize, "&params=").concat(propsToFetch.toString());
               _context.next = 10;
               return fetch(fetchEndpoint, requestOptions);
 
@@ -229,6 +229,7 @@ var EnterprisePromotionList = function EnterprisePromotionList(props) {
                 });
                 setPaginationProps(_objectSpread(_objectSpread({}, paginationProps), {}, {
                   currentPage: content.pagination.current_page,
+                  pageSize: content.pagination.page_size === 0 ? paginationProps.pageSize : content.pagination.page_size,
                   totalPages: content.pagination.total_pages,
                   totalItems: content.pagination.total,
                   from: content.pagination.from,
@@ -768,5 +769,5 @@ EnterprisePromotionList.defaultProps = {
     pageSize: 10,
     controlType: 'infinity'
   },
-  propsToFetch: ['name', 'auto', 'enabled', 'end', 'description', 'image', 'label', 'order_priority', 'sites', 'stackable', 'start', 'target', 'type', 'limit_per_user', 'user_order_count', 'user_order_count_condition', 'valid_from_after_user_last_order_minutes', 'valid_until_after_user_last_order_minutes', 'users', 'delivery_zones', 'paymethods', 'order_types_allowed', 'max_discount', 'rank', 'rate_type', 'rate', 'public', 'coupon', 'businesses', 'condition_type', 'minimum', 'products', 'categories', 'schedule', 'limit']
+  propsToFetch: ['name', 'auto', 'enabled', 'end', 'description', 'image', 'label', 'order_priority', 'sites', 'stackable', 'start', 'target', 'type', 'limit_per_user', 'user_order_count', 'user_order_count_condition', 'valid_from_after_user_last_order_minutes', 'valid_until_after_user_last_order_minutes', 'users', 'delivery_zones', 'paymethods', 'order_types_allowed', 'max_discount', 'rank', 'rate_type', 'rate', 'public', 'coupon', 'businesses', 'condition_type', 'minimum', 'products', 'categories', 'schedule', 'limit', 'include_options']
 };

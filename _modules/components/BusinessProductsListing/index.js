@@ -808,6 +808,16 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
   (0, _react.useEffect)(function () {
     if (businessSlug) {
       getBusiness();
+    } else {
+      setBusinessState(_objectSpread(_objectSpread({}, businessState), {}, {
+        loading: false,
+        business: {}
+      }));
+      setCategoriesState({});
+      setCategoryState(_objectSpread(_objectSpread({}, categoryStateDefault), {}, {
+        loading: false
+      }));
+      setCategorySelected(null);
     }
   }, [businessSlug]);
   (0, _react.useEffect)(function () {

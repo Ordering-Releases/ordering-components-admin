@@ -68,7 +68,8 @@ var SingleBusinessCategory = function SingleBusinessCategory(props) {
       business = props.business,
       category = props.category,
       categorySelected = props.categorySelected,
-      setCategorySelected = props.setCategorySelected;
+      setCategorySelected = props.setCategorySelected,
+      setDataSelected = props.setDataSelected;
 
   var _useSession = (0, _SessionContext.useSession)(),
       _useSession2 = _slicedToArray(_useSession, 1),
@@ -101,6 +102,11 @@ var SingleBusinessCategory = function SingleBusinessCategory(props) {
       _useState4 = _slicedToArray(_useState3, 2),
       isEditMode = _useState4[0],
       setIsEditMode = _useState4[1];
+
+  var _useState5 = (0, _react.useState)(false),
+      _useState6 = _slicedToArray(_useState5, 2),
+      isCategoriesBottom = _useState6[0],
+      setIsCategoriesBottom = _useState6[1];
 
   var handelChangeCategoryActive = function handelChangeCategoryActive(isChecked) {
     var params = {
@@ -173,14 +179,33 @@ var SingleBusinessCategory = function SingleBusinessCategory(props) {
     ghostEle.innerHTML = category.name;
     document.body.appendChild(ghostEle);
     event.dataTransfer.setDragImage(ghostEle, 0, 0);
+    setIsCategoriesBottom(false);
   };
   /**
    * Method to handle drag over
    */
 
 
-  var handleDragOver = function handleDragOver(event) {
+  var handleDragOver = function handleDragOver(event, isLastCategory) {
     event.preventDefault();
+    var element = event.target.closest('.draggable-category');
+
+    if (element) {
+      if (!isLastCategory) {
+        setDataSelected(element.dataset.index);
+      } else {
+        var middlePositionY = window.scrollY + event.target.getBoundingClientRect().top + event.target.offsetHeight / 2;
+        var dragPositionY = event.clientY;
+
+        if (dragPositionY > middlePositionY) {
+          setIsCategoriesBottom(true);
+          setDataSelected('');
+        } else {
+          setIsCategoriesBottom(false);
+          setDataSelected(element.dataset.index);
+        }
+      }
+    }
   };
   /**
    * Method to handle drag drop
@@ -190,19 +215,15 @@ var SingleBusinessCategory = function SingleBusinessCategory(props) {
   var handleDrop = function handleDrop(event) {
     event.preventDefault();
     var transferCategoryId = parseInt(event.dataTransfer.getData('transferCategoryId'));
-    var transferCategory = business === null || business === void 0 ? void 0 : business.categories.find(function (_category) {
-      return _category.id === transferCategoryId;
-    });
-    var transferCategoryRank = transferCategory === null || transferCategory === void 0 ? void 0 : transferCategory.rank;
-    var dropCategoryRank = category === null || category === void 0 ? void 0 : category.rank;
-    var updatedCategories = business === null || business === void 0 ? void 0 : business.categories.filter(function (_category) {
-      if (_category.id === transferCategoryId) _category.rank = dropCategoryRank;
-      if (_category.id === category.id) _category.rank = transferCategoryRank;
-      return true;
-    });
-    handleUpdateBusinessState(_objectSpread(_objectSpread({}, business), {}, {
-      categories: updatedCategories
-    }));
+    var dropCategoryRank;
+
+    if (isCategoriesBottom) {
+      dropCategoryRank = (category === null || category === void 0 ? void 0 : category.rank) + 1;
+    } else {
+      dropCategoryRank = category === null || category === void 0 ? void 0 : category.rank;
+    }
+
+    setIsCategoriesBottom(false);
     handleChangeCategoryRank(transferCategoryId, {
       rank: dropCategoryRank
     });
@@ -214,7 +235,7 @@ var SingleBusinessCategory = function SingleBusinessCategory(props) {
 
   var handleChangeCategoryRank = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee(transferCategoryId, params) {
-      var _yield$ordering$busin, content;
+      var _yield$ordering$busin, content, _categories;
 
       return _regenerator.default.wrap(function _callee$(_context) {
         while (1) {
@@ -238,6 +259,19 @@ var SingleBusinessCategory = function SingleBusinessCategory(props) {
               content = _yield$ordering$busin.content;
 
               if (!content.error) {
+                _categories = _toConsumableArray(business === null || business === void 0 ? void 0 : business.categories);
+
+                _categories.forEach(function iterate(category) {
+                  if (category.id === transferCategoryId) {
+                    category.rank = content.result.rank;
+                  }
+
+                  Array.isArray(category === null || category === void 0 ? void 0 : category.subcategories) && category.subcategories.forEach(iterate);
+                });
+
+                handleUpdateBusinessState(_objectSpread(_objectSpread({}, business), {}, {
+                  categories: _categories
+                }));
                 showToast(_ToastContext.ToastType.Success, t('CATEOGORY_UPDATED', 'Category updated'));
               }
 
@@ -273,6 +307,7 @@ var SingleBusinessCategory = function SingleBusinessCategory(props) {
 
 
   var handleDragEnd = function handleDragEnd() {
+    setDataSelected('');
     var elements = document.getElementsByClassName('ghostDragging');
 
     while (elements.length > 0) {
@@ -484,11 +519,16 @@ var SingleBusinessCategory = function SingleBusinessCategory(props) {
       setFormState(_objectSpread(_objectSpread({}, formState), {}, {
         changes: _objectSpread({}, category)
       }));
+    } else {
+      setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+        changes: {}
+      }));
     }
   }, [category]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     handelChangeCategoryActive: handelChangeCategoryActive,
     categoryFormState: formState,
+    isCategoriesBottom: isCategoriesBottom,
     handlechangeImage: handlechangeImage,
     handleUpdateClick: handleUpdateClick,
     deleteCategory: deleteCategory,

@@ -56,8 +56,6 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var ReportsDriverFilter = function ReportsDriverFilter(props) {
-  var _paginationSettings$p;
-
   var UIComponent = props.UIComponent,
       filterList = props.filterList,
       handleChangeFilterList = props.handleChangeFilterList,
@@ -65,8 +63,7 @@ var ReportsDriverFilter = function ReportsDriverFilter(props) {
       onClose = props.onClose,
       isSearchByName = props.isSearchByName,
       isSearchByLastName = props.isSearchByLastName,
-      availableDriverIds = props.availableDriverIds,
-      paginationSettings = props.paginationSettings;
+      availableDriverIds = props.availableDriverIds;
 
   var _useApi = (0, _ApiContext.useApi)(),
       _useApi2 = _slicedToArray(_useApi, 1),
@@ -100,16 +97,6 @@ var ReportsDriverFilter = function ReportsDriverFilter(props) {
       _useState8 = _slicedToArray(_useState7, 2),
       searchValue = _useState8[0],
       setSearchValue = _useState8[1];
-
-  var _useState9 = (0, _react.useState)({
-    currentPage: paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1 ? paginationSettings.initialPage - 1 : 0,
-    pageSize: (_paginationSettings$p = paginationSettings.pageSize) !== null && _paginationSettings$p !== void 0 ? _paginationSettings$p : 10,
-    totalItems: null,
-    totalPages: null
-  }),
-      _useState10 = _slicedToArray(_useState9, 2),
-      paginationProps = _useState10[0],
-      setPaginationProps = _useState10[1];
 
   var rex = new RegExp(/^[A-Za-z0-9\s]+$/g);
   /**
@@ -189,8 +176,8 @@ var ReportsDriverFilter = function ReportsDriverFilter(props) {
 
 
   var getDrivers = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee(page, pageSize) {
-      var parameters, paginationParams, where, conditions, searchConditions, isSpecialCharacter, fetchEndpoint, _yield$fetchEndpoint$, _yield$fetchEndpoint$2, error, result, pagination, nextPageItems, remainingItems;
+    var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+      var where, conditions, searchConditions, isSpecialCharacter, fetchEndpoint, _yield$fetchEndpoint$, _yield$fetchEndpoint$2, error, result, pagination;
 
       return _regenerator.default.wrap(function _callee$(_context) {
         while (1) {
@@ -200,12 +187,6 @@ var ReportsDriverFilter = function ReportsDriverFilter(props) {
               setDriverList(_objectSpread(_objectSpread({}, driverList), {}, {
                 loading: true
               }));
-              parameters = {};
-              paginationParams = {
-                page: page,
-                page_size: pageSize || paginationProps.pageSize
-              };
-              parameters = _objectSpread({}, paginationParams);
               where = null;
               conditions = [{
                 attribute: 'level',
@@ -256,11 +237,11 @@ var ReportsDriverFilter = function ReportsDriverFilter(props) {
                 };
               }
 
-              fetchEndpoint = where ? ordering.users().asDashboard().select(propsToFetch).parameters(parameters).where(where) : ordering.users().asDashboard().select(propsToFetch).parameters(parameters);
-              _context.next = 13;
+              fetchEndpoint = where ? ordering.users().asDashboard().select(propsToFetch).where(where) : ordering.users().asDashboard().select(propsToFetch);
+              _context.next = 10;
               return fetchEndpoint.get();
 
-            case 13:
+            case 10:
               _yield$fetchEndpoint$ = _context.sent;
               _yield$fetchEndpoint$2 = _yield$fetchEndpoint$.content;
               error = _yield$fetchEndpoint$2.error;
@@ -275,21 +256,6 @@ var ReportsDriverFilter = function ReportsDriverFilter(props) {
                   drivers: result,
                   pagination: pagination
                 }));
-                nextPageItems = 0;
-
-                if (pagination.current_page !== pagination.total_pages) {
-                  remainingItems = pagination.total - driverList.drivers.length;
-                  nextPageItems = remainingItems < pagination.page_size ? remainingItems : pagination.page_size;
-                }
-
-                setPaginationProps(_objectSpread(_objectSpread({}, paginationProps), {}, {
-                  currentPage: pagination.current_page,
-                  totalPages: pagination.total_pages,
-                  totalItems: pagination.total,
-                  from: pagination.from,
-                  to: pagination.to,
-                  nextPageItems: nextPageItems
-                }));
               } else {
                 setDriverList(_objectSpread(_objectSpread({}, driverList), {}, {
                   loading: false,
@@ -297,33 +263,33 @@ var ReportsDriverFilter = function ReportsDriverFilter(props) {
                 }));
               }
 
-              _context.next = 24;
+              _context.next = 21;
               break;
 
-            case 21:
-              _context.prev = 21;
+            case 18:
+              _context.prev = 18;
               _context.t0 = _context["catch"](0);
               setDriverList(_objectSpread(_objectSpread({}, driverList), {}, {
                 loading: false,
                 error: [_context.t0 || (_context.t0 === null || _context.t0 === void 0 ? void 0 : _context.t0.toString()) || (_context.t0 === null || _context.t0 === void 0 ? void 0 : _context.t0.message)]
               }));
 
-            case 24:
+            case 21:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 21]]);
+      }, _callee, null, [[0, 18]]);
     }));
 
-    return function getDrivers(_x, _x2) {
+    return function getDrivers() {
       return _ref.apply(this, arguments);
     };
   }();
 
   (0, _react.useEffect)(function () {
     var controller = new AbortController();
-    getDrivers(1, null);
+    getDrivers();
     return controller.abort();
   }, [searchValue]);
   (0, _react.useEffect)(function () {
@@ -344,8 +310,6 @@ var ReportsDriverFilter = function ReportsDriverFilter(props) {
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     driverList: driverList,
     driverIds: driverIds,
-    paginationProps: paginationProps,
-    getDrivers: getDrivers,
     searchValue: searchValue,
     onSearch: setSearchValue,
     handleChangeDriverId: handleChangeDriverId,
@@ -411,10 +375,5 @@ ReportsDriverFilter.defaultProps = {
   afterComponents: [],
   beforeElements: [],
   afterElements: [],
-  propsToFetch: ['name', 'lastname', 'email', 'phone', 'photo', 'cellphone', 'country_phone_code', 'city_id', 'city', 'address', 'addresses', 'address_notes', 'dropdown_option_id', 'dropdown_option', 'location', 'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups'],
-  paginationSettings: {
-    initialPage: 1,
-    pageSize: 10,
-    controlType: 'infinity'
-  }
+  propsToFetch: ['name', 'lastname', 'email', 'phone', 'photo', 'cellphone', 'country_phone_code', 'city_id', 'city', 'address', 'addresses', 'address_notes', 'dropdown_option_id', 'dropdown_option', 'location', 'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups']
 };

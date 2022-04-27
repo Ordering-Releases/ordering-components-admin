@@ -169,13 +169,13 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
   */
 
 
-  var handlechangeImage = function handlechangeImage(file, isSeo) {
+  var handlechangeImage = function handlechangeImage(file, name) {
     var reader = new window.FileReader();
     reader.readAsDataURL(file);
 
     reader.onload = function () {
       setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-        changes: _objectSpread(_objectSpread({}, formState.changes), {}, _defineProperty({}, isSeo ? 'seo_image' : 'image', reader.result))
+        changes: _objectSpread(_objectSpread({}, formState.changes), {}, _defineProperty({}, name, reader.result))
       }));
     };
 
@@ -262,7 +262,7 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
                       }
                     }
 
-                    var categoryKeyOptions = ['name', 'enabled', 'image', 'slug', 'seo_image', 'seo_title', 'seo_description'];
+                    var categoryKeyOptions = ['name', 'enabled', 'header', 'description', 'image', 'slug', 'seo_image', 'seo_title', 'seo_description'];
 
                     if ((category === null || category === void 0 ? void 0 : category.id) === (content === null || content === void 0 ? void 0 : (_content$result2 = content.result) === null || _content$result2 === void 0 ? void 0 : _content$result2.id) && category.parent_category_id === (content === null || content === void 0 ? void 0 : content.result.parent_category_id)) {
                       Object.keys(category).forEach(function (key) {
