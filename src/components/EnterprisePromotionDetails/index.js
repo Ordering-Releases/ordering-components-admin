@@ -315,6 +315,10 @@ export const EnterprisePromotionDetails = (props) => {
           rate: 5
         }
       })
+      setSelectedBusinessIds([])
+      setSelectedSitesIds([])
+      setSelectedProductsIds({})
+      setSelectedCategoryIds({})
     } else {
       setIsAddMode(false)
       cleanFormState()

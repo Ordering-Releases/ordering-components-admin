@@ -16,7 +16,8 @@ export const UsersList = (props) => {
     isSearchByUserName,
     isBusinessOwners,
     deafultUserTypesSelected,
-    disabledActiveStateCondition
+    disabledActiveStateCondition,
+    isDriver
   } = props
 
   const [ordering] = useApi()
@@ -344,7 +345,9 @@ export const UsersList = (props) => {
         error: error ? result : null
       })
       if (!error) {
-        if (!disabledActiveStateCondition) {
+        if (isDriver) {
+          handleSuccessUpdate(result)
+        } else if (!disabledActiveStateCondition) {
           const users = usersList.users.filter(_user => {
             let valid = true
             if (_user.id === user.id) {

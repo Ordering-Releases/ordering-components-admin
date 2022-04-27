@@ -86,8 +86,8 @@ export const EnterprisePromotionList = (props) => {
         }
       }
       const fetchEndpoint = where
-        ? `${ordering.root}/offers?page=${page}&page_size=${pageSize}8&params=${propsToFetch.toString()}&&where=${JSON.stringify(where)}`
-        : `${ordering.root}/offers?page=${page}&page_size=${pageSize}8&params=${propsToFetch.toString()}`
+        ? `${ordering.root}/offers?page=${page}&page_size=${pageSize}&params=${propsToFetch.toString()}&&where=${JSON.stringify(where)}`
+        : `${ordering.root}/offers?page=${page}&page_size=${pageSize}&params=${propsToFetch.toString()}`
 
       const response = await fetch(fetchEndpoint, requestOptions)
       const content = await response.json()
@@ -96,6 +96,7 @@ export const EnterprisePromotionList = (props) => {
         setPaginationProps({
           ...paginationProps,
           currentPage: content.pagination.current_page,
+          pageSize: content.pagination.page_size === 0 ? paginationProps.pageSize : content.pagination.page_size,
           totalPages: content.pagination.total_pages,
           totalItems: content.pagination.total,
           from: content.pagination.from,
@@ -420,6 +421,6 @@ EnterprisePromotionList.defaultProps = {
     'name', 'auto', 'enabled', 'end', 'description', 'image', 'label', 'order_priority', 'sites', 'stackable', 'start', 'target', 'type',
     'limit_per_user', 'user_order_count', 'user_order_count_condition', 'valid_from_after_user_last_order_minutes', 'valid_until_after_user_last_order_minutes',
     'users', 'delivery_zones', 'paymethods', 'order_types_allowed', 'max_discount', 'rank', 'rate_type', 'rate', 'public', 'coupon', 'businesses', 'condition_type',
-    'minimum', 'products', 'categories', 'schedule', 'limit'
+    'minimum', 'products', 'categories', 'schedule', 'limit', 'include_options'
   ]
 }

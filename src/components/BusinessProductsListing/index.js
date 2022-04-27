@@ -455,6 +455,11 @@ export const BusinessProductsListing = (props) => {
   useEffect(() => {
     if (businessSlug) {
       getBusiness()
+    } else {
+      setBusinessState({ ...businessState, loading: false, business: {} })
+      setCategoriesState({})
+      setCategoryState({ ...categoryStateDefault, loading: false })
+      setCategorySelected(null)
     }
   }, [businessSlug])
 

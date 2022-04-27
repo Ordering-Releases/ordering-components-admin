@@ -79,7 +79,7 @@ export const BusinessProductsCategoyDetails = (props) => {
  * Update business photo data
  * @param {File} file Image to change business photo
  */
-  const handlechangeImage = (file, isSeo) => {
+  const handlechangeImage = (file, name) => {
     const reader = new window.FileReader()
     reader.readAsDataURL(file)
     reader.onload = () => {
@@ -87,7 +87,7 @@ export const BusinessProductsCategoyDetails = (props) => {
         ...formState,
         changes: {
           ...formState.changes,
-          [isSeo ? 'seo_image' : 'image']: reader.result
+          [name]: reader.result
         }
       })
     }
@@ -136,7 +136,7 @@ export const BusinessProductsCategoyDetails = (props) => {
                   }
                 }
               }
-              const categoryKeyOptions = ['name', 'enabled', 'image', 'slug', 'seo_image', 'seo_title', 'seo_description']
+              const categoryKeyOptions = ['name', 'enabled', 'header', 'description', 'image', 'slug', 'seo_image', 'seo_title', 'seo_description']
               if (category?.id === content?.result?.id && category.parent_category_id === content?.result.parent_category_id) {
                 Object.keys(category).forEach(key => {
                   if (categoryKeyOptions.includes(key) && content.result[key]) {

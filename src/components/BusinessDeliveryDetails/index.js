@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
@@ -16,47 +16,120 @@ export const BusinessDeliveryDetails = (props) => {
   const [session] = useSession()
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
-  const [formState, setFormState] = useState({ loading: false, changes: {}, error: null })
+  const [actionState, setActionState] = useState({ loading: false, error: null })
+  const [formState, setFormState] = useState({ changes: {} })
+  const [zoneListState, setZoneListState] = useState({
+    changes: {},
+    isCheckAll: false,
+    isDirty: false
+  })
 
   /**
    * Method to update the business from the API
    */
   const handleDeliveryStateSave = async () => {
     try {
-      setFormState({ ...formState, loading: true })
-      showToast(ToastType.Info, t('LOADING', 'Loading'))
       const { content: { error, result } } = await ordering.businesses(business.id).save(formState.changes, {
         accessToken: session.token
       })
-
       if (!error) {
-        setFormState({
-          ...formState,
-          loading: false,
-          changes: {},
-          error: null
-        })
-        handleUpdateBusinessState(result)
-        showToast(ToastType.Success, t('BUSINESS_UPDATED', 'Business updated'))
+        return result
       } else {
-        setFormState({
-          ...formState,
-          loading: false,
-          error: error
-        })
+        throw { message: error }
       }
     } catch (err) {
-      setFormState({
-        ...formState,
+      return Promise.reject(err)
+    }
+  }
+
+  /**
+   * Method to update the business delivery zone enable state from API
+   */
+  const handleUpdateDeliveryZoneState = async (zoneId, enabled) => {
+    try {
+      const requestOptions = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.token}`
+        },
+        body: JSON.stringify({ enabled: enabled })
+      }
+      const response = await fetch(`${ordering.root}/business/${business?.id}/deliveryzones/${zoneId}`, requestOptions)
+      const content = await response.json()
+      if (!content.error) {
+        return content.result
+      } else {
+        throw { message: content.result }
+      }
+    } catch (err) {
+      return Promise.reject(err)
+    }
+  }
+
+  const onDeliveryStateSave = async () => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setActionState({ loading: true, error: null })
+      if (Object.keys(zoneListState.changes).length) {
+        for (const key in zoneListState.changes) {
+          const zoneId = parseInt(key)
+          const foundZone = business?.zones?.find(zone => zone.id === zoneId)
+          if (foundZone?.enabled !== zoneListState.changes[key]) {
+            await handleUpdateDeliveryZoneState(zoneId, zoneListState.changes[key])
+          }
+        }
+        setZoneListState({ ...zoneListState, isDirty: false })
+        const zones = business.zones.filter(zone => {
+          if (typeof zoneListState.changes[zone.id] !== 'undefined') {
+            zone.enabled = zoneListState.changes[zone.id]
+          }
+          return true
+        })
+        const _business = { ...business, zones: zones }
+        handleUpdateBusinessState(_business)
+      }
+      if (Object.keys(formState.changes).length) {
+        const result = await handleDeliveryStateSave()
+        setFormState({ changes: {} })
+        handleUpdateBusinessState(result)
+      }
+      setActionState({ loading: false, error: null })
+      showToast(ToastType.Success, t('BUSINESS_UPDATED', 'Business updated'))
+    } catch (err) {
+      setActionState({
         loading: false,
         error: [err.message]
       })
     }
   }
 
+  const handleChangeAllZoneState = (enabled) => {
+    const zoneChanges = { ...zoneListState.changes }
+    for (const key in zoneChanges) {
+      zoneChanges[key] = enabled
+    }
+    setZoneListState({
+      ...zoneListState,
+      changes: zoneChanges,
+      isCheckAll: enabled,
+      isDirty: true
+    })
+  }
+
+  const handleChangeZoneState = (zoneId, enabled) => {
+    setZoneListState({
+      ...zoneListState,
+      changes: {
+        ...zoneListState.changes,
+        [zoneId]: enabled
+      },
+      isDirty: true
+    })
+  }
+
   const handleChangeForm = (updateChange) => {
     setFormState({
-      ...formState,
       changes: {
         ...formState.changes,
         ...updateChange
@@ -64,15 +137,42 @@ export const BusinessDeliveryDetails = (props) => {
     })
   }
 
+  useEffect(() => {
+    let enabledZones = 0
+    for (const key in zoneListState.changes) {
+      if (zoneListState.changes[key]) enabledZones += 1
+    }
+    setZoneListState({
+      ...zoneListState,
+      isCheckAll: Object.keys(zoneListState.changes).length === enabledZones
+    })
+  }, [zoneListState.changes])
+
+  useEffect(() => {
+    const zoneList = business?.zones?.filter(zone => zone?.type !== 3) || []
+    const zoneChanges = {}
+    zoneList.forEach(zone => {
+      zoneChanges[zone.id] = zone.enabled
+    })
+    setZoneListState({
+      ...zoneListState,
+      changes: zoneChanges
+    })
+  }, [business?.zones])
+
   return (
     <>
       {
         UIComponent && (
           <UIComponent
             {...props}
+            actionState={actionState}
             formState={formState}
+            zoneListState={zoneListState}
             handleChangeForm={handleChangeForm}
-            handleDeliveryStateSave={handleDeliveryStateSave}
+            onDeliveryStateSave={onDeliveryStateSave}
+            handleChangeAllZoneState={handleChangeAllZoneState}
+            handleChangeZoneState={handleChangeZoneState}
           />
         )
       }

@@ -15,7 +15,8 @@ export const SingleBusinessCategory = (props) => {
     business,
     category,
     categorySelected,
-    setCategorySelected
+    setCategorySelected,
+    setDataSelected
   } = props
 
   const [{ loading }] = useSession()
@@ -25,6 +26,7 @@ export const SingleBusinessCategory = (props) => {
 
   const [formState, setFormState] = useState({ changes: {}, loading: false, result: { error: false } })
   const [isEditMode, setIsEditMode] = useState(false)
+  const [isCategoriesBottom, setIsCategoriesBottom] = useState(false)
 
   const handelChangeCategoryActive = (isChecked) => {
     const params = { enabled: isChecked }
@@ -86,13 +88,30 @@ export const SingleBusinessCategory = (props) => {
     ghostEle.innerHTML = category.name
     document.body.appendChild(ghostEle)
     event.dataTransfer.setDragImage(ghostEle, 0, 0)
+    setIsCategoriesBottom(false)
   }
 
   /**
    * Method to handle drag over
    */
-  const handleDragOver = (event) => {
+  const handleDragOver = (event, isLastCategory) => {
     event.preventDefault()
+    const element = event.target.closest('.draggable-category')
+    if (element) {
+      if (!isLastCategory) {
+        setDataSelected(element.dataset.index)
+      } else {
+        const middlePositionY = window.scrollY + event.target.getBoundingClientRect().top + event.target.offsetHeight / 2
+        const dragPositionY = event.clientY
+        if (dragPositionY > middlePositionY) {
+          setIsCategoriesBottom(true)
+          setDataSelected('')
+        } else {
+          setIsCategoriesBottom(false)
+          setDataSelected(element.dataset.index)
+        }
+      }
+    }
   }
 
   /**
@@ -101,16 +120,13 @@ export const SingleBusinessCategory = (props) => {
   const handleDrop = (event) => {
     event.preventDefault()
     const transferCategoryId = parseInt(event.dataTransfer.getData('transferCategoryId'))
-    const transferCategory = business?.categories.find(_category => _category.id === transferCategoryId)
-    const transferCategoryRank = transferCategory?.rank
-    const dropCategoryRank = category?.rank
-
-    const updatedCategories = business?.categories.filter(_category => {
-      if (_category.id === transferCategoryId) _category.rank = dropCategoryRank
-      if (_category.id === category.id) _category.rank = transferCategoryRank
-      return true
-    })
-    handleUpdateBusinessState({ ...business, categories: updatedCategories })
+    let dropCategoryRank
+    if (isCategoriesBottom) {
+      dropCategoryRank = category?.rank + 1
+    } else {
+      dropCategoryRank = category?.rank
+    }
+    setIsCategoriesBottom(false)
     handleChangeCategoryRank(transferCategoryId, { rank: dropCategoryRank })
   }
 
@@ -123,6 +139,14 @@ export const SingleBusinessCategory = (props) => {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
       const { content } = await ordering.businesses(parseInt(business?.id)).categories(transferCategoryId).save(params)
       if (!content.error) {
+        const _categories = [...business?.categories]
+        _categories.forEach(function iterate (category) {
+          if (category.id === transferCategoryId) {
+            category.rank = content.result.rank
+          }
+          Array.isArray(category?.subcategories) && category.subcategories.forEach(iterate)
+        })
+        handleUpdateBusinessState({ ...business, categories: _categories })
         showToast(ToastType.Success, t('CATEOGORY_UPDATED', 'Category updated'))
       }
     } catch (err) {
@@ -141,6 +165,7 @@ export const SingleBusinessCategory = (props) => {
    * Method to handle drag end
    */
   const handleDragEnd = () => {
+    setDataSelected('')
     const elements = document.getElementsByClassName('ghostDragging')
     while (elements.length > 0) {
       elements[0].parentNode.removeChild(elements[0])
@@ -267,6 +292,8 @@ export const SingleBusinessCategory = (props) => {
         ...formState,
         changes: { ...category }
       })
+    } else {
+      setFormState({ ...formState, changes: {} })
     }
   }, [category])
 
@@ -277,6 +304,7 @@ export const SingleBusinessCategory = (props) => {
           {...props}
           handelChangeCategoryActive={handelChangeCategoryActive}
           categoryFormState={formState}
+          isCategoriesBottom={isCategoriesBottom}
           handlechangeImage={handlechangeImage}
           handleUpdateClick={handleUpdateClick}
           deleteCategory={deleteCategory}
