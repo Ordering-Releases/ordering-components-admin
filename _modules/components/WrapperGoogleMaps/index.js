@@ -60,7 +60,7 @@ var WrapperGoogleMaps = function WrapperGoogleMaps(Child) {
         window.document.body.appendChild(js1);
       }
 
-      if (window.document.getElementById('google-maps-sdk') && window.document.getElementById('google-maps-cluster')) {
+      if (window.document.getElementById('__googleMapsScriptId') && window.document.getElementById('google-maps-cluster')) {
         if (typeof google !== 'undefined') {
           setGoogleReady(true);
         } else {
@@ -80,10 +80,10 @@ var WrapperGoogleMaps = function WrapperGoogleMaps(Child) {
       };
 
       var js = window.document.createElement('script');
-      js.id = 'google-maps-sdk';
+      js.id = '__googleMapsScriptId';
       js.async = true;
       js.defer = true;
-      js.src = "https://maps.googleapis.com/maps/api/js?key=".concat(apiKey, "&libraries=places,geometry,visualization&callback=googleAsyncInit");
+      js.src = "https://maps.googleapis.com/maps/api/js?key=".concat(apiKey, "&libraries=places,geometry,visualization,drawing&callback=googleAsyncInit");
       window.document.body.appendChild(js);
       return function () {
         if (checker) {

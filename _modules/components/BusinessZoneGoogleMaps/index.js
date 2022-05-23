@@ -47,7 +47,10 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
       fillStyle = props.fillStyle,
       infoContentString = props.infoContentString,
       handleData = props.handleData,
-      setClearState = props.setClearState;
+      setClearState = props.setClearState,
+      isAddMode = props.isAddMode,
+      greenFillStyle = props.greenFillStyle,
+      businessZones = props.businessZones;
 
   if (!apiKey) {
     console.warn('Prop `apiKey` is required to use Google Maps components.');
@@ -307,8 +310,11 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
     if (googleReady) {
       center.lat = location === null || location === void 0 ? void 0 : location.lat;
       center.lng = location === null || location === void 0 ? void 0 : location.lng;
-      googleMapMarker && googleMapMarker.setPosition(new window.google.maps.LatLng(center === null || center === void 0 ? void 0 : center.lat, center === null || center === void 0 ? void 0 : center.lng));
-      googleMap && googleMap.panTo(new window.google.maps.LatLng(center === null || center === void 0 ? void 0 : center.lat, center === null || center === void 0 ? void 0 : center.lng));
+
+      if (center.lat && center.lng) {
+        googleMapMarker && googleMapMarker.setPosition(new window.google.maps.LatLng(center === null || center === void 0 ? void 0 : center.lat, center === null || center === void 0 ? void 0 : center.lng));
+        googleMap && googleMap.panTo(new window.google.maps.LatLng(center === null || center === void 0 ? void 0 : center.lat, center === null || center === void 0 ? void 0 : center.lng));
+      }
     }
   }, [location]);
   (0, _react.useEffect)(function () {
@@ -388,6 +394,60 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
 
         _drawingManager.setMap(map);
       }
+
+      if (isAddMode) {
+        var bounds = new window.google.maps.LatLngBounds();
+
+        var _iterator4 = _createForOfIteratorHelper(businessZones),
+            _step4;
+
+        try {
+          for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+            var deliveryZone = _step4.value;
+
+            if (deliveryZone.type === 1) {
+              var newCircleZone = new window.google.maps.Circle(_objectSpread(_objectSpread({}, greenFillStyle), {}, {
+                editable: false,
+                center: deliveryZone === null || deliveryZone === void 0 ? void 0 : deliveryZone.data.center,
+                radius: (deliveryZone === null || deliveryZone === void 0 ? void 0 : deliveryZone.data.radio) * 1000
+              }));
+              newCircleZone.setMap(map);
+              bounds.union(newCircleZone.getBounds());
+              map.fitBounds(bounds);
+            }
+
+            if ((deliveryZone === null || deliveryZone === void 0 ? void 0 : deliveryZone.type) === 2 && Array.isArray(deliveryZone === null || deliveryZone === void 0 ? void 0 : deliveryZone.data)) {
+              var newPolygonZone = new window.google.maps.Polygon(_objectSpread(_objectSpread({}, greenFillStyle), {}, {
+                editable: false,
+                paths: deliveryZone === null || deliveryZone === void 0 ? void 0 : deliveryZone.data
+              }));
+              newPolygonZone.setMap(map);
+
+              if (Array.isArray(deliveryZone === null || deliveryZone === void 0 ? void 0 : deliveryZone.data)) {
+                var _iterator5 = _createForOfIteratorHelper(deliveryZone === null || deliveryZone === void 0 ? void 0 : deliveryZone.data),
+                    _step5;
+
+                try {
+                  for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+                    var position = _step5.value;
+                    bounds.extend(position);
+                  }
+                } catch (err) {
+                  _iterator5.e(err);
+                } finally {
+                  _iterator5.f();
+                }
+
+                map.fitBounds(bounds);
+              }
+            }
+          }
+        } catch (err) {
+          _iterator4.e(err);
+        } finally {
+          _iterator4.f();
+        }
+      }
     }
   }, [googleReady]);
   /**
@@ -401,7 +461,7 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
 
     var checker = null;
 
-    if (window.document.getElementById('google-maps-sdk-shap')) {
+    if (window.document.getElementById('__googleMapsScriptId')) {
       if (typeof google !== 'undefined') {
         setGoogleReady(true);
       } else {
@@ -421,10 +481,10 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
     };
 
     var js = window.document.createElement('script');
-    js.id = 'google-maps-sdk-shap';
+    js.id = '__googleMapsScriptId';
     js.async = true;
     js.defer = true;
-    js.src = "https://maps.googleapis.com/maps/api/js?key=".concat(apiKey, "&libraries=drawing&callback=googleAsyncInit");
+    js.src = "https://maps.googleapis.com/maps/api/js?key=".concat(apiKey, "&libraries=places,geometry,visualization,drawing&callback=googleAsyncInit");
     window.document.body.appendChild(js);
     return function () {
       if (checker) {

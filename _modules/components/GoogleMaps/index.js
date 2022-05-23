@@ -237,7 +237,9 @@ var GoogleMaps = function GoogleMaps(props) {
           setErrors && setErrors('ERROR_NOT_FOUND_ADDRESS');
         }
 
-        googleMap && googleMap.panTo(new window.google.maps.LatLng(center === null || center === void 0 ? void 0 : center.lat, center === null || center === void 0 ? void 0 : center.lng));
+        if (center !== null && center !== void 0 && center.lat && center !== null && center !== void 0 && center.lng) {
+          googleMap && googleMap.panTo(new window.google.maps.LatLng(center === null || center === void 0 ? void 0 : center.lat, center === null || center === void 0 ? void 0 : center.lng));
+        }
       });
     } else {
       var _location = {
@@ -249,7 +251,10 @@ var GoogleMaps = function GoogleMaps(props) {
       });
       center.lat = _location === null || _location === void 0 ? void 0 : _location.lat;
       center.lng = _location === null || _location === void 0 ? void 0 : _location.lng;
-      googleMap && googleMap.panTo(new window.google.maps.LatLng(_location === null || _location === void 0 ? void 0 : _location.lat, _location === null || _location === void 0 ? void 0 : _location.lng));
+
+      if (_location.lat && _location.lng) {
+        googleMap && googleMap.panTo(new window.google.maps.LatLng(_location === null || _location === void 0 ? void 0 : _location.lat, _location === null || _location === void 0 ? void 0 : _location.lng));
+      }
     }
   };
   /**
@@ -277,7 +282,7 @@ var GoogleMaps = function GoogleMaps(props) {
 
     if (distance <= maxLimitLocation) {
       geocodePosition(curPos);
-    } else {
+    } else if (center !== null && center !== void 0 && center.lat && center !== null && center !== void 0 && center.lng) {
       marker.setPosition(center);
       map.panTo(new window.google.maps.LatLng(center === null || center === void 0 ? void 0 : center.lat, center === null || center === void 0 ? void 0 : center.lng));
       setErrors && setErrors('ERROR_MAX_LIMIT_LOCATION');
@@ -411,11 +416,13 @@ var GoogleMaps = function GoogleMaps(props) {
 
           setHeatMap(_heatMap); // Add a marker clusterer to manage the markers.
 
-          var _markerCluster = new window.MarkerClusterer(googleMap, markers, {
-            imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
-          });
+          if (window.MarkerClusterer) {
+            var _markerCluster = new window.MarkerClusterer(googleMap, markers, {
+              imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+            });
 
-          setMarkerCluster(_markerCluster);
+            setMarkerCluster(_markerCluster);
+          }
         }
 
         return function () {
@@ -435,8 +442,11 @@ var GoogleMaps = function GoogleMaps(props) {
       if (!(isHeatMap && (locations === null || locations === void 0 ? void 0 : locations.length) > 0)) {
         center.lat = location === null || location === void 0 ? void 0 : location.lat;
         center.lng = location === null || location === void 0 ? void 0 : location.lng;
-        googleMapMarker && googleMapMarker.setPosition(new window.google.maps.LatLng(center === null || center === void 0 ? void 0 : center.lat, center === null || center === void 0 ? void 0 : center.lng));
-        googleMap && googleMap.panTo(new window.google.maps.LatLng(center === null || center === void 0 ? void 0 : center.lat, center === null || center === void 0 ? void 0 : center.lng));
+
+        if (center.lat && center.lng) {
+          googleMapMarker && googleMapMarker.setPosition(new window.google.maps.LatLng(center === null || center === void 0 ? void 0 : center.lat, center === null || center === void 0 ? void 0 : center.lng));
+          googleMap && googleMap.panTo(new window.google.maps.LatLng(center === null || center === void 0 ? void 0 : center.lat, center === null || center === void 0 ? void 0 : center.lng));
+        }
       }
     }
   }, [location]);

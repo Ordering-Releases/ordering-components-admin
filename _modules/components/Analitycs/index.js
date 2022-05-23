@@ -118,7 +118,7 @@ var Analytics = function Analytics(props) {
 
     window.ga('ec:setAction', 'purchase', {
       // Transaction details are provided in an actionFieldObject.
-      id: order.id,
+      id: order === null || order === void 0 ? void 0 : order.id,
       // (Required) Transaction id (string).
       affiliation: (_order$business = order.business) === null || _order$business === void 0 ? void 0 : _order$business.name,
       // Affiliation (string).
