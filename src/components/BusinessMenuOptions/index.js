@@ -314,7 +314,7 @@ export const BusinessMenuOptions = (props) => {
     })
     let _selectedProductsIds = []
     if (Object.keys(menu).length) {
-      _selectedProductsIds = menu.products.reduce((ids, product) => [...ids, product.id], [])
+      _selectedProductsIds = menu.products?.reduce((ids, product) => [...ids, product.id], [])
       setSelectedProductsIds(_selectedProductsIds)
       setSelectedProducts(menu.products)
     } else {
@@ -345,11 +345,11 @@ export const BusinessMenuOptions = (props) => {
         return (
           categories?.length > 0 && categories?.forEach(category => {
             let productIds = []
-            const _productIds = category.products.reduce((ids, product) => [...ids, product.id], [])
+            const _productIds = category.products?.reduce((ids, product) => [...ids, product.id], [])
             productIds = [...productIds, ..._productIds]
             if (category?.subcategories?.length) {
               category.subcategories.forEach(function iterate (category) {
-                const _productIds = category.products.reduce((ids, product) => [...ids, product.id], [])
+                const _productIds = category.products?.reduce((ids, product) => [...ids, product.id], [])
                 productIds = [...productIds, ..._productIds]
                 Array.isArray(category?.subcategories) && category.subcategories.forEach(iterate)
               })

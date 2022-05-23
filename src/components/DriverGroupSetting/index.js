@@ -82,7 +82,7 @@ export const DriverGroupSetting = (props) => {
 
   const handleCheckboxClick = (groupId) => {
     const selectedGroup = driversGroupsState.groups.find(group => group.id === groupId)
-    const driverIds = selectedGroup.drivers.reduce((ids, driver) => [...ids, driver.id], [])
+    const driverIds = selectedGroup.drivers?.reduce((ids, driver) => [...ids, driver.id], [])
     let changedDriverIds = []
     if (driverIds.includes(userId)) {
       console.log(userId, driverIds)
@@ -99,7 +99,7 @@ export const DriverGroupSetting = (props) => {
 
   useEffect(() => {
     if (driversGroupsState.loading) return
-    const groupIds = driversGroupsState.groups.reduce((ids, group) => {
+    const groupIds = driversGroupsState.groups?.reduce((ids, group) => {
       const found = group.drivers.find(driver => driver.id === userId)
       if (found) return [...ids, group.id]
       else return [...ids]

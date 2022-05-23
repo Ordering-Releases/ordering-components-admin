@@ -27,14 +27,14 @@ export const MyOrdersUI = (props) => {
       <h1>Active Orders</h1>
       <ul>
         {activeOrders.length && activeOrders.map(order => (
-          <li key={order.id}>{order.created_at}</li>
+          <li key={order?.id}>{order.created_at}</li>
         ))}
       </ul>
       <hr />
       <h1>Previous Orders</h1>
       <ul>
         {previousOrders.length && previousOrders.map(order => (
-          <li key={order.id}>{order.created_at}</li>
+          <li key={order?.id}>{order.created_at}</li>
         ))}
       </ul>
 

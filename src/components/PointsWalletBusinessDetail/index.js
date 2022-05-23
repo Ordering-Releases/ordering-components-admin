@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes, { string } from 'prop-types'
 import { useApi } from '../../contexts/ApiContext'
 import { useSession } from '../../contexts/SessionContext'
@@ -120,6 +120,10 @@ export const PointsWalletBusinessDetail = (props) => {
       setFormState({ ...formState, loading: false, error: error.message })
     }
   }
+
+  useEffect(() => {
+    setFormState({ ...formState, changes: {} })
+  }, [walletData])
 
   return (
     <>

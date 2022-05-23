@@ -114,7 +114,7 @@ export const ReportsAppIdFilter = (props) => {
 
   useEffect(() => {
     if (appIdList?.appIds?.length === 0) return
-    const _appIds = appIdList.appIds.reduce((prev, cur) => [...prev, cur.id], [])
+    const _appIds = appIdList.appIds?.reduce((prev, cur) => [...prev, cur.id], [])
     setAppIds([...filterList?.app_ids || _appIds])
     if (!filterList?.app_ids || filterList?.app_ids?.length === appIdList?.appIds.length) setIsAllCheck(true)
   }, [appIdList?.appIds])

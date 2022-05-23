@@ -11,6 +11,7 @@ export const BusinessTypeDetail = (props) => {
     setBusinessTypes,
     businessTypes
   } = props
+
   const [ordering] = useApi()
   const [{ token }] = useSession()
   const [, { showToast }] = useToast()
@@ -37,6 +38,15 @@ export const BusinessTypeDetail = (props) => {
     }
     reader.onerror = error => console.log(error)
   }
+
+  /**
+   * Update business type field data
+   */
+  const handleChangeItem = (name, value) => {
+    const currentChanges = { ...formState?.changes, [name]: value }
+    setFormState({ ...formState, changes: currentChanges })
+  }
+
   /**
    * Update credential data
    * @param {EventTarget} e Related HTML event
@@ -219,6 +229,7 @@ export const BusinessTypeDetail = (props) => {
           handleUpdateProductType={handleUpdateProductType}
           handleAddProductType={handleAddProductType}
           handleDeleteProductType={handleDeleteProductType}
+          handleChangeItem={handleChangeItem}
         />
       )}
     </>

@@ -75,7 +75,7 @@ export const Analytics = (props) => {
   }
   const handleOrderPlaced = (order) => {
     window.ga('ec:setAction', 'purchase', { // Transaction details are provided in an actionFieldObject.
-      id: order.id, // (Required) Transaction id (string).
+      id: order?.id, // (Required) Transaction id (string).
       affiliation: order.business?.name, // Affiliation (string).
       revenue: order.total, // Revenue (number).
       tax: order.tax_total, // Tax (number).

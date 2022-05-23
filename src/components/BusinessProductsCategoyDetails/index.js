@@ -139,7 +139,7 @@ export const BusinessProductsCategoyDetails = (props) => {
               const categoryKeyOptions = ['name', 'enabled', 'header', 'description', 'image', 'slug', 'seo_image', 'seo_title', 'seo_description']
               if (category?.id === content?.result?.id && category.parent_category_id === content?.result.parent_category_id) {
                 Object.keys(category).forEach(key => {
-                  if (categoryKeyOptions.includes(key) && content.result[key]) {
+                  if (categoryKeyOptions.includes(key) && content.result[key] !== undefined) {
                     category[key] = content?.result[key]
                   }
                 })

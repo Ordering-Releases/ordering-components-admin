@@ -49,7 +49,7 @@ export const BusinessController = (props) => {
    */
   const getBusinessOffer = (offers) => {
     if (!offers || !offers.length) return null
-    const maxOffer = offers.reduce((acc, cur) => (acc.rate > cur.rate) ? acc : cur)
+    const maxOffer = offers?.reduce((acc, cur) => (acc.rate > cur.rate) ? acc : cur)
     return maxOffer?.rate_type === 1 ? `${maxOffer?.rate}%` : parsePrice(maxOffer?.rate)
   }
   /**

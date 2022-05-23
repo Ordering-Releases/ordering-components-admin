@@ -17,7 +17,7 @@ export const OrderReview = (props) => {
     setFormState({ ...formState, loading: true })
     try {
       const body = {
-        order_id: order.id,
+        order_id: order?.id,
         quality: stars.quality,
         delivery: stars.punctiality,
         service: stars.service,

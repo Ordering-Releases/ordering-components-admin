@@ -144,7 +144,7 @@ export const AnalyticsBusinessFilter = (props) => {
 
   useEffect(() => {
     if (businessList?.businesses?.length === 0) return
-    const _businessIds = businessList.businesses.reduce((prev, cur) => [...prev, cur.id], [])
+    const _businessIds = businessList.businesses?.reduce((prev, cur) => [...prev, cur.id], [])
     const filterBusinessIds = filterList?.businessIds?.length > 0
       ? filterList?.businessIds.filter(businessId => _businessIds.includes(businessId))
       : _businessIds

@@ -163,7 +163,7 @@ export const Messages = (props) => {
   useEffect(() => {
     if (messages.loading || (orderMessages && setOrderMessages)) return
     const handleNewMessage = (message) => {
-      if (message.order.id === orderId) {
+      if (message.order?.id === orderId) {
         const found = messages.messages.find(_message => _message.id === message.id)
         if (!found) {
           setMessages({

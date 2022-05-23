@@ -116,7 +116,9 @@ export const GoogleMaps = (props) => {
           googleMapMarker && googleMapMarker.setPosition(center)
           setErrors && setErrors('ERROR_NOT_FOUND_ADDRESS')
         }
-        googleMap && googleMap.panTo(new window.google.maps.LatLng(center?.lat, center?.lng))
+        if (center?.lat && center?.lng) {
+          googleMap && googleMap.panTo(new window.google.maps.LatLng(center?.lat, center?.lng))
+        }
       })
     } else {
       const location = { lat: pos?.lat(), lng: pos?.lng() }
@@ -125,7 +127,9 @@ export const GoogleMaps = (props) => {
       })
       center.lat = location?.lat
       center.lng = location?.lng
-      googleMap && googleMap.panTo(new window.google.maps.LatLng(location?.lat, location?.lng))
+      if (location.lat && location.lng) {
+        googleMap && googleMap.panTo(new window.google.maps.LatLng(location?.lat, location?.lng))
+      }
     }
   }
 
@@ -153,7 +157,7 @@ export const GoogleMaps = (props) => {
 
     if (distance <= maxLimitLocation) {
       geocodePosition(curPos)
-    } else {
+    } else if (center?.lat && center?.lng) {
       marker.setPosition(center)
       map.panTo(new window.google.maps.LatLng(center?.lat, center?.lng))
       setErrors && setErrors('ERROR_MAX_LIMIT_LOCATION')
@@ -286,11 +290,13 @@ export const GoogleMaps = (props) => {
           })
           setHeatMap(_heatMap)
           // Add a marker clusterer to manage the markers.
-          const _markerCluster = new window.MarkerClusterer(googleMap, markers, {
-            imagePath:
-              'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
-          })
-          setMarkerCluster(_markerCluster)
+          if (window.MarkerClusterer) {
+            const _markerCluster = new window.MarkerClusterer(googleMap, markers, {
+              imagePath:
+                'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+            })
+            setMarkerCluster(_markerCluster)
+          }
         }
 
         return () => {
@@ -310,8 +316,10 @@ export const GoogleMaps = (props) => {
       if (!(isHeatMap && locations?.length > 0)) {
         center.lat = location?.lat
         center.lng = location?.lng
-        googleMapMarker && googleMapMarker.setPosition(new window.google.maps.LatLng(center?.lat, center?.lng))
-        googleMap && googleMap.panTo(new window.google.maps.LatLng(center?.lat, center?.lng))
+        if (center.lat && center.lng) {
+          googleMapMarker && googleMapMarker.setPosition(new window.google.maps.LatLng(center?.lat, center?.lng))
+          googleMap && googleMap.panTo(new window.google.maps.LatLng(center?.lat, center?.lng))
+        }
       }
     }
   }, [location])

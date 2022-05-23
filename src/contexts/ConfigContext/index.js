@@ -62,7 +62,9 @@ export const ConfigProvider = ({ children }) => {
   const refreshConfigs = async () => {
     try {
       !state.loading && setState({ ...state, loading: true })
-      const { content: { error, result } } = await ordering.setAccessToken(token).configs().asDictionary().get()
+      const { content: { error, result } } = token
+        ? await ordering.setAccessToken(token).configs().asDictionary().get()
+        : await ordering.configs().asDictionary().get()
       let data = null
       try {
         const response = await fetch('https://ipapi.co/json/')
@@ -78,11 +80,11 @@ export const ConfigProvider = ({ children }) => {
         },
         ...result
       }
-      setState({
-        ...state,
+      setState(prevState => ({
+        ...prevState,
         loading: false,
-        configs: error ? {} : configsResult
-      })
+        configs: error ? {} : token ? configsResult : { ...prevState.configs, ...configsResult }
+      }))
     } catch (err) {
       setState({ ...state, loading: false })
     }
@@ -93,11 +95,14 @@ export const ConfigProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    if (ordering?.project === null) return
-    if (!languageState.loading && token) {
+    if (!ordering?.project) {
+      setState({ loading: true, configs: {} })
+      return
+    }
+    if (!languageState.loading) {
       refreshConfigs()
     }
-  }, [languageState.loading, ordering, token])
+  }, [languageState.loading, ordering?.project, token])
 
   return (
     <ConfigContext.Provider value={[state, functions]}>

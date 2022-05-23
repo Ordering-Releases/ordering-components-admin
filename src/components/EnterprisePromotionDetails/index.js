@@ -102,7 +102,7 @@ export const EnterprisePromotionDetails = (props) => {
       sites = [...formState.changes?.sites]
     } else {
       if (promotion?.sites) {
-        sites = promotion?.sites.reduce((ids, site) => [...ids, site.id], [])
+        sites = promotion?.sites?.reduce((ids, site) => [...ids, site.id], [])
       }
     }
     if (checked) {
@@ -233,7 +233,7 @@ export const EnterprisePromotionDetails = (props) => {
   /**
    * Method to add new promotion from API
    */
-  const handleAddPromotion = async () => {
+  const handleAddPromotion = async (notCloseAdd) => {
     try {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
       setActionState({ loading: true, error: null })
@@ -256,7 +256,7 @@ export const EnterprisePromotionDetails = (props) => {
         setActionState({ error: null, loading: false })
         handleSuccessAddPromotion && handleSuccessAddPromotion(content.result)
         showToast(ToastType.Success, t('PROMOTION_ADDED', 'Promotion added'))
-        props.onClose && props.onClose()
+        !notCloseAdd && props.onClose && props.onClose()
       } else {
         setActionState({
           loading: false,
@@ -326,9 +326,9 @@ export const EnterprisePromotionDetails = (props) => {
       setSelectedBusinessIds(businessIds || [])
       const sitesIds = promotion?.sites?.reduce((ids, site) => [...ids, site.id], [])
       setSelectedSitesIds(sitesIds || [])
-      const _selectedProductsIds = promotion?.products.reduce((ids, product) => [...ids, product.id], [])
+      const _selectedProductsIds = promotion?.products?.reduce((ids, product) => [...ids, product.id], [])
       setSelectedProductsIds(_selectedProductsIds)
-      const _selectedCategoryIds = promotion?.categories.reduce((ids, category) => [...ids, category.id], [])
+      const _selectedCategoryIds = promotion?.categories?.reduce((ids, category) => [...ids, category.id], [])
       setSelectedCategoryIds(_selectedCategoryIds)
     }
     setPromotionState({ ...promotionState, promotion: promotion })

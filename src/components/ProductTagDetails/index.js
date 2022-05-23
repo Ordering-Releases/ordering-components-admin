@@ -12,6 +12,7 @@ export const ProductTagDetails = (props) => {
     handleSuccessDelete,
     handleSuccessAdd
   } = props
+
   const [ordering] = useApi()
   const [{ token }] = useSession()
   const [, { showToast }] = useToast()
@@ -50,6 +51,15 @@ export const ProductTagDetails = (props) => {
         [e.target.name]: e.target.value
       }
     })
+  }
+
+  /**
+   * Update credential data
+   * @param {*} changes Field for product tag
+   */
+  const handleChangeItem = (changes) => {
+    const currentChanges = { ...formState?.changes, ...changes }
+    setFormState({ ...formState, changes: currentChanges })
   }
 
   /**
@@ -207,6 +217,7 @@ export const ProductTagDetails = (props) => {
           handleUpdateProductTag={handleUpdateProductTag}
           handleAddProductTag={handleAddProductTag}
           handleDeleteProductTag={handleDeleteProductTag}
+          handleChangeItem={handleChangeItem}
         />
       )}
     </>

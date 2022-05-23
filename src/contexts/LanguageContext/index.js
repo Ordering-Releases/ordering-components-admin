@@ -107,7 +107,7 @@ export const LanguageProvider = ({ children, strategy }) => {
    * Refresh translation when change language from ordering
    */
   useEffect(() => {
-    if (ordering?.project === null) return
+    if (!ordering?.project) return
     if (state.language?.code && state.language?.code === ordering.language) {
       refreshTranslations()
     }
@@ -115,7 +115,7 @@ export const LanguageProvider = ({ children, strategy }) => {
 
   useEffect(() => {
     setLanguageFromLocalStorage()
-    if (ordering?.project === null) return
+    if (!ordering?.project) return
     refreshLanguages()
   }, [ordering?.language, ordering?.project])
 

@@ -4,6 +4,8 @@ import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
 import { useWebsocket } from '../../contexts/WebsocketContext'
 import { useEvent } from '../../contexts/EventContext'
+import { useLanguage } from '../../contexts/LanguageContext'
+import { useToast, ToastType } from '../../contexts/ToastContext'
 
 export const OrderDetails = (props) => {
   const {
@@ -18,6 +20,8 @@ export const OrderDetails = (props) => {
   const [{ user, token, loading }] = useSession()
   const [ordering] = useApi()
   const [events] = useEvent()
+  const [, t] = useLanguage()
+  const [, { showToast }] = useToast()
 
   const [orderState, setOrderState] = useState({ order: null, loading: !props.order, error: null })
   const [messageErrors, setMessageErrors] = useState({ status: null, loading: false, error: null })
@@ -159,10 +163,15 @@ export const OrderDetails = (props) => {
   const handleUpdateOrderStatus = async (order) => {
     try {
       setActionStatus({ ...actionStatus, loading: true })
-      const requestsState = {}
-      const source = {}
-      requestsState.updateOrder = source
-      const { content } = await ordering.setAccessToken(token).orders(order.id).save({ status: order.newStatus }, { cancelToken: source })
+      const response = await fetch(`${ordering.root}/orders/${order?.id}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: order.newStatus })
+      })
+      const content = await response.json()
       setActionStatus({
         loading: false,
         error: content.error ? content.result : null
@@ -190,6 +199,40 @@ export const OrderDetails = (props) => {
     }
   }
 
+  const handleRefundOrder = async () => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setActionStatus({ ...actionStatus, loading: true })
+      const requestOption = {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          order_id: orderState.order?.id,
+          business_id: orderState.order?.business_id,
+          gateway: orderState.order?.paymethod?.gateway
+        })
+      }
+      const response = await fetch(`${ordering.root}/payments/stripe/refund`, requestOption)
+      const content = await response.json()
+      setActionStatus({
+        loading: false,
+        error: content.error ? content.result : null
+      })
+      if (!content.error) {
+        setOrderState({
+          ...orderState,
+          order: { ...orderState.order, refund_data: content.result }
+        })
+        showToast(ToastType.Success, t('ORDER_REFUNDED', 'Order refunded'))
+      }
+    } catch (err) {
+      setActionStatus({ ...actionStatus, loading: false, error: [err.message] })
+    }
+  }
+
   useEffect(() => {
     if (props.order) {
       setOrderState({
@@ -204,7 +247,7 @@ export const OrderDetails = (props) => {
   useEffect(() => {
     if (orderState.loading || loading) return
     const handleUpdateOrder = (order) => {
-      if (order.id !== orderState.order.id) return
+      if (order?.id !== orderState.order?.id) return
       delete order.total
       delete order.subtotal
       setOrderState({
@@ -256,6 +299,7 @@ export const OrderDetails = (props) => {
           setMessages={setMessages}
           messagesReadList={messagesReadList}
           readMessages={readMessages}
+          handleRefundOrder={handleRefundOrder}
         />
       )}
     </>

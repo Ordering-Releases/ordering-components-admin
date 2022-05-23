@@ -39,6 +39,18 @@ export const BusinessProductCreator = (props) => {
   }
 
   /**
+  * Update credential data
+  */
+  const handleChangeItem = (changes) => {
+    const currentChanges = { ...formState.changes, ...changes }
+
+    setFormState({
+      ...formState,
+      changes: currentChanges
+    })
+  }
+
+  /**
 * Update credential data
 * @param {Boolean} isChecked checkbox status
 */
@@ -142,6 +154,7 @@ export const BusinessProductCreator = (props) => {
           handleChangeInput={handleChangeInput}
           handleUpdateClick={handleUpdateClick}
           handleChangeCheckBox={handleChangeCheckBox}
+          handleChangeItem={handleChangeItem}
         />
       )}
     </>

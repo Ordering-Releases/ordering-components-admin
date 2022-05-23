@@ -229,17 +229,17 @@ export const InvoiceBusinessManager = (props) => {
       misc_amount: (businessInvocing.type !== 'payout' ? 1 : -1) * businessInvocing.misc_amount,
       misc_description: businessInvocing.misc_description,
       inlcude_discounts: businessInvocing.discounts,
-      tax_products: businessInvocing.type !== 'payout' ? 0 : orders.reduce(function (previous, current) {
+      tax_products: businessInvocing.type !== 'payout' ? 0 : orders?.reduce(function (previous, current) {
         if (current.tax_type === 1) return previous
         else return previous + getTax(current)
       }, 0),
-      discounts: !businessInvocing.discounts ? 0 : orders.reduce(function (previous, current) {
+      discounts: !businessInvocing.discounts ? 0 : orders?.reduce(function (previous, current) {
         return previous - getDiscount(current)
       }, 0),
-      orders_subtotal: orders.reduce(function (previous, current) {
+      orders_subtotal: orders?.reduce(function (previous, current) {
         return previous + getSubtotal(current)
       }, 0),
-      orders_total: orders.reduce(function (previous, current) {
+      orders_total: orders?.reduce(function (previous, current) {
         return previous + getTotal(current)
       }, 0),
       notes: businessInvocing.notes.replace(/\n/g, '<br>')

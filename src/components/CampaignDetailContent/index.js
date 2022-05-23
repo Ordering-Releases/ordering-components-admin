@@ -10,6 +10,7 @@ export const CampaignDetailContent = (props) => {
     UIComponent,
     campaignState,
     isAddMode,
+    formState: campaignFormState,
     handleChangeItem,
     handleChangeContactData,
     handleSuccessUpdateCampaign,
@@ -108,14 +109,46 @@ export const CampaignDetailContent = (props) => {
   }
 
   useEffect(() => {
-    setFormState({
-      ...formState,
-      changes: {
-        contact_type: campaignState?.campaign?.contact_type || '',
-        contact_data: campaignState?.campaign?.contact_data || {}
-      }
-    })
+    if (isAddMode) return
+
+    if (campaignState?.campaign && Object.keys(campaignState?.campaign).length > 0) {
+      setFormState({
+        ...formState,
+        changes: {
+          contact_type: campaignState?.campaign?.contact_type || '',
+          contact_data: campaignState?.campaign?.contact_data || {}
+        }
+      })
+    }
   }, [campaignState?.campaign])
+
+  useEffect(() => {
+    if (isAddMode) return
+
+    if (campaignState?.campaign && Object.keys(campaignState?.campaign).length > 0) {
+      setFormState({
+        ...formState,
+        changes: {
+          contact_type: campaignState?.campaign?.contact_type || '',
+          contact_data: campaignState?.campaign?.contact_data || {}
+        }
+      })
+    }
+  }, [campaignState?.campaign])
+
+  useEffect(() => {
+    if (!isAddMode) return
+
+    if (campaignFormState?.changes && Object.keys(campaignFormState?.changes).length > 0) {
+      setFormState({
+        ...formState,
+        changes: {
+          contact_type: campaignFormState?.changes?.contact_type || '',
+          contact_data: campaignFormState?.changes?.contact_data || {}
+        }
+      })
+    }
+  }, [campaignFormState?.changes])
 
   return (
     <>

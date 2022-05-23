@@ -245,6 +245,20 @@ export const ProductGallery = (props) => {
   }
 
   /**
+   * Method to change the option state
+   */
+  const handleChangeItem = (changes, id) => {
+    setChangesState({
+      ...changesState,
+      changes: {
+        ...changesState?.changes,
+        ...changes
+      },
+      ...(id && { itemId: id })
+    })
+  }
+
+  /**
    * Update credential data
    * @param {EventTarget} e Related HTML event
    */
@@ -315,6 +329,7 @@ export const ProductGallery = (props) => {
           {...props}
           productGalleryState={productGalleryState}
           changesState={changesState}
+          handleChangeItem={handleChangeItem}
           handleChangeImage={handleChangeImage}
           handleChangeInput={handleChangeInput}
           handleAddGalleryProduct={handleAddGalleryProduct}

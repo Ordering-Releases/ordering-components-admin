@@ -184,7 +184,7 @@ export const DriversGroupDetails = (props) => {
   }
 
   const handleSelectAllBusiness = (isAll) => {
-    const businessIds = businesses.reduce((ids, business) => [...ids, business.id], [])
+    const businessIds = businesses?.reduce((ids, business) => [...ids, business.id], [])
     let filteredIds = []
     if (isAll) {
       filteredIds = [...businessIds]
@@ -297,9 +297,9 @@ export const DriversGroupDetails = (props) => {
       const businessIds = curDriversGroup?.business?.reduce((ids, business) => [...ids, business.id], [])
       setSelectedBusinessIds(businessIds)
       setSelectedPaymethodIds(curDriversGroup?.allowed_paymethods || [])
-      const drivers = curDriversGroup?.drivers.reduce((ids, driver) => [...ids, driver.id], [])
+      const drivers = curDriversGroup?.drivers?.reduce((ids, driver) => [...ids, driver.id], [])
       setSelectedDriverIds(drivers)
-      const companyIds = curDriversGroup?.driver_companies.reduce((ids, company) => [...ids, company.id], [])
+      const companyIds = curDriversGroup?.driver_companies?.reduce((ids, company) => [...ids, company.id], [])
       setSelectedDriversCompanyIds(companyIds)
     } else {
       setChangesState({

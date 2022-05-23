@@ -72,9 +72,9 @@ export const BusinessFormDetails = (props) => {
       if (!response.content.error) {
         setBusinessState({
           ...businessState,
-          businesses: {
+          business: {
             ...businessState.business,
-            ...response.content
+            ...response.content.result
           }
         })
         if (handleSuccessUpdate) {
@@ -113,9 +113,9 @@ export const BusinessFormDetails = (props) => {
       if (!response.content.error) {
         setBusinessState({
           ...businessState,
-          businesses: {
+          business: {
             ...businessState.business,
-            ...response.content
+            ...response.content.result
           }
         })
 

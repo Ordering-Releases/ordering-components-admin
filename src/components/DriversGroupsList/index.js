@@ -241,7 +241,7 @@ export const DriversGroupsList = (props) => {
   }
 
   const handleAllSelectGroup = () => {
-    const allIds = driversGroupsState.groups.reduce((ids, group) => [...ids, group.id], [])
+    const allIds = driversGroupsState.groups?.reduce((ids, group) => [...ids, group.id], [])
     if (selectedGroupList.length === allIds.length) {
       setSelectedGroupList([])
     } else {

@@ -253,7 +253,7 @@ export const ProductForm = (props) => {
 
     let newBalance = Object.keys(newProductCart.options[`id:${option.id}`].suboptions).length
     if (option.limit_suboptions_by_max) {
-      newBalance = Object.values(newProductCart.options[`id:${option.id}`].suboptions).reduce((count, suboption) => {
+      newBalance = Object.values(newProductCart.options[`id:${option.id}`].suboptions)?.reduce((count, suboption) => {
         return count + suboption.quantity
       }, 0)
     }

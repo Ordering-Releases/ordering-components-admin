@@ -28,7 +28,7 @@ export const MyOrdersListUI = (props) => {
       <h1 style={{ textTransform: 'capitalize' }}>{orderType} orders</h1>
 
       {orders.length > 0 && orders.map(order => (
-        <div className='orders' key={order.id} style={{ border: '1px solid gray', padding: '20px', width: '200px' }}>
+        <div className='orders' key={order?.id} style={{ border: '1px solid gray', padding: '20px', width: '200px' }}>
           <SingleOrderCard
             UIComponent={SingleOrderCardUI}
             order={order}

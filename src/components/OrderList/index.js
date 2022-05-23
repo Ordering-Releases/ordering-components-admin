@@ -70,14 +70,14 @@ export const OrderList = (props) => {
       setActionStatus({ ...actionStatus, loading: true })
       const source = {}
       requestsState.updateOrders = source
-      const { content } = await ordering.setAccessToken(accessToken).orders(order.id).save({ status: order.newStatus }, { cancelToken: source })
+      const { content } = await ordering.setAccessToken(accessToken).orders(order?.id).save({ status: order.newStatus }, { cancelToken: source })
       setActionStatus({
         loading: false,
         error: content.error ? content.result : null
       })
       if (!content.error) {
         const orders = orderList.orders.filter(_order => {
-          return _order.id !== order.id
+          return _order?.id !== order?.id
         })
         setOrderList({ ...orderList, orders })
       }
@@ -349,7 +349,7 @@ export const OrderList = (props) => {
   useEffect(() => {
     if (orderIdForUnreadCountUpdate === null || orderList.orders.length === 0) return
     const _orders = orderList.orders.filter(order => {
-      if (order.id === orderIdForUnreadCountUpdate) {
+      if (order?.id === orderIdForUnreadCountUpdate) {
         order.unread_count = 0
         order.unread_general_count = 0
         order.unread_direct_count = 0
@@ -376,7 +376,7 @@ export const OrderList = (props) => {
   useEffect(() => {
     if (deletedOrderId === null) return
     const orders = orderList.orders.filter(_order => {
-      return _order.id !== deletedOrderId
+      return _order?.id !== deletedOrderId
     })
     setOrderList({ ...orderList, orders })
   }, [deletedOrderId])
@@ -427,12 +427,12 @@ export const OrderList = (props) => {
   useEffect(() => {
     if (orderList.loading) return
     const handleUpdateOrder = (order) => {
-      const found = orderList.orders.find(_order => _order.id === order.id)
+      const found = orderList.orders.find(_order => _order?.id === order?.id)
       let orders = []
       if (found) {
         orders = orderList.orders.filter(_order => {
           let valid = true
-          if (_order.id === order.id) {
+          if (_order?.id === order?.id) {
             delete order.total
             delete order.subtotal
             Object.assign(_order, order)
@@ -470,7 +470,7 @@ export const OrderList = (props) => {
       }
     }
     const handleRegisterOrder = (_order) => {
-      setRegisterOrderId(_order.id)
+      setRegisterOrderId(_order?.id)
       const order = { ..._order, status: 0 }
       let orders = []
       if (orderStatus.includes(0) && isFilteredOrder(_order)) {
@@ -489,10 +489,10 @@ export const OrderList = (props) => {
 
     const handleNewMessage = (message) => {
       if (orderList.orders.length === 0) return
-      const found = orderList.orders.find(order => order.id === message.order.id)
+      const found = orderList.orders.find(order => order?.id === message.order?.id)
       if (found) {
         const _orders = orderList.orders.filter(order => {
-          if (order.id === message.order.id) {
+          if (order?.id === message.order?.id) {
             if (order.last_message_at !== message.created_at) {
               if (message.type === 1) {
                 order.last_general_message_at = message.created_at

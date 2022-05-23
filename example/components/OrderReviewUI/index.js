@@ -34,7 +34,7 @@ export const OrderReviewUI = (props) => {
       {
         order && (
           <form onSubmit={handleSubmit(onSubmit)}>
-            <h3>Write a Review of Order #{order.id}</h3>
+            <h3>Write a Review of Order #{order?.id}</h3>
             {
               <div
                 style={{

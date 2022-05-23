@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
+import { useConfig } from '../../contexts/ConfigContext'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
 
@@ -18,6 +19,8 @@ export const BusinessPromotionForm = (props) => {
   const [ordering] = useApi()
   const [{ token }] = useSession()
   const [, { showToast }] = useToast()
+  const [{ configs }] = useConfig()
+  const isAdvancedOffersActivated = configs?.advanced_offers_module?.value
 
   const [promotionState, setPromotionState] = useState({ promotion: promotion, loading: false, error: null })
   const [formState, setFormState] = useState({ loading: false, changes: {}, result: { error: false } })
@@ -181,7 +184,30 @@ export const BusinessPromotionForm = (props) => {
   useEffect(() => {
     if (Object.keys(promotion).length === 0) {
       setIsAddMode(true)
-      setFormState({ ...formState, changes: { type: 2, rate_type: 2, rate: 0 } })
+      if (isAdvancedOffersActivated) {
+        setFormState({
+          ...formState,
+          changes: {
+            type: 2,
+            rate_type: 2,
+            rate: 0,
+            auto: false,
+            public: true,
+            condition_type: 1,
+            target: 1,
+            stackable: false
+          }
+        })
+      } else {
+        setFormState({
+          ...formState,
+          changes: {
+            type: 2,
+            rate_type: 2,
+            rate: 0
+          }
+        })
+      }
     } else {
       setFormState({ ...formState, changes: {} })
       setIsAddMode(false)

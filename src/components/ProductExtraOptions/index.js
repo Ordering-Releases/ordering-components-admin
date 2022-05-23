@@ -23,10 +23,10 @@ export const ProductExtraOptions = (props) => {
   const [extraState, setExtraState] = useState({ extra: extra, loading: false, error: null })
   const [changesState, setChangesState] = useState({ changes: {}, result: {} })
   const [editOptionId, setEditOptionId] = useState(null)
-  const [editErrors, setEditErrors] = useState({})
   const [addChangesState, setAddChangesState] = useState({
     conditioned: false,
     enabled: true,
+    name: '',
     min: 1,
     max: 1
   })
@@ -70,6 +70,20 @@ export const ProductExtraOptions = (props) => {
         }
       })
     }
+  }
+
+  /**
+   * Method to change the option state
+   */
+  const handleChangeItem = (changes, id) => {
+    if (id !== undefined) setEditOptionId(id)
+    setChangesState({
+      result: {},
+      changes: {
+        ...changesState.changes,
+        ...changes
+      }
+    })
   }
   /**
    * Method to change the option enabled state
@@ -231,6 +245,7 @@ export const ProductExtraOptions = (props) => {
         setAddChangesState({
           conditioned: false,
           enabled: true,
+          name: '',
           min: 1,
           max: 1
         })
@@ -323,35 +338,31 @@ export const ProductExtraOptions = (props) => {
   }
 
   useEffect(() => {
-    if (!Object.keys(changesState.changes).length) return
-    if (changesState?.changes?.name === '' || changesState?.changes?.min === '' || changesState?.changes?.max === '') {
-      setEditErrors({
-        name: changesState?.changes?.name === '',
-        min: changesState?.changes?.min === '',
-        max: changesState?.changes.max === ''
-      })
-    } else {
-      handleUpdateOption()
-    }
-  }, [changesState])
-
-  useEffect(() => {
     setChangesState({ changes: {}, result: {} })
     setExtraState({ ...extraState, extra: extra })
   }, [extra])
+
+  useEffect(() => {
+    setAddChangesState({
+      conditioned: false,
+      enabled: true,
+      name: '',
+      min: 1,
+      max: 1
+    })
+  }, [extra?.id])
 
   return (
     <>
       {UIComponent && (
         <UIComponent
           {...props}
-          editErrors={editErrors}
           changesState={changesState}
           cleanChangesState={cleanChangesState}
+          handleChangeItem={handleChangeItem}
           extraState={extraState}
           editOptionId={editOptionId}
           addChangesState={addChangesState}
-          cleanEditErrors={() => setEditErrors({})}
           handleChangeImage={handleChangeImage}
           handleChangeInput={handleChangeInput}
           handleChangeOptionEnable={handleChangeOptionEnable}
@@ -361,6 +372,7 @@ export const ProductExtraOptions = (props) => {
           handleDeteteOption={handleDeteteOption}
           handleDeleteExtra={handleDeleteExtra}
           handleSucccessDeleteOption={handleSucccessDeleteOption}
+          handleUpdateOption={handleUpdateOption}
 
           curOption={curOption}
           openModal={openModal}

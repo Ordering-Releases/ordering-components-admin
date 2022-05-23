@@ -160,7 +160,7 @@ export const ReportsDriverFilter = (props) => {
 
   useEffect(() => {
     if (driverList?.drivers?.length === 0) return
-    const _driverIds = driverList?.drivers.reduce((prev, cur) => [...prev, cur.id], [])
+    const _driverIds = driverList?.drivers?.reduce((prev, cur) => [...prev, cur.id], [])
     const filterDriverIds = filterList?.drivers_ids?.length > 0
       ? filterList?.drivers_ids.filter(driverId => _driverIds.includes(driverId))
       : _driverIds

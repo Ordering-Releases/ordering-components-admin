@@ -248,7 +248,7 @@ export const PlaceList = (props) => {
   }
 
   const handleAllCheckboxClick = () => {
-    const cities = countriesState.countries.reduce((_cities, country) => [..._cities, ...country?.cities], [])
+    const cities = countriesState.countries?.reduce((_cities, country) => [..._cities, ...country?.cities], [])
     if (cities.length === selectedCityList.length) {
       setSelectedCityList([])
     } else {

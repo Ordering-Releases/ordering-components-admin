@@ -130,7 +130,7 @@ export const DriversCompaniesList = (props) => {
   }
 
   const handleAllSelectCompany = () => {
-    const allIds = driversCompaniesState.companies.reduce((ids, company) => [...ids, company.id], [])
+    const allIds = driversCompaniesState.companies?.reduce((ids, company) => [...ids, company.id], [])
     if (selectedCompanyList.length === allIds.length) {
       setSelectedCompanyList([])
     } else {

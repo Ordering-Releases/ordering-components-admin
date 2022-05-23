@@ -84,7 +84,7 @@ export const ReportsBrandFilter = (props) => {
       if (user?.level !== 0) {
         const response = await ordering.setAccessToken(token).businesses().select(['franchise_id']).asDashboard().get()
         if (!response.content.error) {
-          franchiseIds = response.content.result.reduce((ids, business) => [...ids, business.franchise_id], []).filter(id => id)
+          franchiseIds = response.content.result?.reduce((ids, business) => [...ids, business.franchise_id], []).filter(id => id)
         }
       }
 
@@ -128,7 +128,7 @@ export const ReportsBrandFilter = (props) => {
 
   useEffect(() => {
     if (brandList?.brands?.length === 0) return
-    const _brandIds = brandList.brands.reduce((prev, cur) => [...prev, cur.id], [])
+    const _brandIds = brandList.brands?.reduce((prev, cur) => [...prev, cur.id], [])
     setBrandIds([...filterList?.franchises_id || _brandIds])
     if (!filterList?.franchises_id || filterList?.franchises_id?.length === brandList?.brands.length) setIsAllCheck(true)
   }, [brandList?.brands])

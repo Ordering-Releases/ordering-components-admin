@@ -51,7 +51,14 @@ export const ProductDetailsAdvanced = (props) => {
         handleSuccessUpdate && handleSuccessUpdate(result)
         showToast(ToastType.Success, t('CHANGES_SAVED', 'Changes saved'))
       } else {
-        setFormState({ ...formState, loading: false })
+        setFormState({
+          ...formState,
+          result: {
+            error: true,
+            result: result
+          },
+          loading: false
+        })
       }
     } catch (err) {
       setFormState({

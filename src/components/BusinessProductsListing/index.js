@@ -33,7 +33,7 @@ export const BusinessProductsListing = (props) => {
   const [formFeeState, setFormFeeState] = useState({ loading: false, changes: {}, result: { error: false } })
   const categoryStateDefault = {
     loading: true,
-    pagination: { currentPage: 0, pageSize: 20, totalItems: null, totalPages: 0, nextPageItems: 10 },
+    pagination: { currentPage: 0, pageSize: 10, totalItems: null, totalPages: 0, nextPageItems: 10 },
     products: []
   }
 
@@ -86,7 +86,7 @@ export const BusinessProductsListing = (props) => {
       (description && (description.toLowerCase().includes(searchValue.toLowerCase()) && isSearchByDescription))
   }
 
-  const getProducts = async (newFetch) => {
+  const getProducts = async (newFetch, currentPage, currentPageSize) => {
     if (!businessState?.business?.lazy_load_products_recommended) {
       const categoryState = {
         ...categoryStateDefault,
@@ -141,18 +141,14 @@ export const BusinessProductsListing = (props) => {
 
     const categoryState = categoriesState[categoryKey] || categoryStateDefault
     const pagination = categoryState.pagination
-    if (!newFetch && pagination.currentPage > 0 && pagination.currentPage === pagination.totalPages) {
-      setCategoryState({ ...categoryState, loading: false })
-      return
-    }
 
     if (!isUpdateMode) {
       setCategoryState({ ...categoryState, loading: true })
     }
 
     const parameters = {
-      page: newFetch ? 1 : pagination.currentPage + 1,
-      page_size: pagination.pageSize
+      page: currentPage || (newFetch ? 1 : pagination.currentPage + 1),
+      page_size: currentPageSize || pagination.pageSize
     }
 
     let where = null
@@ -202,6 +198,7 @@ export const BusinessProductsListing = (props) => {
         const newcategoryState = {
           pagination: {
             ...categoryState.pagination,
+            pageSize: pagination.page_size === 0 ? categoryState.pagination.pageSize : pagination.page_size,
             currentPage: pagination.current_page,
             totalItems: pagination.total,
             totalPages: pagination.total_pages
@@ -449,7 +446,7 @@ export const BusinessProductsListing = (props) => {
   }, [searchValue])
 
   useEffect(() => {
-    getProducts(!!searchValue)
+    getProducts(!!searchValue, 1)
   }, [categorySelected?.id])
 
   useEffect(() => {
@@ -518,7 +515,7 @@ export const BusinessProductsListing = (props) => {
           errorQuantityProducts={errorQuantityProducts}
           handleChangeCategory={handleChangeCategory}
           handleChangeSearch={handleChangeSearch}
-          getNextProducts={getProducts}
+          getPageProducts={getProducts}
           setCategorySelected={setCategorySelected}
           setBusinessState={setBusinessState}
           handleUpdateBusinessState={handleUpdateBusinessState}

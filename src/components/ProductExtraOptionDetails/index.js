@@ -22,14 +22,12 @@ export const ProductExtraOptionDetails = (props) => {
   const [optionState, setOptionState] = useState({ option: option, loading: false, error: null })
   const [changesState, setChangesState] = useState({ changes: {}, result: {} })
   const [editSubOptionId, setEditSubOptionId] = useState(null)
-  const [editErrors, setEditErrors] = useState({})
   const [settingChangeState, setSettingChangeState] = useState({ changes: {}, loading: false, error: null })
   const [conditionalOptions, setConditionalOptions] = useState([])
   const [conditionalSubOptions, setConditionalSubOptions] = useState([])
   const [conditionalOptionId, setConditionalOptionId] = useState(null)
   const [extraState, setExtraState] = useState(extra)
   const [conditionalSubOptionId, setConditionalSubOptionId] = useState(null)
-  const [isAddMode, setIsAddMode] = useState(false)
 
   /**
    * Method to change the option input
@@ -37,8 +35,6 @@ export const ProductExtraOptionDetails = (props) => {
    * @param {Number} id sub option id
    */
   const handleChangeInput = (e, id) => {
-    if (id === null) setIsAddMode(true)
-    else setIsAddMode(false)
     if (id === editSubOptionId) {
       setChangesState({
         result: {},
@@ -63,8 +59,6 @@ export const ProductExtraOptionDetails = (props) => {
    * @param {Number} id
    */
   const handleChangeDefaultSuboption = (id) => {
-    if (id === null) setIsAddMode(true)
-    else setIsAddMode(false)
     const suboptionPreselected = optionState?.option?.suboptions?.find(suboption => suboption.id === id)?.preselected
     const defaultSubOptionsLength = optionState?.option?.suboptions?.filter(suboption => suboption?.preselected)?.length
     if (suboptionPreselected) {
@@ -96,8 +90,6 @@ export const ProductExtraOptionDetails = (props) => {
    * @param {Number} id sub option id
    */
   const handleChangeSubOptionEnable = (enabled, id) => {
-    if (id === null) setIsAddMode(true)
-    else setIsAddMode(false)
     if (id === editSubOptionId) {
       setChangesState({
         result: {},
@@ -122,8 +114,6 @@ export const ProductExtraOptionDetails = (props) => {
    * @param {File} file Image to change business photo
    */
   const handleChangeSubOptionImage = (file, id) => {
-    if (id === null) setIsAddMode(true)
-    else setIsAddMode(false)
     const reader = new window.FileReader()
     reader.readAsDataURL(file)
     if (id === editSubOptionId) {
@@ -148,6 +138,20 @@ export const ProductExtraOptionDetails = (props) => {
       }
     }
     reader.onerror = error => console.log(error)
+  }
+
+  /**
+   * Method to change the suboption state
+   */
+  const handleChangeItem = (changes, id) => {
+    if (id !== undefined && editSubOptionId === id) setEditSubOptionId(id)
+    setChangesState({
+      result: {},
+      changes: {
+        ...changesState.changes,
+        ...changes
+      }
+    })
   }
 
   /**
@@ -468,18 +472,6 @@ export const ProductExtraOptionDetails = (props) => {
   }, [extraState, conditionalOptionId])
 
   useEffect(() => {
-    if (!Object.keys(changesState.changes).length || isAddMode) return
-    if (changesState?.changes?.name === '' || changesState?.changes?.price === '') {
-      setEditErrors({
-        name: changesState?.changes?.name === '',
-        price: changesState?.changes?.price === ''
-      })
-    } else {
-      handleUpdateSubOption()
-    }
-  }, [changesState])
-
-  useEffect(() => {
     setOptionState({ ...optionState, option: option })
     handleSetConditionalOptions(extra)
     handleSetDefaultCondition(option?.respect_to)
@@ -493,7 +485,6 @@ export const ProductExtraOptionDetails = (props) => {
           optionState={optionState}
           changesState={changesState}
           editSubOptionId={editSubOptionId}
-          editErrors={editErrors}
           settingChangeState={settingChangeState}
           handleChangeInput={handleChangeInput}
           handleChangeSubOptionImage={handleChangeSubOptionImage}
@@ -509,6 +500,8 @@ export const ProductExtraOptionDetails = (props) => {
           handleAddOption={handleAddOption}
           handleDeteteOption={handleDeteteOption}
           handleChangeDefaultSuboption={handleChangeDefaultSuboption}
+          handleUpdateSubOption={handleUpdateSubOption}
+          handleChangeItem={handleChangeItem}
         />
       )}
     </>

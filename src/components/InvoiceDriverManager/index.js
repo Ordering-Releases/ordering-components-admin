@@ -210,21 +210,21 @@ export const InvoiceDriverManager = (props) => {
       tax: driverInvocing.tax,
       misc_amount: driverInvocing.misc_amount,
       misc_description: driverInvocing.misc_description,
-      orders_subtotal: orders.reduce(function (previous, current) {
+      orders_subtotal: orders?.reduce(function (previous, current) {
         return previous + getSubtotal(current)
       }, 0),
-      orders_total: orders.reduce(function (previous, current) {
+      orders_total: orders?.reduce(function (previous, current) {
         return previous + getTotal(current)
       }, 0),
-      discounts: orders.reduce(function (previous, current) {
+      discounts: orders?.reduce(function (previous, current) {
         return previous - getDiscount(current)
       }, 0),
       percentage_delivery_price: driverInvocing.percentage_delivery_price,
-      percentage_delivery_price_total: orders.reduce(function (previous, current) {
+      percentage_delivery_price_total: orders?.reduce(function (previous, current) {
         return previous + current.delivery_zone_price
       }, 0) * driverInvocing.percentage_delivery_price / 100,
       percentage_driver_tip: driverInvocing.percentage_driver_tip,
-      percentage_driver_tip_total: orders.reduce(function (previous, current) {
+      percentage_driver_tip_total: orders?.reduce(function (previous, current) {
         return previous + getDriverTip(current)
       }, 0) * driverInvocing.percentage_driver_tip / 100,
       notes: driverInvocing.notes.replace(/\n/g, '<br>')

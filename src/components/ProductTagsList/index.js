@@ -140,13 +140,13 @@ export const ProductTagsList = (props) => {
   }
 
   const handleSelectAllTags = () => {
-    const tagIds = tagsState.tags.reduce((ids, tag) => [...ids, tag.id], [])
+    const tagIds = tagsState.tags?.reduce((ids, tag) => [...ids, tag.id], [])
     setSelectedTagIds(tagIds)
     handleUpdateProductTags(tagIds)
   }
 
   useEffect(() => {
-    const tagIds = tags.reduce((ids, tag) => [...ids, tag.id], [])
+    const tagIds = tags?.reduce((ids, tag) => [...ids, tag.id], [])
     setSelectedTagIds(tagIds)
   }, [tags])
 

@@ -161,7 +161,7 @@ export const ReportsDriverGroupFilter = (props) => {
 
   useEffect(() => {
     if (driverGroupList?.driverGroups?.length === 0) return
-    const _groupIds = driverGroupList?.driverGroups.reduce((prev, cur) => [...prev, cur.id], [])
+    const _groupIds = driverGroupList?.driverGroups?.reduce((prev, cur) => [...prev, cur.id], [])
     setDriverGroupIds([...filterList?.driver_groups_ids || _groupIds])
     if (!filterList?.driver_groups_ids || filterList?.driver_groups_ids?.length === driverGroupList?.driverGroups.length) setIsAllCheck(true)
   }, [driverGroupList?.driverGroups])

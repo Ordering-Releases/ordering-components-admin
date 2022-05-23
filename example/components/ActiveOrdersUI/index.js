@@ -25,8 +25,8 @@ export const ActiveOrdersUI = (props) => {
       }
       {
         !orderList.error && orderList.orders.map(order => (
-          <div className='order' key={order.id}>
-            <strong>Order #{order.id}</strong>
+          <div className='order' key={order?.id}>
+            <strong>Order #{order?.id}</strong>
             <br />
             {
               order.business && <>Business name: {order.business.name}<br /></>

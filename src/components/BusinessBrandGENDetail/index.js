@@ -175,6 +175,14 @@ export const BusinessBrandGENDetail = (props) => {
     reader.onerror = error => console.log(error)
   }
 
+  const handleChangeItem = (changes) => {
+    const currentChanges = { ...formState?.changes, ...changes }
+    setFormState({
+      ...formState,
+      changes: currentChanges
+    })
+  }
+
   useEffect(() => {
     setFormState({
       ...formState,
@@ -191,6 +199,7 @@ export const BusinessBrandGENDetail = (props) => {
           handleUpdateClick={handleUpdateClick}
           handleChangeInput={handleChangeInput}
           handlechangeImage={handlechangeImage}
+          handleChangeItem={handleChangeItem}
         />
       )}
     </>

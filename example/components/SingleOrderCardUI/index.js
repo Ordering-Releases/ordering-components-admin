@@ -25,7 +25,7 @@ export const SingleOrderCardUI = (props) => {
       {orderType === 'active' && <h2>VIDEO</h2>}
       <img src={order.business?.logo} width='100' height='100' /><br />
       <p>{order.name}</p>
-      <p># {order.id}</p>
+      <p># {order?.id}</p>
       <p>{order.created_at}</p>
       {orderType === 'active' && <p>$ {order.total}</p>}
       <p>{order.status}</p>
