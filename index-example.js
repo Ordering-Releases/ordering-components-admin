@@ -19,13 +19,15 @@ const configFile = {
 }
 
 Sentry.init({
-  environment: window?.location?.hostname === 'localhost' ? 'development' : process.env.NODE_ENV,
+  environment: process.env.NODE_ENV,
   dsn: "https://35896d739f80421c9da71bf33f00e5fe@o460529.ingest.sentry.io/6302996",
   integrations: [
     new Integrations.BrowserTracing()
   ],
-  release: 'ordering-components-admin@' + process.env.npm_package_version,
-  tracesSampleRate: window?.location?.hostname === 'localhost' ? 0 : 0.5
+  release: 'ordering-components-admin-release@' + process.env.npm_package_version,
+  // Release health
+  autoSessionTracking: true,
+  tracesSampleRate: 0.2
 })
 
 const wrapper = document.getElementById('app')
