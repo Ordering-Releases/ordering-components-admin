@@ -247,7 +247,7 @@ export const OrderDetails = (props) => {
   useEffect(() => {
     if (orderState.loading || loading) return
     const handleUpdateOrder = (order) => {
-      if (order?.id !== orderState.order?.id) return
+      if (order?.id !== orderState?.order?.id) return
       delete order.total
       delete order.subtotal
       setOrderState({

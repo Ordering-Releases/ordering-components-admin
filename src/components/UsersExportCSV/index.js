@@ -5,7 +5,7 @@ import { useSession } from '../../contexts/SessionContext'
 
 export const UsersExportCSV = (props) => {
   const {
-    deafultUserTypesSelected,
+    defaultUserTypesSelected,
     disabledActiveStateCondition,
     UIComponent,
     userTypesSelected,
@@ -37,8 +37,8 @@ export const UsersExportCSV = (props) => {
       }
 
       const defaultConditions = []
-      if (Array.isArray(deafultUserTypesSelected)) {
-        defaultConditions.push({ attribute: 'level', value: deafultUserTypesSelected })
+      if (Array.isArray(defaultUserTypesSelected)) {
+        defaultConditions.push({ attribute: 'level', value: defaultUserTypesSelected })
       }
 
       const filterConditons = []

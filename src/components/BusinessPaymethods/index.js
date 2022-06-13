@@ -436,6 +436,13 @@ export const BusinessPaymethods = (props) => {
     handleUpdateBusiness()
   }
 
+  const handleSuccessPaymethodUpdate = (updatedPaymethods) => {
+    setBusinessPaymethodsState({
+      ...businessPaymethodsState,
+      paymethods: updatedPaymethods
+    })
+  }
+
   useEffect(() => {
     getAllPaymethods()
     getBusinessPaymethods()
@@ -467,6 +474,7 @@ export const BusinessPaymethods = (props) => {
           setIsSuccessDeleted={setIsSuccessDeleted}
           handleSelectAllPaymethods={handleSelectAllPaymethods}
           handleSelectNonePaymethods={handleSelectNonePaymethods}
+          handleSuccessPaymethodUpdate={handleSuccessPaymethodUpdate}
         />
       )}
     </>

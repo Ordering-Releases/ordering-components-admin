@@ -144,7 +144,7 @@ export const BusinessSpreadSheet = (props) => {
                   name: row.name,
                   description: row.description ? row.description : '',
                   price: row.price ? row.price : 0,
-                  offer_price: row?.offer_price || 0,
+                  cost_price: row?.cost_price || 0,
                   category_id: id,
                   business_id: business?.id
                 }

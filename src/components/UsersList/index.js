@@ -15,7 +15,7 @@ export const UsersList = (props) => {
     isSearchByUserPhone,
     isSearchByUserName,
     isBusinessOwners,
-    deafultUserTypesSelected,
+    defaultUserTypesSelected,
     disabledActiveStateCondition,
     isDriver
   } = props
@@ -29,7 +29,7 @@ export const UsersList = (props) => {
   const [filterValues, setFilterValues] = useState({ clear: false, changes: {} })
   const [searchValue, setSearchValue] = useState(null)
   const [isVerified, setIsVerified] = useState(false)
-  const [userTypesSelected, setUserTypesSelected] = useState(deafultUserTypesSelected)
+  const [userTypesSelected, setUserTypesSelected] = useState(defaultUserTypesSelected)
   const [paginationProps, setPaginationProps] = useState({
     currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage - 1 : 0,
     pageSize: paginationSettings.pageSize ?? 10,
@@ -582,5 +582,5 @@ UsersList.defaultProps = {
     'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups'
   ],
   paginationSettings: { initialPage: 1, pageSize: 10, controlType: 'infinity' },
-  deafultUserTypesSelected: [0, 1, 2, 3]
+  defaultUserTypesSelected: [0, 1, 2, 3]
 }

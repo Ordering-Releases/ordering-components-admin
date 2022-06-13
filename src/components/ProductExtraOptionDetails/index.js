@@ -62,21 +62,15 @@ export const ProductExtraOptionDetails = (props) => {
     const suboptionPreselected = optionState?.option?.suboptions?.find(suboption => suboption.id === id)?.preselected
     const defaultSubOptionsLength = optionState?.option?.suboptions?.filter(suboption => suboption?.preselected)?.length
     if (suboptionPreselected) {
-      setEditSubOptionId(id)
-      setChangesState({
-        result: {},
-        changes: {
-          preselected: false
-        }
+      handleUpdateSubOption({
+        id: id,
+        preselected: false
       })
     } else {
       if (optionState?.option?.max > defaultSubOptionsLength) {
-        setEditSubOptionId(id)
-        setChangesState({
-          result: {},
-          changes: {
-            preselected: true
-          }
+        handleUpdateSubOption({
+          id: id,
+          preselected: true
         })
       } else {
         showToast(ToastType.Error, t('MAX_PRESELECTED_OPTIONS_ERROR', 'Maximum number of options exceeded'), 4000)
@@ -502,6 +496,7 @@ export const ProductExtraOptionDetails = (props) => {
           handleChangeDefaultSuboption={handleChangeDefaultSuboption}
           handleUpdateSubOption={handleUpdateSubOption}
           handleChangeItem={handleChangeItem}
+          handleUpdateOption={handleUpdateOption}
         />
       )}
     </>

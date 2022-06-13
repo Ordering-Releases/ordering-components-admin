@@ -29,7 +29,7 @@ export const OrderProvider = ({ Alert, children, strategy }) => {
   const socket = useWebsocket()
   const [events] = useEvent()
   const [configState] = useConfig()
-  const [session] = useSession()
+  const [session, { logout }] = useSession()
 
   const orderTypes = {
     delivery: 1,
@@ -66,7 +66,10 @@ export const OrderProvider = ({ Alert, children, strategy }) => {
           user_id: userCustomerId
         }
       }
-      const { content: { error, result } } = await ordering.setAccessToken(session.token).orderOptions().get(options)
+      const res = await ordering.setAccessToken(session.token).orderOptions().get(options)
+      const error = res?.content?.error
+      const result = res?.content?.result
+
       if (!error) {
         const { carts, ...options } = result
         state.carts = {}
@@ -80,6 +83,9 @@ export const OrderProvider = ({ Alert, children, strategy }) => {
       }
       if (error) {
         setAlert({ show: true, content: result })
+        if (res?.status === 401) {
+          session.auth && logout()
+        }
       }
       const localOptions = await strategy.getItem('options', true)
       if (localOptions) {

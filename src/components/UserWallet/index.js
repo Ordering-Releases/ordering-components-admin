@@ -5,10 +5,11 @@ import { useApi } from '../../contexts/ApiContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
 import { useLanguage } from '../../contexts/LanguageContext'
 
-export const UserCashWallet = (props) => {
+export const UserWallet = (props) => {
   const {
     UIComponent,
-    userId
+    userId,
+    walletType
   } = props
 
   const [ordering] = useApi()
@@ -16,8 +17,8 @@ export const UserCashWallet = (props) => {
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
 
-  const [cashWalletState, setCashWalletState] = useState({ loading: false, wallet: {}, error: null })
-  const [cashEventsState, setCashEventsState] = useState({ loading: false, events: [], error: null })
+  const [walletState, setWalletState] = useState({ loading: false, wallet: {}, error: null })
+  const [walletEventsState, setWalletEventsState] = useState({ loading: false, events: [], error: null })
   const [usersState, setUsersState] = useState({ loading: false, users: [], error: null })
 
   const [addWalletState, setAddWalletState] = useState({})
@@ -25,12 +26,12 @@ export const UserCashWallet = (props) => {
   const [actionState, setActionState] = useState({ loading: false, error: null })
 
   /**
-   * Method to get user cash wallet info from API
+   * Method to get user wallet info from API
    */
-  const getUserCashWallet = async () => {
+  const getUserWallet = async () => {
     try {
-      setCashWalletState({
-        ...cashWalletState,
+      setWalletState({
+        ...walletState,
         loading: true
       })
       const requestOptions = {
@@ -43,21 +44,21 @@ export const UserCashWallet = (props) => {
       const response = await fetch(`${ordering.root}/users/${userId}/wallets`, requestOptions)
       const content = await response.json()
       if (!content.error) {
-        setCashWalletState({
+        setWalletState({
           loading: false,
-          wallet: content.result.find(wallet => wallet.type === 'cash') || {},
+          wallet: content.result.find(wallet => wallet.type === walletType) || {},
           error: null
         })
       } else {
-        setCashWalletState({
-          ...cashWalletState,
+        setWalletState({
+          ...walletState,
           loading: false,
           error: content.result
         })
       }
     } catch (err) {
-      setCashWalletState({
-        ...cashWalletState,
+      setWalletState({
+        ...walletState,
         loading: false,
         error: [err.message]
       })
@@ -65,12 +66,12 @@ export const UserCashWallet = (props) => {
   }
 
   /**
-   * Method to get user cash wallet info from API
+   * Method to get user wallet events from API
    */
   const getUserWalletHistory = async (walletId) => {
     try {
-      setCashEventsState({
-        ...cashEventsState,
+      setWalletEventsState({
+        ...walletEventsState,
         loading: true
       })
       const requestOptions = {
@@ -83,21 +84,21 @@ export const UserCashWallet = (props) => {
       const response = await fetch(`${ordering.root}/users/${userId}/wallets/${walletId}/events?orderBy=-id`, requestOptions)
       const content = await response.json()
       if (!content.error) {
-        setCashEventsState({
+        setWalletEventsState({
           loading: false,
           events: content.result,
           error: null
         })
       } else {
-        setCashEventsState({
-          ...cashEventsState,
+        setWalletEventsState({
+          ...walletEventsState,
           loading: false,
           error: content.result
         })
       }
     } catch (err) {
-      setCashEventsState({
-        ...cashEventsState,
+      setWalletEventsState({
+        ...walletEventsState,
         loading: false,
         error: [err.message]
       })
@@ -148,14 +149,14 @@ export const UserCashWallet = (props) => {
         },
         body: JSON.stringify(addWalletState)
       }
-      const response = await fetch(`${ordering.root}/users/${userId}/wallets/${cashWalletState.wallet?.id}/events`, requestOptions)
+      const response = await fetch(`${ordering.root}/users/${userId}/wallets/${walletState.wallet?.id}/events`, requestOptions)
       const content = await response.json()
       if (!content.error) {
-        setCashWalletState({
-          ...cashWalletState,
+        setWalletState({
+          ...walletState,
           wallet: {
-            ...cashWalletState.wallet,
-            balance: cashWalletState.wallet?.balance + content.result.amount
+            ...walletState.wallet,
+            balance: walletState.wallet?.balance + content.result.amount
           }
         })
         setAddWalletState({})
@@ -189,14 +190,14 @@ export const UserCashWallet = (props) => {
         },
         body: JSON.stringify(params)
       }
-      const response = await fetch(`${ordering.root}/users/${userId}/wallets/${cashWalletState.wallet?.id}/events`, requestOptions)
+      const response = await fetch(`${ordering.root}/users/${userId}/wallets/${walletState.wallet?.id}/events`, requestOptions)
       const content = await response.json()
       if (!content.error) {
-        setCashWalletState({
-          ...cashWalletState,
+        setWalletState({
+          ...walletState,
           wallet: {
-            ...cashWalletState.wallet,
-            balance: cashWalletState.wallet?.balance + content.result.amount
+            ...walletState.wallet,
+            balance: walletState.wallet?.balance + content.result.amount
           }
         })
         setActionState({ loading: false, error: null })
@@ -276,12 +277,12 @@ export const UserCashWallet = (props) => {
   }
 
   useEffect(() => {
-    if (!cashWalletState.wallet?.id) return
-    getUserWalletHistory(cashWalletState.wallet.id)
-  }, [cashWalletState.wallet?.id, cashWalletState.wallet?.balance])
+    if (!walletState.wallet?.id) return
+    getUserWalletHistory(walletState.wallet.id)
+  }, [walletState.wallet?.id, walletState.wallet?.balance])
 
   useEffect(() => {
-    getUserCashWallet()
+    getUserWallet()
   }, [userId])
 
   useEffect(() => {
@@ -294,8 +295,8 @@ export const UserCashWallet = (props) => {
         UIComponent && (
           <UIComponent
             {...props}
-            cashWalletState={cashWalletState}
-            cashEventsState={cashEventsState}
+            walletState={walletState}
+            walletEventsState={walletEventsState}
             addWalletState={addWalletState}
             reduceWalletState={reduceWalletState}
             actionState={actionState}
@@ -310,7 +311,7 @@ export const UserCashWallet = (props) => {
   )
 }
 
-UserCashWallet.propTypes = {
+UserWallet.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props
    */
@@ -344,7 +345,7 @@ UserCashWallet.propTypes = {
   afterElements: PropTypes.arrayOf(PropTypes.element)
 }
 
-UserCashWallet.defaultProps = {
+UserWallet.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],

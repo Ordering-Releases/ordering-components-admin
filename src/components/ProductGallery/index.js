@@ -293,10 +293,10 @@ export const ProductGallery = (props) => {
   /**
    * Method to add new product from changes
    */
-  const handleAddGalleryProduct = () => {
+  const handleAddGalleryProduct = (_type) => {
     const params = {
       ...changesState.changes,
-      type: 1
+      type: _type
     }
     handleAddProductGalleryItem(params)
   }

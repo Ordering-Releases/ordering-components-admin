@@ -25,6 +25,8 @@ export const ProductExtras = (props) => {
   const [extrasState, setExtrasState] = useState({ extras: business?.extras, loading: false, error: null })
   const [changesState, setChangesState] = useState({})
   const [isAddMode, setIsAddMode] = useState(false)
+  const [dragoverExtaId, setdragOverExtaId] = useState(null)
+  const [isExtrasBottom, setIsExtrasBottom] = useState(false)
 
   /**
    * Method to save the new ingredient from API
@@ -204,6 +206,113 @@ export const ProductExtras = (props) => {
     }
   }
 
+  /**
+   * Method to handle extra drag start
+   */
+  const handleDragStart = (event, extra) => {
+    event.dataTransfer.setData('transferExtraId', extra.id)
+    const ghostElement = document.createElement('div')
+    ghostElement.classList.add('ghostDragging')
+    ghostElement.innerHTML = extra.name
+    document.body.appendChild(ghostElement)
+    event.dataTransfer.setDragImage(ghostElement, 0, 0)
+    setIsExtrasBottom(false)
+  }
+
+  /**
+   * Method to handle extra drag over
+   */
+  const hanldeDragOver = (event, extra, isLastExtra) => {
+    event.preventDefault()
+    const element = event.target.closest('.draggable-extra')
+    if (element) {
+      if (!isLastExtra) {
+        setdragOverExtaId(extra.id)
+      } else {
+        const middlePositionY = window.scrollY + event.target.getBoundingClientRect().top + event.target.offsetHeight / 2
+        const dragPositionY = event.clientY
+        if (dragPositionY > middlePositionY) {
+          setIsExtrasBottom(true)
+          setdragOverExtaId(null)
+        } else {
+          setIsExtrasBottom(false)
+          setdragOverExtaId(extra.id)
+        }
+      }
+    }
+  }
+
+  /**
+   * Method to handle extra drop
+   */
+  const handleDrop = (event, extra) => {
+    event.preventDefault()
+    const transferExtraId = parseInt(event.dataTransfer.getData('transferExtraId'))
+    if (extra.id === transferExtraId) return
+    let dropExtraRank
+    if (isExtrasBottom) {
+      dropExtraRank = extra?.rank + 1
+    } else {
+      dropExtraRank = extra?.rank
+    }
+    setIsExtrasBottom(false)
+    handleChangeExtraRank(transferExtraId, { rank: dropExtraRank })
+  }
+
+  /**
+   * Method to handle exrta drag end
+   */
+  const handleDragEnd = () => {
+    const elements = document.getElementsByClassName('ghostDragging')
+    while (elements.length > 0) {
+      elements[0].parentNode.removeChild(elements[0])
+    }
+    setdragOverExtaId(null)
+  }
+
+  /**
+   * Method to change the rank of extra
+   */
+  const handleChangeExtraRank = async (transferExtraId, params) => {
+    try {
+      setExtrasState({ ...extrasState, loading: true })
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      const requestOptions = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(params)
+      }
+      const response = await fetch(`${ordering.root}/business/${business.id}/extras/${transferExtraId}`, requestOptions)
+      const content = await response.json()
+      if (!content.error) {
+        const extras = extrasState.extras.filter(extra => {
+          if (extra.id === content.result.id) {
+            Object.assign(extra, content.result)
+          }
+          return true
+        })
+        setExtrasState({ ...extrasState, loading: false, extras: extras })
+
+        const productExtras = productState.product.extras.filter(extra => {
+          if (extra.id === content.result.id) {
+            Object.assign(extra, content.result)
+          }
+          return true
+        })
+        const updatedProduct = { ...product, extras: productExtras }
+        setProductState({ ...productState, product: updatedProduct })
+
+        handleSuccessUpdate && handleSuccessUpdate(updatedProduct)
+        showToast(ToastType.Success, t('EXTRA_SAVED', 'Extra saved'))
+      }
+    } catch (err) {
+      setProductState({ ...productState, loading: false, error: err.message })
+    }
+  }
+
   useEffect(() => {
     setProductState({ ...productState, product: product })
   }, [product])
@@ -227,6 +336,12 @@ export const ProductExtras = (props) => {
           handleAddExtra={handleAddExtra}
           handleChangeAddExtraInput={handleChangeAddExtraInput}
           handleProductExtraState={handleProductExtraState}
+          dragoverExtaId={dragoverExtaId}
+          isExtrasBottom={isExtrasBottom}
+          handleDragStart={handleDragStart}
+          hanldeDragOver={hanldeDragOver}
+          handleDrop={handleDrop}
+          handleDragEnd={handleDragEnd}
         />
       )}
     </>

@@ -38,7 +38,7 @@ const AutocompleteInput = (props) => {
   }
 
   useEffect(() => {
-    if (googleReady && onChangeAddress) {
+    if (googleReady && onChangeAddress && window.google?.maps?.places?.Autocomplete) {
       const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, options)
       autocomplete.addListener('place_changed', () => {
         const place = autocomplete.getPlace()
