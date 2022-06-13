@@ -465,12 +465,6 @@ Object.defineProperty(exports, "CustomerContext", {
     return _CustomerContext.CustomerContext;
   }
 });
-Object.defineProperty(exports, "CustomerPointsWallet", {
-  enumerable: true,
-  get: function get() {
-    return _CustomerPointsWallet.CustomerPointsWallet;
-  }
-});
 Object.defineProperty(exports, "CustomerProvider", {
   enumerable: true,
   get: function get() {
@@ -915,6 +909,12 @@ Object.defineProperty(exports, "PaymentOptionPaypal", {
     return _PaymentOptionPaypal.PaymentOptionPaypal;
   }
 });
+Object.defineProperty(exports, "PaymentOptionSquare", {
+  enumerable: true,
+  get: function get() {
+    return _PaymentOptionSquare.PaymentOptionSquare;
+  }
+});
 Object.defineProperty(exports, "PaymentOptionStripe", {
   enumerable: true,
   get: function get() {
@@ -1113,6 +1113,12 @@ Object.defineProperty(exports, "ProductsListing", {
     return _ProductsListing.ProductsListing;
   }
 });
+Object.defineProperty(exports, "QueryLogin", {
+  enumerable: true,
+  get: function get() {
+    return _QueryLogin.QueryLogin;
+  }
+});
 Object.defineProperty(exports, "ReCaptcha", {
   enumerable: true,
   get: function get() {
@@ -1305,12 +1311,6 @@ Object.defineProperty(exports, "UpsellingPage", {
     return _UpsellingPage.UpsellingPage;
   }
 });
-Object.defineProperty(exports, "UserCashWallet", {
-  enumerable: true,
-  get: function get() {
-    return _UserCashWallet.UserCashWallet;
-  }
-});
 Object.defineProperty(exports, "UserDetails", {
   enumerable: true,
   get: function get() {
@@ -1339,6 +1339,12 @@ Object.defineProperty(exports, "UserTypeFilter", {
   enumerable: true,
   get: function get() {
     return _UserTypeFilter.UserTypeFilter;
+  }
+});
+Object.defineProperty(exports, "UserWallet", {
+  enumerable: true,
+  get: function get() {
+    return _UserWallet.UserWallet;
   }
 });
 Object.defineProperty(exports, "UsersExportCSV", {
@@ -1608,8 +1614,6 @@ var _CityList = require("./components/CityList");
 
 var _CouponControl = require("./components/CouponControl");
 
-var _CustomerPointsWallet = require("./components/CustomerPointsWallet");
-
 var _DashboardBusinessList = require("./components/DashboardBusinessList");
 
 var _DashboardOrdersList = require("./components/DashboardOrdersList");
@@ -1730,6 +1734,8 @@ var _OrderTypeControl = require("./components/OrderTypeControl");
 
 var _PaymentOptions = require("./components/PaymentOptions");
 
+var _PaymentOptionSquare = require("./components/PaymentOptionSquare");
+
 var _PagesList = require("./components/PagesList");
 
 var _PageForm = require("./components/PageForm");
@@ -1785,6 +1791,8 @@ var _ProductOptionSuboption = require("./components/ProductOptionSuboption");
 var _ProductsList = require("./components/ProductsList");
 
 var _ProductsListing = require("./components/ProductsListing");
+
+var _QueryLogin = require("./components/QueryLogin");
 
 var _ReCaptcha = require("./components/ReCaptcha");
 
@@ -1896,8 +1904,6 @@ var _SitesList = require("./components/SitesList");
 
 var _Analitycs = require("./components/Analitycs");
 
-var _UserCashWallet = require("./components/UserCashWallet");
-
 var _UsersList = require("./components/UsersList");
 
 var _UserMetaFields = require("./components/UserMetaFields");
@@ -1905,5 +1911,7 @@ var _UserMetaFields = require("./components/UserMetaFields");
 var _UserTypeFilter = require("./components/UserTypeFilter");
 
 var _UserDetails = require("./components/UserDetails");
+
+var _UserWallet = require("./components/UserWallet");
 
 var _WebhookList = require("./components/WebhookList");

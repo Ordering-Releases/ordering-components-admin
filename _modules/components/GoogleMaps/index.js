@@ -407,7 +407,7 @@ var GoogleMaps = function GoogleMaps(props) {
 
         if (isHeatMap && !markerCluster) {
           var _heatMap = new window.google.maps.visualization.HeatmapLayer({
-            data: locations.map(function (location) {
+            data: locations === null || locations === void 0 ? void 0 : locations.map(function (location) {
               return new window.google.maps.LatLng(location.lat, location.lng);
             }),
             map: null,

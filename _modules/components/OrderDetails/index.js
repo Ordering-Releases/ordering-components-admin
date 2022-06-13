@@ -555,7 +555,7 @@ var OrderDetails = function OrderDetails(props) {
     var handleUpdateOrder = function handleUpdateOrder(order) {
       var _orderState$order4;
 
-      if ((order === null || order === void 0 ? void 0 : order.id) !== ((_orderState$order4 = orderState.order) === null || _orderState$order4 === void 0 ? void 0 : _orderState$order4.id)) return;
+      if ((order === null || order === void 0 ? void 0 : order.id) !== (orderState === null || orderState === void 0 ? void 0 : (_orderState$order4 = orderState.order) === null || _orderState$order4 === void 0 ? void 0 : _orderState$order4.id)) return;
       delete order.total;
       delete order.subtotal;
       setOrderState(_objectSpread(_objectSpread({}, orderState), {}, {

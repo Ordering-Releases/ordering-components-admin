@@ -48,7 +48,7 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var UsersExportCSV = function UsersExportCSV(props) {
-  var deafultUserTypesSelected = props.deafultUserTypesSelected,
+  var defaultUserTypesSelected = props.defaultUserTypesSelected,
       disabledActiveStateCondition = props.disabledActiveStateCondition,
       UIComponent = props.UIComponent,
       userTypesSelected = props.userTypesSelected,
@@ -110,10 +110,10 @@ var UsersExportCSV = function UsersExportCSV(props) {
               };
               defaultConditions = [];
 
-              if (Array.isArray(deafultUserTypesSelected)) {
+              if (Array.isArray(defaultUserTypesSelected)) {
                 defaultConditions.push({
                   attribute: 'level',
-                  value: deafultUserTypesSelected
+                  value: defaultUserTypesSelected
                 });
               }
 

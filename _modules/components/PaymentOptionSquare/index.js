@@ -5,15 +5,19 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.CustomerPointsWallet = void 0;
+exports.PaymentOptionSquare = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
+var _ApiContext = require("../../contexts/ApiContext");
+
 var _SessionContext = require("../../contexts/SessionContext");
 
-var _ApiContext = require("../../contexts/ApiContext");
+var _ToastContext = require("../../contexts/ToastContext");
+
+var _LanguageContext = require("../../contexts/LanguageContext");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47,9 +51,20 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-var CustomerPointsWallet = function CustomerPointsWallet(props) {
-  var UIComponent = props.UIComponent,
-      userId = props.userId;
+var PaymentOptionSquare = function PaymentOptionSquare(props) {
+  var businessPaymethod = props.businessPaymethod,
+      UIComponent = props.UIComponent,
+      business = props.business,
+      businessPaymethods = props.businessPaymethods,
+      handleSuccessPaymethodUpdate = props.handleSuccessPaymethodUpdate;
+
+  var _useToast = (0, _ToastContext.useToast)(),
+      _useToast2 = _slicedToArray(_useToast, 2),
+      showToast = _useToast2[1].showToast;
+
+  var _useLanguage = (0, _LanguageContext.useLanguage)(),
+      _useLanguage2 = _slicedToArray(_useLanguage, 2),
+      t = _useLanguage2[1];
 
   var _useApi = (0, _ApiContext.useApi)(),
       _useApi2 = _slicedToArray(_useApi, 1),
@@ -60,129 +75,288 @@ var CustomerPointsWallet = function CustomerPointsWallet(props) {
       token = _useSession2[0].token;
 
   var _useState = (0, _react.useState)({
+    url: null,
     loading: false,
-    wallets: [],
     error: null
   }),
       _useState2 = _slicedToArray(_useState, 2),
-      WalletState = _useState2[0],
-      setWalletState = _useState2[1];
+      squareUrlState = _useState2[0],
+      setSquareUrlState = _useState2[1];
+
+  var _useState3 = (0, _react.useState)({
+    sandbox: businessPaymethod === null || businessPaymethod === void 0 ? void 0 : businessPaymethod.sandbox,
+    data: businessPaymethod === null || businessPaymethod === void 0 ? void 0 : businessPaymethod.data,
+    data_sandbox: businessPaymethod === null || businessPaymethod === void 0 ? void 0 : businessPaymethod.data_sandbox
+  }),
+      _useState4 = _slicedToArray(_useState3, 2),
+      squareData = _useState4[0],
+      setSquareData = _useState4[1];
+
+  var _useState5 = (0, _react.useState)({
+    loading: false,
+    error: null
+  }),
+      _useState6 = _slicedToArray(_useState5, 2),
+      actionState = _useState6[0],
+      setActionState = _useState6[1];
   /**
-   * Method to get user cash wallet info from API
+   * Method to get connect url
    */
 
 
-  var getUserWallet = /*#__PURE__*/function () {
+  var handleGetConnectUrl = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var requestOptions, response, content;
+      var requestOptions, url, response, _yield$response$json, status, result;
+
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
-              setWalletState(_objectSpread(_objectSpread({}, WalletState), {}, {
+              setSquareUrlState(_objectSpread(_objectSpread({}, squareUrlState), {}, {
                 loading: true
               }));
               requestOptions = {
-                method: 'GET',
+                method: 'POST',
                 headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: "Bearer ".concat(token)
-                }
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  business_id: business === null || business === void 0 ? void 0 : business.id,
+                  project_name: ordering === null || ordering === void 0 ? void 0 : ordering.project
+                })
               };
-              _context.next = 5;
-              return fetch("".concat(ordering.root, "/users/").concat(userId, "/wallets"), requestOptions);
+              url = 'https://plugins-live.ordering.co/square/oauth/oauth';
+              _context.next = 6;
+              return fetch(url, requestOptions);
 
-            case 5:
+            case 6:
               response = _context.sent;
-              _context.next = 8;
+              _context.next = 9;
               return response.json();
 
-            case 8:
-              content = _context.sent;
+            case 9:
+              _yield$response$json = _context.sent;
+              status = _yield$response$json.status;
+              result = _yield$response$json.result;
 
-              if (!content.error) {
-                setWalletState({
+              if (status === 'ok') {
+                setSquareUrlState(_objectSpread(_objectSpread({}, squareUrlState), {}, {
                   loading: false,
-                  wallets: content.result,
-                  error: null
-                });
+                  url: result === null || result === void 0 ? void 0 : result.data.url
+                }));
               } else {
-                setWalletState(_objectSpread(_objectSpread({}, WalletState), {}, {
+                setSquareUrlState(_objectSpread(_objectSpread({}, squareUrlState), {}, {
                   loading: false,
-                  error: content.result
+                  error: result
                 }));
               }
 
-              _context.next = 15;
+              _context.next = 18;
               break;
 
-            case 12:
-              _context.prev = 12;
+            case 15:
+              _context.prev = 15;
               _context.t0 = _context["catch"](0);
-              setWalletState(_objectSpread(_objectSpread({}, WalletState), {}, {
+              setSquareUrlState(_objectSpread(_objectSpread({}, squareUrlState), {}, {
                 loading: false,
                 error: [_context.t0.message]
               }));
 
-            case 15:
+            case 18:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 12]]);
+      }, _callee, null, [[0, 15]]);
     }));
 
-    return function getUserWallet() {
+    return function handleGetConnectUrl() {
       return _ref.apply(this, arguments);
     };
   }();
+  /**
+   * Method to connect with Square
+   */
+
+
+  var handleConnectSquare = function handleConnectSquare() {
+    var connect = window.open(squareUrlState.url, '_blank', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,clearcache=yes');
+    var interval = setInterval(function () {
+      if (!connect.closed) {
+        connect.postMessage('data', ordering.url);
+      } else {
+        clearInterval(interval);
+      }
+    }, 200);
+    var timeout = null;
+    window.addEventListener('message', function (e) {
+      if (e.origin.indexOf('.ordering.co') === -1) {
+        return;
+      }
+
+      clearInterval(interval);
+      if (timeout) clearTimeout(timeout);
+      timeout = setTimeout(function () {
+        connect.postMessage('close', ordering.url);
+
+        if (e.data) {
+          setSquareData(e.data.paymethod_credentials);
+          connect.close();
+        }
+      }, 1000);
+    });
+  };
+  /**
+   * Method to update the business paymethod option
+   * @param {Number} paymethodId business paymethod id to delete
+   * @param {Object} options parameters to update
+   */
+
+
+  var handleSavePaymethod = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(paymethodId) {
+      var requestOptions, response, content, updatedPaymethods;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
+                loading: true
+              }));
+              requestOptions = {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                },
+                body: JSON.stringify({
+                  sandbox: squareData === null || squareData === void 0 ? void 0 : squareData.sandbox,
+                  data: JSON.stringify(squareData === null || squareData === void 0 ? void 0 : squareData.data),
+                  data_sandbox: JSON.stringify(squareData === null || squareData === void 0 ? void 0 : squareData.data_sandbox)
+                })
+              };
+              _context2.next = 6;
+              return fetch("".concat(ordering.root, "/business/").concat(business.id, "/paymethods/").concat(paymethodId), requestOptions);
+
+            case 6:
+              response = _context2.sent;
+              _context2.next = 9;
+              return response.json();
+
+            case 9:
+              content = _context2.sent;
+
+              if (!content.error) {
+                updatedPaymethods = businessPaymethods.map(function (paymethod) {
+                  if (paymethod.id === paymethodId) {
+                    Object.assign(paymethod, content.result);
+                  }
+
+                  return paymethod;
+                });
+                handleSuccessPaymethodUpdate && handleSuccessPaymethodUpdate(updatedPaymethods);
+                showToast(_ToastContext.ToastType.Success, t('PAYMETHOD_SAVED', 'Payment method saved'));
+              }
+
+              setActionState({
+                loading: false,
+                error: content.error ? content.result : null
+              });
+              _context2.next = 17;
+              break;
+
+            case 14:
+              _context2.prev = 14;
+              _context2.t0 = _context2["catch"](0);
+              setActionState({
+                error: [_context2.t0.message],
+                loading: false
+              });
+
+            case 17:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, null, [[0, 14]]);
+    }));
+
+    return function handleSavePaymethod(_x) {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+  /**
+   * Update square data
+   * @param {EventTarget} e Related HTML event
+   */
+
+
+  var handleChangeDataInput = function handleChangeDataInput(e) {
+    setSquareData(_objectSpread(_objectSpread({}, squareData), {}, {
+      data: _objectSpread(_objectSpread({}, squareData === null || squareData === void 0 ? void 0 : squareData.data), {}, _defineProperty({}, e.target.name, e.target.value))
+    }));
+  };
+  /**
+   * Update square sandbox data
+   * @param {EventTarget} e Related HTML event
+   */
+
+
+  var handleChangeSanboxDataInput = function handleChangeSanboxDataInput(e) {
+    setSquareData(_objectSpread(_objectSpread({}, squareData), {}, {
+      data_sandbox: _objectSpread(_objectSpread({}, squareData === null || squareData === void 0 ? void 0 : squareData.data_sandbox), {}, _defineProperty({}, e.target.name, e.target.value))
+    }));
+  };
 
   (0, _react.useEffect)(function () {
-    getUserWallet();
-  }, [userId]);
+    handleGetConnectUrl();
+  }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
-    WalletState: WalletState
+    squareUrlState: squareUrlState,
+    squareData: squareData,
+    actionState: actionState,
+    handleConnectSquare: handleConnectSquare,
+    handleSavePaymethod: handleSavePaymethod,
+    handleChangeDataInput: handleChangeDataInput,
+    handleChangeSanboxDataInput: handleChangeSanboxDataInput
   })));
 };
 
-exports.CustomerPointsWallet = CustomerPointsWallet;
-CustomerPointsWallet.propTypes = {
+exports.PaymentOptionSquare = PaymentOptionSquare;
+PaymentOptionSquare.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props
    */
   UIComponent: _propTypes.default.elementType,
 
   /**
-  * This must be contains userId to fetch
-  */
-  userId: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.string]),
-
-  /**
-   * Components types before order details
-   * Array of type components, the parent props will pass to these components
-   */
+    * Components types before business promotions
+    * Array of type components, the parent props will pass to these components
+    */
   beforeComponents: _propTypes.default.arrayOf(_propTypes.default.elementType),
 
   /**
-    * Components types after order details
-    * Array of type components, the parent props will pass to these components
-    */
+   * Components types after business promotions
+   * Array of type components, the parent props will pass to these components
+   */
   afterComponents: _propTypes.default.arrayOf(_propTypes.default.elementType),
 
   /**
-    * Elements before order details
-    * Array of HTML/Components elements, these components will not get the parent props
-    */
+   * Elements before business promotions
+   * Array of HTML/Components elements, these components will not get the parent props
+   */
   beforeElements: _propTypes.default.arrayOf(_propTypes.default.element),
 
   /**
-    * Elements after order details
-    * Array of HTML/Components elements, these components will not get the parent props
-    */
+   * Elements after business promotions
+   * Array of HTML/Components elements, these components will not get the parent props
+   */
   afterElements: _propTypes.default.arrayOf(_propTypes.default.element)
 };
-CustomerPointsWallet.defaultProps = {
+PaymentOptionSquare.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],

@@ -68,7 +68,7 @@ var UsersList = function UsersList(props) {
       isSearchByUserPhone = props.isSearchByUserPhone,
       isSearchByUserName = props.isSearchByUserName,
       isBusinessOwners = props.isBusinessOwners,
-      deafultUserTypesSelected = props.deafultUserTypesSelected,
+      defaultUserTypesSelected = props.defaultUserTypesSelected,
       disabledActiveStateCondition = props.disabledActiveStateCondition,
       isDriver = props.isDriver;
 
@@ -115,7 +115,7 @@ var UsersList = function UsersList(props) {
       isVerified = _useState8[0],
       setIsVerified = _useState8[1];
 
-  var _useState9 = (0, _react.useState)(deafultUserTypesSelected),
+  var _useState9 = (0, _react.useState)(defaultUserTypesSelected),
       _useState10 = _slicedToArray(_useState9, 2),
       userTypesSelected = _useState10[0],
       setUserTypesSelected = _useState10[1];
@@ -862,5 +862,5 @@ UsersList.defaultProps = {
     pageSize: 10,
     controlType: 'infinity'
   },
-  deafultUserTypesSelected: [0, 1, 2, 3]
+  defaultUserTypesSelected: [0, 1, 2, 3]
 };

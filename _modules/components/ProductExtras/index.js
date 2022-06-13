@@ -112,6 +112,16 @@ var ProductExtras = function ProductExtras(props) {
       _useState8 = _slicedToArray(_useState7, 2),
       isAddMode = _useState8[0],
       setIsAddMode = _useState8[1];
+
+  var _useState9 = (0, _react.useState)(null),
+      _useState10 = _slicedToArray(_useState9, 2),
+      dragoverExtaId = _useState10[0],
+      setdragOverExtaId = _useState10[1];
+
+  var _useState11 = (0, _react.useState)(false),
+      _useState12 = _slicedToArray(_useState11, 2),
+      isExtrasBottom = _useState12[0],
+      setIsExtrasBottom = _useState12[1];
   /**
    * Method to save the new ingredient from API
    * @param {Array} extraIds
@@ -478,6 +488,170 @@ var ProductExtras = function ProductExtras(props) {
       return _ref4.apply(this, arguments);
     };
   }();
+  /**
+   * Method to handle extra drag start
+   */
+
+
+  var handleDragStart = function handleDragStart(event, extra) {
+    event.dataTransfer.setData('transferExtraId', extra.id);
+    var ghostElement = document.createElement('div');
+    ghostElement.classList.add('ghostDragging');
+    ghostElement.innerHTML = extra.name;
+    document.body.appendChild(ghostElement);
+    event.dataTransfer.setDragImage(ghostElement, 0, 0);
+    setIsExtrasBottom(false);
+  };
+  /**
+   * Method to handle extra drag over
+   */
+
+
+  var hanldeDragOver = function hanldeDragOver(event, extra, isLastExtra) {
+    event.preventDefault();
+    var element = event.target.closest('.draggable-extra');
+
+    if (element) {
+      if (!isLastExtra) {
+        setdragOverExtaId(extra.id);
+      } else {
+        var middlePositionY = window.scrollY + event.target.getBoundingClientRect().top + event.target.offsetHeight / 2;
+        var dragPositionY = event.clientY;
+
+        if (dragPositionY > middlePositionY) {
+          setIsExtrasBottom(true);
+          setdragOverExtaId(null);
+        } else {
+          setIsExtrasBottom(false);
+          setdragOverExtaId(extra.id);
+        }
+      }
+    }
+  };
+  /**
+   * Method to handle extra drop
+   */
+
+
+  var handleDrop = function handleDrop(event, extra) {
+    event.preventDefault();
+    var transferExtraId = parseInt(event.dataTransfer.getData('transferExtraId'));
+    if (extra.id === transferExtraId) return;
+    var dropExtraRank;
+
+    if (isExtrasBottom) {
+      dropExtraRank = (extra === null || extra === void 0 ? void 0 : extra.rank) + 1;
+    } else {
+      dropExtraRank = extra === null || extra === void 0 ? void 0 : extra.rank;
+    }
+
+    setIsExtrasBottom(false);
+    handleChangeExtraRank(transferExtraId, {
+      rank: dropExtraRank
+    });
+  };
+  /**
+   * Method to handle exrta drag end
+   */
+
+
+  var handleDragEnd = function handleDragEnd() {
+    var elements = document.getElementsByClassName('ghostDragging');
+
+    while (elements.length > 0) {
+      elements[0].parentNode.removeChild(elements[0]);
+    }
+
+    setdragOverExtaId(null);
+  };
+  /**
+   * Method to change the rank of extra
+   */
+
+
+  var handleChangeExtraRank = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(transferExtraId, params) {
+      var requestOptions, response, content, extras, productExtras, updatedProduct;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.prev = 0;
+              setExtrasState(_objectSpread(_objectSpread({}, extrasState), {}, {
+                loading: true
+              }));
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              requestOptions = {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                },
+                body: JSON.stringify(params)
+              };
+              _context5.next = 6;
+              return fetch("".concat(ordering.root, "/business/").concat(business.id, "/extras/").concat(transferExtraId), requestOptions);
+
+            case 6:
+              response = _context5.sent;
+              _context5.next = 9;
+              return response.json();
+
+            case 9:
+              content = _context5.sent;
+
+              if (!content.error) {
+                extras = extrasState.extras.filter(function (extra) {
+                  if (extra.id === content.result.id) {
+                    Object.assign(extra, content.result);
+                  }
+
+                  return true;
+                });
+                setExtrasState(_objectSpread(_objectSpread({}, extrasState), {}, {
+                  loading: false,
+                  extras: extras
+                }));
+                productExtras = productState.product.extras.filter(function (extra) {
+                  if (extra.id === content.result.id) {
+                    Object.assign(extra, content.result);
+                  }
+
+                  return true;
+                });
+                updatedProduct = _objectSpread(_objectSpread({}, product), {}, {
+                  extras: productExtras
+                });
+                setProductState(_objectSpread(_objectSpread({}, productState), {}, {
+                  product: updatedProduct
+                }));
+                handleSuccessUpdate && handleSuccessUpdate(updatedProduct);
+                showToast(_ToastContext.ToastType.Success, t('EXTRA_SAVED', 'Extra saved'));
+              }
+
+              _context5.next = 16;
+              break;
+
+            case 13:
+              _context5.prev = 13;
+              _context5.t0 = _context5["catch"](0);
+              setProductState(_objectSpread(_objectSpread({}, productState), {}, {
+                loading: false,
+                error: _context5.t0.message
+              }));
+
+            case 16:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5, null, [[0, 13]]);
+    }));
+
+    return function handleChangeExtraRank(_x5, _x6) {
+      return _ref5.apply(this, arguments);
+    };
+  }();
 
   (0, _react.useEffect)(function () {
     setProductState(_objectSpread(_objectSpread({}, productState), {}, {
@@ -501,7 +675,13 @@ var ProductExtras = function ProductExtras(props) {
     },
     handleAddExtra: handleAddExtra,
     handleChangeAddExtraInput: handleChangeAddExtraInput,
-    handleProductExtraState: handleProductExtraState
+    handleProductExtraState: handleProductExtraState,
+    dragoverExtaId: dragoverExtaId,
+    isExtrasBottom: isExtrasBottom,
+    handleDragStart: handleDragStart,
+    hanldeDragOver: hanldeDragOver,
+    handleDrop: handleDrop,
+    handleDragEnd: handleDragEnd
   })));
 };
 

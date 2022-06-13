@@ -5,7 +5,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.UserCashWallet = void 0;
+exports.UserWallet = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -51,11 +51,12 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-var UserCashWallet = function UserCashWallet(props) {
-  var _cashWalletState$wall6, _cashWalletState$wall7;
+var UserWallet = function UserWallet(props) {
+  var _walletState$wallet6, _walletState$wallet7;
 
   var UIComponent = props.UIComponent,
-      userId = props.userId;
+      userId = props.userId,
+      walletType = props.walletType;
 
   var _useApi = (0, _ApiContext.useApi)(),
       _useApi2 = _slicedToArray(_useApi, 1),
@@ -79,8 +80,8 @@ var UserCashWallet = function UserCashWallet(props) {
     error: null
   }),
       _useState2 = _slicedToArray(_useState, 2),
-      cashWalletState = _useState2[0],
-      setCashWalletState = _useState2[1];
+      walletState = _useState2[0],
+      setWalletState = _useState2[1];
 
   var _useState3 = (0, _react.useState)({
     loading: false,
@@ -88,8 +89,8 @@ var UserCashWallet = function UserCashWallet(props) {
     error: null
   }),
       _useState4 = _slicedToArray(_useState3, 2),
-      cashEventsState = _useState4[0],
-      setCashEventsState = _useState4[1];
+      walletEventsState = _useState4[0],
+      setWalletEventsState = _useState4[1];
 
   var _useState5 = (0, _react.useState)({
     loading: false,
@@ -118,11 +119,11 @@ var UserCashWallet = function UserCashWallet(props) {
       actionState = _useState12[0],
       setActionState = _useState12[1];
   /**
-   * Method to get user cash wallet info from API
+   * Method to get user wallet info from API
    */
 
 
-  var getUserCashWallet = /*#__PURE__*/function () {
+  var getUserWallet = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
       var requestOptions, response, content;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
@@ -130,7 +131,7 @@ var UserCashWallet = function UserCashWallet(props) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
-              setCashWalletState(_objectSpread(_objectSpread({}, cashWalletState), {}, {
+              setWalletState(_objectSpread(_objectSpread({}, walletState), {}, {
                 loading: true
               }));
               requestOptions = {
@@ -152,15 +153,15 @@ var UserCashWallet = function UserCashWallet(props) {
               content = _context.sent;
 
               if (!content.error) {
-                setCashWalletState({
+                setWalletState({
                   loading: false,
                   wallet: content.result.find(function (wallet) {
-                    return wallet.type === 'cash';
+                    return wallet.type === walletType;
                   }) || {},
                   error: null
                 });
               } else {
-                setCashWalletState(_objectSpread(_objectSpread({}, cashWalletState), {}, {
+                setWalletState(_objectSpread(_objectSpread({}, walletState), {}, {
                   loading: false,
                   error: content.result
                 }));
@@ -172,7 +173,7 @@ var UserCashWallet = function UserCashWallet(props) {
             case 12:
               _context.prev = 12;
               _context.t0 = _context["catch"](0);
-              setCashWalletState(_objectSpread(_objectSpread({}, cashWalletState), {}, {
+              setWalletState(_objectSpread(_objectSpread({}, walletState), {}, {
                 loading: false,
                 error: [_context.t0.message]
               }));
@@ -185,12 +186,12 @@ var UserCashWallet = function UserCashWallet(props) {
       }, _callee, null, [[0, 12]]);
     }));
 
-    return function getUserCashWallet() {
+    return function getUserWallet() {
       return _ref.apply(this, arguments);
     };
   }();
   /**
-   * Method to get user cash wallet info from API
+   * Method to get user wallet events from API
    */
 
 
@@ -202,7 +203,7 @@ var UserCashWallet = function UserCashWallet(props) {
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.prev = 0;
-              setCashEventsState(_objectSpread(_objectSpread({}, cashEventsState), {}, {
+              setWalletEventsState(_objectSpread(_objectSpread({}, walletEventsState), {}, {
                 loading: true
               }));
               requestOptions = {
@@ -224,13 +225,13 @@ var UserCashWallet = function UserCashWallet(props) {
               content = _context2.sent;
 
               if (!content.error) {
-                setCashEventsState({
+                setWalletEventsState({
                   loading: false,
                   events: content.result,
                   error: null
                 });
               } else {
-                setCashEventsState(_objectSpread(_objectSpread({}, cashEventsState), {}, {
+                setWalletEventsState(_objectSpread(_objectSpread({}, walletEventsState), {}, {
                   loading: false,
                   error: content.result
                 }));
@@ -242,7 +243,7 @@ var UserCashWallet = function UserCashWallet(props) {
             case 12:
               _context2.prev = 12;
               _context2.t0 = _context2["catch"](0);
-              setCashEventsState(_objectSpread(_objectSpread({}, cashEventsState), {}, {
+              setWalletEventsState(_objectSpread(_objectSpread({}, walletEventsState), {}, {
                 loading: false,
                 error: [_context2.t0.message]
               }));
@@ -324,7 +325,7 @@ var UserCashWallet = function UserCashWallet(props) {
 
   var handleAddWalletMoney = /*#__PURE__*/function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-      var _cashWalletState$wall, requestOptions, response, content, _cashWalletState$wall2;
+      var _walletState$wallet, requestOptions, response, content, _walletState$wallet2;
 
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) {
@@ -345,7 +346,7 @@ var UserCashWallet = function UserCashWallet(props) {
                 body: JSON.stringify(addWalletState)
               };
               _context4.next = 6;
-              return fetch("".concat(ordering.root, "/users/").concat(userId, "/wallets/").concat((_cashWalletState$wall = cashWalletState.wallet) === null || _cashWalletState$wall === void 0 ? void 0 : _cashWalletState$wall.id, "/events"), requestOptions);
+              return fetch("".concat(ordering.root, "/users/").concat(userId, "/wallets/").concat((_walletState$wallet = walletState.wallet) === null || _walletState$wallet === void 0 ? void 0 : _walletState$wallet.id, "/events"), requestOptions);
 
             case 6:
               response = _context4.sent;
@@ -356,9 +357,9 @@ var UserCashWallet = function UserCashWallet(props) {
               content = _context4.sent;
 
               if (!content.error) {
-                setCashWalletState(_objectSpread(_objectSpread({}, cashWalletState), {}, {
-                  wallet: _objectSpread(_objectSpread({}, cashWalletState.wallet), {}, {
-                    balance: ((_cashWalletState$wall2 = cashWalletState.wallet) === null || _cashWalletState$wall2 === void 0 ? void 0 : _cashWalletState$wall2.balance) + content.result.amount
+                setWalletState(_objectSpread(_objectSpread({}, walletState), {}, {
+                  wallet: _objectSpread(_objectSpread({}, walletState.wallet), {}, {
+                    balance: ((_walletState$wallet2 = walletState.wallet) === null || _walletState$wallet2 === void 0 ? void 0 : _walletState$wallet2.balance) + content.result.amount
                   })
                 }));
                 setAddWalletState({});
@@ -404,7 +405,7 @@ var UserCashWallet = function UserCashWallet(props) {
 
   var handleReduceWalletMoney = /*#__PURE__*/function () {
     var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-      var _cashWalletState$wall3, params, requestOptions, response, content, _cashWalletState$wall4;
+      var _walletState$wallet3, params, requestOptions, response, content, _walletState$wallet4;
 
       return _regeneratorRuntime().wrap(function _callee5$(_context5) {
         while (1) {
@@ -427,7 +428,7 @@ var UserCashWallet = function UserCashWallet(props) {
                 body: JSON.stringify(params)
               };
               _context5.next = 8;
-              return fetch("".concat(ordering.root, "/users/").concat(userId, "/wallets/").concat((_cashWalletState$wall3 = cashWalletState.wallet) === null || _cashWalletState$wall3 === void 0 ? void 0 : _cashWalletState$wall3.id, "/events"), requestOptions);
+              return fetch("".concat(ordering.root, "/users/").concat(userId, "/wallets/").concat((_walletState$wallet3 = walletState.wallet) === null || _walletState$wallet3 === void 0 ? void 0 : _walletState$wallet3.id, "/events"), requestOptions);
 
             case 8:
               response = _context5.sent;
@@ -438,9 +439,9 @@ var UserCashWallet = function UserCashWallet(props) {
               content = _context5.sent;
 
               if (!content.error) {
-                setCashWalletState(_objectSpread(_objectSpread({}, cashWalletState), {}, {
-                  wallet: _objectSpread(_objectSpread({}, cashWalletState.wallet), {}, {
-                    balance: ((_cashWalletState$wall4 = cashWalletState.wallet) === null || _cashWalletState$wall4 === void 0 ? void 0 : _cashWalletState$wall4.balance) + content.result.amount
+                setWalletState(_objectSpread(_objectSpread({}, walletState), {}, {
+                  wallet: _objectSpread(_objectSpread({}, walletState.wallet), {}, {
+                    balance: ((_walletState$wallet4 = walletState.wallet) === null || _walletState$wallet4 === void 0 ? void 0 : _walletState$wallet4.balance) + content.result.amount
                   })
                 }));
                 setActionState({
@@ -548,20 +549,20 @@ var UserCashWallet = function UserCashWallet(props) {
   };
 
   (0, _react.useEffect)(function () {
-    var _cashWalletState$wall5;
+    var _walletState$wallet5;
 
-    if (!((_cashWalletState$wall5 = cashWalletState.wallet) !== null && _cashWalletState$wall5 !== void 0 && _cashWalletState$wall5.id)) return;
-    getUserWalletHistory(cashWalletState.wallet.id);
-  }, [(_cashWalletState$wall6 = cashWalletState.wallet) === null || _cashWalletState$wall6 === void 0 ? void 0 : _cashWalletState$wall6.id, (_cashWalletState$wall7 = cashWalletState.wallet) === null || _cashWalletState$wall7 === void 0 ? void 0 : _cashWalletState$wall7.balance]);
+    if (!((_walletState$wallet5 = walletState.wallet) !== null && _walletState$wallet5 !== void 0 && _walletState$wallet5.id)) return;
+    getUserWalletHistory(walletState.wallet.id);
+  }, [(_walletState$wallet6 = walletState.wallet) === null || _walletState$wallet6 === void 0 ? void 0 : _walletState$wallet6.id, (_walletState$wallet7 = walletState.wallet) === null || _walletState$wallet7 === void 0 ? void 0 : _walletState$wallet7.balance]);
   (0, _react.useEffect)(function () {
-    getUserCashWallet();
+    getUserWallet();
   }, [userId]);
   (0, _react.useEffect)(function () {
     getUsers();
   }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
-    cashWalletState: cashWalletState,
-    cashEventsState: cashEventsState,
+    walletState: walletState,
+    walletEventsState: walletEventsState,
     addWalletState: addWalletState,
     reduceWalletState: reduceWalletState,
     actionState: actionState,
@@ -572,8 +573,8 @@ var UserCashWallet = function UserCashWallet(props) {
   })));
 };
 
-exports.UserCashWallet = UserCashWallet;
-UserCashWallet.propTypes = {
+exports.UserWallet = UserWallet;
+UserWallet.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props
    */
@@ -608,7 +609,7 @@ UserCashWallet.propTypes = {
     */
   afterElements: _propTypes.default.arrayOf(_propTypes.default.element)
 };
-UserCashWallet.defaultProps = {
+UserWallet.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
