@@ -55,7 +55,7 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-var categoryHideList = ['cloudinary', 'tookan', 'apple_login', 'order_messages', 'others', 'location'];
+var categoryHideList = ['cloudinary', 'tookan', 'apple_login', 'order_messages', 'others', 'location', 'professional_signup'];
 var configHideList = ['search_by_address', 'distance_unit_km', 'pickup', 'orders_metafields_strategy', 'order_validate', 'time_format', 'driver_close_distance', 'lazy_load_products_when_necessary'];
 /**
  * Component to manage Settings page behavior without UI component
