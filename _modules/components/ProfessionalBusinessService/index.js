@@ -5,7 +5,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.PointsWalletBusinessList = void 0;
+exports.ProfessionalBusinessService = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -15,23 +15,11 @@ var _ApiContext = require("../../contexts/ApiContext");
 
 var _SessionContext = require("../../contexts/SessionContext");
 
-var _ToastContext = require("../../contexts/ToastContext");
-
-var _LanguageContext = require("../../contexts/LanguageContext");
-
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator.return && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, catch: function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
 
@@ -45,6 +33,14 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -57,14 +53,14 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-var PointsWalletBusinessList = function PointsWalletBusinessList(props) {
+/**
+ * Component to manage ProfessionalBusinessService behavior without UI component
+ */
+var ProfessionalBusinessService = function ProfessionalBusinessService(props) {
   var UIComponent = props.UIComponent,
-      pointWallet = props.pointWallet,
       propsToFetch = props.propsToFetch,
-      handleUpdateWalletBusiness = props.handleUpdateWalletBusiness,
-      handleAddWalletBusiness = props.handleAddWalletBusiness,
-      handleDeleteWalletBusiness = props.handleDeleteWalletBusiness,
-      setSelectedBusinessList = props.setSelectedBusinessList;
+      isSearchByName = props.isSearchByName,
+      user = props.user;
 
   var _useApi = (0, _ApiContext.useApi)(),
       _useApi2 = _slicedToArray(_useApi, 1),
@@ -74,432 +70,139 @@ var PointsWalletBusinessList = function PointsWalletBusinessList(props) {
       _useSession2 = _slicedToArray(_useSession, 1),
       token = _useSession2[0].token;
 
-  var _useToast = (0, _ToastContext.useToast)(),
-      _useToast2 = _slicedToArray(_useToast, 2),
-      showToast = _useToast2[1].showToast;
-
-  var _useLanguage = (0, _LanguageContext.useLanguage)(),
-      _useLanguage2 = _slicedToArray(_useLanguage, 2),
-      t = _useLanguage2[1];
-
-  var _useState = (0, _react.useState)({
-    loading: true,
-    error: null,
-    businesses: [],
-    pagination: null
-  }),
+  var _useState = (0, _react.useState)(null),
       _useState2 = _slicedToArray(_useState, 2),
-      businessList = _useState2[0],
-      setBusinessList = _useState2[1];
+      searchValue = _useState2[0],
+      setSearchValue = _useState2[1];
 
   var _useState3 = (0, _react.useState)({
     loading: false,
-    error: null
+    businesses: [],
+    result: {
+      error: null
+    }
   }),
       _useState4 = _slicedToArray(_useState3, 2),
-      actionState = _useState4[0],
-      setActionState = _useState4[1];
+      businessList = _useState4[0],
+      setBusinessList = _useState4[1];
+
+  var _useState5 = (0, _react.useState)({
+    loading: false,
+    services: [],
+    result: {
+      error: null
+    }
+  }),
+      _useState6 = _slicedToArray(_useState5, 2),
+      userServiceList = _useState6[0],
+      setUserServiceList = _useState6[1];
+
+  var _useState7 = (0, _react.useState)(),
+      _useState8 = _slicedToArray(_useState7, 2),
+      businessIds = _useState8[0],
+      setBusinessIds = _useState8[1];
+
+  var rex = new RegExp(/^[A-Za-z0-9\s]+$/g);
   /**
-   * Update business data
-   * @param {Number} businessId id of business
-   * @param {String} name name of business
-   * @param {Boolean} name status of checkbox
+   * Change businessIds for checkbox
+   * @param {number} businessId business id
    */
 
+  var handleChangeCheckBox = function handleChangeCheckBox(businessId) {
+    var _businessIds = [];
 
-  var handleCheckBox = function handleCheckBox(businessId, name, checked) {
-    var changes = _defineProperty({}, name, checked);
-
-    if (!pointWallet) {
-      handleUpdateBusinessList(businessId, changes);
+    if (businessIds !== null && businessIds !== void 0 && businessIds.includes(businessId)) {
+      _businessIds = businessIds.filter(function (id) {
+        return id !== businessId;
+      });
     } else {
-      updateLoyalty(businessId, changes);
+      _businessIds = businessIds ? [].concat(_toConsumableArray(businessIds), [businessId]) : [businessId];
     }
+
+    setBusinessIds(_businessIds);
   };
   /**
-   * Update business data
-   * @param {Number} businessId id of business
-   * @param {String} name name of business
-   * @param {Boolean} name status of checkbox
+   * Update businessIds
+   * @param {Array} ids arrary of business id
    */
 
 
-  var handleChangeSwitch = function handleChangeSwitch(businessId, checked) {
-    if (!pointWallet) {
-      var updatedBusinesses = businessList === null || businessList === void 0 ? void 0 : businessList.businesses.map(function (business) {
-        if (businessId === business.id) {
-          return _objectSpread(_objectSpread({}, business), {}, {
-            wallet_enabled: checked
-          });
-        }
-
-        return business;
-      });
-      setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
-        businesses: updatedBusinesses
-      }));
-      return;
-    }
-
-    if (checked) {
-      var _businessList$busines;
-
-      var selectedBusiness = businessList === null || businessList === void 0 ? void 0 : (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.find(function (business) {
-        return business.id === businessId;
-      });
-
-      if (selectedBusiness) {
-        var data = {
-          business_id: businessId,
-          redeems: selectedBusiness === null || selectedBusiness === void 0 ? void 0 : selectedBusiness.redeems,
-          accumulates: selectedBusiness === null || selectedBusiness === void 0 ? void 0 : selectedBusiness.accumulates,
-          loyalty_plan_id: pointWallet === null || pointWallet === void 0 ? void 0 : pointWallet.id
-        };
-        addLoyaltyBusiness(data);
-      }
-    } else {
-      deleteLoyaltyBusiness(businessId);
-    }
+  var handleUpdateBusinessIds = function handleUpdateBusinessIds(ids) {
+    setBusinessIds(ids);
   };
   /**
-   * Method to update the business list
+   * Update services
+   * @param {Array} services arrary of service
    */
 
 
-  var handleUpdateBusinessList = function handleUpdateBusinessList(id, changes) {
-    var businesses = businessList.businesses.map(function (business) {
-      if (business.id === id) {
-        return _objectSpread(_objectSpread({}, business), changes);
-      }
-
-      return business;
-    });
-    setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
-      businesses: businesses
+  var handleUpdateServices = function handleUpdateServices(services) {
+    setUserServiceList(_objectSpread(_objectSpread({}, userServiceList), {}, {
+      services: services
     }));
   };
   /**
-   * Method to update business status
+   * Method to get business list from API
    */
 
 
-  var handleUpdateBusinessState = function handleUpdateBusinessState(result, enabled) {
-    var businesses = businessList.businesses.map(function (business) {
-      if (business.id === result.business_id) {
-        return _objectSpread(_objectSpread(_objectSpread(_objectSpread(_objectSpread(_objectSpread(_objectSpread(_objectSpread(_objectSpread({}, business), {}, {
-          wallet_enabled: enabled
-        }, !enabled && {
-          redeems: false
-        }), !enabled && {
-          accumulates: false
-        }), !enabled && {
-          redemption_rate: null
-        }), !enabled && {
-          accumulation_rate: null
-        }), !enabled && {
-          expire_after_minutes: null
-        }), !enabled && {
-          maximum_accumulation: null
-        }), !enabled && {
-          maximum_redemption_rate: null
-        }), !enabled && {
-          maximum_redemption_type: null
-        });
-      }
-
-      return business;
-    });
-    setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
-      businesses: businesses
-    }));
-  };
-  /**
-   * Method to update the loyalty data
-   */
-
-
-  var updateLoyalty = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(businessId, changes) {
-      var requestOptions, response, _yield$response$json, error, result;
+  var getBusinessList = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+      var where, conditions, searchConditions, isSpecialCharacter, fetchEndpoint, _yield$fetchEndpoint$, _yield$fetchEndpoint$2, error, result, pagination;
 
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
-              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-              setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
-                loading: true
-              }));
-              requestOptions = {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: "Bearer ".concat(token)
-                },
-                body: JSON.stringify(changes)
-              };
-              _context.next = 6;
-              return fetch("".concat(ordering.root, "/loyalty_plans/").concat(pointWallet === null || pointWallet === void 0 ? void 0 : pointWallet.id, "/businesses/").concat(businessId), requestOptions);
-
-            case 6:
-              response = _context.sent;
-              _context.next = 9;
-              return response.json();
-
-            case 9:
-              _yield$response$json = _context.sent;
-              error = _yield$response$json.error;
-              result = _yield$response$json.result;
-
-              if (!error) {
-                showToast(_ToastContext.ToastType.Success, t('WALLET_BUSINESS_UPDATED', 'Wallet business updated'));
-                setActionState({
-                  loading: false,
-                  error: null
-                });
-                handleUpdateWalletBusiness && handleUpdateWalletBusiness(result);
-                handleUpdateBusinessList(businessId, changes);
-              } else {
-                setActionState({
-                  loading: false,
-                  error: result
-                });
-              }
-
-              _context.next = 18;
-              break;
-
-            case 15:
-              _context.prev = 15;
-              _context.t0 = _context["catch"](0);
-              setActionState({
-                loading: false,
-                error: _context.t0.message
-              });
-
-            case 18:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee, null, [[0, 15]]);
-    }));
-
-    return function updateLoyalty(_x, _x2) {
-      return _ref.apply(this, arguments);
-    };
-  }();
-  /**
-   * Method to add the loyalty business data
-   */
-
-
-  var addLoyaltyBusiness = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(data) {
-      var requestOptions, response, _yield$response$json2, error, result;
-
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.prev = 0;
-              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-              setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
-                loading: true
-              }));
-              requestOptions = {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: "Bearer ".concat(token)
-                },
-                body: JSON.stringify(data)
-              };
-              _context2.next = 6;
-              return fetch("".concat(ordering.root, "/loyalty_plans/").concat(pointWallet === null || pointWallet === void 0 ? void 0 : pointWallet.id, "/businesses"), requestOptions);
-
-            case 6:
-              response = _context2.sent;
-              _context2.next = 9;
-              return response.json();
-
-            case 9:
-              _yield$response$json2 = _context2.sent;
-              error = _yield$response$json2.error;
-              result = _yield$response$json2.result;
-
-              if (!error) {
-                showToast(_ToastContext.ToastType.Success, t('WALLET_BUSINESS_ENABLED', 'Wallet business enabled'));
-                setActionState({
-                  loading: false,
-                  error: null
-                });
-                handleAddWalletBusiness && handleAddWalletBusiness(result);
-                handleUpdateBusinessState(result, true);
-              } else {
-                setActionState({
-                  loading: false,
-                  error: result
-                });
-              }
-
-              _context2.next = 18;
-              break;
-
-            case 15:
-              _context2.prev = 15;
-              _context2.t0 = _context2["catch"](0);
-              setActionState({
-                loading: false,
-                error: _context2.t0.message
-              });
-
-            case 18:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2, null, [[0, 15]]);
-    }));
-
-    return function addLoyaltyBusiness(_x3) {
-      return _ref2.apply(this, arguments);
-    };
-  }();
-  /**
-   * Method to delete the loyalty business data
-   */
-
-
-  var deleteLoyaltyBusiness = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(businessId) {
-      var requestOptions, response, _yield$response$json3, error, result;
-
-      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              _context3.prev = 0;
-              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-              setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
-                loading: true
-              }));
-              requestOptions = {
-                method: 'DELETE',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: "Bearer ".concat(token)
-                }
-              };
-              _context3.next = 6;
-              return fetch("".concat(ordering.root, "/loyalty_plans/").concat(pointWallet === null || pointWallet === void 0 ? void 0 : pointWallet.id, "/businesses/").concat(businessId), requestOptions);
-
-            case 6:
-              response = _context3.sent;
-              _context3.next = 9;
-              return response.json();
-
-            case 9:
-              _yield$response$json3 = _context3.sent;
-              error = _yield$response$json3.error;
-              result = _yield$response$json3.result;
-
-              if (!error) {
-                showToast(_ToastContext.ToastType.Success, t('WALLET_BUSINESS_DISABLED', 'Wallet business disabled'));
-                setActionState({
-                  loading: false,
-                  error: null
-                });
-                handleDeleteWalletBusiness && handleDeleteWalletBusiness(result);
-                handleUpdateBusinessState(result, false);
-              } else {
-                setActionState({
-                  loading: false,
-                  error: result
-                });
-              }
-
-              _context3.next = 18;
-              break;
-
-            case 15:
-              _context3.prev = 15;
-              _context3.t0 = _context3["catch"](0);
-              setActionState({
-                loading: false,
-                error: _context3.t0.message
-              });
-
-            case 18:
-            case "end":
-              return _context3.stop();
-          }
-        }
-      }, _callee3, null, [[0, 15]]);
-    }));
-
-    return function deleteLoyaltyBusiness(_x4) {
-      return _ref3.apply(this, arguments);
-    };
-  }();
-  /**
-   * Method to get business types from API
-   */
-
-
-  var getBusinessTypes = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-      var fetchEndpoint, _yield$fetchEndpoint$, _yield$fetchEndpoint$2, error, result, pagination, _businessList;
-
-      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              _context4.prev = 0;
               setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
                 loading: true
               }));
-              fetchEndpoint = ordering.businesses().asDashboard().select(propsToFetch);
-              _context4.next = 5;
+              where = null;
+              conditions = [];
+
+              if (searchValue) {
+                searchConditions = [];
+                isSpecialCharacter = rex.test(searchValue);
+
+                if (isSearchByName) {
+                  searchConditions.push({
+                    attribute: 'name',
+                    value: {
+                      condition: 'ilike',
+                      value: !isSpecialCharacter ? "%".concat(searchValue, "%") : encodeURI("%".concat(searchValue, "%"))
+                    }
+                  });
+                }
+
+                conditions.push({
+                  conector: 'OR',
+                  conditions: searchConditions
+                });
+              }
+
+              if (conditions.length) {
+                where = {
+                  conditions: conditions,
+                  conector: 'AND'
+                };
+              }
+
+              fetchEndpoint = where ? ordering.businesses().asDashboard().select(propsToFetch).where(where) : ordering.businesses().asDashboard().select(propsToFetch);
+              _context.next = 9;
               return fetchEndpoint.get();
 
-            case 5:
-              _yield$fetchEndpoint$ = _context4.sent;
+            case 9:
+              _yield$fetchEndpoint$ = _context.sent;
               _yield$fetchEndpoint$2 = _yield$fetchEndpoint$.content;
               error = _yield$fetchEndpoint$2.error;
               result = _yield$fetchEndpoint$2.result;
               pagination = _yield$fetchEndpoint$2.pagination;
 
               if (!error) {
-                _businessList = [];
-                _businessList = result.map(function (business) {
-                  var walletBusiness = pointWallet === null || pointWallet === void 0 ? void 0 : pointWallet.businesses.find(function (item) {
-                    return item.business_id === business.id;
-                  });
-
-                  if (walletBusiness) {
-                    return _objectSpread(_objectSpread(_objectSpread({}, walletBusiness), business), {}, {
-                      wallet_enabled: true
-                    });
-                  }
-
-                  return _objectSpread(_objectSpread({}, business), {}, {
-                    redeems: false,
-                    accumulates: false,
-                    wallet_enabled: false,
-                    loyalty_plan_id: pointWallet === null || pointWallet === void 0 ? void 0 : pointWallet.id,
-                    redemption_rate: null,
-                    accumulation_rate: null,
-                    expire_after_minutes: null,
-                    maximum_accumulation: null,
-                    maximum_redemption_rate: null,
-                    maximum_redemption_type: null
-                  });
-                });
                 setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
                   loading: false,
-                  businesses: _businessList,
+                  businesses: result,
                   pagination: pagination
                 }));
               } else {
@@ -509,57 +212,143 @@ var PointsWalletBusinessList = function PointsWalletBusinessList(props) {
                 }));
               }
 
-              _context4.next = 16;
+              _context.next = 20;
               break;
 
-            case 13:
-              _context4.prev = 13;
-              _context4.t0 = _context4["catch"](0);
+            case 17:
+              _context.prev = 17;
+              _context.t0 = _context["catch"](0);
               setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
                 loading: false,
-                error: [_context4.t0 || (_context4.t0 === null || _context4.t0 === void 0 ? void 0 : _context4.t0.toString()) || (_context4.t0 === null || _context4.t0 === void 0 ? void 0 : _context4.t0.message)]
+                error: [_context.t0 || (_context.t0 === null || _context.t0 === void 0 ? void 0 : _context.t0.toString()) || (_context.t0 === null || _context.t0 === void 0 ? void 0 : _context.t0.message)]
               }));
 
-            case 16:
+            case 20:
             case "end":
-              return _context4.stop();
+              return _context.stop();
           }
         }
-      }, _callee4, null, [[0, 13]]);
+      }, _callee, null, [[0, 17]]);
     }));
 
-    return function getBusinessTypes() {
-      return _ref4.apply(this, arguments);
+    return function getBusinessList() {
+      return _ref.apply(this, arguments);
+    };
+  }(); // Method to get service list from API
+
+
+  var getUserProducts = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+      var requestOptions, functionFetch, response, _yield$response$json, error, result, pagination;
+
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+              setUserServiceList(_objectSpread(_objectSpread({}, userServiceList), {}, {
+                loading: true
+              }));
+              requestOptions = {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                }
+              };
+              functionFetch = "".concat(ordering.root, "/users/").concat(user === null || user === void 0 ? void 0 : user.id, "/products");
+              _context2.next = 6;
+              return fetch(functionFetch, requestOptions);
+
+            case 6:
+              response = _context2.sent;
+              _context2.next = 9;
+              return response.json();
+
+            case 9:
+              _yield$response$json = _context2.sent;
+              error = _yield$response$json.error;
+              result = _yield$response$json.result;
+              pagination = _yield$response$json.pagination;
+
+              if (!error) {
+                setUserServiceList(_objectSpread(_objectSpread({}, userServiceList), {}, {
+                  loading: false,
+                  services: result,
+                  pagination: pagination
+                }));
+              } else {
+                setUserServiceList(_objectSpread(_objectSpread({}, userServiceList), {}, {
+                  loading: false,
+                  error: result
+                }));
+              }
+
+              _context2.next = 19;
+              break;
+
+            case 16:
+              _context2.prev = 16;
+              _context2.t0 = _context2["catch"](0);
+              setUserServiceList(_objectSpread(_objectSpread({}, userServiceList), {}, {
+                loading: false,
+                error: [_context2.t0 || (_context2.t0 === null || _context2.t0 === void 0 ? void 0 : _context2.t0.toString()) || (_context2.t0 === null || _context2.t0 === void 0 ? void 0 : _context2.t0.message)]
+              }));
+
+            case 19:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, null, [[0, 16]]);
+    }));
+
+    return function getUserProducts() {
+      return _ref2.apply(this, arguments);
     };
   }();
 
   (0, _react.useEffect)(function () {
-    var controller = new AbortController();
-    getBusinessTypes();
-    return controller.abort();
-  }, []);
+    getUserProducts();
+  }, [user === null || user === void 0 ? void 0 : user.id]);
   (0, _react.useEffect)(function () {
-    setSelectedBusinessList(_toConsumableArray(businessList === null || businessList === void 0 ? void 0 : businessList.businesses));
-  }, [businessList === null || businessList === void 0 ? void 0 : businessList.businesses]);
+    getBusinessList();
+  }, [searchValue]);
+  (0, _react.useEffect)(function () {
+    var _businessList$busines, _userServiceList$serv;
+
+    if (businessIds !== undefined) return;
+
+    if ((businessList === null || businessList === void 0 ? void 0 : (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.length) > 0 && (userServiceList === null || userServiceList === void 0 ? void 0 : (_userServiceList$serv = userServiceList.services) === null || _userServiceList$serv === void 0 ? void 0 : _userServiceList$serv.length) > 0) {
+      var _businessIds = [];
+      businessList.businesses.forEach(function (business) {
+        if (userServiceList !== null && userServiceList !== void 0 && userServiceList.services.reduce(function (prev, current) {
+          return [].concat(_toConsumableArray(prev), [current.business_id]);
+        }, []).includes(business.id)) {
+          _businessIds.push(business.id);
+        }
+      });
+      setBusinessIds(_businessIds);
+    }
+  }, [businessList === null || businessList === void 0 ? void 0 : businessList.businesses, userServiceList === null || userServiceList === void 0 ? void 0 : userServiceList.services, businessIds]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
+    searchValue: searchValue,
+    businessIds: businessIds,
+    onSearch: setSearchValue,
     businessList: businessList,
-    handleCheckBox: handleCheckBox,
-    handleUpdateBusinessList: handleUpdateBusinessList,
-    handleChangeSwitch: handleChangeSwitch
+    userServiceList: userServiceList,
+    handleChangeCheckBox: handleChangeCheckBox,
+    handleUpdateBusinessIds: handleUpdateBusinessIds,
+    handleUpdateServices: handleUpdateServices
   })));
 };
 
-exports.PointsWalletBusinessList = PointsWalletBusinessList;
-PointsWalletBusinessList.propTypes = {
+exports.ProfessionalBusinessService = ProfessionalBusinessService;
+ProfessionalBusinessService.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props
    */
   UIComponent: _propTypes.default.elementType,
-
-  /**
-   * pointWallet, this must be contains an object
-   */
-  pointWallet: _propTypes.default.object,
 
   /**
    * Array of business props to fetch
@@ -590,7 +379,7 @@ PointsWalletBusinessList.propTypes = {
    */
   afterElements: _propTypes.default.arrayOf(_propTypes.default.element)
 };
-PointsWalletBusinessList.defaultProps = {
+ProfessionalBusinessService.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],

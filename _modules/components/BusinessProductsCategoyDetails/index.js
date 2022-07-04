@@ -164,6 +164,25 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
     }));
   };
   /**
+   * Update ribbon data
+   * @param {Object} changes Related HTML event
+   */
+
+
+  var handleChangeRibbon = function handleChangeRibbon(changes) {
+    var _formState$changes, _formState$changes2;
+
+    var ribbonChanges = formState !== null && formState !== void 0 && (_formState$changes = formState.changes) !== null && _formState$changes !== void 0 && _formState$changes.ribbon ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.ribbon), changes) : _objectSpread({}, changes);
+
+    var currentChanges = _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), {}, {
+      ribbon: ribbonChanges
+    });
+
+    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+      changes: currentChanges
+    }));
+  };
+  /**
   * Update business photo data
   * @param {File} file Image to change business photo
   */
@@ -183,35 +202,97 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
       return console.log(error);
     };
   };
+
+  var businessUpdate = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(content) {
+      var _categories, _business;
+
+      return _regeneratorRuntime().wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _categories = _toConsumableArray(businessState.business.categories);
+
+              _categories.forEach(function iterate(category, index, object) {
+                var _content$result2, _content$result3;
+
+                if ((category === null || category === void 0 ? void 0 : category.id) === (content === null || content === void 0 ? void 0 : content.result.parent_category_id)) {
+                  if (Array.isArray(category === null || category === void 0 ? void 0 : category.subcategories)) {
+                    var found = category.subcategories.find(function (subCategory) {
+                      var _content$result;
+
+                      return (subCategory === null || subCategory === void 0 ? void 0 : subCategory.id) === (content === null || content === void 0 ? void 0 : (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.id);
+                    });
+
+                    if (!found) {
+                      category.subcategories.push(content === null || content === void 0 ? void 0 : content.result);
+                    }
+                  }
+                }
+
+                var categoryKeyOptions = ['name', 'enabled', 'header', 'description', 'ribbon', 'image', 'slug', 'seo_image', 'seo_title', 'seo_description'];
+
+                if ((category === null || category === void 0 ? void 0 : category.id) === (content === null || content === void 0 ? void 0 : (_content$result2 = content.result) === null || _content$result2 === void 0 ? void 0 : _content$result2.id) && category.parent_category_id === (content === null || content === void 0 ? void 0 : content.result.parent_category_id)) {
+                  Object.keys(category).forEach(function (key) {
+                    if (categoryKeyOptions.includes(key) && content.result[key] !== undefined) {
+                      category[key] = content === null || content === void 0 ? void 0 : content.result[key];
+                    }
+                  });
+                }
+
+                if ((category === null || category === void 0 ? void 0 : category.id) === (content === null || content === void 0 ? void 0 : (_content$result3 = content.result) === null || _content$result3 === void 0 ? void 0 : _content$result3.id) && category.parent_category_id !== (content === null || content === void 0 ? void 0 : content.result.parent_category_id)) {
+                  object.splice(index, 1);
+                }
+
+                Array.isArray(category === null || category === void 0 ? void 0 : category.subcategories) && category.subcategories.forEach(iterate);
+              });
+
+              _business = _objectSpread(_objectSpread({}, businessState.business), {}, {
+                categories: _categories
+              });
+              return _context.abrupt("return", _business);
+
+            case 4:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function businessUpdate(_x) {
+      return _ref.apply(this, arguments);
+    };
+  }();
   /**
   * Default fuction for business profile workflow
   */
 
 
   var handleUpdateClick = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var id, _businessState$busine, changes, key, _yield$ordering$busin, content, _categories, _business;
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+      var id, _businessState$busine, changes, key, _yield$ordering$busin, content, _formState$changes3, _formState$changes3$r, _formState$changes4, _formState$changes4$r, _content$result4, _content$result4$ribb, _businessState$busine2, updatedChanges, _yield$ordering$busin2, _content, updatedBusiness, _updatedBusiness;
 
-      return _regeneratorRuntime().wrap(function _callee$(_context) {
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) {
-          switch (_context.prev = _context.next) {
+          switch (_context2.prev = _context2.next) {
             case 0:
               if (!category) {
-                _context.next = 21;
+                _context2.next = 47;
                 break;
               }
 
               id = (category === null || category === void 0 ? void 0 : category.id) || categoryId;
 
               if (!loading) {
-                _context.next = 4;
+                _context2.next = 4;
                 break;
               }
 
-              return _context.abrupt("return");
+              return _context2.abrupt("return");
 
             case 4:
-              _context.prev = 4;
+              _context2.prev = 4;
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: true
@@ -224,141 +305,163 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
                 }
               }
 
-              _context.next = 11;
+              _context2.next = 11;
               return ordering.businesses(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine = businessState.business) === null || _businessState$busine === void 0 ? void 0 : _businessState$busine.id).categories(parseInt(id)).save(changes);
 
             case 11:
-              _yield$ordering$busin = _context.sent;
+              _yield$ordering$busin = _context2.sent;
               content = _yield$ordering$busin.content;
 
-              if (!content.error) {
-                setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-                  changes: content.result,
-                  result: {
-                    error: false,
-                    result: content.result
-                  },
-                  loading: false
-                }));
-                setCategorySelected(content.result);
-
-                if (handleUpdateBusinessState) {
-                  _categories = _toConsumableArray(businessState.business.categories);
-
-                  _categories.forEach(function iterate(category, index, object) {
-                    var _content$result2, _content$result3;
-
-                    if ((category === null || category === void 0 ? void 0 : category.id) === (content === null || content === void 0 ? void 0 : content.result.parent_category_id)) {
-                      if (Array.isArray(category === null || category === void 0 ? void 0 : category.subcategories)) {
-                        var found = category.subcategories.find(function (subCategory) {
-                          var _content$result;
-
-                          return (subCategory === null || subCategory === void 0 ? void 0 : subCategory.id) === (content === null || content === void 0 ? void 0 : (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.id);
-                        });
-
-                        if (!found) {
-                          category.subcategories.push(content === null || content === void 0 ? void 0 : content.result);
-                        }
-                      }
-                    }
-
-                    var categoryKeyOptions = ['name', 'enabled', 'header', 'description', 'image', 'slug', 'seo_image', 'seo_title', 'seo_description'];
-
-                    if ((category === null || category === void 0 ? void 0 : category.id) === (content === null || content === void 0 ? void 0 : (_content$result2 = content.result) === null || _content$result2 === void 0 ? void 0 : _content$result2.id) && category.parent_category_id === (content === null || content === void 0 ? void 0 : content.result.parent_category_id)) {
-                      Object.keys(category).forEach(function (key) {
-                        if (categoryKeyOptions.includes(key) && content.result[key] !== undefined) {
-                          category[key] = content === null || content === void 0 ? void 0 : content.result[key];
-                        }
-                      });
-                    }
-
-                    if ((category === null || category === void 0 ? void 0 : category.id) === (content === null || content === void 0 ? void 0 : (_content$result3 = content.result) === null || _content$result3 === void 0 ? void 0 : _content$result3.id) && category.parent_category_id !== (content === null || content === void 0 ? void 0 : content.result.parent_category_id)) {
-                      object.splice(index, 1);
-                    }
-
-                    Array.isArray(category === null || category === void 0 ? void 0 : category.subcategories) && category.subcategories.forEach(iterate);
-                  });
-
-                  _business = _objectSpread(_objectSpread({}, businessState.business), {}, {
-                    categories: _categories
-                  });
-                  handleUpdateBusinessState(_business);
-                }
-
-                showToast(_ToastContext.ToastType.Success, t('CATEOGORY_UPDATED', 'Category updated'));
-              } else {
-                setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-                  changes: formState.changes,
-                  result: content,
-                  loading: false
-                }));
+              if (content.error) {
+                _context2.next = 39;
+                break;
               }
 
-              _context.next = 19;
+              if (!(typeof ((_formState$changes3 = formState.changes) === null || _formState$changes3 === void 0 ? void 0 : (_formState$changes3$r = _formState$changes3.ribbon) === null || _formState$changes3$r === void 0 ? void 0 : _formState$changes3$r.enabled) !== 'undefined' && !((_formState$changes4 = formState.changes) !== null && _formState$changes4 !== void 0 && (_formState$changes4$r = _formState$changes4.ribbon) !== null && _formState$changes4$r !== void 0 && _formState$changes4$r.enabled) && content !== null && content !== void 0 && (_content$result4 = content.result) !== null && _content$result4 !== void 0 && (_content$result4$ribb = _content$result4.ribbon) !== null && _content$result4$ribb !== void 0 && _content$result4$ribb.enabled)) {
+                _context2.next = 29;
+                break;
+              }
+
+              updatedChanges = {
+                ribbon: {
+                  enabled: false
+                }
+              };
+              _context2.next = 18;
+              return ordering.businesses(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine2 = businessState.business) === null || _businessState$busine2 === void 0 ? void 0 : _businessState$busine2.id).categories(parseInt(id)).save(updatedChanges);
+
+            case 18:
+              _yield$ordering$busin2 = _context2.sent;
+              _content = _yield$ordering$busin2.content;
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                changes: _content.result,
+                result: {
+                  error: false,
+                  result: _content.result
+                },
+                loading: false
+              }));
+              setCategorySelected(_content.result);
+
+              if (!handleUpdateBusinessState) {
+                _context2.next = 27;
+                break;
+              }
+
+              _context2.next = 25;
+              return businessUpdate(_content);
+
+            case 25:
+              updatedBusiness = _context2.sent;
+              handleUpdateBusinessState(updatedBusiness);
+
+            case 27:
+              _context2.next = 36;
               break;
 
-            case 16:
-              _context.prev = 16;
-              _context.t0 = _context["catch"](4);
+            case 29:
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                changes: content.result,
+                result: {
+                  error: false,
+                  result: content.result
+                },
+                loading: false
+              }));
+              setCategorySelected(content.result);
+
+              if (!handleUpdateBusinessState) {
+                _context2.next = 36;
+                break;
+              }
+
+              _context2.next = 34;
+              return businessUpdate(content);
+
+            case 34:
+              _updatedBusiness = _context2.sent;
+              handleUpdateBusinessState(_updatedBusiness);
+
+            case 36:
+              showToast(_ToastContext.ToastType.Success, t('CATEOGORY_UPDATED', 'Category updated'));
+              _context2.next = 40;
+              break;
+
+            case 39:
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                changes: formState.changes,
+                result: content,
+                loading: false
+              }));
+
+            case 40:
+              _context2.next = 45;
+              break;
+
+            case 42:
+              _context2.prev = 42;
+              _context2.t0 = _context2["catch"](4);
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 result: {
                   error: true,
-                  result: [_context.t0.message]
+                  result: [_context2.t0.message]
                 },
                 loading: false
               }));
 
-            case 19:
-              _context.next = 22;
+            case 45:
+              _context2.next = 48;
               break;
 
-            case 21:
+            case 47:
               createBusinessCategory();
 
-            case 22:
+            case 48:
             case "end":
-              return _context.stop();
+              return _context2.stop();
           }
         }
-      }, _callee, null, [[4, 16]]);
+      }, _callee2, null, [[4, 42]]);
     }));
 
     return function handleUpdateClick() {
-      return _ref.apply(this, arguments);
+      return _ref2.apply(this, arguments);
     };
   }();
 
   var createBusinessCategory = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var _businessState$busine2, _yield$ordering$busin2, content, _content$result4, newCategory, _businessState$busine3, _categories;
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var _changes$ribbon, _businessState$busine3, changes, _yield$ordering$busin3, content, _content$result5, newCategory, _businessState$busine4, _categories;
 
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context3.prev = _context3.next) {
             case 0:
               if (!loading) {
-                _context2.next = 2;
+                _context3.next = 2;
                 break;
               }
 
-              return _context2.abrupt("return");
+              return _context3.abrupt("return");
 
             case 2:
-              _context2.prev = 2;
+              _context3.prev = 2;
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: true
               }));
-              _context2.next = 7;
-              return ordering.businesses(parseInt(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine2 = businessState.business) === null || _businessState$busine2 === void 0 ? void 0 : _businessState$busine2.id)).categories().save(formState.changes);
+              changes = _objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes);
+              if (typeof (changes === null || changes === void 0 ? void 0 : changes.ribbon) !== 'undefined' && !(changes !== null && changes !== void 0 && (_changes$ribbon = changes.ribbon) !== null && _changes$ribbon !== void 0 && _changes$ribbon.enabled)) delete changes.ribbon;
+              _context3.next = 9;
+              return ordering.businesses(parseInt(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine3 = businessState.business) === null || _businessState$busine3 === void 0 ? void 0 : _businessState$busine3.id)).categories().save(changes);
 
-            case 7:
-              _yield$ordering$busin2 = _context2.sent;
-              content = _yield$ordering$busin2.content;
+            case 9:
+              _yield$ordering$busin3 = _context3.sent;
+              content = _yield$ordering$busin3.content;
 
               if (!content.error) {
                 newCategory = _objectSpread({}, content.result);
-                newCategory.parent_category_id = ((_content$result4 = content.result) === null || _content$result4 === void 0 ? void 0 : _content$result4.parent_category_id) || null;
+                newCategory.parent_category_id = ((_content$result5 = content.result) === null || _content$result5 === void 0 ? void 0 : _content$result5.parent_category_id) || null;
                 setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                   category: {},
                   result: {
@@ -369,7 +472,7 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
                 }));
 
                 if (handleUpdateBusinessState) {
-                  _categories = ((_businessState$busine3 = businessState.business) === null || _businessState$busine3 === void 0 ? void 0 : _businessState$busine3.categories) || [];
+                  _categories = ((_businessState$busine4 = businessState.business) === null || _businessState$busine4 === void 0 ? void 0 : _businessState$busine4.categories) || [];
 
                   if (content !== null && content !== void 0 && content.result.parent_category_id) {
                     _categories.forEach(function iterate(category) {
@@ -404,30 +507,30 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
                 }));
               }
 
-              _context2.next = 15;
+              _context3.next = 17;
               break;
 
-            case 12:
-              _context2.prev = 12;
-              _context2.t0 = _context2["catch"](2);
+            case 14:
+              _context3.prev = 14;
+              _context3.t0 = _context3["catch"](2);
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 result: {
                   error: true,
-                  result: _context2.t0.message
+                  result: _context3.t0.message
                 },
                 loading: false
               }));
 
-            case 15:
+            case 17:
             case "end":
-              return _context2.stop();
+              return _context3.stop();
           }
         }
-      }, _callee2, null, [[2, 12]]);
+      }, _callee3, null, [[2, 14]]);
     }));
 
     return function createBusinessCategory() {
-      return _ref2.apply(this, arguments);
+      return _ref3.apply(this, arguments);
     };
   }();
   /**
@@ -436,34 +539,34 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
 
 
   var handleDeleteCategory = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var _businessState$busine4, _yield$ordering$busin3, _yield$ordering$busin4, error, result, _categories;
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      var _businessState$busine5, _yield$ordering$busin4, _yield$ordering$busin5, error, result, _categories;
 
-      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
               if (!loading) {
-                _context3.next = 2;
+                _context4.next = 2;
                 break;
               }
 
-              return _context3.abrupt("return");
+              return _context4.abrupt("return");
 
             case 2:
-              _context3.prev = 2;
+              _context4.prev = 2;
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: true
               }));
-              _context3.next = 7;
-              return ordering.businesses(parseInt((_businessState$busine4 = businessState.business) === null || _businessState$busine4 === void 0 ? void 0 : _businessState$busine4.id)).categories(parseInt(category === null || category === void 0 ? void 0 : category.id)).delete();
+              _context4.next = 7;
+              return ordering.businesses(parseInt((_businessState$busine5 = businessState.business) === null || _businessState$busine5 === void 0 ? void 0 : _businessState$busine5.id)).categories(parseInt(category === null || category === void 0 ? void 0 : category.id)).delete();
 
             case 7:
-              _yield$ordering$busin3 = _context3.sent;
-              _yield$ordering$busin4 = _yield$ordering$busin3.content;
-              error = _yield$ordering$busin4.error;
-              result = _yield$ordering$busin4.result;
+              _yield$ordering$busin4 = _context4.sent;
+              _yield$ordering$busin5 = _yield$ordering$busin4.content;
+              error = _yield$ordering$busin5.error;
+              result = _yield$ordering$busin5.result;
 
               if (!error) {
                 setFormState(_objectSpread(_objectSpread({}, formState), {}, {
@@ -503,30 +606,30 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
                 }));
               }
 
-              _context3.next = 17;
+              _context4.next = 17;
               break;
 
             case 14:
-              _context3.prev = 14;
-              _context3.t0 = _context3["catch"](2);
+              _context4.prev = 14;
+              _context4.t0 = _context4["catch"](2);
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: false,
                 result: {
                   error: true,
-                  result: _context3.t0
+                  result: _context4.t0
                 }
               }));
 
             case 17:
             case "end":
-              return _context3.stop();
+              return _context4.stop();
           }
         }
-      }, _callee3, null, [[2, 14]]);
+      }, _callee4, null, [[2, 14]]);
     }));
 
     return function handleDeleteCategory() {
-      return _ref3.apply(this, arguments);
+      return _ref4.apply(this, arguments);
     };
   }();
 
@@ -569,7 +672,8 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
     handleChangeCheckBox: handleChangeCheckBox,
     handleChangeItem: handleChangeItem,
     handleUpdateClick: handleUpdateClick,
-    handleDeleteCategory: handleDeleteCategory
+    handleDeleteCategory: handleDeleteCategory,
+    handleChangeRibbon: handleChangeRibbon
   })));
 };
 

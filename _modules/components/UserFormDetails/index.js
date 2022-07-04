@@ -68,7 +68,8 @@ var UserFormDetails = function UserFormDetails(props) {
       useValidationFields = props.useValidationFields,
       handleButtonUpdateClick = props.handleButtonUpdateClick,
       handleSuccessUpdate = props.handleSuccessUpdate,
-      handleSuccessAdd = props.handleSuccessAdd;
+      handleSuccessAdd = props.handleSuccessAdd,
+      isProfessional = props.isProfessional;
 
   var _useApi = (0, _ApiContext.useApi)(),
       _useApi2 = _slicedToArray(_useApi, 1),
@@ -276,7 +277,7 @@ var UserFormDetails = function UserFormDetails(props) {
 
   var handleAddClick = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var response;
+      var changes, response;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -285,12 +286,16 @@ var UserFormDetails = function UserFormDetails(props) {
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: true
               }));
-              _context2.next = 4;
-              return ordering.users().save(formState.changes, {
+              changes = _objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes);
+              if (isProfessional) Object.assign(changes, {
+                level: 8
+              });
+              _context2.next = 6;
+              return ordering.users().save(changes, {
                 accessToken: accessToken
               });
 
-            case 4:
+            case 6:
               response = _context2.sent;
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 changes: response.content.error ? formState.changes : {},
@@ -312,11 +317,11 @@ var UserFormDetails = function UserFormDetails(props) {
                 }
               }
 
-              _context2.next = 12;
+              _context2.next = 14;
               break;
 
-            case 9:
-              _context2.prev = 9;
+            case 11:
+              _context2.prev = 11;
               _context2.t0 = _context2["catch"](0);
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 result: {
@@ -326,12 +331,12 @@ var UserFormDetails = function UserFormDetails(props) {
                 loading: false
               }));
 
-            case 12:
+            case 14:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[0, 9]]);
+      }, _callee2, null, [[0, 11]]);
     }));
 
     return function handleAddClick() {

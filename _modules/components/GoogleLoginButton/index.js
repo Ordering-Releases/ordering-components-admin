@@ -67,7 +67,7 @@ var GoogleLoginButton = function GoogleLoginButton(props) {
       wasUnmounted = true;
       var element = document.getElementById('google-login');
 
-      if (element) {
+      if (element.parentNode) {
         element.parentNode.removeChild(element);
       }
     };

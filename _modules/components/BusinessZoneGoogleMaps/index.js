@@ -50,7 +50,8 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
       setClearState = props.setClearState,
       isAddMode = props.isAddMode,
       greenFillStyle = props.greenFillStyle,
-      businessZones = props.businessZones;
+      businessZones = props.businessZones,
+      kmlData = props.kmlData;
 
   if (!apiKey) {
     console.warn('Prop `apiKey` is required to use Google Maps components.');
@@ -318,6 +319,33 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
     }
   }, [location]);
   (0, _react.useEffect)(function () {
+    if (!googleMap || !Array.isArray(kmlData) || !isAddMode) return;
+    var polygon = new window.google.maps.Polygon(_objectSpread(_objectSpread({}, fillStyle), {}, {
+      draggable: false,
+      map: googleMap,
+      paths: kmlData
+    }));
+    polygon.setMap(googleMap);
+    var bounds = new window.google.maps.LatLngBounds();
+
+    var _iterator4 = _createForOfIteratorHelper(kmlData),
+        _step4;
+
+    try {
+      for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+        var position = _step4.value;
+        bounds.extend(position);
+      }
+    } catch (err) {
+      _iterator4.e(err);
+    } finally {
+      _iterator4.f();
+    }
+
+    googleMap.fitBounds(bounds);
+    setPolygonZone(polygon);
+  }, [isAddMode, kmlData, googleMap]);
+  (0, _react.useEffect)(function () {
     if (googleReady) {
       var _location$zoom, _window$google$maps2, _window$google$maps2$;
 
@@ -398,12 +426,12 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
       if (isAddMode) {
         var bounds = new window.google.maps.LatLngBounds();
 
-        var _iterator4 = _createForOfIteratorHelper(businessZones),
-            _step4;
+        var _iterator5 = _createForOfIteratorHelper(businessZones),
+            _step5;
 
         try {
-          for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-            var deliveryZone = _step4.value;
+          for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+            var deliveryZone = _step5.value;
 
             if (deliveryZone.type === 1) {
               var newCircleZone = new window.google.maps.Circle(_objectSpread(_objectSpread({}, greenFillStyle), {}, {
@@ -424,18 +452,18 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
               newPolygonZone.setMap(map);
 
               if (Array.isArray(deliveryZone === null || deliveryZone === void 0 ? void 0 : deliveryZone.data)) {
-                var _iterator5 = _createForOfIteratorHelper(deliveryZone === null || deliveryZone === void 0 ? void 0 : deliveryZone.data),
-                    _step5;
+                var _iterator6 = _createForOfIteratorHelper(deliveryZone === null || deliveryZone === void 0 ? void 0 : deliveryZone.data),
+                    _step6;
 
                 try {
-                  for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
-                    var position = _step5.value;
+                  for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
+                    var position = _step6.value;
                     bounds.extend(position);
                   }
                 } catch (err) {
-                  _iterator5.e(err);
+                  _iterator6.e(err);
                 } finally {
-                  _iterator5.f();
+                  _iterator6.f();
                 }
 
                 map.fitBounds(bounds);
@@ -443,9 +471,9 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
             }
           }
         } catch (err) {
-          _iterator4.e(err);
+          _iterator5.e(err);
         } finally {
-          _iterator4.f();
+          _iterator5.f();
         }
       }
     }

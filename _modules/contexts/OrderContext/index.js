@@ -967,7 +967,7 @@ var OrderProvider = function OrderProvider(_ref) {
 
   var applyCoupon = /*#__PURE__*/function () {
     var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(couponData) {
-      var _state$carts$;
+      var _state$carts;
 
       var customerFromLocalStorage, userCustomerId, body, _yield$ordering$setAc11, _yield$ordering$setAc12, error, result;
 
@@ -991,7 +991,7 @@ var OrderProvider = function OrderProvider(_ref) {
               throw new Error('`coupon` is required.');
 
             case 4:
-              if (!(((_state$carts$ = state.carts["businessId:".concat(couponData.business_id)]) === null || _state$carts$ === void 0 ? void 0 : _state$carts$.coupon) === couponData.coupon)) {
+              if (!(((_state$carts = state.carts["businessId:".concat(couponData.business_id)]) === null || _state$carts === void 0 ? void 0 : _state$carts.coupon) === couponData.coupon)) {
                 _context10.next = 6;
                 break;
               }
@@ -1069,7 +1069,7 @@ var OrderProvider = function OrderProvider(_ref) {
 
   var changeDriverTip = /*#__PURE__*/function () {
     var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(businessId, driverTipRate) {
-      var _state$carts$2;
+      var _state$carts2;
 
       var customerFromLocalStorage, userCustomerId, body, _yield$ordering$setAc13, _yield$ordering$setAc14, error, result;
 
@@ -1093,7 +1093,7 @@ var OrderProvider = function OrderProvider(_ref) {
               throw new Error('`driverTipRate` is required.');
 
             case 4:
-              if (!(!state.carts["businessId:".concat(businessId)] || ((_state$carts$2 = state.carts["businessId:".concat(businessId)]) === null || _state$carts$2 === void 0 ? void 0 : _state$carts$2.driver_tip_rate) === driverTipRate)) {
+              if (!(!state.carts["businessId:".concat(businessId)] || ((_state$carts2 = state.carts["businessId:".concat(businessId)]) === null || _state$carts2 === void 0 ? void 0 : _state$carts2.driver_tip_rate) === driverTipRate)) {
                 _context11.next = 6;
                 break;
               }

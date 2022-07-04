@@ -67,7 +67,12 @@ var ImporterJobForm = function ImporterJobForm(props) {
 
   var _useState = (0, _react.useState)({
     loading: false,
-    changes: {},
+    changes: {
+      separator: ',',
+      enclosure: '"',
+      escape: '/',
+      start_line: 2
+    },
     result: {
       error: false
     }

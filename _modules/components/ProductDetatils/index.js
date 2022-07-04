@@ -189,7 +189,7 @@ var ProductDetatils = function ProductDetatils(props) {
 
   var handleUpdateClick = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(params) {
-      var _productState$product, _productState$product2, changes, _yield$ordering$busin3, _yield$ordering$busin4, error, result;
+      var _productState$product, _productState$product2, changes, originalChanges, _yield$ordering$busin3, _yield$ordering$busin4, error, result, _originalChanges$ribb, _originalChanges$ribb2, _result$ribbon, _productState$product3, _productState$product4, updatedChanges, _yield$ordering$busin5, content;
 
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) {
@@ -201,32 +201,65 @@ var ProductDetatils = function ProductDetatils(props) {
                 loading: true
               }));
               changes = params ? _objectSpread({}, params) : _objectSpread({}, formState.changes);
-              _context2.next = 6;
+              originalChanges = params ? _objectSpread({}, params) : _objectSpread({}, formState.changes);
+              _context2.next = 7;
               return ordering.businesses(business === null || business === void 0 ? void 0 : business.id).categories(productState === null || productState === void 0 ? void 0 : (_productState$product = productState.product) === null || _productState$product === void 0 ? void 0 : _productState$product.category_id).products(productState === null || productState === void 0 ? void 0 : (_productState$product2 = productState.product) === null || _productState$product2 === void 0 ? void 0 : _productState$product2.id).save(changes, {
                 accessToken: session.token
               });
 
-            case 6:
+            case 7:
               _yield$ordering$busin3 = _context2.sent;
               _yield$ordering$busin4 = _yield$ordering$busin3.content;
               error = _yield$ordering$busin4.error;
               result = _yield$ordering$busin4.result;
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 changes: error ? formState.changes : {},
-                result: result,
+                result: {
+                  error: error,
+                  result: result
+                },
                 loading: false
               }));
 
-              if (!error) {
-                handleSuccessUpdate(result);
-                showToast(_ToastContext.ToastType.Success, t('PRODUCT_SAVED', 'Product saved'));
+              if (error) {
+                _context2.next = 24;
+                break;
               }
 
+              if (!(typeof (originalChanges === null || originalChanges === void 0 ? void 0 : (_originalChanges$ribb = originalChanges.ribbon) === null || _originalChanges$ribb === void 0 ? void 0 : _originalChanges$ribb.enabled) !== 'undefined' && !(originalChanges !== null && originalChanges !== void 0 && (_originalChanges$ribb2 = originalChanges.ribbon) !== null && _originalChanges$ribb2 !== void 0 && _originalChanges$ribb2.enabled) && result !== null && result !== void 0 && (_result$ribbon = result.ribbon) !== null && _result$ribbon !== void 0 && _result$ribbon.enabled)) {
+                _context2.next = 22;
+                break;
+              }
+
+              updatedChanges = {
+                ribbon: {
+                  enabled: false
+                }
+              };
               _context2.next = 17;
+              return ordering.businesses(business === null || business === void 0 ? void 0 : business.id).categories(productState === null || productState === void 0 ? void 0 : (_productState$product3 = productState.product) === null || _productState$product3 === void 0 ? void 0 : _productState$product3.category_id).products(productState === null || productState === void 0 ? void 0 : (_productState$product4 = productState.product) === null || _productState$product4 === void 0 ? void 0 : _productState$product4.id).save(updatedChanges, {
+                accessToken: session.token
+              });
+
+            case 17:
+              _yield$ordering$busin5 = _context2.sent;
+              content = _yield$ordering$busin5.content;
+              handleSuccessUpdate(content === null || content === void 0 ? void 0 : content.result);
+              _context2.next = 23;
               break;
 
-            case 14:
-              _context2.prev = 14;
+            case 22:
+              handleSuccessUpdate(result);
+
+            case 23:
+              showToast(_ToastContext.ToastType.Success, t('PRODUCT_SAVED', 'Product saved'));
+
+            case 24:
+              _context2.next = 29;
+              break;
+
+            case 26:
+              _context2.prev = 26;
               _context2.t0 = _context2["catch"](0);
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 result: {
@@ -236,12 +269,12 @@ var ProductDetatils = function ProductDetatils(props) {
                 loading: false
               }));
 
-            case 17:
+            case 29:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[0, 14]]);
+      }, _callee2, null, [[0, 26]]);
     }));
 
     return function handleUpdateClick(_x) {
@@ -255,7 +288,7 @@ var ProductDetatils = function ProductDetatils(props) {
 
   var handleDeleteProduct = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var _productState$product3, _productState$product4, _yield$ordering$busin5, _yield$ordering$busin6, error, result, _categories;
+      var _productState$product5, _productState$product6, _yield$ordering$busin6, _yield$ordering$busin7, error, result, _categories;
 
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) {
@@ -267,13 +300,13 @@ var ProductDetatils = function ProductDetatils(props) {
                 loading: true
               }));
               _context3.next = 5;
-              return ordering.businesses(parseInt(business === null || business === void 0 ? void 0 : business.id)).categories(parseInt((_productState$product3 = productState.product) === null || _productState$product3 === void 0 ? void 0 : _productState$product3.category_id)).products((_productState$product4 = productState.product) === null || _productState$product4 === void 0 ? void 0 : _productState$product4.id).delete();
+              return ordering.businesses(parseInt(business === null || business === void 0 ? void 0 : business.id)).categories(parseInt((_productState$product5 = productState.product) === null || _productState$product5 === void 0 ? void 0 : _productState$product5.category_id)).products((_productState$product6 = productState.product) === null || _productState$product6 === void 0 ? void 0 : _productState$product6.id).delete();
 
             case 5:
-              _yield$ordering$busin5 = _context3.sent;
-              _yield$ordering$busin6 = _yield$ordering$busin5.content;
-              error = _yield$ordering$busin6.error;
-              result = _yield$ordering$busin6.result;
+              _yield$ordering$busin6 = _context3.sent;
+              _yield$ordering$busin7 = _yield$ordering$busin6.content;
+              error = _yield$ordering$busin7.error;
+              result = _yield$ordering$busin7.result;
 
               if (!error) {
                 setFormState(_objectSpread(_objectSpread({}, formState), {}, {
@@ -288,9 +321,9 @@ var ProductDetatils = function ProductDetatils(props) {
                   _categories = _toConsumableArray(business === null || business === void 0 ? void 0 : business.categories);
 
                   _categories.forEach(function iterate(category) {
-                    var _productState$product5;
+                    var _productState$product7;
 
-                    if (category.id === ((_productState$product5 = productState.product) === null || _productState$product5 === void 0 ? void 0 : _productState$product5.category_id)) {
+                    if (category.id === ((_productState$product7 = productState.product) === null || _productState$product7 === void 0 ? void 0 : _productState$product7.category_id)) {
                       var _products = category.products.filter(function (_product) {
                         return _product.id !== productState.product.id;
                       });
@@ -350,10 +383,10 @@ var ProductDetatils = function ProductDetatils(props) {
 
 
   var handleChangeProductActiveState = function handleChangeProductActiveState() {
-    var _productState$product6;
+    var _productState$product8;
 
     var params = {
-      enabled: !(productState !== null && productState !== void 0 && (_productState$product6 = productState.product) !== null && _productState$product6 !== void 0 && _productState$product6.enabled)
+      enabled: !(productState !== null && productState !== void 0 && (_productState$product8 = productState.product) !== null && _productState$product8 !== void 0 && _productState$product8.enabled)
     };
     handleUpdateClick(params);
   };
@@ -377,6 +410,25 @@ var ProductDetatils = function ProductDetatils(props) {
   var handleChangeFormState = function handleChangeFormState(changes) {
     setFormState(_objectSpread(_objectSpread({}, formState), {}, {
       changes: _objectSpread(_objectSpread({}, formState.changes), changes)
+    }));
+  };
+  /**
+   * Update ribbon data
+   * @param {Object} changes Related HTML event
+   */
+
+
+  var handleChangeRibbon = function handleChangeRibbon(changes) {
+    var _formState$changes, _formState$changes2;
+
+    var ribbonChanges = formState !== null && formState !== void 0 && (_formState$changes = formState.changes) !== null && _formState$changes !== void 0 && _formState$changes.ribbon ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.ribbon), changes) : _objectSpread({}, changes);
+
+    var currentChanges = _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), {}, {
+      ribbon: ribbonChanges
+    });
+
+    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+      changes: currentChanges
     }));
   };
   /**
@@ -457,11 +509,11 @@ var ProductDetatils = function ProductDetatils(props) {
         var option = extra.options[j];
 
         for (var k = 0; k < ((_option$suboptions = option.suboptions) === null || _option$suboptions === void 0 ? void 0 : _option$suboptions.length); k++) {
-          var _option$suboptions, _productCart$options$, _productCart$options$2;
+          var _option$suboptions, _productCart$options, _productCart$options$;
 
           var suboption = option.suboptions[k];
 
-          if ((_productCart$options$ = productCart.options["id:".concat(option.id)]) !== null && _productCart$options$ !== void 0 && (_productCart$options$2 = _productCart$options$.suboptions["id:".concat(suboption.id)]) !== null && _productCart$options$2 !== void 0 && _productCart$options$2.selected) {
+          if ((_productCart$options = productCart.options["id:".concat(option.id)]) !== null && _productCart$options !== void 0 && (_productCart$options$ = _productCart$options.suboptions["id:".concat(suboption.id)]) !== null && _productCart$options$ !== void 0 && _productCart$options$.selected) {
             var suboptionState = productCart.options["id:".concat(option.id)].suboptions["id:".concat(suboption.id)];
             var quantity = option.allow_suboption_quantity ? suboptionState.quantity : 1;
             var price = option.with_half_option && suboption.half_price && suboptionState.position !== 'whole' ? suboption.half_price : suboption.price;
@@ -489,11 +541,11 @@ var ProductDetatils = function ProductDetatils(props) {
         var options = productCart.options;
 
         for (var key in options) {
-          var _option$suboptions$;
+          var _option$suboptions2;
 
           var _option = options[key];
 
-          if ((_option$suboptions$ = _option.suboptions["id:".concat(option.respect_to)]) !== null && _option$suboptions$ !== void 0 && _option$suboptions$.selected) {
+          if ((_option$suboptions2 = _option.suboptions["id:".concat(option.respect_to)]) !== null && _option$suboptions2 !== void 0 && _option$suboptions2.selected) {
             showOption = true;
             break;
           }
@@ -517,9 +569,9 @@ var ProductDetatils = function ProductDetatils(props) {
       var _categories = _toConsumableArray(business === null || business === void 0 ? void 0 : business.categories);
 
       _categories.forEach(function iterate(category) {
-        var _productState$product7;
+        var _productState$product9;
 
-        if (category.id === ((_productState$product7 = productState.product) === null || _productState$product7 === void 0 ? void 0 : _productState$product7.category_id)) {
+        if (category.id === ((_productState$product9 = productState.product) === null || _productState$product9 === void 0 ? void 0 : _productState$product9.category_id)) {
           var _products = category.products.map(function (_product) {
             if (_product.id === productState.product.id) {
               return _objectSpread(_objectSpread({}, _product), updatedProduct);
@@ -559,6 +611,7 @@ var ProductDetatils = function ProductDetatils(props) {
     productCart: productCart,
     formState: formState,
     cleanFormState: cleanFormState,
+    handleChangeRibbon: handleChangeRibbon,
     handleChangeProductActiveState: handleChangeProductActiveState,
     handleChangeInput: handleChangeInput,
     handlechangeImage: handlechangeImage,

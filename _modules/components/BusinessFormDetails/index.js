@@ -17,6 +17,10 @@ var _ApiContext = require("../../contexts/ApiContext");
 
 var _ConfigContext = require("../../contexts/ConfigContext");
 
+var _ToastContext = require("../../contexts/ToastContext");
+
+var _LanguageContext = require("../../contexts/LanguageContext");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -58,7 +62,8 @@ var BusinessFormDetails = function BusinessFormDetails(props) {
   var UIComponent = props.UIComponent,
       business = props.business,
       handleSuccessUpdate = props.handleSuccessUpdate,
-      handleSucessAddBusiness = props.handleSucessAddBusiness;
+      handleSucessAddBusiness = props.handleSucessAddBusiness,
+      handleUpdateBusinessState = props.handleUpdateBusinessState;
 
   var _useApi = (0, _ApiContext.useApi)(),
       _useApi2 = _slicedToArray(_useApi, 1),
@@ -71,6 +76,14 @@ var BusinessFormDetails = function BusinessFormDetails(props) {
   var _useConfig = (0, _ConfigContext.useConfig)(),
       _useConfig2 = _slicedToArray(_useConfig, 1),
       configs = _useConfig2[0].configs;
+
+  var _useToast = (0, _ToastContext.useToast)(),
+      _useToast2 = _slicedToArray(_useToast, 2),
+      showToast = _useToast2[1].showToast;
+
+  var _useLanguage = (0, _LanguageContext.useLanguage)(),
+      _useLanguage2 = _slicedToArray(_useLanguage, 2),
+      t = _useLanguage2[1];
 
   var _useState = (0, _react.useState)({
     loading: false,
@@ -206,48 +219,93 @@ var BusinessFormDetails = function BusinessFormDetails(props) {
     }]
   };
   /**
+   * Function to update a business
+   */
+
+  var updateResult = function updateResult(response) {
+    setBusinessState(_objectSpread(_objectSpread({}, businessState), {}, {
+      business: _objectSpread(_objectSpread({}, businessState.business), response.content.result)
+    }));
+
+    if (handleSuccessUpdate) {
+      handleSuccessUpdate(response.content.result);
+    }
+
+    if (handleUpdateBusinessState) {
+      handleUpdateBusinessState(response.content.result);
+    }
+  };
+  /**
    * Default fuction for business profile workflow
    */
 
+
   var handleUpdateClick = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var response;
+      var changes, response, originalChanges, _originalChanges$ribb, _originalChanges$ribb2, _response$content, _response$content$res, _response$content$res2, updatedChanges, _response;
+
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: true
               }));
-              _context.next = 4;
-              return ordering.businesses(business === null || business === void 0 ? void 0 : business.id).save(formState.changes, {
+              changes = _objectSpread({}, formState.changes);
+              _context.next = 6;
+              return ordering.businesses(business === null || business === void 0 ? void 0 : business.id).save(changes, {
                 accessToken: session.token
               });
 
-            case 4:
+            case 6:
               response = _context.sent;
+              originalChanges = _objectSpread({}, formState.changes);
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 changes: response.content.error ? formState.changes : {},
                 result: response.content,
                 loading: false
               }));
 
-              if (!response.content.error) {
-                setBusinessState(_objectSpread(_objectSpread({}, businessState), {}, {
-                  business: _objectSpread(_objectSpread({}, businessState.business), response.content.result)
-                }));
-
-                if (handleSuccessUpdate) {
-                  handleSuccessUpdate(response.content.result);
-                }
+              if (response.content.error) {
+                _context.next = 20;
+                break;
               }
 
-              _context.next = 12;
+              if (!(typeof (originalChanges === null || originalChanges === void 0 ? void 0 : (_originalChanges$ribb = originalChanges.ribbon) === null || _originalChanges$ribb === void 0 ? void 0 : _originalChanges$ribb.enabled) !== 'undefined' && !(originalChanges !== null && originalChanges !== void 0 && (_originalChanges$ribb2 = originalChanges.ribbon) !== null && _originalChanges$ribb2 !== void 0 && _originalChanges$ribb2.enabled) && (_response$content = response.content) !== null && _response$content !== void 0 && (_response$content$res = _response$content.result) !== null && _response$content$res !== void 0 && (_response$content$res2 = _response$content$res.ribbon) !== null && _response$content$res2 !== void 0 && _response$content$res2.enabled)) {
+                _context.next = 18;
+                break;
+              }
+
+              updatedChanges = {
+                ribbon: {
+                  enabled: false
+                }
+              };
+              _context.next = 14;
+              return ordering.businesses(business === null || business === void 0 ? void 0 : business.id).save(updatedChanges, {
+                accessToken: session.token
+              });
+
+            case 14:
+              _response = _context.sent;
+              updateResult(_response);
+              _context.next = 19;
               break;
 
-            case 9:
-              _context.prev = 9;
+            case 18:
+              updateResult(response);
+
+            case 19:
+              showToast(_ToastContext.ToastType.Success, t('BUSINESS_UPDATED', 'Business updated'));
+
+            case 20:
+              _context.next = 25;
+              break;
+
+            case 22:
+              _context.prev = 22;
               _context.t0 = _context["catch"](0);
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 result: {
@@ -257,12 +315,12 @@ var BusinessFormDetails = function BusinessFormDetails(props) {
                 loading: false
               }));
 
-            case 12:
+            case 25:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 9]]);
+      }, _callee, null, [[0, 22]]);
     }));
 
     return function handleUpdateClick() {
@@ -375,6 +433,25 @@ var BusinessFormDetails = function BusinessFormDetails(props) {
     reader.onerror = function (error) {
       return console.log(error);
     };
+  };
+  /**
+   * Update ribbon data
+   * @param {Object} changes Related HTML event
+   */
+
+
+  var handleChangeRibbon = function handleChangeRibbon(changes) {
+    var _formState$changes, _formState$changes2;
+
+    var ribbonChanges = formState !== null && formState !== void 0 && (_formState$changes = formState.changes) !== null && _formState$changes !== void 0 && _formState$changes.ribbon ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.ribbon), changes) : _objectSpread({}, changes);
+
+    var currentChanges = _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), {}, {
+      ribbon: ribbonChanges
+    });
+
+    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+      changes: currentChanges
+    }));
   };
 
   var handleChangeSwtich = function handleChangeSwtich(name, checked) {
@@ -513,7 +590,8 @@ var BusinessFormDetails = function BusinessFormDetails(props) {
     handleAddBusiness: handleAddBusiness,
     handleChangeAddress: handleChangeAddress,
     handleChangeCenter: handleChangeCenter,
-    handleChangeSwtich: handleChangeSwtich
+    handleChangeSwtich: handleChangeSwtich,
+    handleChangeRibbon: handleChangeRibbon
   })));
 };
 

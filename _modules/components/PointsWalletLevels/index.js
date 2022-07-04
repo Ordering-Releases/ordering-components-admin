@@ -95,15 +95,6 @@ var PointsWalletLevels = function PointsWalletLevels(props) {
       _useState4 = _slicedToArray(_useState3, 2),
       formState = _useState4[0],
       setFormState = _useState4[1];
-
-  var _useState5 = (0, _react.useState)({
-    loading: false,
-    error: null,
-    changes: {}
-  }),
-      _useState6 = _slicedToArray(_useState5, 2),
-      editFormState = _useState6[0],
-      setEditFormState = _useState6[1];
   /**
    * Update level data
    * @param {EventTarget} evt Related HTML event
@@ -115,6 +106,19 @@ var PointsWalletLevels = function PointsWalletLevels(props) {
 
     setFormState(_objectSpread(_objectSpread({}, formState), {}, {
       changes: changes
+    }));
+  };
+  /**
+   * Update level data
+   * @param {EventTarget} evt Related HTML event
+   */
+
+
+  var handleChangeItem = function handleChangeItem(changes) {
+    var currentChanges = _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), changes);
+
+    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+      changes: currentChanges
     }));
   };
   /**
@@ -162,33 +166,12 @@ var PointsWalletLevels = function PointsWalletLevels(props) {
     }));
   };
   /**
-   * Update a level
-   * @param {EventTarget} evt Related HTML event
-   * @param {Number} levelId id of level
-   */
-
-
-  var handleUpdateLevel = function handleUpdateLevel(evt, levelId) {
-    var _editFormState$change, _ref;
-
-    var changes = levelId === (editFormState === null || editFormState === void 0 ? void 0 : (_editFormState$change = editFormState.changes) === null || _editFormState$change === void 0 ? void 0 : _editFormState$change.id) ? _objectSpread(_objectSpread({}, editFormState === null || editFormState === void 0 ? void 0 : editFormState.changes), {}, _defineProperty({}, evt.target.name, evt.target.value)) : (_ref = {}, _defineProperty(_ref, evt.target.name, evt.target.value), _defineProperty(_ref, "id", levelId), _ref);
-    setEditFormState(_objectSpread(_objectSpread({}, editFormState), {}, {
-      changes: changes
-    }));
-  };
-
-  var handleUpdateBtnClick = function handleUpdateBtnClick() {
-    var _editFormState$change2;
-
-    updateLevel(editFormState === null || editFormState === void 0 ? void 0 : editFormState.changes, editFormState === null || editFormState === void 0 ? void 0 : (_editFormState$change2 = editFormState.changes) === null || _editFormState$change2 === void 0 ? void 0 : _editFormState$change2.id);
-  };
-  /**
    * Default fuction to add a level
    */
 
 
   var handleUpdateAddClick = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
       var requestOptions, fetchEndpoint, response, _yield$response$json, error, result;
 
       return _regeneratorRuntime().wrap(function _callee$(_context) {
@@ -257,84 +240,7 @@ var PointsWalletLevels = function PointsWalletLevels(props) {
     }));
 
     return function handleUpdateAddClick() {
-      return _ref2.apply(this, arguments);
-    };
-  }();
-  /**
-   * Default fuction to delete a level
-   */
-
-
-  var handleUpdateDeleteClick = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(id) {
-      var requestOptions, fetchEndpoint, response, _yield$response$json2, error, result;
-
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.prev = 0;
-              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-                loading: true
-              }));
-              requestOptions = {
-                method: 'DELETE',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: "Bearer ".concat(token)
-                }
-              };
-              fetchEndpoint = "".concat(ordering.root, "/loyalty_levels/").concat(id);
-              _context2.next = 7;
-              return fetch(fetchEndpoint, requestOptions);
-
-            case 7:
-              response = _context2.sent;
-              _context2.next = 10;
-              return response.json();
-
-            case 10:
-              _yield$response$json2 = _context2.sent;
-              error = _yield$response$json2.error;
-              result = _yield$response$json2.result;
-
-              if (!error) {
-                showToast(_ToastContext.ToastType.Success, t('LEVEL_DELETED', 'Level deleted'));
-                setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-                  loading: false,
-                  error: null,
-                  changes: {}
-                }));
-                handleDeleteLevelList(result);
-              } else {
-                setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-                  loading: false,
-                  error: result
-                }));
-              }
-
-              _context2.next = 19;
-              break;
-
-            case 16:
-              _context2.prev = 16;
-              _context2.t0 = _context2["catch"](0);
-              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-                loading: false,
-                error: _context2.t0.message
-              }));
-
-            case 19:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2, null, [[0, 16]]);
-    }));
-
-    return function handleUpdateDeleteClick(_x) {
-      return _ref3.apply(this, arguments);
+      return _ref.apply(this, arguments);
     };
   }();
   /**
@@ -343,14 +249,14 @@ var PointsWalletLevels = function PointsWalletLevels(props) {
 
 
   var getLevelList = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var requestOptions, fetchEndpoint, response, _yield$response$json3, error, result;
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+      var requestOptions, fetchEndpoint, response, _yield$response$json2, error, result;
 
-      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context2.prev = _context2.next) {
             case 0:
-              _context3.prev = 0;
+              _context2.prev = 0;
               setLevelList(_objectSpread(_objectSpread({}, levelList), {}, {
                 loading: true
               }));
@@ -362,18 +268,18 @@ var PointsWalletLevels = function PointsWalletLevels(props) {
                 }
               };
               fetchEndpoint = "".concat(ordering.root, "/loyalty_levels");
-              _context3.next = 6;
+              _context2.next = 6;
               return fetch(fetchEndpoint, requestOptions);
 
             case 6:
-              response = _context3.sent;
-              _context3.next = 9;
+              response = _context2.sent;
+              _context2.next = 9;
               return response.json();
 
             case 9:
-              _yield$response$json3 = _context3.sent;
-              error = _yield$response$json3.error;
-              result = _yield$response$json3.result;
+              _yield$response$json2 = _context2.sent;
+              error = _yield$response$json2.error;
+              result = _yield$response$json2.result;
 
               if (!error) {
                 setLevelList(_objectSpread(_objectSpread({}, levelList), {}, {
@@ -388,104 +294,27 @@ var PointsWalletLevels = function PointsWalletLevels(props) {
                 }));
               }
 
-              _context3.next = 18;
+              _context2.next = 18;
               break;
 
             case 15:
-              _context3.prev = 15;
-              _context3.t0 = _context3["catch"](0);
+              _context2.prev = 15;
+              _context2.t0 = _context2["catch"](0);
               setLevelList(_objectSpread(_objectSpread({}, levelList), {}, {
                 loading: false,
-                error: _context3.t0.message
+                error: _context2.t0.message
               }));
 
             case 18:
             case "end":
-              return _context3.stop();
+              return _context2.stop();
           }
         }
-      }, _callee3, null, [[0, 15]]);
+      }, _callee2, null, [[0, 15]]);
     }));
 
     return function getLevelList() {
-      return _ref4.apply(this, arguments);
-    };
-  }();
-  /**
-   * Function to update a webhook
-   */
-
-
-  var updateLevel = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(changes, id) {
-      var requestOptions, response, _yield$response$json4, error, result;
-
-      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              _context4.prev = 0;
-              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-              setEditFormState(_objectSpread(_objectSpread({}, editFormState), {}, {
-                loading: true
-              }));
-              requestOptions = {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: "Bearer ".concat(token)
-                },
-                body: JSON.stringify(changes)
-              };
-              _context4.next = 6;
-              return fetch("".concat(ordering.root, "/loyalty_levels/").concat(id), requestOptions);
-
-            case 6:
-              response = _context4.sent;
-              _context4.next = 9;
-              return response.json();
-
-            case 9:
-              _yield$response$json4 = _context4.sent;
-              error = _yield$response$json4.error;
-              result = _yield$response$json4.result;
-
-              if (!error) {
-                setEditFormState({
-                  changes: {},
-                  loading: false,
-                  error: null
-                });
-                handleUpdateLevelList(result);
-                showToast(_ToastContext.ToastType.Success, t('LEVEL_UPDATED', 'Level updated'));
-              } else {
-                setEditFormState(_objectSpread(_objectSpread({}, editFormState), {}, {
-                  loading: false,
-                  error: result
-                }));
-              }
-
-              _context4.next = 18;
-              break;
-
-            case 15:
-              _context4.prev = 15;
-              _context4.t0 = _context4["catch"](0);
-              setEditFormState(_objectSpread(_objectSpread({}, editFormState), {}, {
-                loading: false,
-                error: _context4.t0.message
-              }));
-
-            case 18:
-            case "end":
-              return _context4.stop();
-          }
-        }
-      }, _callee4, null, [[0, 15]]);
-    }));
-
-    return function updateLevel(_x2, _x3) {
-      return _ref5.apply(this, arguments);
+      return _ref2.apply(this, arguments);
     };
   }();
 
@@ -495,12 +324,11 @@ var PointsWalletLevels = function PointsWalletLevels(props) {
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     levelList: levelList,
     formState: formState,
-    editFormState: editFormState,
+    handleChangeItem: handleChangeItem,
     handleChangeInput: handleChangeInput,
     handleUpdateAddClick: handleUpdateAddClick,
-    handleUpdateDeleteClick: handleUpdateDeleteClick,
-    handleUpdateLevel: handleUpdateLevel,
-    handleUpdateBtnClick: handleUpdateBtnClick
+    handleUpdateLevelList: handleUpdateLevelList,
+    handleDeleteLevelList: handleDeleteLevelList
   })));
 };
 

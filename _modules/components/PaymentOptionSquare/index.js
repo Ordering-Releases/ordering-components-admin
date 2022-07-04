@@ -72,11 +72,13 @@ var PaymentOptionSquare = function PaymentOptionSquare(props) {
 
   var _useSession = (0, _SessionContext.useSession)(),
       _useSession2 = _slicedToArray(_useSession, 1),
-      token = _useSession2[0].token;
+      _useSession2$ = _useSession2[0],
+      user = _useSession2$.user,
+      token = _useSession2$.token;
 
   var _useState = (0, _react.useState)({
     url: null,
-    loading: false,
+    loading: true,
     error: null
   }),
       _useState2 = _slicedToArray(_useState, 2),
@@ -100,19 +102,99 @@ var PaymentOptionSquare = function PaymentOptionSquare(props) {
       actionState = _useState6[0],
       setActionState = _useState6[1];
   /**
-   * Method to get connect url
+   * Method to get the api key
    */
 
 
-  var handleGetConnectUrl = /*#__PURE__*/function () {
+  var handleGetApiKey = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var requestOptions, url, response, _yield$response$json, status, result;
+      var requestOptions, response, content, _content$result$, apiKey;
 
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
+              setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
+                loading: false
+              }));
+              requestOptions = {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                }
+              };
+              _context.next = 5;
+              return fetch("".concat(ordering.root, "/users/").concat(user === null || user === void 0 ? void 0 : user.id, "/keys"), requestOptions);
+
+            case 5:
+              response = _context.sent;
+              _context.next = 8;
+              return response.json();
+
+            case 8:
+              content = _context.sent;
+
+              if (!content.error) {
+                apiKey = (_content$result$ = content.result[0]) === null || _content$result$ === void 0 ? void 0 : _content$result$.key;
+
+                if (apiKey) {
+                  handleGetConnectUrl(apiKey);
+                  setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
+                    loading: false,
+                    error: null
+                  }));
+                } else {
+                  setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
+                    loading: false,
+                    error: t('NO_API_KEY_SQUARE', 'There is no Api Key for Square connection')
+                  }));
+                }
+              } else {
+                setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
+                  loading: false,
+                  error: content.result
+                }));
+              }
+
+              _context.next = 15;
+              break;
+
+            case 12:
+              _context.prev = 12;
+              _context.t0 = _context["catch"](0);
+              setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
+                loading: false,
+                error: [_context.t0.message]
+              }));
+
+            case 15:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, null, [[0, 12]]);
+    }));
+
+    return function handleGetApiKey() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+  /**
+   * Method to get connect url
+   */
+
+
+  var handleGetConnectUrl = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(apiKey) {
+      var requestOptions, url, response, _yield$response$json, status, result;
+
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
               setSquareUrlState(_objectSpread(_objectSpread({}, squareUrlState), {}, {
                 loading: true
               }));
@@ -123,20 +205,21 @@ var PaymentOptionSquare = function PaymentOptionSquare(props) {
                 },
                 body: JSON.stringify({
                   business_id: business === null || business === void 0 ? void 0 : business.id,
-                  project_name: ordering === null || ordering === void 0 ? void 0 : ordering.project
+                  project_name: ordering === null || ordering === void 0 ? void 0 : ordering.project,
+                  api_key: apiKey
                 })
               };
               url = 'https://plugins-live.ordering.co/square/oauth/oauth';
-              _context.next = 6;
+              _context2.next = 6;
               return fetch(url, requestOptions);
 
             case 6:
-              response = _context.sent;
-              _context.next = 9;
+              response = _context2.sent;
+              _context2.next = 9;
               return response.json();
 
             case 9:
-              _yield$response$json = _context.sent;
+              _yield$response$json = _context2.sent;
               status = _yield$response$json.status;
               result = _yield$response$json.result;
 
@@ -145,6 +228,7 @@ var PaymentOptionSquare = function PaymentOptionSquare(props) {
                   loading: false,
                   url: result === null || result === void 0 ? void 0 : result.data.url
                 }));
+                handleConnectSquare(result === null || result === void 0 ? void 0 : result.data.url);
               } else {
                 setSquareUrlState(_objectSpread(_objectSpread({}, squareUrlState), {}, {
                   loading: false,
@@ -152,27 +236,27 @@ var PaymentOptionSquare = function PaymentOptionSquare(props) {
                 }));
               }
 
-              _context.next = 18;
+              _context2.next = 18;
               break;
 
             case 15:
-              _context.prev = 15;
-              _context.t0 = _context["catch"](0);
+              _context2.prev = 15;
+              _context2.t0 = _context2["catch"](0);
               setSquareUrlState(_objectSpread(_objectSpread({}, squareUrlState), {}, {
                 loading: false,
-                error: [_context.t0.message]
+                error: [_context2.t0.message]
               }));
 
             case 18:
             case "end":
-              return _context.stop();
+              return _context2.stop();
           }
         }
-      }, _callee, null, [[0, 15]]);
+      }, _callee2, null, [[0, 15]]);
     }));
 
-    return function handleGetConnectUrl() {
-      return _ref.apply(this, arguments);
+    return function handleGetConnectUrl(_x) {
+      return _ref2.apply(this, arguments);
     };
   }();
   /**
@@ -180,8 +264,8 @@ var PaymentOptionSquare = function PaymentOptionSquare(props) {
    */
 
 
-  var handleConnectSquare = function handleConnectSquare() {
-    var connect = window.open(squareUrlState.url, '_blank', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,clearcache=yes');
+  var handleConnectSquare = function handleConnectSquare(squareConnectUrl) {
+    var connect = window.open(squareConnectUrl, '_blank', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,clearcache=yes');
     var interval = setInterval(function () {
       if (!connect.closed) {
         connect.postMessage('data', ordering.url);
@@ -215,13 +299,13 @@ var PaymentOptionSquare = function PaymentOptionSquare(props) {
 
 
   var handleSavePaymethod = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(paymethodId) {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(paymethodId) {
       var requestOptions, response, content, updatedPaymethods;
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context3.prev = _context3.next) {
             case 0:
-              _context2.prev = 0;
+              _context3.prev = 0;
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
                 loading: true
@@ -238,16 +322,16 @@ var PaymentOptionSquare = function PaymentOptionSquare(props) {
                   data_sandbox: JSON.stringify(squareData === null || squareData === void 0 ? void 0 : squareData.data_sandbox)
                 })
               };
-              _context2.next = 6;
+              _context3.next = 6;
               return fetch("".concat(ordering.root, "/business/").concat(business.id, "/paymethods/").concat(paymethodId), requestOptions);
 
             case 6:
-              response = _context2.sent;
-              _context2.next = 9;
+              response = _context3.sent;
+              _context3.next = 9;
               return response.json();
 
             case 9:
-              content = _context2.sent;
+              content = _context3.sent;
 
               if (!content.error) {
                 updatedPaymethods = businessPaymethods.map(function (paymethod) {
@@ -265,27 +349,27 @@ var PaymentOptionSquare = function PaymentOptionSquare(props) {
                 loading: false,
                 error: content.error ? content.result : null
               });
-              _context2.next = 17;
+              _context3.next = 17;
               break;
 
             case 14:
-              _context2.prev = 14;
-              _context2.t0 = _context2["catch"](0);
+              _context3.prev = 14;
+              _context3.t0 = _context3["catch"](0);
               setActionState({
-                error: [_context2.t0.message],
+                error: [_context3.t0.message],
                 loading: false
               });
 
             case 17:
             case "end":
-              return _context2.stop();
+              return _context3.stop();
           }
         }
-      }, _callee2, null, [[0, 14]]);
+      }, _callee3, null, [[0, 14]]);
     }));
 
-    return function handleSavePaymethod(_x) {
-      return _ref2.apply(this, arguments);
+    return function handleSavePaymethod(_x2) {
+      return _ref3.apply(this, arguments);
     };
   }();
   /**
@@ -297,6 +381,12 @@ var PaymentOptionSquare = function PaymentOptionSquare(props) {
   var handleChangeDataInput = function handleChangeDataInput(e) {
     setSquareData(_objectSpread(_objectSpread({}, squareData), {}, {
       data: _objectSpread(_objectSpread({}, squareData === null || squareData === void 0 ? void 0 : squareData.data), {}, _defineProperty({}, e.target.name, e.target.value))
+    }));
+  };
+
+  var handleChangeSandbox = function handleChangeSandbox(checked) {
+    setSquareData(_objectSpread(_objectSpread({}, squareData), {}, {
+      sandbox: checked
     }));
   };
   /**
@@ -311,17 +401,15 @@ var PaymentOptionSquare = function PaymentOptionSquare(props) {
     }));
   };
 
-  (0, _react.useEffect)(function () {
-    handleGetConnectUrl();
-  }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     squareUrlState: squareUrlState,
     squareData: squareData,
     actionState: actionState,
-    handleConnectSquare: handleConnectSquare,
+    handleConnectSquare: handleGetApiKey,
     handleSavePaymethod: handleSavePaymethod,
     handleChangeDataInput: handleChangeDataInput,
-    handleChangeSanboxDataInput: handleChangeSanboxDataInput
+    handleChangeSanboxDataInput: handleChangeSanboxDataInput,
+    handleChangeSandbox: handleChangeSandbox
   })));
 };
 

@@ -253,9 +253,9 @@ var SettingsList = function SettingsList(props) {
               result = _yield$ordering$confi2.result;
 
               if (!error) {
-                changes = formState === null || formState === void 0 ? void 0 : formState.changes.filter(function (item) {
+                changes = formState !== null && formState !== void 0 && formState.changes ? formState === null || formState === void 0 ? void 0 : formState.changes.filter(function (item) {
                   return item.id !== result.id;
-                });
+                }) : [];
                 _configs = formState === null || formState === void 0 ? void 0 : formState.finalResult.map(function (config) {
                   if (config.id === result.id) {
                     return _objectSpread(_objectSpread({}, config), {}, {
@@ -381,7 +381,8 @@ var SettingsList = function SettingsList(props) {
     handleCheckBoxChange: handleCheckBoxChange,
     handleClickUpdate: handleClickUpdate,
     formState: formState,
-    handleChangeFormState: setFormState
+    handleChangeFormState: setFormState,
+    saveConfig: saveConfig
   })));
 };
 

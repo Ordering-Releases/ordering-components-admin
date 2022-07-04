@@ -120,15 +120,33 @@ var ImporterListing = function ImporterListing(props) {
                   Authorization: "Bearer ".concat(token)
                 }
               };
-              _context.next = 5;
+
+              if (!page) {
+                _context.next = 9;
+                break;
+              }
+
+              _context.next = 6;
               return fetch("".concat(ordering.root, "/importers?page=").concat(page || paginationProps.currentPage, "&page_size=").concat(pageSize || paginationProps.pageSize), requestOptions);
 
-            case 5:
-              response = _context.sent;
-              _context.next = 8;
+            case 6:
+              _context.t0 = _context.sent;
+              _context.next = 12;
+              break;
+
+            case 9:
+              _context.next = 11;
+              return fetch("".concat(ordering.root, "/importers"), requestOptions);
+
+            case 11:
+              _context.t0 = _context.sent;
+
+            case 12:
+              response = _context.t0;
+              _context.next = 15;
               return response.json();
 
-            case 8:
+            case 15:
               _yield$response$json = _context.sent;
               result = _yield$response$json.result;
               pagination = _yield$response$json.pagination;
@@ -152,26 +170,26 @@ var ImporterListing = function ImporterListing(props) {
                 nextPageItems: nextPageItems
               }));
               setPaginationDetail(_objectSpread({}, pagination));
-              _context.next = 21;
+              _context.next = 28;
               break;
 
-            case 18:
-              _context.prev = 18;
-              _context.t0 = _context["catch"](0);
+            case 25:
+              _context.prev = 25;
+              _context.t1 = _context["catch"](0);
 
-              if (_context.t0.constructor.name !== 'Cancel') {
+              if (_context.t1.constructor.name !== 'Cancel') {
                 setImporterList(_objectSpread(_objectSpread({}, importerList), {}, {
                   loading: false,
-                  error: [_context.t0.message]
+                  error: [_context.t1.message]
                 }));
               }
 
-            case 21:
+            case 28:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 18]]);
+      }, _callee, null, [[0, 25]]);
     }));
 
     return function getImporters(_x, _x2) {
@@ -282,7 +300,7 @@ var ImporterListing = function ImporterListing(props) {
   };
 
   (0, _react.useEffect)(function () {
-    getImporters(1, null);
+    getImporters();
   }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     actionStatus: actionStatus,

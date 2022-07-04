@@ -405,7 +405,7 @@ var GoogleMaps = function GoogleMaps(props) {
           });
         }
 
-        if (isHeatMap && !markerCluster) {
+        if (isHeatMap && !markerCluster && window.google.maps.visualization) {
           var _heatMap = new window.google.maps.visualization.HeatmapLayer({
             data: locations === null || locations === void 0 ? void 0 : locations.map(function (location) {
               return new window.google.maps.LatLng(location.lat, location.lng);

@@ -192,7 +192,7 @@ var BusinessSpreadSheet = function BusinessSpreadSheet(props) {
       var itemToRemove = [];
       var itemToUpdate = [];
       var itemToAdd = [];
-      var id = categoryId || categorySelected.id;
+      var id = categoryId || (categorySelected === null || categorySelected === void 0 ? void 0 : categorySelected.id);
       changeItems.forEach(function (item) {
         var error = {
           name: false,

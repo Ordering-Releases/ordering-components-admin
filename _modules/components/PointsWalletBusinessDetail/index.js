@@ -94,6 +94,16 @@ var PointsWalletBusinessDetail = function PointsWalletBusinessDetail(props) {
       changes: _objectSpread(_objectSpread({}, formState.changes), {}, _defineProperty({}, evt.target.name, value))
     }));
   };
+  /**
+   * Update loyalty business data
+   */
+
+
+  var handleChangeItem = function handleChangeItem(changes) {
+    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+      changes: _objectSpread(_objectSpread({}, formState.changes), changes)
+    }));
+  };
 
   var handleClickSubmit = function handleClickSubmit() {
     if (Object.keys(formState === null || formState === void 0 ? void 0 : formState.changes).length === 0) return;
@@ -289,7 +299,8 @@ var PointsWalletBusinessDetail = function PointsWalletBusinessDetail(props) {
     formState: formState,
     setFormState: setFormState,
     handleClickSubmit: handleClickSubmit,
-    handleChangeInput: handleChangeInput
+    handleChangeInput: handleChangeInput,
+    handleChangeItem: handleChangeItem
   })));
 };
 
