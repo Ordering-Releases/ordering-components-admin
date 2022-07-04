@@ -18,7 +18,8 @@ export const UserFormDetails = (props) => {
     useValidationFields,
     handleButtonUpdateClick,
     handleSuccessUpdate,
-    handleSuccessAdd
+    handleSuccessAdd,
+    isProfessional
   } = props
 
   const [ordering] = useApi()
@@ -149,7 +150,9 @@ export const UserFormDetails = (props) => {
   const handleAddClick = async () => {
     try {
       setFormState({ ...formState, loading: true })
-      const response = await ordering.users().save(formState.changes, {
+      const changes = { ...formState?.changes }
+      if (isProfessional) Object.assign(changes, { level: 8 })
+      const response = await ordering.users().save(changes, {
         accessToken: accessToken
       })
       setFormState({

@@ -20,6 +20,7 @@ export const BusinessDeliveryZone = (props) => {
 
   const [zoneState, setZoneState] = useState({ zone: zone })
   const [formState, setFormState] = useState({ loading: false, changes: {}, error: null })
+  const [kmlData, setKmlData] = useState(null)
 
   /**
    * Clean formState
@@ -216,6 +217,66 @@ export const BusinessDeliveryZone = (props) => {
     })
   }
 
+  const handleUploadKmlFiles = (files) => {
+    if (files.length === 1) {
+      const reader = new window.FileReader()
+      reader.readAsText(files[0])
+      reader.onload = () => {
+        extractGoogleCoords(reader.result)
+      }
+      reader.onerror = error => console.log(error)
+    }
+  }
+
+  const extractGoogleCoords = (plainText) => {
+    const parser = new DOMParser()
+    const xmlDoc = parser.parseFromString(plainText, 'text/xml')
+    const googlePolygons = []
+    let placeMarkName = ''
+
+    if (xmlDoc.documentElement.nodeName === 'kml') {
+      for (const item of xmlDoc.getElementsByTagName('Placemark')) {
+        placeMarkName = item.getElementsByTagName('name')[0].childNodes[0].nodeValue.trim()
+        const polygons = item.getElementsByTagName('Polygon')
+
+        for (const polygon of polygons) {
+          let coords = polygon.getElementsByTagName('coordinates')[0].childNodes[0].nodeValue.trim()
+          coords = coords.replace(/\n/g, ' ').replace(/\s+/g, ' ')
+          const points = coords.split(' ')
+          const googlePolygonsPaths = []
+          for (const point of points) {
+            const coord = point.split(',')
+            googlePolygonsPaths.push({ lat: +coord[1], lng: +coord[0] })
+          }
+          googlePolygons.push(googlePolygonsPaths)
+        }
+      }
+    } else {
+      setFormState({
+        ...formState,
+        error: t('INVALID_KML_FILE', 'Invalid KML file')
+      })
+    }
+
+    if (googlePolygons.length === 1) {
+      setFormState({
+        ...formState,
+        changes: {
+          ...formState.changes,
+          type: 2,
+          name: placeMarkName,
+          data: googlePolygons[0]
+        }
+      })
+      setKmlData(googlePolygons[0])
+    } else {
+      setFormState({
+        ...formState,
+        error: t('INVALID_KML_FILE', 'Invalid KML file')
+      })
+    }
+  }
+
   useEffect(() => {
     cleanFormState()
     setZoneState({
@@ -231,11 +292,13 @@ export const BusinessDeliveryZone = (props) => {
             {...props}
             zoneState={zoneState}
             formState={formState}
+            kmlData={kmlData}
             handleChangeInput={handleChangeInput}
             handleChangeFormState={handleChangeFormState}
             handleDeleteBusinessDeliveryZone={handleDeleteBusinessDeliveryZone}
             handleUpdateBusinessDeliveryZone={handleUpdateBusinessDeliveryZone}
             handleAddBusinessDeliveryZone={handleAddBusinessDeliveryZone}
+            handleUploadKmlFiles={handleUploadKmlFiles}
           />
         )
       }

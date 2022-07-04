@@ -30,7 +30,9 @@ export const ImporterListing = (props) => {
           Authorization: `Bearer ${token}`
         }
       }
-      const response = await fetch(`${ordering.root}/importers?page=${page || paginationProps.currentPage}&page_size=${pageSize || paginationProps.pageSize}`, requestOptions)
+      const response = page
+        ? await fetch(`${ordering.root}/importers?page=${page || paginationProps.currentPage}&page_size=${pageSize || paginationProps.pageSize}`, requestOptions)
+        : await fetch(`${ordering.root}/importers`, requestOptions)
       const { result, pagination } = await response.json()
 
       setImporterList({
@@ -129,7 +131,7 @@ export const ImporterListing = (props) => {
   }
 
   useEffect(() => {
-    getImporters(1, null)
+    getImporters()
   }, [])
 
   return (

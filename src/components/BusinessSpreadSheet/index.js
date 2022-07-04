@@ -91,7 +91,7 @@ export const BusinessSpreadSheet = (props) => {
       const itemToRemove = []
       const itemToUpdate = []
       const itemToAdd = []
-      const id = categoryId || categorySelected.id
+      const id = categoryId || categorySelected?.id
       changeItems.forEach(item => {
         const error = {
           name: false,

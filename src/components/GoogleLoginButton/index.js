@@ -23,7 +23,7 @@ export const GoogleLoginButton = (props) => {
     return () => {
       wasUnmounted = true
       const element = document.getElementById('google-login')
-      if (element) {
+      if (element.parentNode) {
         element.parentNode.removeChild(element)
       }
     }

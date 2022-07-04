@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import { useLanguage } from '../../contexts/LanguageContext'
+import { useConfig } from '../../contexts/ConfigContext'
 import { useApi } from '../../contexts/ApiContext'
 
 /**
@@ -14,13 +16,29 @@ export const ForgotPasswordForm = (props) => {
   } = props
 
   const [ordering] = useApi()
+  const [, t] = useLanguage()
+  const [{ configs }] = useConfig()
   const [formState, setFormState] = useState({ loading: false, result: { error: false } })
   const [formData, setFormData] = useState({ email: defaultEmail || '' })
+  const [reCaptchaValue, setReCaptchaValue] = useState(null)
+  const [isReCaptchaEnable, setIsReCaptchaEnable] = useState(false)
 
   /**
    * Default fuction for forgot password workflow
    */
   const handleForgotPasswordClick = async (data) => {
+    if (isReCaptchaEnable) {
+      if (reCaptchaValue === null) {
+        setFormState({
+          result: {
+            error: true,
+            result: t('RECAPTCHA_VALIDATION_IS_REQUIRED', 'The captcha validation is required')
+          },
+          loading: false
+        })
+        return
+      }
+    }
     try {
       setFormState({ ...formState, loading: true })
       const values = data || formData
@@ -29,6 +47,10 @@ export const ForgotPasswordForm = (props) => {
         result: response.content,
         loading: false
       })
+      if (isReCaptchaEnable) {
+        window.grecaptcha.reset()
+        setReCaptchaValue(null)
+      }
       if (!response.content.error) {
         if (handleSuccessForgotPassword) {
           handleSuccessForgotPassword(formData.email)
@@ -56,6 +78,12 @@ export const ForgotPasswordForm = (props) => {
     })
   }
 
+  useEffect(() => {
+    setIsReCaptchaEnable(ordering?.project && configs &&
+      Object.keys(configs).length > 0 &&
+      configs?.security_recaptcha_auth?.value === '1')
+  }, [configs, ordering?.project])
+
   return (
     <>
       {UIComponent && (
@@ -65,6 +93,8 @@ export const ForgotPasswordForm = (props) => {
           formData={formData}
           hanldeChangeInput={hanldeChangeInput}
           handleButtonForgotPasswordClick={handleButtonForgotPasswordClick || handleForgotPasswordClick}
+          isReCaptchaEnable={isReCaptchaEnable}
+          handleReCaptcha={setReCaptchaValue}
         />
       )}
     </>

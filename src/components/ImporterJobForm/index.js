@@ -8,14 +8,22 @@ import { useLanguage } from '../../contexts/LanguageContext'
 /**
  * Component to create importerJob form without UI component
  */
-
- export const ImporterJobForm = (props) => {
+export const ImporterJobForm = (props) => {
   const {
     UIComponent
   } = props
   const [ordering] = useApi()
   const [session] = useSession()
-  const [formState, setFormState] = useState({ loading: false, changes: {}, result: { error: false } })
+  const [formState, setFormState] = useState({
+    loading: false,
+    changes: {
+      separator: ',',
+      enclosure: '"',
+      escape: '/',
+      start_line: 2
+    },
+    result: { error: false }
+  })
   const [fileState, setFileState] = useState({ fileName: null, fileType: null, csvFile: null, importOptions: {} })
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()

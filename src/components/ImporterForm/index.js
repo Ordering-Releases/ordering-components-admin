@@ -113,11 +113,15 @@ export const ImporterForm = (props) => {
   }
 
   const clearMappingForm = () => {
-    document.getElementById('importer-form').reset()
+    if (document.getElementById('importer-form')) {
+      document.getElementById('importer-form').reset()
+    }
   }
 
   const clearFieldForm = () => {
-    document.getElementById('field-form').reset()
+    if (document.getElementById('field-form')) {
+      document.getElementById('field-form').reset()
+    }
   }
 
   const clearImorterForm = () => {
@@ -309,6 +313,70 @@ export const ImporterForm = (props) => {
     }
   }, [mappingState])
 
+  const downloadCSV = () => {
+    const allowedBusinessImporters = {
+      business_id: 10,
+      external_business_id: 120,
+      name: 'House mine',
+      logo: '"https://res.cloudinary.com/ordering2/image/upload/f_auto,q_auto,h_100,c_limit/v1539095959/crya6ibldlsz4hjyo03e.jpg"',
+      email: 'test@ordering.co',
+      slug: 'test_slug',
+      header: '"https://s3.amazonaws.com/ordering-images2/res/ordering/image/upload/bqvntsurh8opknu58z9f/1534196989.jpg"',
+      about: 'test about',
+      address: '"5th Avenue, New York, NY, USA"',
+      location: '"{""lat"":40.7552112,""lng"":-73.982322}"',
+      timezone: 'America/New_York',
+      description: 'test description',
+      cellphone: '123123123123',
+      phone: '123123',
+      featured: 1,
+      enabled: 1,
+      front_layout: 'food',
+      seo_image: '"https://res.cloudinary.com/ordering2/image/upload/f_auto,q_auto,h_100,c_limit/v1539095959/crya6ibldlsz4hjyo03e.jpg"',
+      seo_title: 'seo title',
+      seo_description: 'seo description'
+    }
+
+    const _mappingState = { ...mappingState }
+    const fields = { ..._mappingState.fields }
+    delete _mappingState.fields
+    const csvFields = { ..._mappingState, ...fields }
+
+    const values = Object.values(csvFields)
+    const max = Math.max(...values)
+    const csvHeaders = Array(max + 1).fill('')
+    const csvRow1 = Array(max + 1).fill('')
+    const csvRow2 = Array(max + 1).fill('')
+    for (const key in csvFields) {
+      const fieldName = key.replaceAll('_', ' ')
+      csvHeaders[csvFields[key]] = fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+      csvRow1[csvFields[key]] = allowedBusinessImporters[key] || ' '
+      if (key === 'busines_id' || key === 'external_business_id') {
+        csvRow2[csvFields[key]] = allowedBusinessImporters[key] + 1
+      } else if (key === 'slug' || key === 'name') {
+        csvRow2[csvFields[key]] = allowedBusinessImporters[key] + '_2'
+      } else {
+        csvRow2[csvFields[key]] = allowedBusinessImporters[key] || ' '
+      }
+    }
+
+    const rows = [
+      csvHeaders,
+      csvRow1,
+      csvRow2
+    ]
+    const csvContent = rows.map(e => e.join(',')).join('\n')
+    const link = document.createElement('a')
+    link.download = 'example.csv'
+    const blob = new Blob(['\ufeff', csvContent], { type: 'text/csv' })
+    const reader = new FileReader()
+    reader.readAsDataURL(blob)
+    reader.onload = () => {
+      link.href = reader.result
+      link.click()
+    }
+  }
+
   return (
     <>
       {UIComponent && (
@@ -332,6 +400,7 @@ export const ImporterForm = (props) => {
           handleCreateImporter={handleCreateImporter}
           handleEditState={handleEditState}
           editImporter={editImporter}
+          downloadCSV={downloadCSV}
         />
       )}
     </>

@@ -108,7 +108,11 @@ export const PointsWalletBusinessList = (props) => {
           ...(!enabled && { redeems: false }),
           ...(!enabled && { accumulates: false }),
           ...(!enabled && { redemption_rate: null }),
-          ...(!enabled && { accumulation_rate: null })
+          ...(!enabled && { accumulation_rate: null }),
+          ...(!enabled && { expire_after_minutes: null }),
+          ...(!enabled && { maximum_accumulation: null }),
+          ...(!enabled && { maximum_redemption_rate: null }),
+          ...(!enabled && { maximum_redemption_type: null })
         }
       }
       return business
@@ -225,13 +229,9 @@ export const PointsWalletBusinessList = (props) => {
           const walletBusiness = pointWallet?.businesses.find(item => item.business_id === business.id)
           if (walletBusiness) {
             return {
+              ...walletBusiness,
               ...business,
-              redeems: walletBusiness?.redeems,
-              accumulates: walletBusiness?.accumulates,
-              wallet_enabled: true,
-              redemption_rate: walletBusiness?.redemption_rate,
-              accumulation_rate: walletBusiness?.accumulation_rate,
-              loyalty_plan_id: pointWallet?.id
+              wallet_enabled: true
             }
           }
           return {
@@ -241,7 +241,11 @@ export const PointsWalletBusinessList = (props) => {
             wallet_enabled: false,
             loyalty_plan_id: pointWallet?.id,
             redemption_rate: null,
-            accumulation_rate: null
+            accumulation_rate: null,
+            expire_after_minutes: null,
+            maximum_accumulation: null,
+            maximum_redemption_rate: null,
+            maximum_redemption_type: null
           }
         })
         setBusinessList({

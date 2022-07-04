@@ -122,7 +122,7 @@ export const SettingsList = (props) => {
       })
       const { content: { error, result } } = await ordering.configs(id).save(params)
       if (!error) {
-        const changes = formState?.changes.filter(item => item.id !== result.id)
+        const changes = formState?.changes ? formState?.changes.filter(item => item.id !== result.id) : []
         const _configs = formState?.finalResult.map(config => {
           if (config.id === result.id) {
             return {
@@ -234,6 +234,7 @@ export const SettingsList = (props) => {
           handleClickUpdate={handleClickUpdate}
           formState={formState}
           handleChangeFormState={setFormState}
+          saveConfig={saveConfig}
         />
       )}
     </>

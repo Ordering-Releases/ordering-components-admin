@@ -31,6 +31,13 @@ export const PointsWalletBusinessDetail = (props) => {
     setFormState({ ...formState, changes: { ...formState.changes, [evt.target.name]: value } })
   }
 
+  /**
+   * Update loyalty business data
+   */
+  const handleChangeItem = (changes) => {
+    setFormState({ ...formState, changes: { ...formState.changes, ...changes } })
+  }
+
   const handleClickSubmit = () => {
     if (Object.keys(formState?.changes).length === 0) return
 
@@ -134,6 +141,7 @@ export const PointsWalletBusinessDetail = (props) => {
           setFormState={setFormState}
           handleClickSubmit={handleClickSubmit}
           handleChangeInput={handleChangeInput}
+          handleChangeItem={handleChangeItem}
         />
       )}
     </>

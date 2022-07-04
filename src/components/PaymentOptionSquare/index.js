@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useApi } from '../../contexts/ApiContext'
 import { useSession } from '../../contexts/SessionContext'
@@ -17,9 +17,9 @@ export const PaymentOptionSquare = (props) => {
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
   const [ordering] = useApi()
-  const [{ token }] = useSession()
+  const [{ user, token }] = useSession()
 
-  const [squareUrlState, setSquareUrlState] = useState({ url: null, loading: false, error: null })
+  const [squareUrlState, setSquareUrlState] = useState({ url: null, loading: true, error: null })
   const [squareData, setSquareData] = useState({
     sandbox: businessPaymethod?.sandbox,
     data: businessPaymethod?.data,
@@ -28,9 +28,52 @@ export const PaymentOptionSquare = (props) => {
   const [actionState, setActionState] = useState({ loading: false, error: null })
 
   /**
+   * Method to get the api key
+   */
+  const handleGetApiKey = async () => {
+    try {
+      setActionState({ ...actionState, loading: false })
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${ordering.root}/users/${user?.id}/keys`, requestOptions)
+      const content = await response.json()
+      if (!content.error) {
+        const apiKey = content.result[0]?.key
+        if (apiKey) {
+          handleGetConnectUrl(apiKey)
+          setActionState({ ...actionState, loading: false, error: null })
+        } else {
+          setActionState({
+            ...actionState,
+            loading: false,
+            error: t('NO_API_KEY_SQUARE', 'There is no Api Key for Square connection')
+          })
+        }
+      } else {
+        setActionState({
+          ...actionState,
+          loading: false,
+          error: content.result
+        })
+      }
+    } catch (error) {
+      setActionState({
+        ...actionState,
+        loading: false,
+        error: [error.message]
+      })
+    }
+  }
+
+  /**
    * Method to get connect url
    */
-  const handleGetConnectUrl = async () => {
+  const handleGetConnectUrl = async (apiKey) => {
     try {
       setSquareUrlState({ ...squareUrlState, loading: true })
       const requestOptions = {
@@ -40,7 +83,8 @@ export const PaymentOptionSquare = (props) => {
         },
         body: JSON.stringify({
           business_id: business?.id,
-          project_name: ordering?.project
+          project_name: ordering?.project,
+          api_key: apiKey
         })
       }
       const url = 'https://plugins-live.ordering.co/square/oauth/oauth'
@@ -52,6 +96,7 @@ export const PaymentOptionSquare = (props) => {
           loading: false,
           url: result?.data.url
         })
+        handleConnectSquare(result?.data.url)
       } else {
         setSquareUrlState({
           ...squareUrlState,
@@ -67,8 +112,8 @@ export const PaymentOptionSquare = (props) => {
   /**
    * Method to connect with Square
    */
-  const handleConnectSquare = () => {
-    const connect = window.open(squareUrlState.url, '_blank', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,clearcache=yes')
+  const handleConnectSquare = (squareConnectUrl) => {
+    const connect = window.open(squareConnectUrl, '_blank', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,clearcache=yes')
     const interval = setInterval(function () {
       if (!connect.closed) {
         connect.postMessage('data', ordering.url)
@@ -149,6 +194,13 @@ export const PaymentOptionSquare = (props) => {
     })
   }
 
+  const handleChangeSandbox = (checked) => {
+    setSquareData({
+      ...squareData,
+      sandbox: checked
+    })
+  }
+
   /**
    * Update square sandbox data
    * @param {EventTarget} e Related HTML event
@@ -163,10 +215,6 @@ export const PaymentOptionSquare = (props) => {
     })
   }
 
-  useEffect(() => {
-    handleGetConnectUrl()
-  }, [])
-
   return (
     <>
       {UIComponent && (
@@ -175,10 +223,11 @@ export const PaymentOptionSquare = (props) => {
           squareUrlState={squareUrlState}
           squareData={squareData}
           actionState={actionState}
-          handleConnectSquare={handleConnectSquare}
+          handleConnectSquare={handleGetApiKey}
           handleSavePaymethod={handleSavePaymethod}
           handleChangeDataInput={handleChangeDataInput}
           handleChangeSanboxDataInput={handleChangeSanboxDataInput}
+          handleChangeSandbox={handleChangeSandbox}
         />
       )}
     </>

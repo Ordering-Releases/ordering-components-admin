@@ -1,93 +1,70 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useApi } from '../../contexts/ApiContext'
 import { useSession } from '../../contexts/SessionContext'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
 
-export const PointsWalletLevels = (props) => {
+export const SingleLoyaltyLevel = (props) => {
   const {
-    UIComponent
+    UIComponent,
+    handleDeleteLevelList,
+    handleUpdateLevelList
   } = props
 
   const [ordering] = useApi()
   const [{ token }] = useSession()
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
-  const [levelList, setLevelList] = useState({ loading: false, levels: [], error: null })
-  const [formState, setFormState] = useState({ loading: false, changes: {}, error: null })
+  const [formState, setFormState] = useState({ loading: false, error: null, changes: {} })
 
   /**
-   * Update level data
+   * Update a level
    * @param {EventTarget} evt Related HTML event
+   * @param {Number} levelId id of level
    */
-  const handleChangeInput = (evt) => {
-    const changes = { ...formState?.changes, [evt.target.name]: evt.target.value }
+  const handleUpdateLevel = (evt, levelId) => {
+    const changes = levelId === formState?.changes?.id
+      ? { ...formState?.changes, [evt.target.name]: evt.target.value }
+      : { [evt.target.name]: evt.target.value, id: levelId }
     setFormState({ ...formState, changes: changes })
   }
 
   /**
-   * Update level data
-   * @param {EventTarget} evt Related HTML event
+   * Update a level
    */
-  const handleChangeItem = (changes) => {
-    const currentChanges = { ...formState?.changes, ...changes }
+  const handleChangeLevel = (changes, levelId) => {
+    const currentChanges = levelId === formState?.changes?.id
+      ? { ...formState?.changes, ...changes }
+      : { ...changes, id: levelId }
     setFormState({ ...formState, changes: currentChanges })
   }
 
-  /**
-   * Add a level
-   * @param {Object || Array} level data of level
-   */
-  const handleAddLevelList = (level) => {
-    const levels = [...levelList.levels]
-    levels.push(level)
-    setLevelList({ ...levelList, levels: levels })
+  const handleUpdateBtnClick = () => {
+    updateLevel(formState?.changes, formState?.changes?.id)
   }
 
   /**
-   * Update a level
-   * @param {Object || Array} result data of level
+   * Default fuction to delete a level
    */
-  const handleUpdateLevelList = (result) => {
-    const updatedLevels = levelList?.levels.map(level => {
-      if (level.id === result.id) return result
-      else return level
-    })
-    setLevelList({ ...levelList, levels: updatedLevels })
-  }
-
-  /**
-   * Delete a level
-   * @param {Object || Array} level data of level
-   */
-  const handleDeleteLevelList = (level) => {
-    const levels = levelList?.levels?.filter(item => item.id !== level.id)
-    setLevelList({ ...levelList, levels: levels })
-  }
-
-  /**
-   * Default fuction to add a level
-   */
-  const handleUpdateAddClick = async () => {
+  const handleUpdateDeleteClick = async (id) => {
     try {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
       setFormState({ ...formState, loading: true })
       const requestOptions = {
-        method: 'POST',
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(formState.changes)
+        }
       }
-      const fetchEndpoint = `${ordering.root}/loyalty_levels`
+      const fetchEndpoint = `${ordering.root}/loyalty_levels/${id}`
       const response = await fetch(fetchEndpoint, requestOptions)
       const { error, result } = await response.json()
       if (!error) {
-        showToast(ToastType.Success, t('LEVEL_ADDED', 'Level added'))
+        showToast(ToastType.Success, t('LEVEL_DELETED', 'Level deleted'))
         setFormState({ ...formState, loading: false, error: null, changes: {} })
-        handleAddLevelList(result)
+        handleDeleteLevelList(result)
       } else {
         setFormState({ ...formState, loading: false, error: result })
       }
@@ -97,54 +74,51 @@ export const PointsWalletLevels = (props) => {
   }
 
   /**
-   * Method to get level list from API
+   * Function to update a webhook
    */
-  const getLevelList = async () => {
+  const updateLevel = async (changes, id) => {
     try {
-      setLevelList({ ...levelList, loading: true })
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setFormState({ ...formState, loading: true })
       const requestOptions = {
-        method: 'GET',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
-        }
+        },
+        body: JSON.stringify(changes)
       }
-      const fetchEndpoint = `${ordering.root}/loyalty_levels`
-      const response = await fetch(fetchEndpoint, requestOptions)
+      const response = await fetch(`${ordering.root}/loyalty_levels/${id}`, requestOptions)
       const { error, result } = await response.json()
       if (!error) {
-        setLevelList({ ...levelList, loading: false, error: null, levels: result })
+        setFormState({ changes: {}, loading: false, error: null })
+        handleUpdateLevelList(result)
+        showToast(ToastType.Success, t('LEVEL_UPDATED', 'Level updated'))
       } else {
-        setLevelList({ ...levelList, loading: false, error: result })
+        setFormState({ ...formState, loading: false, error: result })
       }
     } catch (error) {
-      setLevelList({ ...levelList, loading: false, error: error.message })
+      setFormState({ ...formState, loading: false, error: error.message })
     }
   }
-
-  useEffect(() => {
-    getLevelList()
-  }, [])
 
   return (
     <>
       {UIComponent && (
         <UIComponent
           {...props}
-          levelList={levelList}
           formState={formState}
-          handleChangeItem={handleChangeItem}
-          handleChangeInput={handleChangeInput}
-          handleUpdateAddClick={handleUpdateAddClick}
-          handleUpdateLevelList={handleUpdateLevelList}
-          handleDeleteLevelList={handleDeleteLevelList}
+          handleUpdateDeleteClick={handleUpdateDeleteClick}
+          handleUpdateLevel={handleUpdateLevel}
+          handleUpdateBtnClick={handleUpdateBtnClick}
+          handleChangeLevel={handleChangeLevel}
         />
       )}
     </>
   )
 }
 
-PointsWalletLevels.propTypes = {
+SingleLoyaltyLevel.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props
    */
@@ -171,7 +145,7 @@ PointsWalletLevels.propTypes = {
   afterElements: PropTypes.arrayOf(PropTypes.element)
 }
 
-PointsWalletLevels.defaultProps = {
+SingleLoyaltyLevel.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],

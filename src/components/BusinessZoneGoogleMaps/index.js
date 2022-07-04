@@ -15,7 +15,8 @@ export const BusinessZoneGoogleMaps = (props) => {
     setClearState,
     isAddMode,
     greenFillStyle,
-    businessZones
+    businessZones,
+    kmlData
   } = props
 
   if (!apiKey) {
@@ -205,6 +206,23 @@ export const BusinessZoneGoogleMaps = (props) => {
       }
     }
   }, [location])
+
+  useEffect(() => {
+    if (!googleMap || !Array.isArray(kmlData) || !isAddMode) return
+    const polygon = new window.google.maps.Polygon({
+      ...fillStyle,
+      draggable: false,
+      map: googleMap,
+      paths: kmlData
+    })
+    polygon.setMap(googleMap)
+    const bounds = new window.google.maps.LatLngBounds()
+    for (const position of kmlData) {
+      bounds.extend(position)
+    }
+    googleMap.fitBounds(bounds)
+    setPolygonZone(polygon)
+  }, [isAddMode, kmlData, googleMap])
 
   useEffect(() => {
     if (googleReady) {
