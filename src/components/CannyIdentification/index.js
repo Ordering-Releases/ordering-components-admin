@@ -29,8 +29,7 @@ export const CannyIdentification = (props) => {
         id: user.id,
 
         // These fields are optional, but recommended:
-        avatarURL: user?.photo,
-        created: new Date(user.created_at).toISOString()
+        avatarURL: user?.photo
       }
     })
   }, [user, appId])
