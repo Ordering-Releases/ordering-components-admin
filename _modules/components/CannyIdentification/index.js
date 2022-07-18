@@ -72,8 +72,7 @@ var CannyIdentification = function CannyIdentification(props) {
         name: user.name,
         id: user.id,
         // These fields are optional, but recommended:
-        avatarURL: user === null || user === void 0 ? void 0 : user.photo,
-        created: new Date(user.created_at).toISOString()
+        avatarURL: user === null || user === void 0 ? void 0 : user.photo
       }
     });
   }, [user, appId]);
