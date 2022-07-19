@@ -5,7 +5,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.SingleLoyaltyLevel = void 0;
+exports.LoyaltyLevelDetail = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -51,10 +51,14 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-var SingleLoyaltyLevel = function SingleLoyaltyLevel(props) {
+var LoyaltyLevelDetail = function LoyaltyLevelDetail(props) {
   var UIComponent = props.UIComponent,
       handleDeleteLevelList = props.handleDeleteLevelList,
-      handleUpdateLevelList = props.handleUpdateLevelList;
+      handleUpdateLevelList = props.handleUpdateLevelList,
+      handleAddLevelList = props.handleAddLevelList,
+      level = props.level,
+      setSelectedLevel = props.setSelectedLevel,
+      onClose = props.onClose;
 
   var _useApi = (0, _ApiContext.useApi)(),
       _useApi2 = _slicedToArray(_useApi, 1),
@@ -81,48 +85,60 @@ var SingleLoyaltyLevel = function SingleLoyaltyLevel(props) {
       formState = _useState2[0],
       setFormState = _useState2[1];
   /**
-   * Update a level
+   * Update level data
    * @param {EventTarget} evt Related HTML event
-   * @param {Number} levelId id of level
    */
 
 
-  var handleUpdateLevel = function handleUpdateLevel(evt, levelId) {
-    var _formState$changes, _ref;
+  var handleChangeInput = function handleChangeInput(evt) {
+    var changes = _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), {}, _defineProperty({}, evt.target.name, evt.target.value));
 
-    var changes = levelId === (formState === null || formState === void 0 ? void 0 : (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.id) ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), {}, _defineProperty({}, evt.target.name, evt.target.value)) : (_ref = {}, _defineProperty(_ref, evt.target.name, evt.target.value), _defineProperty(_ref, "id", levelId), _ref);
     setFormState(_objectSpread(_objectSpread({}, formState), {}, {
       changes: changes
     }));
   };
   /**
-   * Update a level
+   * Update business type image data
+   * @param {File} file Image to change business type image
    */
 
 
-  var handleChangeLevel = function handleChangeLevel(changes, levelId) {
-    var _formState$changes2;
+  var handlechangeImage = function handlechangeImage(file) {
+    var reader = new window.FileReader();
+    reader.readAsDataURL(file);
 
-    var currentChanges = levelId === (formState === null || formState === void 0 ? void 0 : (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.id) ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), changes) : _objectSpread(_objectSpread({}, changes), {}, {
-      id: levelId
-    });
+    reader.onload = function () {
+      setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+        changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
+          image: reader.result
+        })
+      }));
+    };
+
+    reader.onerror = function (error) {
+      return console.log(error);
+    };
+  };
+  /**
+   * Update level data
+   * @param {object} changes Related HTML event
+   */
+
+
+  var handleChangeItem = function handleChangeItem(changes) {
+    var currentChanges = _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), changes);
+
     setFormState(_objectSpread(_objectSpread({}, formState), {}, {
       changes: currentChanges
     }));
-  };
-
-  var handleUpdateBtnClick = function handleUpdateBtnClick() {
-    var _formState$changes3;
-
-    updateLevel(formState === null || formState === void 0 ? void 0 : formState.changes, formState === null || formState === void 0 ? void 0 : (_formState$changes3 = formState.changes) === null || _formState$changes3 === void 0 ? void 0 : _formState$changes3.id);
   };
   /**
    * Default fuction to delete a level
    */
 
 
-  var handleUpdateDeleteClick = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(id) {
+  var handleDeleteLevel = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
       var requestOptions, fetchEndpoint, response, _yield$response$json, error, result;
 
       return _regeneratorRuntime().wrap(function _callee$(_context) {
@@ -141,7 +157,7 @@ var SingleLoyaltyLevel = function SingleLoyaltyLevel(props) {
                   Authorization: "Bearer ".concat(token)
                 }
               };
-              fetchEndpoint = "".concat(ordering.root, "/loyalty_levels/").concat(id);
+              fetchEndpoint = "".concat(ordering.root, "/loyalty_levels/").concat(level === null || level === void 0 ? void 0 : level.id);
               _context.next = 7;
               return fetch(fetchEndpoint, requestOptions);
 
@@ -163,6 +179,7 @@ var SingleLoyaltyLevel = function SingleLoyaltyLevel(props) {
                   changes: {}
                 }));
                 handleDeleteLevelList(result);
+                onClose && onClose();
               } else {
                 setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                   loading: false,
@@ -189,8 +206,8 @@ var SingleLoyaltyLevel = function SingleLoyaltyLevel(props) {
       }, _callee, null, [[0, 16]]);
     }));
 
-    return function handleUpdateDeleteClick(_x) {
-      return _ref2.apply(this, arguments);
+    return function handleDeleteLevel() {
+      return _ref.apply(this, arguments);
     };
   }();
   /**
@@ -199,8 +216,8 @@ var SingleLoyaltyLevel = function SingleLoyaltyLevel(props) {
 
 
   var updateLevel = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(changes, id) {
-      var requestOptions, response, _yield$response$json2, error, result;
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+      var changes, key, requestOptions, response, _yield$response$json2, error, result;
 
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) {
@@ -211,6 +228,14 @@ var SingleLoyaltyLevel = function SingleLoyaltyLevel(props) {
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: true
               }));
+              changes = _objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes);
+
+              for (key in changes) {
+                if (!(changes !== null && changes !== void 0 && changes.name) && changes[key] === '') {
+                  changes[key] = null;
+                }
+              }
+
               requestOptions = {
                 method: 'PUT',
                 headers: {
@@ -219,15 +244,15 @@ var SingleLoyaltyLevel = function SingleLoyaltyLevel(props) {
                 },
                 body: JSON.stringify(changes)
               };
-              _context2.next = 6;
-              return fetch("".concat(ordering.root, "/loyalty_levels/").concat(id), requestOptions);
+              _context2.next = 8;
+              return fetch("".concat(ordering.root, "/loyalty_levels/").concat(level === null || level === void 0 ? void 0 : level.id), requestOptions);
 
-            case 6:
+            case 8:
               response = _context2.sent;
-              _context2.next = 9;
+              _context2.next = 11;
               return response.json();
 
-            case 9:
+            case 11:
               _yield$response$json2 = _context2.sent;
               error = _yield$response$json2.error;
               result = _yield$response$json2.result;
@@ -239,6 +264,7 @@ var SingleLoyaltyLevel = function SingleLoyaltyLevel(props) {
                   error: null
                 });
                 handleUpdateLevelList(result);
+                setSelectedLevel(result);
                 showToast(_ToastContext.ToastType.Success, t('LEVEL_UPDATED', 'Level updated'));
               } else {
                 setFormState(_objectSpread(_objectSpread({}, formState), {}, {
@@ -247,41 +273,122 @@ var SingleLoyaltyLevel = function SingleLoyaltyLevel(props) {
                 }));
               }
 
-              _context2.next = 18;
+              _context2.next = 20;
               break;
 
-            case 15:
-              _context2.prev = 15;
+            case 17:
+              _context2.prev = 17;
               _context2.t0 = _context2["catch"](0);
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: false,
                 error: _context2.t0.message
               }));
 
-            case 18:
+            case 20:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[0, 15]]);
+      }, _callee2, null, [[0, 17]]);
     }));
 
-    return function updateLevel(_x2, _x3) {
+    return function updateLevel() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+  /**
+   * Default fuction to add a level
+   */
+
+
+  var addLevel = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var requestOptions, fetchEndpoint, response, _yield$response$json3, error, result;
+
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.prev = 0;
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                loading: true
+              }));
+              requestOptions = {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                },
+                body: JSON.stringify(formState.changes)
+              };
+              fetchEndpoint = "".concat(ordering.root, "/loyalty_levels");
+              _context3.next = 7;
+              return fetch(fetchEndpoint, requestOptions);
+
+            case 7:
+              response = _context3.sent;
+              _context3.next = 10;
+              return response.json();
+
+            case 10:
+              _yield$response$json3 = _context3.sent;
+              error = _yield$response$json3.error;
+              result = _yield$response$json3.result;
+
+              if (!error) {
+                showToast(_ToastContext.ToastType.Success, t('LEVEL_ADDED', 'Level added'));
+                setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                  loading: false,
+                  error: null,
+                  changes: {}
+                }));
+                handleAddLevelList(result);
+                onClose && onClose();
+              } else {
+                setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                  loading: false,
+                  error: result
+                }));
+              }
+
+              _context3.next = 19;
+              break;
+
+            case 16:
+              _context3.prev = 16;
+              _context3.t0 = _context3["catch"](0);
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                loading: false,
+                error: _context3.t0.message
+              }));
+
+            case 19:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, null, [[0, 16]]);
+    }));
+
+    return function addLevel() {
       return _ref3.apply(this, arguments);
     };
   }();
 
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     formState: formState,
-    handleUpdateDeleteClick: handleUpdateDeleteClick,
-    handleUpdateLevel: handleUpdateLevel,
-    handleUpdateBtnClick: handleUpdateBtnClick,
-    handleChangeLevel: handleChangeLevel
+    handleDeleteLevel: handleDeleteLevel,
+    handleChangeInput: handleChangeInput,
+    updateLevel: updateLevel,
+    addLevel: addLevel,
+    handleChangeItem: handleChangeItem,
+    handlechangeImage: handlechangeImage
   })));
 };
 
-exports.SingleLoyaltyLevel = SingleLoyaltyLevel;
-SingleLoyaltyLevel.propTypes = {
+exports.LoyaltyLevelDetail = LoyaltyLevelDetail;
+LoyaltyLevelDetail.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props
    */
@@ -311,7 +418,7 @@ SingleLoyaltyLevel.propTypes = {
    */
   afterElements: _propTypes.default.arrayOf(_propTypes.default.element)
 };
-SingleLoyaltyLevel.defaultProps = {
+LoyaltyLevelDetail.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],

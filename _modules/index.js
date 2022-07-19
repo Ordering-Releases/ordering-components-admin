@@ -759,6 +759,12 @@ Object.defineProperty(exports, "LogoutAction", {
     return _LogoutAction.LogoutAction;
   }
 });
+Object.defineProperty(exports, "LoyaltyLevelDetail", {
+  enumerable: true,
+  get: function get() {
+    return _LoyaltyLevelDetail.LoyaltyLevelDetail;
+  }
+});
 Object.defineProperty(exports, "MainSearch", {
   enumerable: true,
   get: function get() {
@@ -1267,12 +1273,6 @@ Object.defineProperty(exports, "SingleBusinessProduct", {
   enumerable: true,
   get: function get() {
     return _SingleBusinessProduct.SingleBusinessProduct;
-  }
-});
-Object.defineProperty(exports, "SingleLoyaltyLevel", {
-  enumerable: true,
-  get: function get() {
-    return _SingleLoyaltyLevel.SingleLoyaltyLevel;
   }
 });
 Object.defineProperty(exports, "SingleOrderCard", {
@@ -1850,7 +1850,7 @@ var _SignupForm = require("./components/SignupForm");
 
 var _SingleBusinessCard = require("./components/SingleBusinessCard");
 
-var _SingleLoyaltyLevel = require("./components/SingleLoyaltyLevel");
+var _LoyaltyLevelDetail = require("./components/LoyaltyLevelDetail");
 
 var _SingleOrderCard = require("./components/SingleOrderCard");
 

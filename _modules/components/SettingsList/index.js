@@ -145,6 +145,20 @@ var SettingsList = function SettingsList(props) {
   var saveChanges = function saveChanges(changeValue, id) {
     var _formState$changes;
 
+    var item = configs.find(function (config) {
+      return config.id === id;
+    });
+
+    switch (item === null || item === void 0 ? void 0 : item.key) {
+      case 'platform_fee_fixed':
+      case 'platform_fee_percentage':
+        if (isNaN(Number(changeValue) && changeValue !== '')) return;
+        break;
+
+      default:
+        break;
+    }
+
     var _configs = [];
     var found = formState === null || formState === void 0 ? void 0 : (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.find(function (item) {
       return item.id === id;
@@ -152,19 +166,12 @@ var SettingsList = function SettingsList(props) {
 
     if (found) {
       _configs = formState === null || formState === void 0 ? void 0 : formState.changes.map(function (config) {
-        if (config.id === id) {
-          return _objectSpread(_objectSpread({}, config), {}, {
-            value: changeValue
-          });
-        }
-
-        return config;
+        return config.id === id ? _objectSpread(_objectSpread({}, config), {}, {
+          value: changeValue
+        }) : config;
       });
     } else {
       if (formState !== null && formState !== void 0 && formState.changes) _configs = _toConsumableArray(formState === null || formState === void 0 ? void 0 : formState.changes);
-      var item = configs.find(function (config) {
-        return config.id === id;
-      });
 
       _configs.push(_objectSpread(_objectSpread({}, item), {}, {
         value: changeValue
@@ -172,13 +179,9 @@ var SettingsList = function SettingsList(props) {
     }
 
     var defaultConfigs = configs.map(function (config) {
-      if (config.id === id) {
-        return _objectSpread(_objectSpread({}, config), {}, {
-          value: changeValue
-        });
-      }
-
-      return config;
+      return config.id === id ? _objectSpread(_objectSpread({}, config), {}, {
+        value: changeValue
+      }) : config;
     });
     setFormState(_objectSpread(_objectSpread({}, formState), {}, {
       changes: _configs

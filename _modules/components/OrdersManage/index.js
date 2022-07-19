@@ -76,6 +76,12 @@ var OrdersManage = function OrdersManage(props) {
       loading = _useSession2$.loading;
 
   var requestsState = {};
+  var orderStatuesList = {
+    pending: [0, 13],
+    inProgress: [7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23],
+    completed: [1, 11, 15],
+    cancelled: [2, 5, 6, 10, 12, 16, 17]
+  };
 
   var _useState = (0, _react.useState)(null),
       _useState2 = _slicedToArray(_useState, 2),
@@ -119,91 +125,101 @@ var OrdersManage = function OrdersManage(props) {
       _useState16 = _slicedToArray(_useState15, 2),
       deletedOrderId = _useState16[0],
       setDeletedOrderId = _useState16[1];
+
+  var _useState17 = (0, _react.useState)({}),
+      _useState18 = _slicedToArray(_useState17, 2),
+      numberOfOrdersByStatus = _useState18[0],
+      setNumberOfOrdersByStatus = _useState18[1];
+
+  var _useState19 = (0, _react.useState)({}),
+      _useState20 = _slicedToArray(_useState19, 2),
+      numberOfOrdersBySubstatus = _useState20[0],
+      setNumberOfOrdersBySubstatus = _useState20[1];
   /**
    * Object to save driver group list
    */
 
 
-  var _useState17 = (0, _react.useState)({
+  var _useState21 = (0, _react.useState)({
     groups: [],
     loading: false,
     error: null
   }),
-      _useState18 = _slicedToArray(_useState17, 2),
-      driverGroupList = _useState18[0],
-      setDriverGroupList = _useState18[1];
+      _useState22 = _slicedToArray(_useState21, 2),
+      driverGroupList = _useState22[0],
+      setDriverGroupList = _useState22[1];
   /**
    * Object to save drivers
    */
 
 
-  var _useState19 = (0, _react.useState)({
+  var _useState23 = (0, _react.useState)({
     drivers: [],
     loading: true,
     error: null
   }),
-      _useState20 = _slicedToArray(_useState19, 2),
-      driversList = _useState20[0],
-      setDriversList = _useState20[1];
+      _useState24 = _slicedToArray(_useState23, 2),
+      driversList = _useState24[0],
+      setDriversList = _useState24[1];
   /**
    * Object to save paymethods
    */
 
 
-  var _useState21 = (0, _react.useState)({
+  var _useState25 = (0, _react.useState)({
     paymethods: [],
     loading: true,
     error: null
   }),
-      _useState22 = _slicedToArray(_useState21, 2),
-      paymethodsList = _useState22[0],
-      setPaymethodsList = _useState22[1];
+      _useState26 = _slicedToArray(_useState25, 2),
+      paymethodsList = _useState26[0],
+      setPaymethodsList = _useState26[1];
   /**
    * Object to save businesses
    */
 
 
-  var _useState23 = (0, _react.useState)({
+  var _useState27 = (0, _react.useState)({
     businesses: [],
     loading: true,
     error: null
   }),
-      _useState24 = _slicedToArray(_useState23, 2),
-      businessesList = _useState24[0],
-      setBusinessesList = _useState24[1];
+      _useState28 = _slicedToArray(_useState27, 2),
+      businessesList = _useState28[0],
+      setBusinessesList = _useState28[1];
   /**
    * Array to save the cities
    */
 
 
-  var _useState25 = (0, _react.useState)([]),
-      _useState26 = _slicedToArray(_useState25, 2),
-      citiesList = _useState26[0],
-      setCitiesList = _useState26[1];
+  var _useState29 = (0, _react.useState)([]),
+      _useState30 = _slicedToArray(_useState29, 2),
+      citiesList = _useState30[0],
+      setCitiesList = _useState30[1];
   /**
    * Object to save selected order ids
    */
 
 
-  var _useState27 = (0, _react.useState)([]),
-      _useState28 = _slicedToArray(_useState27, 2),
-      selectedOrderIds = _useState28[0],
-      setSelectedOrderIds = _useState28[1];
+  var _useState31 = (0, _react.useState)([]),
+      _useState32 = _slicedToArray(_useState31, 2),
+      selectedOrderIds = _useState32[0],
+      setSelectedOrderIds = _useState32[1];
   /**
    * Object to save order substatuses
    */
 
 
-  var _useState29 = (0, _react.useState)({
-    pending: [0, 13],
-    inProgress: [7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23],
-    completed: [1, 11, 15],
-    cancelled: [2, 5, 6, 10, 12, 16, 17],
+  var _useState33 = (0, _react.useState)({
+    pending: orderStatuesList.pending,
+    inProgress: orderStatuesList.inProgress,
+    completed: orderStatuesList.completed,
+    cancelled: orderStatuesList.cancelled,
     all: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
   }),
-      _useState30 = _slicedToArray(_useState29, 2),
-      selectedSubOrderStatus = _useState30[0],
-      setSelectedSubOrderStatus = _useState30[1];
+      _useState34 = _slicedToArray(_useState33, 2),
+      selectedSubOrderStatus = _useState34[0],
+      setSelectedSubOrderStatus = _useState34[1];
   /**
    * Save ids of orders selected
    * @param {string} orderId order id
@@ -325,6 +341,8 @@ var OrdersManage = function OrdersManage(props) {
                 }
 
                 setSelectedOrderIds(_ordersIds);
+                getOrderNumbersByStatus();
+                getOrderNumbersBySubstatus();
               }
 
               setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
@@ -407,11 +425,13 @@ var OrdersManage = function OrdersManage(props) {
                 loading: false,
                 error: content.error ? content.result : null
               });
-              _context2.next = 16;
+              getOrderNumbersByStatus();
+              getOrderNumbersBySubstatus();
+              _context2.next = 18;
               break;
 
-            case 12:
-              _context2.prev = 12;
+            case 14:
+              _context2.prev = 14;
               _context2.t0 = _context2["catch"](0);
               setActionStatus({
                 loading: false,
@@ -419,12 +439,12 @@ var OrdersManage = function OrdersManage(props) {
               });
               setStartMulitOrderDelete(false);
 
-            case 16:
+            case 18:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[0, 12]]);
+      }, _callee2, null, [[0, 14]]);
     }));
 
     return function deleteOrder(_x2) {
@@ -626,6 +646,194 @@ var OrdersManage = function OrdersManage(props) {
       socket.off('tracking_driver', handleTrackingDriver);
     };
   }, [socket, loading, driversList.drivers]);
+
+  var _getOrderNumbersByStatus = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(orderStatusList) {
+      var options, conditions, where;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              if (token) {
+                _context5.next = 2;
+                break;
+              }
+
+              return _context5.abrupt("return");
+
+            case 2:
+              options = {
+                query: {
+                  page: 1,
+                  page_size: 1
+                }
+              };
+              conditions = [{
+                attribute: 'status',
+                value: orderStatusList
+              }];
+              where = {
+                conditions: conditions,
+                conector: 'AND'
+              };
+              _context5.next = 7;
+              return ordering.setAccessToken(token).orders().asDashboard().select(['id']).where(where).get(options);
+
+            case 7:
+              return _context5.abrupt("return", _context5.sent);
+
+            case 8:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5);
+    }));
+
+    return function _getOrderNumbersByStatus(_x3) {
+      return _ref5.apply(this, arguments);
+    };
+  }();
+
+  var getOrderNumbersByStatus = /*#__PURE__*/function () {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+      var OrderNumbersByStatus, allPromise, result;
+      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+        while (1) {
+          switch (_context7.prev = _context7.next) {
+            case 0:
+              OrderNumbersByStatus = {};
+              allPromise = Object.keys(orderStatuesList).map(function (orderStatus) {
+                return new Promise(function (resolve, reject) {
+                  resolve([orderStatus, _getOrderNumbersByStatus(orderStatuesList[orderStatus])]);
+                });
+              });
+              _context7.next = 4;
+              return Promise.all(allPromise);
+
+            case 4:
+              result = _context7.sent;
+              result.forEach( /*#__PURE__*/function () {
+                var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(ele, i) {
+                  var _res$content$paginati, _res$content, _res$content$paginati2;
+
+                  var res, total, orderStatusNumber;
+                  return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+                    while (1) {
+                      switch (_context6.prev = _context6.next) {
+                        case 0:
+                          _context6.next = 2;
+                          return ele[1];
+
+                        case 2:
+                          res = _context6.sent;
+                          total = (_res$content$paginati = res === null || res === void 0 ? void 0 : (_res$content = res.content) === null || _res$content === void 0 ? void 0 : (_res$content$paginati2 = _res$content.pagination) === null || _res$content$paginati2 === void 0 ? void 0 : _res$content$paginati2.total) !== null && _res$content$paginati !== void 0 ? _res$content$paginati : 0;
+                          orderStatusNumber = _defineProperty({}, ele[0], total);
+                          OrderNumbersByStatus = _objectSpread(_objectSpread({}, OrderNumbersByStatus), orderStatusNumber);
+                          setNumberOfOrdersByStatus(OrderNumbersByStatus);
+
+                        case 7:
+                        case "end":
+                          return _context6.stop();
+                      }
+                    }
+                  }, _callee6);
+                }));
+
+                return function (_x4, _x5) {
+                  return _ref7.apply(this, arguments);
+                };
+              }());
+
+            case 6:
+            case "end":
+              return _context7.stop();
+          }
+        }
+      }, _callee7);
+    }));
+
+    return function getOrderNumbersByStatus() {
+      return _ref6.apply(this, arguments);
+    };
+  }();
+
+  var getOrderNumbersBySubstatus = /*#__PURE__*/function () {
+    var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
+      var allPromise, OrderNumbersByStatus, result;
+      return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+        while (1) {
+          switch (_context9.prev = _context9.next) {
+            case 0:
+              allPromise = orderStatuesList[ordersStatusGroup].map(function (orderStatus) {
+                return new Promise(function (resolve, reject) {
+                  resolve([orderStatus, _getOrderNumbersByStatus([orderStatus])]);
+                });
+              });
+              OrderNumbersByStatus = {};
+              _context9.next = 4;
+              return Promise.all(allPromise);
+
+            case 4:
+              result = _context9.sent;
+              result.forEach( /*#__PURE__*/function () {
+                var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(ele, i) {
+                  var _res$content$paginati3, _res$content2, _res$content2$paginat;
+
+                  var res, total, orderStatusNumber;
+                  return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+                    while (1) {
+                      switch (_context8.prev = _context8.next) {
+                        case 0:
+                          _context8.next = 2;
+                          return ele[1];
+
+                        case 2:
+                          res = _context8.sent;
+                          total = (_res$content$paginati3 = res === null || res === void 0 ? void 0 : (_res$content2 = res.content) === null || _res$content2 === void 0 ? void 0 : (_res$content2$paginat = _res$content2.pagination) === null || _res$content2$paginat === void 0 ? void 0 : _res$content2$paginat.total) !== null && _res$content$paginati3 !== void 0 ? _res$content$paginati3 : 0;
+                          orderStatusNumber = _defineProperty({}, ele[0], total);
+                          OrderNumbersByStatus = _objectSpread(_objectSpread({}, OrderNumbersByStatus), orderStatusNumber);
+                          setNumberOfOrdersBySubstatus(OrderNumbersByStatus);
+
+                        case 7:
+                        case "end":
+                          return _context8.stop();
+                      }
+                    }
+                  }, _callee8);
+                }));
+
+                return function (_x6, _x7) {
+                  return _ref9.apply(this, arguments);
+                };
+              }());
+
+            case 6:
+            case "end":
+              return _context9.stop();
+          }
+        }
+      }, _callee9);
+    }));
+
+    return function getOrderNumbersBySubstatus() {
+      return _ref8.apply(this, arguments);
+    };
+  }();
+
+  var handleUpdateOrder = function handleUpdateOrder() {
+    getOrderNumbersByStatus();
+    getOrderNumbersBySubstatus();
+  };
+
+  (0, _react.useEffect)(function () {
+    socket.on('update_order', handleUpdateOrder);
+    socket.on('orders_register', handleUpdateOrder);
+    return function () {
+      socket.off('update_order', handleUpdateOrder);
+      socket.off('orders_register', handleUpdateOrder);
+    };
+  }, [socket]);
   (0, _react.useEffect)(function () {
     if (!user) return;
     socket.join('drivers');
@@ -668,6 +876,12 @@ var OrdersManage = function OrdersManage(props) {
       }
     };
   }, [user, loading]);
+  (0, _react.useEffect)(function () {
+    getOrderNumbersByStatus();
+  }, []);
+  (0, _react.useEffect)(function () {
+    getOrderNumbersBySubstatus();
+  }, [ordersStatusGroup]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     searchValue: searchValue,
     driverGroupList: driverGroupList,
@@ -691,7 +905,9 @@ var OrdersManage = function OrdersManage(props) {
     handleOrdersStatusGroupFilter: handleOrdersStatusGroupFilter,
     handleChangeMultiOrdersStatus: handleChangeMultiOrdersStatus,
     handleDeleteMultiOrders: handleDeleteMultiOrders,
-    setSelectedOrderIds: setSelectedOrderIds
+    setSelectedOrderIds: setSelectedOrderIds,
+    numberOfOrdersByStatus: numberOfOrdersByStatus,
+    numberOfOrdersBySubstatus: numberOfOrdersBySubstatus
   })));
 };
 
