@@ -168,7 +168,7 @@ import { SearchOptions } from './components/SearchOptions'
 import { Schedule } from './components/Schedule'
 import { SignupForm } from './components/SignupForm'
 import { SingleBusinessCard } from './components/SingleBusinessCard'
-import { SingleLoyaltyLevel } from './components/SingleLoyaltyLevel'
+import { LoyaltyLevelDetail } from './components/LoyaltyLevelDetail'
 import { SingleOrderCard } from './components/SingleOrderCard'
 import { SingleProductCard } from './components/SingleProductCard'
 import { SingleRecoveryNotification } from './components/SingleRecoveryNotification'
@@ -397,7 +397,7 @@ export {
   Schedule,
   SignupForm,
   SingleBusinessCard,
-  SingleLoyaltyLevel,
+  LoyaltyLevelDetail,
   SingleOrderCard,
   SingleProductCard,
   SingleBusinessProduct,

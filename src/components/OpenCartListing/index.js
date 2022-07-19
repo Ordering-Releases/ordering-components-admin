@@ -281,8 +281,8 @@ export const OpenCartListing = (props) => {
       }
 
       const fetchEndpoint = where
-        ? `${ordering.root}/carts/dashboard?page=${page}&page_size=${pageSize}&where=${JSON.stringify(where)}`
-        : `${ordering.root}/carts/dashboard?page=${page}&page_size=${pageSize}`
+        ? `${ordering.root}/carts/dashboard?orderBy=-id&page=${page}&page_size=${pageSize}&where=${JSON.stringify(where)}`
+        : `${ordering.root}/carts/dashboard?orderBy=-id&page=${page}&page_size=${pageSize}`
 
       const response = await fetch(fetchEndpoint, requestOptions)
       const content = await response.json()
@@ -295,6 +295,7 @@ export const OpenCartListing = (props) => {
         setPagination({
           ...pagination,
           currentPage: content.pagination.current_page,
+          pageSize: content.pagination.page_size === 0 ? pagination.pageSize : content.pagination.page_size,
           totalPages: content.pagination.total_pages,
           totalItems: content.pagination.total,
           from: content.pagination.from,

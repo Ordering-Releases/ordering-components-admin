@@ -57,27 +57,25 @@ export const SettingsList = (props) => {
    * Method to save changes from settings items
    */
   const saveChanges = (changeValue, id) => {
+    const item = configs.find(config => config.id === id)
+    switch (item?.key) {
+      case 'platform_fee_fixed':
+      case 'platform_fee_percentage':
+        if (isNaN(Number(changeValue) && changeValue !== '')) return
+        break
+      default:
+        break
+    }
     let _configs = []
     const found = formState?.changes?.find(item => item.id === id)
     if (found) {
-      _configs = formState?.changes.map(config => {
-        if (config.id === id) {
-          return { ...config, value: changeValue }
-        }
-        return config
-      })
+      _configs = formState?.changes.map(config => (config.id === id) ? { ...config, value: changeValue } : config)
     } else {
       if (formState?.changes) _configs = [...formState?.changes]
-      const item = configs.find(config => config.id === id)
       _configs.push({ ...item, value: changeValue })
     }
 
-    const defaultConfigs = configs.map(config => {
-      if (config.id === id) {
-        return { ...config, value: changeValue }
-      }
-      return config
-    })
+    const defaultConfigs = configs.map(config => (config.id === id) ? { ...config, value: changeValue } : config)
     setFormState({
       ...formState,
       changes: _configs

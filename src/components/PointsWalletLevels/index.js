@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useApi } from '../../contexts/ApiContext'
 import { useSession } from '../../contexts/SessionContext'
-import { useLanguage } from '../../contexts/LanguageContext'
-import { useToast, ToastType } from '../../contexts/ToastContext'
 
 export const PointsWalletLevels = (props) => {
   const {
@@ -12,28 +10,7 @@ export const PointsWalletLevels = (props) => {
 
   const [ordering] = useApi()
   const [{ token }] = useSession()
-  const [, { showToast }] = useToast()
-  const [, t] = useLanguage()
   const [levelList, setLevelList] = useState({ loading: false, levels: [], error: null })
-  const [formState, setFormState] = useState({ loading: false, changes: {}, error: null })
-
-  /**
-   * Update level data
-   * @param {EventTarget} evt Related HTML event
-   */
-  const handleChangeInput = (evt) => {
-    const changes = { ...formState?.changes, [evt.target.name]: evt.target.value }
-    setFormState({ ...formState, changes: changes })
-  }
-
-  /**
-   * Update level data
-   * @param {EventTarget} evt Related HTML event
-   */
-  const handleChangeItem = (changes) => {
-    const currentChanges = { ...formState?.changes, ...changes }
-    setFormState({ ...formState, changes: currentChanges })
-  }
 
   /**
    * Add a level
@@ -64,36 +41,6 @@ export const PointsWalletLevels = (props) => {
   const handleDeleteLevelList = (level) => {
     const levels = levelList?.levels?.filter(item => item.id !== level.id)
     setLevelList({ ...levelList, levels: levels })
-  }
-
-  /**
-   * Default fuction to add a level
-   */
-  const handleUpdateAddClick = async () => {
-    try {
-      showToast(ToastType.Info, t('LOADING', 'Loading'))
-      setFormState({ ...formState, loading: true })
-      const requestOptions = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(formState.changes)
-      }
-      const fetchEndpoint = `${ordering.root}/loyalty_levels`
-      const response = await fetch(fetchEndpoint, requestOptions)
-      const { error, result } = await response.json()
-      if (!error) {
-        showToast(ToastType.Success, t('LEVEL_ADDED', 'Level added'))
-        setFormState({ ...formState, loading: false, error: null, changes: {} })
-        handleAddLevelList(result)
-      } else {
-        setFormState({ ...formState, loading: false, error: result })
-      }
-    } catch (error) {
-      setFormState({ ...formState, loading: false, error: error.message })
-    }
   }
 
   /**
@@ -132,10 +79,7 @@ export const PointsWalletLevels = (props) => {
         <UIComponent
           {...props}
           levelList={levelList}
-          formState={formState}
-          handleChangeItem={handleChangeItem}
-          handleChangeInput={handleChangeInput}
-          handleUpdateAddClick={handleUpdateAddClick}
+          handleAddLevelList={handleAddLevelList}
           handleUpdateLevelList={handleUpdateLevelList}
           handleDeleteLevelList={handleDeleteLevelList}
         />

@@ -15,6 +15,13 @@ export const OrdersManage = (props) => {
   const [{ user, token, loading }] = useSession()
 
   const requestsState = {}
+  const orderStatuesList = {
+    pending: [0, 13],
+    inProgress: [7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23],
+    completed: [1, 11, 15],
+    cancelled: [2, 5, 6, 10, 12, 16, 17]
+  }
+
   const [searchValue, setSearchValue] = useState(null)
   const [ordersStatusGroup, setOrdersStatusGroup] = useState(statusGroup || 'pending')
   const [filterValues, setFilterValues] = useState({})
@@ -23,6 +30,8 @@ export const OrdersManage = (props) => {
   const [startMulitOrderDelete, setStartMulitOrderDelete] = useState(false)
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
   const [deletedOrderId, setDeletedOrderId] = useState(null)
+  const [numberOfOrdersByStatus, setNumberOfOrdersByStatus] = useState({})
+  const [numberOfOrdersBySubstatus, setNumberOfOrdersBySubstatus] = useState({})
   /**
    * Object to save driver group list
    */
@@ -52,10 +61,10 @@ export const OrdersManage = (props) => {
    * Object to save order substatuses
    */
   const [selectedSubOrderStatus, setSelectedSubOrderStatus] = useState({
-    pending: [0, 13],
-    inProgress: [7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23],
-    completed: [1, 11, 15],
-    cancelled: [2, 5, 6, 10, 12, 16, 17],
+    pending: orderStatuesList.pending,
+    inProgress: orderStatuesList.inProgress,
+    completed: orderStatuesList.completed,
+    cancelled: orderStatuesList.cancelled,
     all: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
   })
 
@@ -138,6 +147,9 @@ export const OrdersManage = (props) => {
           setStartMulitOrderStatusChange(false)
         }
         setSelectedOrderIds(_ordersIds)
+
+        getOrderNumbersByStatus()
+        getOrderNumbersBySubstatus()
       }
       setActionStatus({ ...actionStatus, loading: false })
     } catch (err) {
@@ -174,6 +186,9 @@ export const OrdersManage = (props) => {
         loading: false,
         error: content.error ? content.result : null
       })
+
+      getOrderNumbersByStatus()
+      getOrderNumbersBySubstatus()
     } catch (err) {
       setActionStatus({ loading: false, error: [err.message] })
       setStartMulitOrderDelete(false)
@@ -300,6 +315,65 @@ export const OrdersManage = (props) => {
     }
   }, [socket, loading, driversList.drivers])
 
+  const _getOrderNumbersByStatus = async (orderStatusList) => {
+    if (!token) return
+    const options = {
+      query: { page: 1, page_size: 1 }
+    }
+    const conditions = [{ attribute: 'status', value: orderStatusList }]
+    const where = { conditions, conector: 'AND' }
+
+    return await ordering.setAccessToken(token).orders().asDashboard().select(['id']).where(where).get(options)
+  }
+
+  const getOrderNumbersByStatus = async () => {
+    let OrderNumbersByStatus = {}
+    const allPromise = Object.keys(orderStatuesList).map(orderStatus => {
+      return new Promise((resolve, reject) => {
+        resolve([orderStatus, _getOrderNumbersByStatus(orderStatuesList[orderStatus])])
+      })
+    })
+
+    const result = await Promise.all(allPromise)
+    result.forEach(async (ele, i) => {
+      const res = await ele[1]
+      const total = res?.content?.pagination?.total ?? 0
+      const orderStatusNumber = { [ele[0]]: total }
+      OrderNumbersByStatus = { ...OrderNumbersByStatus, ...orderStatusNumber }
+      setNumberOfOrdersByStatus(OrderNumbersByStatus)
+    })
+  }
+
+  const getOrderNumbersBySubstatus = async () => {
+    const allPromise = orderStatuesList[ordersStatusGroup].map(orderStatus => {
+      return new Promise((resolve, reject) => {
+        resolve([orderStatus, _getOrderNumbersByStatus([orderStatus])])
+      })
+    })
+    let OrderNumbersByStatus = {}
+    const result = await Promise.all(allPromise)
+    result.forEach(async (ele, i) => {
+      const res = await ele[1]
+      const total = res?.content?.pagination?.total ?? 0
+      const orderStatusNumber = { [ele[0]]: total }
+      OrderNumbersByStatus = { ...OrderNumbersByStatus, ...orderStatusNumber }
+      setNumberOfOrdersBySubstatus(OrderNumbersByStatus)
+    })
+  }
+
+  const handleUpdateOrder = () => {
+    getOrderNumbersByStatus()
+    getOrderNumbersBySubstatus()
+  }
+  useEffect(() => {
+    socket.on('update_order', handleUpdateOrder)
+    socket.on('orders_register', handleUpdateOrder)
+    return () => {
+      socket.off('update_order', handleUpdateOrder)
+      socket.off('orders_register', handleUpdateOrder)
+    }
+  }, [socket])
+
   useEffect(() => {
     if (!user) return
     socket.join('drivers')
@@ -342,6 +416,14 @@ export const OrdersManage = (props) => {
     }
   }, [user, loading])
 
+  useEffect(() => {
+    getOrderNumbersByStatus()
+  }, [])
+
+  useEffect(() => {
+    getOrderNumbersBySubstatus()
+  }, [ordersStatusGroup])
+
   return (
     <>
       {UIComponent && (
@@ -370,6 +452,8 @@ export const OrdersManage = (props) => {
           handleChangeMultiOrdersStatus={handleChangeMultiOrdersStatus}
           handleDeleteMultiOrders={handleDeleteMultiOrders}
           setSelectedOrderIds={setSelectedOrderIds}
+          numberOfOrdersByStatus={numberOfOrdersByStatus}
+          numberOfOrdersBySubstatus={numberOfOrdersBySubstatus}
         />
       )}
     </>
