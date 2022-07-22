@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
 import { useWebsocket } from '../../contexts/WebsocketContext'
+
 export const OrdersManage = (props) => {
   const {
     UIComponent,
@@ -30,8 +31,8 @@ export const OrdersManage = (props) => {
   const [startMulitOrderDelete, setStartMulitOrderDelete] = useState(false)
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
   const [deletedOrderId, setDeletedOrderId] = useState(null)
-  const [numberOfOrdersByStatus, setNumberOfOrdersByStatus] = useState({})
-  const [numberOfOrdersBySubstatus, setNumberOfOrdersBySubstatus] = useState({})
+  const [numberOfOrdersByStatus, setNumberOfOrdersByStatus] = useState({ result: [], loading: false, error: false })
+  // const [numberOfOrdersBySubstatus, setNumberOfOrdersBySubstatus] = useState({ result: [], loading: false, error: false })
   /**
    * Object to save driver group list
    */
@@ -147,9 +148,6 @@ export const OrdersManage = (props) => {
           setStartMulitOrderStatusChange(false)
         }
         setSelectedOrderIds(_ordersIds)
-
-        getOrderNumbersByStatus()
-        getOrderNumbersBySubstatus()
       }
       setActionStatus({ ...actionStatus, loading: false })
     } catch (err) {
@@ -186,9 +184,6 @@ export const OrdersManage = (props) => {
         loading: false,
         error: content.error ? content.result : null
       })
-
-      getOrderNumbersByStatus()
-      getOrderNumbersBySubstatus()
     } catch (err) {
       setActionStatus({ loading: false, error: [err.message] })
       setStartMulitOrderDelete(false)
@@ -253,12 +248,7 @@ export const OrdersManage = (props) => {
           loading: false,
           businesses: content.result.businesses
         })
-        if (user?.level !== 0 && user?.level !== 2) {
-          setDriversList({
-            ...driversList,
-            drivers: content.result.drivers
-          })
-        }
+        setActionStatus({ ...actionStatus, loading: false })
       } else {
         setActionStatus({ loading: false, error: content?.result })
       }
@@ -315,55 +305,240 @@ export const OrdersManage = (props) => {
     }
   }, [socket, loading, driversList.drivers])
 
-  const _getOrderNumbersByStatus = async (orderStatusList) => {
-    if (!token) return
-    const options = {
-      query: { page: 1, page_size: 1 }
-    }
-    const conditions = [{ attribute: 'status', value: orderStatusList }]
-    const where = { conditions, conector: 'AND' }
-
-    return await ordering.setAccessToken(token).orders().asDashboard().select(['id']).where(where).get(options)
-  }
-
   const getOrderNumbersByStatus = async () => {
-    let OrderNumbersByStatus = {}
-    const allPromise = Object.keys(orderStatuesList).map(orderStatus => {
-      return new Promise((resolve, reject) => {
-        resolve([orderStatus, _getOrderNumbersByStatus(orderStatuesList[orderStatus])])
-      })
-    })
+    let where = []
+    const conditions = []
+    if (Object.keys(filterValues).length > 0) {
+      const filterConditons = []
+      if (filterValues?.statuses.length > 0) {
+        filterConditons.push({ attribute: 'status', value: filterValues?.statuses })
+      }
 
-    const result = await Promise.all(allPromise)
-    result.forEach(async (ele, i) => {
-      const res = await ele[1]
-      const total = res?.content?.pagination?.total ?? 0
-      const orderStatusNumber = { [ele[0]]: total }
-      OrderNumbersByStatus = { ...OrderNumbersByStatus, ...orderStatusNumber }
-      setNumberOfOrdersByStatus(OrderNumbersByStatus)
-    })
-  }
+      if (filterValues?.orderId) {
+        filterConditons.push(
+          {
+            attribute: 'id',
+            value: {
+              condition: 'ilike',
+              value: encodeURI(`%${filterValues?.orderId}%`)
+            }
+          }
+        )
+      }
+      if (filterValues?.deliveryFromDatetime !== null) {
+        filterConditons.push(
+          {
+            attribute: 'delivery_datetime',
+            value: {
+              condition: '>=',
+              value: encodeURI(filterValues?.deliveryFromDatetime)
+            }
+          }
+        )
+      }
+      if (filterValues?.deliveryEndDatetime !== null) {
+        filterConditons.push(
+          {
+            attribute: 'delivery_datetime',
+            value: {
+              condition: '<=',
+              value: filterValues?.deliveryEndDatetime
+            }
+          }
+        )
+      }
+      if (filterValues?.businessIds.length !== 0) {
+        filterConditons.push(
+          {
+            attribute: 'business_id',
+            value: filterValues?.businessIds
+          }
+        )
+      }
+      if (filterValues?.driverIds.length > 0) {
+        filterConditons.push(
+          {
+            attribute: 'driver_id',
+            value: filterValues?.driverIds
+          }
+        )
+      }
+      if (filterValues?.deliveryTypes.length !== 0) {
+        filterConditons.push(
+          {
+            attribute: 'delivery_type',
+            value: filterValues?.deliveryTypes
+          }
+        )
+      }
+      if (filterValues?.driverGroupIds.length !== 0) {
+        filterConditons.push(
+          {
+            attribute: 'driver_id',
+            value: filterValues?.driverGroupIds
+          }
+        )
+      }
+      if (filterValues?.paymethodIds.length !== 0) {
+        filterConditons.push(
+          {
+            attribute: 'paymethod_id',
+            value: filterValues?.paymethodIds
+          }
+        )
+      }
 
-  const getOrderNumbersBySubstatus = async () => {
-    const allPromise = orderStatuesList[ordersStatusGroup].map(orderStatus => {
-      return new Promise((resolve, reject) => {
-        resolve([orderStatus, _getOrderNumbersByStatus([orderStatus])])
+      if (filterConditons.length) {
+        conditions.push({
+          conector: 'AND',
+          conditions: filterConditons
+        })
+      }
+    }
+
+    if (searchValue) {
+      const searchConditions = []
+      searchConditions.push(
+        {
+          attribute: 'id',
+          value: {
+            condition: 'ilike',
+            value: encodeURI(`%${searchValue}%`)
+          }
+        }
+      )
+
+      searchConditions.push(
+        {
+          attribute: 'customer',
+          conditions: [
+            {
+              attribute: 'email',
+              value: {
+                condition: 'ilike',
+                value: encodeURI(`%${searchValue}%`)
+              }
+            }
+          ]
+        }
+      )
+
+      searchConditions.push(
+        {
+          attribute: 'customer',
+          conditions: [
+            {
+              attribute: 'cellphone',
+              value: {
+                condition: 'ilike',
+                value: encodeURI(`%${searchValue}%`)
+              }
+            }
+          ]
+        }
+      )
+
+      searchConditions.push(
+        {
+          attribute: 'business',
+          conditions: [
+            {
+              attribute: 'name',
+              value: {
+                condition: 'ilike',
+                value: encodeURI(`%${searchValue}%`)
+              }
+            }
+          ]
+        }
+      )
+
+      conditions.push({
+        conector: 'OR',
+        conditions: searchConditions
       })
-    })
-    let OrderNumbersByStatus = {}
-    const result = await Promise.all(allPromise)
-    result.forEach(async (ele, i) => {
-      const res = await ele[1]
-      const total = res?.content?.pagination?.total ?? 0
-      const orderStatusNumber = { [ele[0]]: total }
-      OrderNumbersByStatus = { ...OrderNumbersByStatus, ...orderStatusNumber }
-      setNumberOfOrdersBySubstatus(OrderNumbersByStatus)
-    })
+    }
+
+    if (conditions.length) {
+      where = {
+        conditions,
+        conector: 'AND'
+      }
+    }
+    try {
+      setNumberOfOrdersByStatus({ ...numberOfOrdersByStatus, loading: true })
+      // setNumberOfOrdersBySubstatus({ ...numberOfOrdersBySubstatus, loading: true })
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${ordering.root}/orders/dashboard?where=${JSON.stringify(where)}`, requestOptions)
+      const content = await response.json()
+      if (!content?.error) {
+        const _orderStatusNumbers = Object.keys(orderStatuesList).reduce((sum, curr, index) => {
+          const _currRe = content?.result.filter(ele => orderStatuesList[curr].indexOf(ele?.status) >= 0)
+          if (index === 1) {
+            const _sumRe = content?.result.filter(ele => orderStatuesList[sum].indexOf(ele?.status) >= 0)
+            return {
+              [sum]: _sumRe.length > 1 ? _sumRe.reduce((_sum, _curr) => Number(_sum?.quantity || _sum || 0) + Number(_curr?.quantity)) : _sumRe[0]?.quantity || 0,
+              [curr]: _currRe.length > 1 ? _currRe.reduce((_sum, _curr) => Number(_sum?.quantity || _sum || 0) + Number(_curr?.quantity)) : _currRe[0]?.quantity || 0,
+            }
+          } else {
+            return { ...sum, [curr]: _currRe.length > 1 ? _currRe.reduce((_sum, _curr) => Number(_sum?.quantity || _sum || 0) + Number(_curr?.quantity)) : _currRe[0]?.quantity || 0 }
+          }
+        })
+
+        setNumberOfOrdersByStatus({
+          ...numberOfOrdersByStatus,
+          loading: false,
+          error: false,
+          result: _orderStatusNumbers
+        })
+
+        // setNumberOfOrdersBySubstatus({
+        //   ...numberOfOrdersBySubstatus,
+        //   loading: false,
+        //   error: false,
+        //   result: content?.result?.length > 1
+        //     ? content?.result.reduce((sum, curr, index) => index === 1
+        //       ? { [sum?.status]: sum?.quantity, [curr?.status]: curr?.quantity }
+        //       : { ...sum, [curr?.status]: curr?.quantity })
+        //     : content?.result?.length === 1
+        //       ? { [content?.result[0].status]: content?.result[0].quantity } : null
+        // })
+      } else {
+        setNumberOfOrdersByStatus({
+          ...numberOfOrdersByStatus,
+          loading: false,
+          error: true
+        })
+
+        // setNumberOfOrdersBySubstatus({
+        //   ...numberOfOrdersBySubstatus,
+        //   loading: false,
+        //   error: true
+        // })
+      }
+    } catch (err) {
+      setNumberOfOrdersByStatus({
+        ...numberOfOrdersByStatus,
+        loading: false,
+        error: [err.message]
+      })
+
+      // setNumberOfOrdersBySubstatus({
+      //   ...numberOfOrdersBySubstatus,
+      //   loading: false,
+      //   error: [err.message]
+      // })
+    }
   }
 
   const handleUpdateOrder = () => {
     getOrderNumbersByStatus()
-    getOrderNumbersBySubstatus()
   }
   useEffect(() => {
     socket.on('update_order', handleUpdateOrder)
@@ -372,7 +547,7 @@ export const OrdersManage = (props) => {
       socket.off('update_order', handleUpdateOrder)
       socket.off('orders_register', handleUpdateOrder)
     }
-  }, [socket])
+  }, [socket, filterValues, searchValue])
 
   useEffect(() => {
     if (!user) return
@@ -404,7 +579,7 @@ export const OrdersManage = (props) => {
 
   useEffect(() => {
     if (loading) return
-    if (user?.level === 0 || user?.level === 2) {
+    if (user?.level === 0 || user?.level === 2 || user?.level === 5) {
       getDrivers()
     }
     getControlsOrders()
@@ -417,12 +592,10 @@ export const OrdersManage = (props) => {
   }, [user, loading])
 
   useEffect(() => {
-    getOrderNumbersByStatus()
-  }, [])
-
-  useEffect(() => {
-    getOrderNumbersBySubstatus()
-  }, [ordersStatusGroup])
+    if (!actionStatus?.error && !actionStatus?.loading) {
+      getOrderNumbersByStatus()
+    }
+  }, [actionStatus, filterValues, searchValue])
 
   return (
     <>
@@ -453,7 +626,7 @@ export const OrdersManage = (props) => {
           handleDeleteMultiOrders={handleDeleteMultiOrders}
           setSelectedOrderIds={setSelectedOrderIds}
           numberOfOrdersByStatus={numberOfOrdersByStatus}
-          numberOfOrdersBySubstatus={numberOfOrdersBySubstatus}
+        // numberOfOrdersBySubstatus={numberOfOrdersBySubstatus}
         />
       )}
     </>
