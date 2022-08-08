@@ -803,10 +803,11 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
   var handleStripeSave = function handleStripeSave(paymethodId) {
     var _requestionOptions, _requestionOptions2;
 
-    var requestionOptions = _objectSpread(_objectSpread({}, stripeConnectData), {}, {
-      sandbox: true,
+    var requestionOptions = {
+      sandbox: stripeConnectData === null || stripeConnectData === void 0 ? void 0 : stripeConnectData.sandbox,
+      data: JSON.stringify(stripeConnectData === null || stripeConnectData === void 0 ? void 0 : stripeConnectData.data),
       data_sandbox: JSON.stringify(stripeConnectData === null || stripeConnectData === void 0 ? void 0 : stripeConnectData.data)
-    });
+    };
 
     if ((_requestionOptions = requestionOptions) !== null && _requestionOptions !== void 0 && _requestionOptions.allowed_order_types) {
       requestionOptions = _objectSpread(_objectSpread({}, requestionOptions), {}, {

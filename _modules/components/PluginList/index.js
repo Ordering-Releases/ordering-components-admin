@@ -60,7 +60,8 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var PluginList = function PluginList(props) {
-  var UIComponent = props.UIComponent;
+  var UIComponent = props.UIComponent,
+      projectCode = props.projectCode;
 
   var _useApi = (0, _ApiContext.useApi)(),
       _useApi2 = _slicedToArray(_useApi, 1),
@@ -80,8 +81,10 @@ var PluginList = function PluginList(props) {
 
   var _useState = (0, _react.useState)({
     plugins: [],
+    sysPlugins: [],
     loading: false,
-    error: null
+    error: null,
+    sysError: null
   }),
       _useState2 = _slicedToArray(_useState, 2),
       pluginListState = _useState2[0],
@@ -111,7 +114,7 @@ var PluginList = function PluginList(props) {
 
   var getPlugins = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var requestOptions, response, content;
+      var requestOptions, sysPlugins, sysError, resSysPlugins, contentSysPlugins, response, content;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -127,41 +130,70 @@ var PluginList = function PluginList(props) {
                   Authorization: "Bearer ".concat(token)
                 }
               };
-              _context.next = 5;
-              return fetch("".concat(ordering.root, "/plugins"), requestOptions);
-
-            case 5:
-              response = _context.sent;
+              sysPlugins = [];
+              sysError = null;
+              _context.prev = 5;
               _context.next = 8;
-              return response.json();
+              return fetch("".concat(ordering.url, "/").concat(ordering.version, "/system/plugins?project_code=").concat(projectCode), requestOptions);
 
             case 8:
+              resSysPlugins = _context.sent;
+              _context.next = 11;
+              return resSysPlugins.json();
+
+            case 11:
+              contentSysPlugins = _context.sent;
+
+              if (!contentSysPlugins.error) {
+                sysPlugins = contentSysPlugins.result;
+              }
+
+              _context.next = 18;
+              break;
+
+            case 15:
+              _context.prev = 15;
+              _context.t0 = _context["catch"](5);
+              sysError = [_context.t0.message];
+
+            case 18:
+              _context.next = 20;
+              return fetch("".concat(ordering.root, "/plugins"), requestOptions);
+
+            case 20:
+              response = _context.sent;
+              _context.next = 23;
+              return response.json();
+
+            case 23:
               content = _context.sent;
 
               if (!content.error) {
                 setPluginListState(_objectSpread(_objectSpread({}, pluginListState), {}, {
                   plugins: content.result,
+                  sysPlugins: sysPlugins,
+                  sysError: sysError,
                   loading: false
                 }));
               }
 
-              _context.next = 15;
+              _context.next = 30;
               break;
 
-            case 12:
-              _context.prev = 12;
-              _context.t0 = _context["catch"](0);
+            case 27:
+              _context.prev = 27;
+              _context.t1 = _context["catch"](0);
               setPluginListState(_objectSpread(_objectSpread({}, pluginListState), {}, {
                 loading: false,
-                error: [_context.t0.message]
+                error: [_context.t1.message]
               }));
 
-            case 15:
+            case 30:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 12]]);
+      }, _callee, null, [[0, 27], [5, 15]]);
     }));
 
     return function getPlugins() {
@@ -255,7 +287,7 @@ var PluginList = function PluginList(props) {
 
   var handleDeletePlugin = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(pluginId) {
-      var requestOptions, response, content, plugins;
+      var requestOptions, response, content, plugins, sysPlugins;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
@@ -290,8 +322,16 @@ var PluginList = function PluginList(props) {
                 plugins = pluginListState.plugins.filter(function (plugin) {
                   return plugin.id !== pluginId;
                 });
+                sysPlugins = pluginListState.sysPlugins.map(function (p) {
+                  var _content$result;
+
+                  return _objectSpread(_objectSpread({}, p), {}, {
+                    installed: p.id === (content === null || content === void 0 ? void 0 : (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.system_plugin_id) ? false : p.installed
+                  });
+                });
                 setPluginListState(_objectSpread(_objectSpread({}, pluginListState), {}, {
-                  plugins: plugins
+                  plugins: plugins,
+                  sysPlugins: sysPlugins
                 }));
                 showToast(_ToastContext.ToastType.Success, t('PLUGIN_REMOVED', 'Plugin removed'));
               } else {
@@ -407,6 +447,90 @@ var PluginList = function PluginList(props) {
       return _ref4.apply(this, arguments);
     };
   }();
+  /**
+   *
+   * @param {Number} pluginId plugin id to install
+   */
+
+
+  var handleInstallSysPlugin = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(pluginId) {
+      var requestOptions, response, content;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.prev = 0;
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
+                loading: true
+              }));
+              requestOptions = {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                },
+                body: JSON.stringify({
+                  system_plugin_id: pluginId
+                })
+              };
+              _context5.next = 6;
+              return fetch("".concat(ordering.root, "/plugins"), requestOptions);
+
+            case 6:
+              response = _context5.sent;
+              _context5.next = 9;
+              return response.json();
+
+            case 9:
+              content = _context5.sent;
+
+              if (!content.error) {
+                setPluginListState(_objectSpread(_objectSpread({}, pluginListState), {}, {
+                  plugins: [].concat(_toConsumableArray(pluginListState.plugins), [content === null || content === void 0 ? void 0 : content.result]),
+                  sysPlugins: pluginListState.sysPlugins.map(function (p) {
+                    var _content$result2;
+
+                    return _objectSpread(_objectSpread({}, p), {}, {
+                      installed: (content === null || content === void 0 ? void 0 : (_content$result2 = content.result) === null || _content$result2 === void 0 ? void 0 : _content$result2.system_plugin_id) === p.id
+                    });
+                  })
+                }));
+                setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
+                  loading: false
+                }));
+                showToast(_ToastContext.ToastType.Success, t('SYSTEM_PLUGIN_INSTALLED', 'Plugin installed'));
+              } else {
+                setActionState({
+                  loading: false,
+                  error: content.result
+                });
+              }
+
+              _context5.next = 16;
+              break;
+
+            case 13:
+              _context5.prev = 13;
+              _context5.t0 = _context5["catch"](0);
+              setActionState({
+                loading: false,
+                error: [_context5.t0.message]
+              });
+
+            case 16:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5, null, [[0, 13]]);
+    }));
+
+    return function handleInstallSysPlugin(_x4) {
+      return _ref5.apply(this, arguments);
+    };
+  }();
 
   (0, _react.useEffect)(function () {
     getPlugins();
@@ -419,7 +543,8 @@ var PluginList = function PluginList(props) {
     actionState: actionState,
     handleAddNewPlugin: handleAddNewPlugin,
     handleDeletePlugin: handleDeletePlugin,
-    handleUpdatePlugin: handleUpdatePlugin
+    handleUpdatePlugin: handleUpdatePlugin,
+    handleInstallSysPlugin: handleInstallSysPlugin
   })));
 };
 

@@ -222,7 +222,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
 
   var getOrders = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(pageSize, page) {
-      var where, conditions, options, checkInnerContain, checkOutContain, searchConditions, filterConditons, source, functionFetch;
+      var where, conditions, options, getFilterStatusInOrderStatus, searchConditions, filterConditons, source, functionFetch;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -253,25 +253,25 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
                 }
               } else {
                 if (filterValues.statuses.length > 0) {
-                  checkInnerContain = filterValues.statuses.every(function (el) {
-                    return orderStatus.indexOf(el) !== -1;
+                  // const checkInnerContain = filterValues.statuses.every((el) => {
+                  //   return orderStatus.indexOf(el) !== -1
+                  // })
+                  // const checkOutContain = orderStatus.every((el) => {
+                  //   return filterValues.statuses.indexOf(el) !== -1
+                  // })
+                  // if (checkInnerContain) conditions.push({ attribute: 'status', value: filterValues.statuses })
+                  // if (checkOutContain) {
+                  //   if (orderStatus) {
+                  //     conditions.push({ attribute: 'status', value: orderStatus })
+                  //   }
+                  // }
+                  getFilterStatusInOrderStatus = filterValues.statuses.filter(function (status) {
+                    return orderStatus.includes(status);
                   });
-                  checkOutContain = orderStatus.every(function (el) {
-                    return filterValues.statuses.indexOf(el) !== -1;
-                  });
-                  if (checkInnerContain) conditions.push({
+                  conditions.push({
                     attribute: 'status',
-                    value: filterValues.statuses
+                    value: getFilterStatusInOrderStatus
                   });
-
-                  if (checkOutContain) {
-                    if (orderStatus) {
-                      conditions.push({
-                        attribute: 'status',
-                        value: orderStatus
-                      });
-                    }
-                  }
                 } else {
                   if (orderStatus) {
                     conditions.push({
@@ -763,27 +763,18 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
         orders: orders
       }));
     } else {
-      var checkInnerContain = false;
-      var checkOutContain = false;
-
-      if (Object.keys(filterValues).length > 0) {
-        checkInnerContain = filterValues.statuses.every(function (el) {
-          return orderStatus.indexOf(el) !== -1;
-        });
-        checkOutContain = orderStatus.every(function (el) {
-          return filterValues.statuses.indexOf(el) !== -1;
-        });
-
-        if (!checkInnerContain && !checkOutContain) {
-          setOrderList({
-            loading: false,
-            orders: [],
-            error: null
-          });
-          return;
-        }
-      }
-
+      // if (Object.keys(filterValues).length > 0) {
+      //   const checkInnerContain = filterValues.statuses.every((el) => {
+      //     return orderStatus.indexOf(el) !== -1
+      //   })
+      //   const checkOutContain = orderStatus.every((el) => {
+      //     return filterValues.statuses.indexOf(el) !== -1
+      //   })
+      //   if (!checkInnerContain && !checkOutContain) {
+      //     setOrderList({ loading: false, orders: [], error: null })
+      //     return
+      //   }
+      // }
       loadOrders();
     }
 

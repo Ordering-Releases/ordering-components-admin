@@ -85,7 +85,12 @@ var ImporterJobForm = function ImporterJobForm(props) {
     fileName: null,
     fileType: null,
     csvFile: null,
-    importOptions: {}
+    importOptions: {
+      separator: ',',
+      enclosure: '"',
+      escape: '/',
+      start_line: 2
+    }
   }),
       _useState4 = _slicedToArray(_useState3, 2),
       fileState = _useState4[0],
@@ -141,7 +146,7 @@ var ImporterJobForm = function ImporterJobForm(props) {
 
   var handleCreateImporterJob = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(id) {
-      var formData, requestOptions, response, _yield$response$json, error, result;
+      var formData, importOptions, requestOptions, response, _yield$response$json, error, result;
 
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
@@ -150,8 +155,14 @@ var ImporterJobForm = function ImporterJobForm(props) {
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               formData = new FormData();
               formData.append('file', fileState === null || fileState === void 0 ? void 0 : fileState.csvFile);
-              formData.append('import_options', JSON.stringify(fileState === null || fileState === void 0 ? void 0 : fileState.importOptions));
-              _context.prev = 4;
+              importOptions = _objectSpread({}, fileState === null || fileState === void 0 ? void 0 : fileState.importOptions);
+              Object.keys(importOptions).forEach(function (key) {
+                if (!importOptions[key]) {
+                  delete importOptions[key];
+                }
+              });
+              formData.append('import_options', JSON.stringify(importOptions));
+              _context.prev = 6;
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: true
               }));
@@ -162,15 +173,15 @@ var ImporterJobForm = function ImporterJobForm(props) {
                 },
                 body: formData
               };
-              _context.next = 9;
+              _context.next = 11;
               return fetch("".concat(ordering.root, "/importers/").concat(id, "/jobs"), requestOptions);
 
-            case 9:
+            case 11:
               response = _context.sent;
-              _context.next = 12;
+              _context.next = 14;
               return response.json();
 
-            case 12:
+            case 14:
               _yield$response$json = _context.sent;
               error = _yield$response$json.error;
               result = _yield$response$json.result;
@@ -195,12 +206,12 @@ var ImporterJobForm = function ImporterJobForm(props) {
                 });
               }
 
-              _context.next = 21;
+              _context.next = 23;
               break;
 
-            case 18:
-              _context.prev = 18;
-              _context.t0 = _context["catch"](4);
+            case 20:
+              _context.prev = 20;
+              _context.t0 = _context["catch"](6);
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 result: {
                   error: true,
@@ -209,12 +220,12 @@ var ImporterJobForm = function ImporterJobForm(props) {
                 loading: false
               }));
 
-            case 21:
+            case 23:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[4, 18]]);
+      }, _callee, null, [[6, 20]]);
     }));
 
     return function handleCreateImporterJob(_x) {

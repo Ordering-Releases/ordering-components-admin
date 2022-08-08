@@ -60,7 +60,7 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var CampaignDetail = function CampaignDetail(props) {
-  var _formState$changes6;
+  var _campaignState$campai3, _formState$changes6;
 
   var campaign = props.campaign,
       campaignList = props.campaignList,
@@ -456,7 +456,8 @@ var CampaignDetail = function CampaignDetail(props) {
 
   var handleDeleteCondition = /*#__PURE__*/function () {
     var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(conditionId) {
-      var requestOptions, response, content, updatedCampaigns;
+      var requestOptions, response, content, _campaignState$campai, updatedCampaigns, updatedConditions;
+
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) {
           switch (_context4.prev = _context4.next) {
@@ -496,7 +497,7 @@ var CampaignDetail = function CampaignDetail(props) {
                   updatedCampaigns = campaignList === null || campaignList === void 0 ? void 0 : campaignList.campaigns.map(function (_action) {
                     if (_action.id === campaign.id) {
                       var conditions = _action.conditions.filter(function (item) {
-                        return item.id !== content.result;
+                        return item.id !== content.result.id;
                       });
 
                       return _objectSpread(_objectSpread({}, _action), {}, {
@@ -508,6 +509,17 @@ var CampaignDetail = function CampaignDetail(props) {
                   });
                   handleSuccessUpdateCampaign(updatedCampaigns);
                 }
+
+                updatedConditions = campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai = campaignState.campaign) === null || _campaignState$campai === void 0 ? void 0 : _campaignState$campai.conditions.filter(function (item) {
+                  var _content$result;
+
+                  return item.type !== (content === null || content === void 0 ? void 0 : (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.type);
+                });
+                setCampaignState(_objectSpread(_objectSpread({}, campaignState), {}, {
+                  campaign: _objectSpread(_objectSpread({}, campaignState === null || campaignState === void 0 ? void 0 : campaignState.campaign), {}, {
+                    conditions: updatedConditions
+                  })
+                }));
               } else {
                 setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                   loading: false,
@@ -545,7 +557,7 @@ var CampaignDetail = function CampaignDetail(props) {
 
   var getAudience = /*#__PURE__*/function () {
     var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(conditions) {
-      var _conditions, changes, requestOptions, response, content, _content$result;
+      var _conditions, changes, requestOptions, response, content, _content$result2;
 
       return _regeneratorRuntime().wrap(function _callee5$(_context5) {
         while (1) {
@@ -591,7 +603,7 @@ var CampaignDetail = function CampaignDetail(props) {
                 setAudienceState(_objectSpread(_objectSpread({}, audienceState), {}, {
                   loading: false,
                   error: null,
-                  audience: content === null || content === void 0 ? void 0 : (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.audience
+                  audience: content === null || content === void 0 ? void 0 : (_content$result2 = content.result) === null || _content$result2 === void 0 ? void 0 : _content$result2.audience
                 }));
               } else {
                 setAudienceState(_objectSpread(_objectSpread({}, audienceState), {}, {
@@ -624,18 +636,6 @@ var CampaignDetail = function CampaignDetail(props) {
     };
   }();
 
-  var isCheckBoxClick = function isCheckBoxClick() {
-    var valid = false;
-    formState.changes.conditions.forEach(function (item) {
-      var childValid = true;
-      Object.keys(item).forEach(function (key) {
-        if (key === 'condition' || key === 'date_condition') childValid = false;
-      });
-      if (childValid) valid = true;
-    });
-    return valid;
-  };
-
   (0, _react.useEffect)(function () {
     if (Object.keys(campaign).length === 0) {
       setIsAddMode(true);
@@ -646,8 +646,8 @@ var CampaignDetail = function CampaignDetail(props) {
           status: 'pending'
         }
       }));
-      getAudience(campaign === null || campaign === void 0 ? void 0 : campaign.conditions);
     } else {
+      // getAudience(campaign?.conditions)
       setIsAddMode(false);
       cleanFormState();
     }
@@ -657,16 +657,17 @@ var CampaignDetail = function CampaignDetail(props) {
     }));
   }, [campaign]);
   (0, _react.useEffect)(function () {
-    var _formState$changes3, _formState$changes4, _formState$changes4$c;
+    var _campaignState$campai2;
 
-    if (!isAddMode) return;
-    var valid = isCheckBoxClick();
+    getAudience(campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai2 = campaignState.campaign) === null || _campaignState$campai2 === void 0 ? void 0 : _campaignState$campai2.conditions);
+  }, [JSON.stringify(campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai3 = campaignState.campaign) === null || _campaignState$campai3 === void 0 ? void 0 : _campaignState$campai3.conditions)]);
+  (0, _react.useEffect)(function () {
+    var _formState$changes3, _formState$changes4, _formState$changes4$c, _formState$changes5;
 
-    if (formState !== null && formState !== void 0 && (_formState$changes3 = formState.changes) !== null && _formState$changes3 !== void 0 && _formState$changes3.conditions && (formState === null || formState === void 0 ? void 0 : (_formState$changes4 = formState.changes) === null || _formState$changes4 === void 0 ? void 0 : (_formState$changes4$c = _formState$changes4.conditions) === null || _formState$changes4$c === void 0 ? void 0 : _formState$changes4$c.length) > 0 && !valid) {
-      var _formState$changes5;
-
-      getAudience(formState === null || formState === void 0 ? void 0 : (_formState$changes5 = formState.changes) === null || _formState$changes5 === void 0 ? void 0 : _formState$changes5.conditions);
-    }
+    if (!isAddMode || !(formState !== null && formState !== void 0 && (_formState$changes3 = formState.changes) !== null && _formState$changes3 !== void 0 && _formState$changes3.conditions)) return;
+    if ((formState === null || formState === void 0 ? void 0 : (_formState$changes4 = formState.changes) === null || _formState$changes4 === void 0 ? void 0 : (_formState$changes4$c = _formState$changes4.conditions) === null || _formState$changes4$c === void 0 ? void 0 : _formState$changes4$c.length) > 0) getAudience(formState === null || formState === void 0 ? void 0 : (_formState$changes5 = formState.changes) === null || _formState$changes5 === void 0 ? void 0 : _formState$changes5.conditions);else setAudienceState(_objectSpread(_objectSpread({}, audienceState), {}, {
+      audience: 0
+    }));
   }, [JSON.stringify(formState === null || formState === void 0 ? void 0 : (_formState$changes6 = formState.changes) === null || _formState$changes6 === void 0 ? void 0 : _formState$changes6.conditions)]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     isAddMode: isAddMode,

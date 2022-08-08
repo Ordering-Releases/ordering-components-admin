@@ -140,6 +140,11 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
       _useState18 = _slicedToArray(_useState17, 2),
       conditionalSubOptionId = _useState18[0],
       setConditionalSubOptionId = _useState18[1];
+
+  var _useState19 = (0, _react.useState)(false),
+      _useState20 = _slicedToArray(_useState19, 2),
+      isAddForm = _useState20[0],
+      setIsAddForm = _useState20[1];
   /**
    * Method to change the option input
    * @param {EventTarget} e Related HTML event
@@ -460,7 +465,7 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
             case 14:
               content = _context.sent;
               setChangesState({
-                changes: content.error ? changesState : {},
+                changes: content.error ? changesState.changes : {},
                 result: content === null || content === void 0 ? void 0 : content.result
               });
 
@@ -528,35 +533,33 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
 
 
   var handleAddOption = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var _changes3, _changes, changes, key, requestOptions, response, content, subOptions, updatedOption, options, updatedExtra;
-
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(values) {
+      var changes, key, requestOptions, response, content, subOptions, updatedOption, options, updatedExtra;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.prev = 0;
-              _changes = _objectSpread({}, changesState.changes);
-              changes = {};
+              changes = _objectSpread({}, values);
 
-              for (key in _changes) {
-                if (_changes[key] !== '') {
-                  changes = _objectSpread(_objectSpread({}, changes), {}, _defineProperty({}, key, _changes[key]));
+              for (key in changes) {
+                if (!changes[key]) {
+                  delete changes[key];
                 }
               }
 
-              if (!((_changes3 = changes) !== null && _changes3 !== void 0 && _changes3.price)) {
+              if (!(changes !== null && changes !== void 0 && changes.price)) {
                 changes.price = 0;
               }
 
               if (!(Object.keys(changes).length === 0)) {
-                _context2.next = 7;
+                _context2.next = 6;
                 break;
               }
 
               return _context2.abrupt("return");
 
-            case 7:
+            case 6:
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               changes.enabled = true;
               setOptionState(_objectSpread(_objectSpread({}, optionState), {}, {
@@ -570,20 +573,16 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
                 },
                 body: JSON.stringify(changes)
               };
-              _context2.next = 13;
+              _context2.next = 12;
               return fetch("".concat(ordering.root, "/business/").concat(business.id, "/extras/").concat(extra.id, "/options/").concat(option.id, "/suboptions"), requestOptions);
 
-            case 13:
+            case 12:
               response = _context2.sent;
-              _context2.next = 16;
+              _context2.next = 15;
               return response.json();
 
-            case 16:
+            case 15:
               content = _context2.sent;
-              setChangesState({
-                changes: content.error ? changesState : {},
-                result: content === null || content === void 0 ? void 0 : content.result
-              });
 
               if (!content.error) {
                 subOptions = _toConsumableArray(optionState.option.suboptions);
@@ -610,28 +609,29 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
                 setExtraState(updatedExtra);
                 handleSuccessUpdateBusiness(updatedExtra);
                 showToast(_ToastContext.ToastType.Success, t('CHOICE_ADDED', 'Choice added'));
+                setIsAddForm(false);
               }
 
-              _context2.next = 24;
+              _context2.next = 22;
               break;
 
-            case 21:
-              _context2.prev = 21;
+            case 19:
+              _context2.prev = 19;
               _context2.t0 = _context2["catch"](0);
               setOptionState(_objectSpread(_objectSpread({}, optionState), {}, {
                 loading: false,
                 error: _context2.t0.message
               }));
 
-            case 24:
+            case 22:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[0, 21]]);
+      }, _callee2, null, [[0, 19]]);
     }));
 
-    return function handleAddOption() {
+    return function handleAddOption(_x2) {
       return _ref2.apply(this, arguments);
     };
   }();
@@ -716,7 +716,7 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
       }, _callee3, null, [[0, 13]]);
     }));
 
-    return function handleDeteteSubOption(_x2) {
+    return function handleDeteteSubOption(_x3) {
       return _ref3.apply(this, arguments);
     };
   }();
@@ -748,7 +748,7 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
       }, _callee4);
     }));
 
-    return function handleOptionSetting(_x3, _x4) {
+    return function handleOptionSetting(_x4, _x5) {
       return _ref4.apply(this, arguments);
     };
   }();
@@ -831,7 +831,7 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
       }, _callee5, null, [[0, 13]]);
     }));
 
-    return function handleUpdateOption(_x5) {
+    return function handleUpdateOption(_x6) {
       return _ref5.apply(this, arguments);
     };
   }();
@@ -959,7 +959,9 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
     handleChangeDefaultSuboption: handleChangeDefaultSuboption,
     handleUpdateSubOption: handleUpdateSubOption,
     handleChangeItem: handleChangeItem,
-    handleUpdateOption: handleUpdateOption
+    handleUpdateOption: handleUpdateOption,
+    isAddForm: isAddForm,
+    setIsAddForm: setIsAddForm
   })));
 };
 

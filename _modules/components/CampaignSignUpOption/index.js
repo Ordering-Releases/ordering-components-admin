@@ -141,10 +141,10 @@ var CampaignSignUpOption = function CampaignSignUpOption(props) {
 
   var handleChangeDateTime = function handleChangeDateTime(value) {
     var changes = _objectSpread(_objectSpread({}, ruleFormState.changes), {}, {
-      date: value
+      date: value,
+      max_date: null
     });
 
-    changes === null || changes === void 0 ? true : delete changes.max_date;
     setRuleFormState(_objectSpread(_objectSpread({}, ruleFormState), {}, {
       changes: changes
     }));
