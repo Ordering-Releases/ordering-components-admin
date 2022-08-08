@@ -7,14 +7,21 @@ import { useLanguage } from '../../contexts/LanguageContext'
 
 export const PluginList = (props) => {
   const {
-    UIComponent
+    UIComponent,
+    projectCode
   } = props
   const [ordering] = useApi()
   const [{ token }] = useSession()
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
 
-  const [pluginListState, setPluginListState] = useState({ plugins: [], loading: false, error: null })
+  const [pluginListState, setPluginListState] = useState({
+    plugins: [],
+    sysPlugins: [],
+    loading: false,
+    error: null,
+    sysError: null
+  })
   const [isAddMode, setIsAddMode] = useState(false)
   const [newUrl, setNewUrl] = useState(null)
   const [actionState, setActionState] = useState({ loading: false, error: null })
@@ -32,10 +39,32 @@ export const PluginList = (props) => {
           Authorization: `Bearer ${token}`
         }
       }
+
+      let sysPlugins = []
+      let sysError = null
+
+      try {
+        const resSysPlugins = await fetch(`${ordering.url}/${ordering.version}/system/plugins?project_code=${projectCode}`, requestOptions)
+        const contentSysPlugins = await resSysPlugins.json()
+
+        if (!contentSysPlugins.error) {
+          sysPlugins = contentSysPlugins.result
+        }
+      } catch (err) {
+        sysError = [err.message]
+      }
+
       const response = await fetch(`${ordering.root}/plugins`, requestOptions)
       const content = await response.json()
+
       if (!content.error) {
-        setPluginListState({ ...pluginListState, plugins: content.result, loading: false })
+        setPluginListState({
+          ...pluginListState,
+          plugins: content.result,
+          sysPlugins,
+          sysError,
+          loading: false
+        })
       }
     } catch (err) {
       setPluginListState({ ...pluginListState, loading: false, error: [err.message] })
@@ -94,7 +123,17 @@ export const PluginList = (props) => {
       if (!content.error) {
         setActionState({ ...actionState, loading: false })
         const plugins = pluginListState.plugins.filter(plugin => plugin.id !== pluginId)
-        setPluginListState({ ...pluginListState, plugins: plugins })
+        const sysPlugins = pluginListState.sysPlugins.map(p => ({
+          ...p,
+          installed: p.id === content?.result?.system_plugin_id
+            ? false
+            : p.installed
+        }))
+        setPluginListState({
+          ...pluginListState,
+          plugins: plugins,
+          sysPlugins
+        })
         showToast(ToastType.Success, t('PLUGIN_REMOVED', 'Plugin removed'))
       } else {
         setActionState({ loading: false, error: content.result })
@@ -141,6 +180,45 @@ export const PluginList = (props) => {
     }
   }
 
+  /**
+   *
+   * @param {Number} pluginId plugin id to install
+   */
+  const handleInstallSysPlugin = async (pluginId) => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setActionState({ ...actionState, loading: true })
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          system_plugin_id: pluginId
+        })
+      }
+      const response = await fetch(`${ordering.root}/plugins`, requestOptions)
+      const content = await response.json()
+      if (!content.error) {
+        setPluginListState({
+          ...pluginListState,
+          plugins: [...pluginListState.plugins, content?.result],
+          sysPlugins: pluginListState.sysPlugins.map(p => ({
+            ...p,
+            installed: content?.result?.system_plugin_id === p.id
+          }))
+        })
+        setActionState({ ...actionState, loading: false })
+        showToast(ToastType.Success, t('SYSTEM_PLUGIN_INSTALLED', 'Plugin installed'))
+      } else {
+        setActionState({ loading: false, error: content.result })
+      }
+    } catch (err) {
+      setActionState({ loading: false, error: [err.message] })
+    }
+  }
+
   useEffect(() => {
     getPlugins()
   }, [])
@@ -158,6 +236,7 @@ export const PluginList = (props) => {
           handleAddNewPlugin={handleAddNewPlugin}
           handleDeletePlugin={handleDeletePlugin}
           handleUpdatePlugin={handleUpdatePlugin}
+          handleInstallSysPlugin={handleInstallSysPlugin}
         />
       )}
     </>

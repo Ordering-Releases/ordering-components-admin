@@ -363,8 +363,8 @@ export const BusinessPaymethods = (props) => {
    */
   const handleStripeSave = (paymethodId) => {
     let requestionOptions = {
-      ...stripeConnectData,
-      sandbox: true,
+      sandbox: stripeConnectData?.sandbox,
+      data: JSON.stringify(stripeConnectData?.data),
       data_sandbox: JSON.stringify(stripeConnectData?.data)
     }
     if (requestionOptions?.allowed_order_types) {

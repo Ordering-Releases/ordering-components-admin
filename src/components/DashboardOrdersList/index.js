@@ -111,20 +111,22 @@ export const DashboardOrdersList = (props) => {
       }
     } else {
       if (filterValues.statuses.length > 0) {
-        const checkInnerContain = filterValues.statuses.every((el) => {
-          return orderStatus.indexOf(el) !== -1
-        })
+        // const checkInnerContain = filterValues.statuses.every((el) => {
+        //   return orderStatus.indexOf(el) !== -1
+        // })
 
-        const checkOutContain = orderStatus.every((el) => {
-          return filterValues.statuses.indexOf(el) !== -1
-        })
+        // const checkOutContain = orderStatus.every((el) => {
+        //   return filterValues.statuses.indexOf(el) !== -1
+        // })
 
-        if (checkInnerContain) conditions.push({ attribute: 'status', value: filterValues.statuses })
-        if (checkOutContain) {
-          if (orderStatus) {
-            conditions.push({ attribute: 'status', value: orderStatus })
-          }
-        }
+        // if (checkInnerContain) conditions.push({ attribute: 'status', value: filterValues.statuses })
+        // if (checkOutContain) {
+        //   if (orderStatus) {
+        //     conditions.push({ attribute: 'status', value: orderStatus })
+        //   }
+        // }
+        const getFilterStatusInOrderStatus = filterValues.statuses.filter(status => orderStatus.includes(status))
+        conditions.push({ attribute: 'status', value: getFilterStatusInOrderStatus })
       } else {
         if (orderStatus) {
           conditions.push({ attribute: 'status', value: orderStatus })
@@ -503,22 +505,20 @@ export const DashboardOrdersList = (props) => {
         orders
       })
     } else {
-      let checkInnerContain = false
-      let checkOutContain = false
-      if (Object.keys(filterValues).length > 0) {
-        checkInnerContain = filterValues.statuses.every((el) => {
-          return orderStatus.indexOf(el) !== -1
-        })
+      // if (Object.keys(filterValues).length > 0) {
+      //   const checkInnerContain = filterValues.statuses.every((el) => {
+      //     return orderStatus.indexOf(el) !== -1
+      //   })
 
-        checkOutContain = orderStatus.every((el) => {
-          return filterValues.statuses.indexOf(el) !== -1
-        })
+      //   const checkOutContain = orderStatus.every((el) => {
+      //     return filterValues.statuses.indexOf(el) !== -1
+      //   })
 
-        if (!checkInnerContain && !checkOutContain) {
-          setOrderList({ loading: false, orders: [], error: null })
-          return
-        }
-      }
+      //   if (!checkInnerContain && !checkOutContain) {
+      //     setOrderList({ loading: false, orders: [], error: null })
+      //     return
+      //   }
+      // }
       loadOrders()
     }
     return () => {

@@ -28,6 +28,7 @@ export const ProductExtraOptionDetails = (props) => {
   const [conditionalOptionId, setConditionalOptionId] = useState(null)
   const [extraState, setExtraState] = useState(extra)
   const [conditionalSubOptionId, setConditionalSubOptionId] = useState(null)
+  const [isAddForm, setIsAddForm] = useState(false)
 
   /**
    * Method to change the option input
@@ -236,7 +237,7 @@ export const ProductExtraOptionDetails = (props) => {
       const response = await fetch(`${ordering.root}/business/${business.id}/extras/${extra.id}/options/${option.id}/suboptions/${changesParam?.id || editSubOptionId}`, requestOptions)
       const content = await response.json()
       setChangesState({
-        changes: content.error ? changesState : {},
+        changes: content.error ? changesState.changes : {},
         result: content?.result
       })
       if (!content.error) {
@@ -268,13 +269,12 @@ export const ProductExtraOptionDetails = (props) => {
   /**
    * Method to add new option from API
    */
-  const handleAddOption = async () => {
+  const handleAddOption = async (values) => {
     try {
-      const _changes = { ...changesState.changes }
-      let changes = {}
-      for (const key in _changes) {
-        if (_changes[key] !== '') {
-          changes = { ...changes, [key]: _changes[key] }
+      const changes = { ...values }
+      for (const key in changes) {
+        if (!changes[key]) {
+          delete changes[key]
         }
       }
       if (!changes?.price) {
@@ -294,10 +294,6 @@ export const ProductExtraOptionDetails = (props) => {
       }
       const response = await fetch(`${ordering.root}/business/${business.id}/extras/${extra.id}/options/${option.id}/suboptions`, requestOptions)
       const content = await response.json()
-      setChangesState({
-        changes: content.error ? changesState : {},
-        result: content?.result
-      })
       if (!content.error) {
         const subOptions = [...optionState.option.suboptions]
         subOptions.push({
@@ -316,6 +312,7 @@ export const ProductExtraOptionDetails = (props) => {
         setExtraState(updatedExtra)
         handleSuccessUpdateBusiness(updatedExtra)
         showToast(ToastType.Success, t('CHOICE_ADDED', 'Choice added'))
+        setIsAddForm(false)
       }
     } catch (err) {
       setOptionState({ ...optionState, loading: false, error: err.message })
@@ -497,6 +494,8 @@ export const ProductExtraOptionDetails = (props) => {
           handleUpdateSubOption={handleUpdateSubOption}
           handleChangeItem={handleChangeItem}
           handleUpdateOption={handleUpdateOption}
+          isAddForm={isAddForm}
+          setIsAddForm={setIsAddForm}
         />
       )}
     </>

@@ -51,9 +51,8 @@ export const CampaignSignUpOption = (props) => {
    * Change date
    * @param {string} value date
    */
-  const handleChangeDateTime = (value) => {
-    const changes = { ...ruleFormState.changes, date: value }
-    delete changes?.max_date
+   const handleChangeDateTime = (value) => {
+    const changes = { ...ruleFormState.changes, date: value, max_date: null }
     setRuleFormState({ ...ruleFormState, changes: changes })
   }
 

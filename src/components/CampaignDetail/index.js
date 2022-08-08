@@ -259,7 +259,7 @@ export const CampaignDetail = (props) => {
         if (handleSuccessUpdateCampaign) {
           const updatedCampaigns = campaignList?.campaigns.map(_action => {
             if (_action.id === campaign.id) {
-              const conditions = _action.conditions.filter(item => item.id !== content.result)
+              const conditions = _action.conditions.filter(item => item.id !== content.result.id)
               return {
                 ..._action,
                 conditions: conditions
@@ -269,6 +269,14 @@ export const CampaignDetail = (props) => {
           })
           handleSuccessUpdateCampaign(updatedCampaigns)
         }
+        const updatedConditions = campaignState?.campaign?.conditions.filter(item => item.type !== content?.result?.type)
+        setCampaignState({
+          ...campaignState,
+          campaign: {
+            ...campaignState?.campaign,
+            conditions: updatedConditions
+          }
+        })
       } else {
         setFormState({
           ...formState,
@@ -331,18 +339,6 @@ export const CampaignDetail = (props) => {
     }
   }
 
-  const isCheckBoxClick = () => {
-    let valid = false
-    formState.changes.conditions.forEach(item => {
-      let childValid = true
-      Object.keys(item).forEach(key => {
-        if (key === 'condition' || key === 'date_condition') childValid = false
-      })
-      if (childValid) valid = true
-    })
-    return valid
-  }
-
   useEffect(() => {
     if (Object.keys(campaign).length === 0) {
       setIsAddMode(true)
@@ -354,8 +350,8 @@ export const CampaignDetail = (props) => {
           status: 'pending'
         }
       })
-      getAudience(campaign?.conditions)
     } else {
+      // getAudience(campaign?.conditions)
       setIsAddMode(false)
       cleanFormState()
     }
@@ -363,11 +359,13 @@ export const CampaignDetail = (props) => {
   }, [campaign])
 
   useEffect(() => {
-    if (!isAddMode) return
-    const valid = isCheckBoxClick()
-    if (formState?.changes?.conditions && formState?.changes?.conditions?.length > 0 && !valid) {
-      getAudience(formState?.changes?.conditions)
-    }
+    getAudience(campaignState?.campaign?.conditions)
+  }, [JSON.stringify(campaignState?.campaign?.conditions)])
+
+  useEffect(() => {
+    if (!isAddMode || !formState?.changes?.conditions) return
+    if (formState?.changes?.conditions?.length > 0) getAudience(formState?.changes?.conditions)
+    else setAudienceState({ ...audienceState, audience: 0 })
   }, [JSON.stringify(formState?.changes?.conditions)])
 
   return (

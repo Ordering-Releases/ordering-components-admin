@@ -24,7 +24,17 @@ export const ImporterJobForm = (props) => {
     },
     result: { error: false }
   })
-  const [fileState, setFileState] = useState({ fileName: null, fileType: null, csvFile: null, importOptions: {} })
+  const [fileState, setFileState] = useState({
+    fileName: null,
+    fileType: null,
+    csvFile: null,
+    importOptions: {
+      separator: ',',
+      enclosure: '"',
+      escape: '/',
+      start_line: 2
+    }
+  })
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
 
@@ -76,7 +86,13 @@ export const ImporterJobForm = (props) => {
     showToast(ToastType.Info, t('LOADING', 'Loading'))
     const formData = new FormData()
     formData.append('file', fileState?.csvFile)
-    formData.append('import_options', JSON.stringify(fileState?.importOptions))
+    const importOptions = { ...fileState?.importOptions }
+    Object.keys(importOptions).forEach(key => {
+      if (!importOptions[key]) {
+        delete importOptions[key]
+      }
+    })
+    formData.append('import_options', JSON.stringify(importOptions))
 
     try {
       setFormState({ ...formState, loading: true })
