@@ -449,7 +449,8 @@ var LoginForm = function LoginForm(props) {
               if (!(res !== null && res !== void 0 && res.error) && res !== null && res !== void 0 && (_res$result = res.result) !== null && _res$result !== void 0 && _res$result.id) {
                 login({
                   user: res === null || res === void 0 ? void 0 : res.result,
-                  token: res === null || res === void 0 ? void 0 : (_res$result2 = res.result) === null || _res$result2 === void 0 ? void 0 : (_res$result2$session = _res$result2.session) === null || _res$result2$session === void 0 ? void 0 : _res$result2$session.access_token
+                  token: res === null || res === void 0 ? void 0 : (_res$result2 = res.result) === null || _res$result2 === void 0 ? void 0 : (_res$result2$session = _res$result2.session) === null || _res$result2$session === void 0 ? void 0 : _res$result2$session.access_token,
+                  project: ordering === null || ordering === void 0 ? void 0 : ordering.project
                 });
 
                 if (handleSuccessLogin) {

@@ -65,7 +65,9 @@ var DriversList = function DriversList(props) {
       propsToFetch = props.propsToFetch,
       isSearchByName = props.isSearchByName,
       isSearchByCellphone = props.isSearchByCellphone,
-      asDashboard = props.asDashboard;
+      asDashboard = props.asDashboard,
+      isOrderDrivers = props.isOrderDrivers,
+      orderId = props.orderId;
 
   var _useApi = (0, _ApiContext.useApi)(),
       _useApi2 = _slicedToArray(_useApi, 1),
@@ -400,6 +402,70 @@ var DriversList = function DriversList(props) {
     };
   }();
   /**
+   * Method to get the drivers of order from API
+   */
+
+
+  var getOrderDrivers = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var requestOptions, response, _yield$response$json, error, result;
+
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.prev = 0;
+              setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
+                loading: true
+              }));
+              requestOptions = {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(session.token)
+                }
+              };
+              _context3.next = 5;
+              return fetch("".concat(ordering.root, "/controls/orders/").concat(orderId), requestOptions);
+
+            case 5:
+              response = _context3.sent;
+              _context3.next = 8;
+              return response.json();
+
+            case 8:
+              _yield$response$json = _context3.sent;
+              error = _yield$response$json.error;
+              result = _yield$response$json.result;
+              setDriversList({
+                loading: false,
+                drivers: error ? [] : result === null || result === void 0 ? void 0 : result.drivers,
+                error: error ? result : null
+              });
+              _context3.next = 17;
+              break;
+
+            case 14:
+              _context3.prev = 14;
+              _context3.t0 = _context3["catch"](0);
+              setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
+                loading: false,
+                error: _context3.t0.message
+              }));
+
+            case 17:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, null, [[0, 14]]);
+    }));
+
+    return function getOrderDrivers() {
+      return _ref3.apply(this, arguments);
+    };
+  }();
+  /**
    * listen for busy/not busy filter
    */
 
@@ -415,7 +481,11 @@ var DriversList = function DriversList(props) {
       }));
       getOnlineOfflineDrivers(drivers);
     } else {
-      getDrivers();
+      if (isOrderDrivers) {
+        getOrderDrivers();
+      } else {
+        getDrivers();
+      }
     }
 
     return function () {

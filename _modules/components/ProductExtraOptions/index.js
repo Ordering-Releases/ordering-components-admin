@@ -126,6 +126,16 @@ var ProductExtraOptions = function ProductExtraOptions(props) {
       _useState12 = _slicedToArray(_useState11, 2),
       openModal = _useState12[0],
       setOpenModal = _useState12[1];
+
+  var _useState13 = (0, _react.useState)(null),
+      _useState14 = _slicedToArray(_useState13, 2),
+      dragoverOptionId = _useState14[0],
+      setDragoverOptionId = _useState14[1];
+
+  var _useState15 = (0, _react.useState)(false),
+      _useState16 = _slicedToArray(_useState15, 2),
+      isOptionsBottom = _useState16[0],
+      setIsOptionsBottom = _useState16[1];
   /**
    * Clean changesState
    */
@@ -655,6 +665,164 @@ var ProductExtraOptions = function ProductExtraOptions(props) {
     }));
     handleSuccessUpdateBusiness(updatedExtra);
   };
+  /**
+   * Method to handle option drag start
+   */
+
+
+  var handleDragStart = function handleDragStart(event, option) {
+    event.dataTransfer.setData('transferOptionId', option.id);
+    var ghostElement = document.createElement('div');
+    ghostElement.classList.add('ghostDragging');
+    ghostElement.innerHTML = option.name;
+    document.body.appendChild(ghostElement);
+    event.dataTransfer.setDragImage(ghostElement, 0, 0);
+    setIsOptionsBottom(false);
+  };
+  /**
+   * Method to handle option drag over
+   */
+
+
+  var hanldeDragOver = function hanldeDragOver(event, option, isLastOption) {
+    event.preventDefault();
+    var element = event.target.closest('.draggable-option');
+
+    if (element) {
+      if (!isLastOption) {
+        setDragoverOptionId(option.id);
+      } else {
+        var middlePositionY = window.scrollY + event.target.getBoundingClientRect().top + event.target.offsetHeight / 2;
+        var dragPositionY = event.clientY;
+
+        if (dragPositionY > middlePositionY) {
+          setIsOptionsBottom(true);
+          setDragoverOptionId(null);
+        } else {
+          setIsOptionsBottom(false);
+          setDragoverOptionId(option.id);
+        }
+      }
+    }
+  };
+  /**
+   * Method to handle option drop
+   */
+
+
+  var handleDrop = function handleDrop(event, option) {
+    event.preventDefault();
+    var transferOptionId = parseInt(event.dataTransfer.getData('transferOptionId'));
+    if (option.id === transferOptionId) return;
+    var dropOptionRank;
+
+    if (isOptionsBottom) {
+      dropOptionRank = (option === null || option === void 0 ? void 0 : option.rank) + 1;
+    } else {
+      dropOptionRank = option === null || option === void 0 ? void 0 : option.rank;
+    }
+
+    setIsOptionsBottom(false);
+    handleChangeOptionRank(transferOptionId, {
+      rank: dropOptionRank
+    });
+  };
+  /**
+   * Method to handle option drag end
+   */
+
+
+  var handleDragEnd = function handleDragEnd() {
+    var elements = document.getElementsByClassName('ghostDragging');
+
+    while (elements.length > 0) {
+      elements[0].parentNode.removeChild(elements[0]);
+    }
+
+    setDragoverOptionId(null);
+  };
+  /**
+   * Method to change the rank of option
+   */
+
+
+  var handleChangeOptionRank = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(transferOptionId, params) {
+      var requestOptions, response, content, options, updatedExtra;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.prev = 0;
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              setExtraState(_objectSpread(_objectSpread({}, extraState), {}, {
+                loading: true
+              }));
+              requestOptions = {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                },
+                body: JSON.stringify(params)
+              };
+              _context5.next = 6;
+              return fetch("".concat(ordering.root, "/business/").concat(business.id, "/extras/").concat(extra.id, "/options/").concat(transferOptionId), requestOptions);
+
+            case 6:
+              response = _context5.sent;
+              _context5.next = 9;
+              return response.json();
+
+            case 9:
+              content = _context5.sent;
+
+              if (!content.error) {
+                setChangesState({
+                  changes: content.error ? changesState.changes : {},
+                  result: content.result
+                });
+                options = extraState.extra.options.filter(function (option) {
+                  if (option.id === content.result.id) {
+                    Object.assign(option, content.result);
+                  }
+
+                  return true;
+                });
+                updatedExtra = _objectSpread(_objectSpread({}, extraState.extra), {}, {
+                  options: options
+                });
+                setExtraState(_objectSpread(_objectSpread({}, extraState), {}, {
+                  loading: false,
+                  extra: updatedExtra
+                }));
+                handleSuccessUpdateBusiness(updatedExtra);
+                showToast(_ToastContext.ToastType.Success, t('OPTION_SAVED', 'Option saved'));
+              }
+
+              _context5.next = 16;
+              break;
+
+            case 13:
+              _context5.prev = 13;
+              _context5.t0 = _context5["catch"](0);
+              setExtraState(_objectSpread(_objectSpread({}, extraState), {}, {
+                loading: false,
+                error: _context5.t0.message
+              }));
+
+            case 16:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5, null, [[0, 13]]);
+    }));
+
+    return function handleChangeOptionRank(_x2, _x3) {
+      return _ref5.apply(this, arguments);
+    };
+  }();
 
   (0, _react.useEffect)(function () {
     setChangesState({
@@ -695,7 +863,13 @@ var ProductExtraOptions = function ProductExtraOptions(props) {
     openModal: openModal,
     setCurOption: setCurOption,
     setOpenModal: setOpenModal,
-    handleOpenModal: handleOpenModal
+    handleOpenModal: handleOpenModal,
+    dragoverOptionId: dragoverOptionId,
+    isOptionsBottom: isOptionsBottom,
+    handleDragStart: handleDragStart,
+    hanldeDragOver: hanldeDragOver,
+    handleDrop: handleDrop,
+    handleDragEnd: handleDragEnd
   })));
 };
 

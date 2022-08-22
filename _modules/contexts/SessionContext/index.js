@@ -132,7 +132,7 @@ var SessionProvider = function SessionProvider(_ref) {
 
   var getValuesFromLocalStorage = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var auth, token, user;
+      var auth, token, project, user;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -148,17 +148,23 @@ var SessionProvider = function SessionProvider(_ref) {
             case 5:
               token = _context2.sent;
               _context2.next = 8;
-              return strategy.getItem('user', true);
+              return strategy.getItem('project');
 
             case 8:
+              project = _context2.sent;
+              _context2.next = 11;
+              return strategy.getItem('user', true);
+
+            case 11:
               user = _context2.sent;
               return _context2.abrupt("return", {
                 auth: auth,
                 token: token,
+                project: project,
                 user: user
               });
 
-            case 10:
+            case 13:
             case "end":
               return _context2.stop();
           }
@@ -277,7 +283,7 @@ var SessionProvider = function SessionProvider(_ref) {
 
   var checkLocalStorage = /*#__PURE__*/function () {
     var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
-      var _yield$getValuesFromL2, token, user;
+      var _yield$getValuesFromL2, token, project, user;
 
       return _regeneratorRuntime().wrap(function _callee6$(_context6) {
         while (1) {
@@ -289,12 +295,14 @@ var SessionProvider = function SessionProvider(_ref) {
             case 2:
               _yield$getValuesFromL2 = _context6.sent;
               token = _yield$getValuesFromL2.token;
+              project = _yield$getValuesFromL2.project;
               user = _yield$getValuesFromL2.user;
 
               if (token && !state.token) {
                 login({
                   user: user,
-                  token: token
+                  token: token,
+                  project: project
                 });
               }
 
@@ -302,7 +310,7 @@ var SessionProvider = function SessionProvider(_ref) {
                 logout();
               }
 
-            case 7:
+            case 8:
             case "end":
               return _context6.stop();
           }

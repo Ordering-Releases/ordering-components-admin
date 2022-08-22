@@ -145,6 +145,16 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
       _useState20 = _slicedToArray(_useState19, 2),
       isAddForm = _useState20[0],
       setIsAddForm = _useState20[1];
+
+  var _useState21 = (0, _react.useState)(null),
+      _useState22 = _slicedToArray(_useState21, 2),
+      dragoverSubOptionId = _useState22[0],
+      setDragoverSubOptionId = _useState22[1];
+
+  var _useState23 = (0, _react.useState)(false),
+      _useState24 = _slicedToArray(_useState23, 2),
+      isSubOptionsBottom = _useState24[0],
+      setIsSubOptionsBottom = _useState24[1];
   /**
    * Method to change the option input
    * @param {EventTarget} e Related HTML event
@@ -920,6 +930,83 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
       respect_to: subOptionId
     });
   };
+  /**
+   * Method to handle sub option drag start
+   */
+
+
+  var handleDragStart = function handleDragStart(event, subOption) {
+    event.dataTransfer.setData('transferSubOptionId', subOption.id);
+    var ghostElement = document.createElement('div');
+    ghostElement.classList.add('ghostDragging');
+    ghostElement.innerHTML = subOption.name;
+    document.body.appendChild(ghostElement);
+    event.dataTransfer.setDragImage(ghostElement, 0, 0);
+    setIsSubOptionsBottom(false);
+  };
+  /**
+   * Method to handle sub option drag over
+   */
+
+
+  var hanldeDragOver = function hanldeDragOver(event, subOption, isLastSubOption) {
+    event.preventDefault();
+    var element = event.target.closest('.draggable-suboption');
+
+    if (element) {
+      if (!isLastSubOption) {
+        setDragoverSubOptionId(subOption.id);
+      } else {
+        var middlePositionY = window.scrollY + event.target.getBoundingClientRect().top + event.target.offsetHeight / 2;
+        var dragPositionY = event.clientY;
+
+        if (dragPositionY > middlePositionY) {
+          setIsSubOptionsBottom(true);
+          setDragoverSubOptionId(null);
+        } else {
+          setIsSubOptionsBottom(false);
+          setDragoverSubOptionId(subOption.id);
+        }
+      }
+    }
+  };
+  /**
+   * Method to handle sub option drop
+   */
+
+
+  var handleDrop = function handleDrop(event, subOption) {
+    event.preventDefault();
+    var transferSubOptionId = parseInt(event.dataTransfer.getData('transferSubOptionId'));
+    if (subOption.id === transferSubOptionId) return;
+    var dropSubOptionRank;
+
+    if (isSubOptionsBottom) {
+      dropSubOptionRank = (subOption === null || subOption === void 0 ? void 0 : subOption.rank) + 1;
+    } else {
+      dropSubOptionRank = subOption === null || subOption === void 0 ? void 0 : subOption.rank;
+    }
+
+    setIsSubOptionsBottom(false);
+    handleUpdateSubOption({
+      id: transferSubOptionId,
+      rank: dropSubOptionRank
+    });
+  };
+  /**
+   * Method to handle sub option drag end
+   */
+
+
+  var handleDragEnd = function handleDragEnd() {
+    var elements = document.getElementsByClassName('ghostDragging');
+
+    while (elements.length > 0) {
+      elements[0].parentNode.removeChild(elements[0]);
+    }
+
+    setDragoverSubOptionId(null);
+  };
 
   (0, _react.useEffect)(function () {
     if (conditionalOptionId) {
@@ -961,7 +1048,13 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
     handleChangeItem: handleChangeItem,
     handleUpdateOption: handleUpdateOption,
     isAddForm: isAddForm,
-    setIsAddForm: setIsAddForm
+    setIsAddForm: setIsAddForm,
+    dragoverSubOptionId: dragoverSubOptionId,
+    isSubOptionsBottom: isSubOptionsBottom,
+    handleDragStart: handleDragStart,
+    hanldeDragOver: hanldeDragOver,
+    handleDrop: handleDrop,
+    handleDragEnd: handleDragEnd
   })));
 };
 
