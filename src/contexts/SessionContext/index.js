@@ -48,8 +48,9 @@ export const SessionProvider = ({ children, strategy }) => {
   const getValuesFromLocalStorage = async () => {
     const auth = await strategy.getItem('token')
     const token = await strategy.getItem('token')
+    const project = await strategy.getItem('project')
     const user = await strategy.getItem('user', true)
-    return { auth, token, user }
+    return { auth, token, project, user }
   }
 
   const login = async (values) => {
@@ -88,11 +89,12 @@ export const SessionProvider = ({ children, strategy }) => {
   }
 
   const checkLocalStorage = async () => {
-    const { token, user } = await getValuesFromLocalStorage()
+    const { token, project, user } = await getValuesFromLocalStorage()
     if (token && !state.token) {
       login({
         user,
-        token
+        token,
+        project
       })
     }
 

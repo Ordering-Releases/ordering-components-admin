@@ -32,6 +32,8 @@ export const ProductExtraOptions = (props) => {
   })
   const [curOption, setCurOption] = useState(null)
   const [openModal, setOpenModal] = useState({})
+  const [dragoverOptionId, setDragoverOptionId] = useState(null)
+  const [isOptionsBottom, setIsOptionsBottom] = useState(false)
 
   /**
    * Clean changesState
@@ -337,6 +339,108 @@ export const ProductExtraOptions = (props) => {
     handleSuccessUpdateBusiness(updatedExtra)
   }
 
+  /**
+   * Method to handle option drag start
+   */
+  const handleDragStart = (event, option) => {
+    event.dataTransfer.setData('transferOptionId', option.id)
+    const ghostElement = document.createElement('div')
+    ghostElement.classList.add('ghostDragging')
+    ghostElement.innerHTML = option.name
+    document.body.appendChild(ghostElement)
+    event.dataTransfer.setDragImage(ghostElement, 0, 0)
+    setIsOptionsBottom(false)
+  }
+
+  /**
+   * Method to handle option drag over
+   */
+  const hanldeDragOver = (event, option, isLastOption) => {
+    event.preventDefault()
+    const element = event.target.closest('.draggable-option')
+    if (element) {
+      if (!isLastOption) {
+        setDragoverOptionId(option.id)
+      } else {
+        const middlePositionY = window.scrollY + event.target.getBoundingClientRect().top + event.target.offsetHeight / 2
+        const dragPositionY = event.clientY
+        if (dragPositionY > middlePositionY) {
+          setIsOptionsBottom(true)
+          setDragoverOptionId(null)
+        } else {
+          setIsOptionsBottom(false)
+          setDragoverOptionId(option.id)
+        }
+      }
+    }
+  }
+
+  /**
+   * Method to handle option drop
+   */
+  const handleDrop = (event, option) => {
+    event.preventDefault()
+    const transferOptionId = parseInt(event.dataTransfer.getData('transferOptionId'))
+    if (option.id === transferOptionId) return
+    let dropOptionRank
+    if (isOptionsBottom) {
+      dropOptionRank = option?.rank + 1
+    } else {
+      dropOptionRank = option?.rank
+    }
+    setIsOptionsBottom(false)
+    handleChangeOptionRank(transferOptionId, { rank: dropOptionRank })
+  }
+
+  /**
+   * Method to handle option drag end
+   */
+  const handleDragEnd = () => {
+    const elements = document.getElementsByClassName('ghostDragging')
+    while (elements.length > 0) {
+      elements[0].parentNode.removeChild(elements[0])
+    }
+    setDragoverOptionId(null)
+  }
+
+  /**
+   * Method to change the rank of option
+   */
+  const handleChangeOptionRank = async (transferOptionId, params) => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setExtraState({ ...extraState, loading: true })
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(params)
+      }
+      const response = await fetch(`${ordering.root}/business/${business.id}/extras/${extra.id}/options/${transferOptionId}`, requestOptions)
+      const content = await response.json()
+      if (!content.error) {
+        setChangesState({
+          changes: content.error ? changesState.changes : {},
+          result: content.result
+        })
+        const options = extraState.extra.options.filter(option => {
+          if (option.id === content.result.id) {
+            Object.assign(option, content.result)
+          }
+          return true
+        })
+        const updatedExtra = { ...extraState.extra, options: options }
+        setExtraState({ ...extraState, loading: false, extra: updatedExtra })
+        handleSuccessUpdateBusiness(updatedExtra)
+        showToast(ToastType.Success, t('OPTION_SAVED', 'Option saved'))
+      }
+    } catch (err) {
+      setExtraState({ ...extraState, loading: false, error: err.message })
+    }
+  }
+
   useEffect(() => {
     setChangesState({ changes: {}, result: {} })
     setExtraState({ ...extraState, extra: extra })
@@ -373,12 +477,17 @@ export const ProductExtraOptions = (props) => {
           handleDeleteExtra={handleDeleteExtra}
           handleSucccessDeleteOption={handleSucccessDeleteOption}
           handleUpdateOption={handleUpdateOption}
-
           curOption={curOption}
           openModal={openModal}
           setCurOption={setCurOption}
           setOpenModal={setOpenModal}
           handleOpenModal={handleOpenModal}
+          dragoverOptionId={dragoverOptionId}
+          isOptionsBottom={isOptionsBottom}
+          handleDragStart={handleDragStart}
+          hanldeDragOver={hanldeDragOver}
+          handleDrop={handleDrop}
+          handleDragEnd={handleDragEnd}
         />
       )}
     </>

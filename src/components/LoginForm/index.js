@@ -213,7 +213,8 @@ export const LoginForm = (props) => {
       if (!res?.error && res?.result?.id) {
         login({
           user: res?.result,
-          token: res?.result?.session?.access_token
+          token: res?.result?.session?.access_token,
+          project: ordering?.project
         })
         if (handleSuccessLogin) {
           handleSuccessLogin(res?.result)

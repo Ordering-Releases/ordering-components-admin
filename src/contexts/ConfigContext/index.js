@@ -47,7 +47,7 @@ export const ConfigProvider = ({ children }) => {
     },
     google_maps_api_key: {
       key: 'google_maps_api_key',
-      value: 'AIzaSyDX5giPfK-mtbLR72qxzevCYSUrbi832Sk'
+      value: ''
     },
     country_autocomplete: {
       key: 'country_autocomplete',

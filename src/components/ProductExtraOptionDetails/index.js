@@ -29,6 +29,8 @@ export const ProductExtraOptionDetails = (props) => {
   const [extraState, setExtraState] = useState(extra)
   const [conditionalSubOptionId, setConditionalSubOptionId] = useState(null)
   const [isAddForm, setIsAddForm] = useState(false)
+  const [dragoverSubOptionId, setDragoverSubOptionId] = useState(null)
+  const [isSubOptionsBottom, setIsSubOptionsBottom] = useState(false)
 
   /**
    * Method to change the option input
@@ -453,6 +455,70 @@ export const ProductExtraOptionDetails = (props) => {
     handleUpdateOption({ respect_to: subOptionId })
   }
 
+  /**
+   * Method to handle sub option drag start
+   */
+  const handleDragStart = (event, subOption) => {
+    event.dataTransfer.setData('transferSubOptionId', subOption.id)
+    const ghostElement = document.createElement('div')
+    ghostElement.classList.add('ghostDragging')
+    ghostElement.innerHTML = subOption.name
+    document.body.appendChild(ghostElement)
+    event.dataTransfer.setDragImage(ghostElement, 0, 0)
+    setIsSubOptionsBottom(false)
+  }
+
+  /**
+   * Method to handle sub option drag over
+   */
+  const hanldeDragOver = (event, subOption, isLastSubOption) => {
+    event.preventDefault()
+    const element = event.target.closest('.draggable-suboption')
+    if (element) {
+      if (!isLastSubOption) {
+        setDragoverSubOptionId(subOption.id)
+      } else {
+        const middlePositionY = window.scrollY + event.target.getBoundingClientRect().top + event.target.offsetHeight / 2
+        const dragPositionY = event.clientY
+        if (dragPositionY > middlePositionY) {
+          setIsSubOptionsBottom(true)
+          setDragoverSubOptionId(null)
+        } else {
+          setIsSubOptionsBottom(false)
+          setDragoverSubOptionId(subOption.id)
+        }
+      }
+    }
+  }
+
+  /**
+   * Method to handle sub option drop
+   */
+  const handleDrop = (event, subOption) => {
+    event.preventDefault()
+    const transferSubOptionId = parseInt(event.dataTransfer.getData('transferSubOptionId'))
+    if (subOption.id === transferSubOptionId) return
+    let dropSubOptionRank
+    if (isSubOptionsBottom) {
+      dropSubOptionRank = subOption?.rank + 1
+    } else {
+      dropSubOptionRank = subOption?.rank
+    }
+    setIsSubOptionsBottom(false)
+    handleUpdateSubOption({ id: transferSubOptionId, rank: dropSubOptionRank })
+  }
+
+  /**
+   * Method to handle sub option drag end
+   */
+  const handleDragEnd = () => {
+    const elements = document.getElementsByClassName('ghostDragging')
+    while (elements.length > 0) {
+      elements[0].parentNode.removeChild(elements[0])
+    }
+    setDragoverSubOptionId(null)
+  }
+
   useEffect(() => {
     if (conditionalOptionId) {
       handleSetConditionalOptions(extraState)
@@ -496,6 +562,12 @@ export const ProductExtraOptionDetails = (props) => {
           handleUpdateOption={handleUpdateOption}
           isAddForm={isAddForm}
           setIsAddForm={setIsAddForm}
+          dragoverSubOptionId={dragoverSubOptionId}
+          isSubOptionsBottom={isSubOptionsBottom}
+          handleDragStart={handleDragStart}
+          hanldeDragOver={hanldeDragOver}
+          handleDrop={handleDrop}
+          handleDragEnd={handleDragEnd}
         />
       )}
     </>

@@ -13,7 +13,9 @@ export const DriversList = (props) => {
     propsToFetch,
     isSearchByName,
     isSearchByCellphone,
-    asDashboard
+    asDashboard,
+    isOrderDrivers,
+    orderId
   } = props
 
   const [ordering] = useApi()
@@ -218,6 +220,35 @@ export const DriversList = (props) => {
   }
 
   /**
+   * Method to get the drivers of order from API
+   */
+  const getOrderDrivers = async () => {
+    try {
+      setDriversList({ ...driversList, loading: true })
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.token}`
+        }
+      }
+      const response = await fetch(`${ordering.root}/controls/orders/${orderId}`, requestOptions)
+      const { error, result } = await response.json()
+      setDriversList({
+        loading: false,
+        drivers: error ? [] : result?.drivers,
+        error: error ? result : null
+      })
+    } catch (err) {
+      setDriversList({
+        ...driversList,
+        loading: false,
+        error: err.message
+      })
+    }
+  }
+
+  /**
    * listen for busy/not busy filter
    */
 
@@ -230,7 +261,11 @@ export const DriversList = (props) => {
       setDriversList({ ...driversList, drivers: drivers, loading: false })
       getOnlineOfflineDrivers(drivers)
     } else {
-      getDrivers()
+      if (isOrderDrivers) {
+        getOrderDrivers()
+      } else {
+        getDrivers()
+      }
     }
 
     return () => {
