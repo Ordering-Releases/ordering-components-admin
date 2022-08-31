@@ -516,7 +516,11 @@ var DriversList = function DriversList(props) {
           return true;
         });
       } else {
-        _drivers = [].concat(_toConsumableArray(driversList.drivers), [driver]);
+        if (!isOrderDrivers) {
+          _drivers = [].concat(_toConsumableArray(driversList.drivers), [driver]);
+        } else {
+          _drivers = _toConsumableArray(driversList.drivers);
+        }
       }
 
       setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
