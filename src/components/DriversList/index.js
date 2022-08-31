@@ -291,7 +291,11 @@ export const DriversList = (props) => {
           return true
         })
       } else {
-        _drivers = [...driversList.drivers, driver]
+        if (!isOrderDrivers) {
+          _drivers = [...driversList.drivers, driver]
+        } else {
+          _drivers = [...driversList.drivers]
+        }
       }
       setDriversList({
         ...driversList,
