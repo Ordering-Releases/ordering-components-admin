@@ -27,6 +27,7 @@ export const PlaceList = (props) => {
   const [openZoneDropdown, setOpenZonedropdown] = useState(false)
   const [selectedZoneDropdown, setSelectedZoneDropdown] = useState(null)
   const [selectedZoneList, setSelectedZoneList] = useState([])
+  const [selectedCountries, setSelectedCountries] = useState([])
   const [startSeveralDeleteStart, setStartSeveralDeleteStart] = useState(false)
 
   /**
@@ -74,7 +75,7 @@ export const PlaceList = (props) => {
   /**
    * Method to update country from API
    */
-  const handleChangeCountryName = async (countryId, changes) => {
+  const handleUpdateCountry = async (countryId, changes) => {
     try {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
       setActionState({ ...actionState, loading: true })
@@ -91,6 +92,63 @@ export const PlaceList = (props) => {
       }
     } catch (err) {
       setActionState({ loading: false, error: [err.message] })
+    }
+  }
+
+  /**
+   * Method to add new country from API
+   */
+  const handleAddCountry = async (changes) => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setActionState({ ...actionState, loading: true })
+      const { content: { error, result } } = await ordering.countries().save(changes)
+      if (!error) {
+        const newCountry = { ...result }
+        newCountry.enabled = true
+        newCountry.cities = []
+        setCountriesState({
+          ...countriesState,
+          countries: [...countriesState.countries, newCountry]
+        })
+        showToast(ToastType.Success, t('COUNTRY_ADDED', 'Country added'))
+        setActionState({ ...actionState, loading: false })
+      } else {
+        setActionState({ loading: false, error: result })
+      }
+    } catch (err) {
+      setActionState({ loading: false, error: [err.message] })
+    }
+  }
+
+  /**
+   * Method to delete the country from API
+   */
+  const handleDeleteCountry = async (countryId) => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setActionState({ ...actionState, loading: true })
+      const { content: { error, result } } = await ordering.countries(countryId).delete()
+      if (!error) {
+        const countries = countriesState.countries.filter(country => country.id !== countryId)
+        setCountriesState({ ...countriesState, countries: countries })
+        showToast(ToastType.Success, t('COUNTRY_DELETED', 'Country deleted'))
+        if (startSeveralDeleteStart) {
+          const contriesList = [...selectedCountries]
+          contriesList.shift()
+          if (contriesList.length === 0) {
+            setStartSeveralDeleteStart(false)
+          }
+          setSelectedCountries(contriesList)
+        }
+        setActionState({ ...actionState, loading: false })
+      } else {
+        setActionState({ ...actionState, loading: false, error: result })
+        setStartSeveralDeleteStart(false)
+      }
+    } catch (err) {
+      setActionState({ loading: false, error: [err.message] })
+      setStartSeveralDeleteStart(false)
     }
   }
 
@@ -419,6 +477,11 @@ export const PlaceList = (props) => {
   }, [selectedCityList, startSeveralDeleteStart])
 
   useEffect(() => {
+    if (!startSeveralDeleteStart || selectedCountries.length === 0) return
+    handleDeleteCountry(selectedCountries[0]?.id)
+  }, [selectedCountries, startSeveralDeleteStart])
+
+  useEffect(() => {
     setChangesState({})
   }, [selectedCity])
 
@@ -437,7 +500,11 @@ export const PlaceList = (props) => {
           dropdownOptionsState={dropdownOptionsState}
           cityManagerList={cityManagerList}
           actionState={actionState}
-          handleChangeCountryName={handleChangeCountryName}
+          handleUpdateCountry={handleUpdateCountry}
+          handleAddCountry={handleAddCountry}
+          setSelectedCountries={setSelectedCountries}
+          selectedCountries={selectedCountries}
+          handleDeleteCountry={handleDeleteCountry}
           handleUpdateCity={handleUpdateCity}
           handleDeleteCity={handleDeleteCity}
           selectedCity={selectedCity}
@@ -453,7 +520,7 @@ export const PlaceList = (props) => {
           handleCheckboxClick={handleCheckboxClick}
           handleAllCheckboxClick={handleAllCheckboxClick}
           handleSeveralDeleteCities={handleSeveralDeleteCities}
-
+          handleSeveralDeleteCountries={() => setStartSeveralDeleteStart(true)}
           handleUpdateDropdown={handleUpdateDropdown}
           openZoneDropdown={openZoneDropdown}
           setOpenZonedropdown={setOpenZonedropdown}

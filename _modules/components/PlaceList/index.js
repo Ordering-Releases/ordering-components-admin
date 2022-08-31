@@ -149,10 +149,15 @@ var PlaceList = function PlaceList(props) {
       selectedZoneList = _useState22[0],
       setSelectedZoneList = _useState22[1];
 
-  var _useState23 = (0, _react.useState)(false),
+  var _useState23 = (0, _react.useState)([]),
       _useState24 = _slicedToArray(_useState23, 2),
-      startSeveralDeleteStart = _useState24[0],
-      setStartSeveralDeleteStart = _useState24[1];
+      selectedCountries = _useState24[0],
+      setSelectedCountries = _useState24[1];
+
+  var _useState25 = (0, _react.useState)(false),
+      _useState26 = _slicedToArray(_useState25, 2),
+      startSeveralDeleteStart = _useState26[0],
+      setStartSeveralDeleteStart = _useState26[1];
   /**
    * Method to get the countries from API
    */
@@ -288,7 +293,7 @@ var PlaceList = function PlaceList(props) {
    */
 
 
-  var handleChangeCountryName = /*#__PURE__*/function () {
+  var handleUpdateCountry = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(countryId, changes) {
       var _yield$ordering$count3, _yield$ordering$count4, error, result, countries;
 
@@ -343,18 +348,18 @@ var PlaceList = function PlaceList(props) {
       }, _callee3, null, [[0, 12]]);
     }));
 
-    return function handleChangeCountryName(_x, _x2) {
+    return function handleUpdateCountry(_x, _x2) {
       return _ref3.apply(this, arguments);
     };
   }();
   /**
-   * Method to update the city from API
+   * Method to add new country from API
    */
 
 
-  var handleUpdateCity = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(countryId, cityId, changes) {
-      var _yield$ordering$count5, _yield$ordering$count6, error, result, countries;
+  var handleAddCountry = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(changes) {
+      var _yield$ordering$count5, _yield$ordering$count6, error, result, newCountry;
 
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) {
@@ -366,13 +371,163 @@ var PlaceList = function PlaceList(props) {
                 loading: true
               }));
               _context4.next = 5;
-              return ordering.countries(countryId).cities(cityId).save(changes);
+              return ordering.countries().save(changes);
 
             case 5:
               _yield$ordering$count5 = _context4.sent;
               _yield$ordering$count6 = _yield$ordering$count5.content;
               error = _yield$ordering$count6.error;
               result = _yield$ordering$count6.result;
+
+              if (!error) {
+                newCountry = _objectSpread({}, result);
+                newCountry.enabled = true;
+                newCountry.cities = [];
+                setCountriesState(_objectSpread(_objectSpread({}, countriesState), {}, {
+                  countries: [].concat(_toConsumableArray(countriesState.countries), [newCountry])
+                }));
+                showToast(_ToastContext.ToastType.Success, t('COUNTRY_ADDED', 'Country added'));
+                setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
+                  loading: false
+                }));
+              } else {
+                setActionState({
+                  loading: false,
+                  error: result
+                });
+              }
+
+              _context4.next = 15;
+              break;
+
+            case 12:
+              _context4.prev = 12;
+              _context4.t0 = _context4["catch"](0);
+              setActionState({
+                loading: false,
+                error: [_context4.t0.message]
+              });
+
+            case 15:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4, null, [[0, 12]]);
+    }));
+
+    return function handleAddCountry(_x3) {
+      return _ref4.apply(this, arguments);
+    };
+  }();
+  /**
+   * Method to delete the country from API
+   */
+
+
+  var handleDeleteCountry = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(countryId) {
+      var _yield$ordering$count7, _yield$ordering$count8, error, result, countries, contriesList;
+
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.prev = 0;
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
+                loading: true
+              }));
+              _context5.next = 5;
+              return ordering.countries(countryId).delete();
+
+            case 5:
+              _yield$ordering$count7 = _context5.sent;
+              _yield$ordering$count8 = _yield$ordering$count7.content;
+              error = _yield$ordering$count8.error;
+              result = _yield$ordering$count8.result;
+
+              if (!error) {
+                countries = countriesState.countries.filter(function (country) {
+                  return country.id !== countryId;
+                });
+                setCountriesState(_objectSpread(_objectSpread({}, countriesState), {}, {
+                  countries: countries
+                }));
+                showToast(_ToastContext.ToastType.Success, t('COUNTRY_DELETED', 'Country deleted'));
+
+                if (startSeveralDeleteStart) {
+                  contriesList = _toConsumableArray(selectedCountries);
+                  contriesList.shift();
+
+                  if (contriesList.length === 0) {
+                    setStartSeveralDeleteStart(false);
+                  }
+
+                  setSelectedCountries(contriesList);
+                }
+
+                setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
+                  loading: false
+                }));
+              } else {
+                setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
+                  loading: false,
+                  error: result
+                }));
+                setStartSeveralDeleteStart(false);
+              }
+
+              _context5.next = 16;
+              break;
+
+            case 12:
+              _context5.prev = 12;
+              _context5.t0 = _context5["catch"](0);
+              setActionState({
+                loading: false,
+                error: [_context5.t0.message]
+              });
+              setStartSeveralDeleteStart(false);
+
+            case 16:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5, null, [[0, 12]]);
+    }));
+
+    return function handleDeleteCountry(_x4) {
+      return _ref5.apply(this, arguments);
+    };
+  }();
+  /**
+   * Method to update the city from API
+   */
+
+
+  var handleUpdateCity = /*#__PURE__*/function () {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(countryId, cityId, changes) {
+      var _yield$ordering$count9, _yield$ordering$count10, error, result, countries;
+
+      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              _context6.prev = 0;
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
+                loading: true
+              }));
+              _context6.next = 5;
+              return ordering.countries(countryId).cities(cityId).save(changes);
+
+            case 5:
+              _yield$ordering$count9 = _context6.sent;
+              _yield$ordering$count10 = _yield$ordering$count9.content;
+              error = _yield$ordering$count10.error;
+              result = _yield$ordering$count10.result;
 
               if (!error) {
                 countries = countriesState.countries.map(function (country) {
@@ -401,27 +556,27 @@ var PlaceList = function PlaceList(props) {
                 }));
               }
 
-              _context4.next = 15;
+              _context6.next = 15;
               break;
 
             case 12:
-              _context4.prev = 12;
-              _context4.t0 = _context4["catch"](0);
+              _context6.prev = 12;
+              _context6.t0 = _context6["catch"](0);
               setActionState({
                 loading: false,
-                error: [_context4.t0.message]
+                error: [_context6.t0.message]
               });
 
             case 15:
             case "end":
-              return _context4.stop();
+              return _context6.stop();
           }
         }
-      }, _callee4, null, [[0, 12]]);
+      }, _callee6, null, [[0, 12]]);
     }));
 
-    return function handleUpdateCity(_x3, _x4, _x5) {
-      return _ref4.apply(this, arguments);
+    return function handleUpdateCity(_x5, _x6, _x7) {
+      return _ref6.apply(this, arguments);
     };
   }();
   /**
@@ -430,26 +585,26 @@ var PlaceList = function PlaceList(props) {
 
 
   var handleDeleteCity = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(countryId, cityId) {
-      var _yield$ordering$count7, _yield$ordering$count8, error, result, countries, cityList;
+    var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(countryId, cityId) {
+      var _yield$ordering$count11, _yield$ordering$count12, error, result, countries, cityList;
 
-      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
         while (1) {
-          switch (_context5.prev = _context5.next) {
+          switch (_context7.prev = _context7.next) {
             case 0:
-              _context5.prev = 0;
+              _context7.prev = 0;
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
                 loading: true
               }));
-              _context5.next = 5;
+              _context7.next = 5;
               return ordering.countries(countryId).cities(cityId).delete();
 
             case 5:
-              _yield$ordering$count7 = _context5.sent;
-              _yield$ordering$count8 = _yield$ordering$count7.content;
-              error = _yield$ordering$count8.error;
-              result = _yield$ordering$count8.result;
+              _yield$ordering$count11 = _context7.sent;
+              _yield$ordering$count12 = _yield$ordering$count11.content;
+              error = _yield$ordering$count12.error;
+              result = _yield$ordering$count12.result;
 
               if (!error) {
                 countries = countriesState.countries.map(function (country) {
@@ -485,28 +640,28 @@ var PlaceList = function PlaceList(props) {
                 setStartSeveralDeleteStart(false);
               }
 
-              _context5.next = 16;
+              _context7.next = 16;
               break;
 
             case 12:
-              _context5.prev = 12;
-              _context5.t0 = _context5["catch"](0);
+              _context7.prev = 12;
+              _context7.t0 = _context7["catch"](0);
               setActionState({
                 loading: false,
-                error: [_context5.t0.message]
+                error: [_context7.t0.message]
               });
               setStartSeveralDeleteStart(false);
 
             case 16:
             case "end":
-              return _context5.stop();
+              return _context7.stop();
           }
         }
-      }, _callee5, null, [[0, 12]]);
+      }, _callee7, null, [[0, 12]]);
     }));
 
-    return function handleDeleteCity(_x6, _x7) {
-      return _ref5.apply(this, arguments);
+    return function handleDeleteCity(_x8, _x9) {
+      return _ref7.apply(this, arguments);
     };
   }();
   /**
@@ -515,19 +670,19 @@ var PlaceList = function PlaceList(props) {
 
 
   var getCityManagers = /*#__PURE__*/function () {
-    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+    var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
       var source, _yield$ordering$setAc, result;
 
-      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+      return _regeneratorRuntime().wrap(function _callee8$(_context8) {
         while (1) {
-          switch (_context6.prev = _context6.next) {
+          switch (_context8.prev = _context8.next) {
             case 0:
-              _context6.prev = 0;
+              _context8.prev = 0;
               setCityMangerList(_objectSpread(_objectSpread({}, cityManagerList), {}, {
                 loading: true
               }));
               source = {};
-              _context6.next = 5;
+              _context8.next = 5;
               return ordering.setAccessToken(token).users().select(cityMangersPropsToFetch).where([{
                 attribute: 'level',
                 value: [1]
@@ -536,33 +691,33 @@ var PlaceList = function PlaceList(props) {
               });
 
             case 5:
-              _yield$ordering$setAc = _context6.sent;
+              _yield$ordering$setAc = _context8.sent;
               result = _yield$ordering$setAc.content.result;
               setCityMangerList(_objectSpread(_objectSpread({}, cityManagerList), {}, {
                 loading: false,
                 users: result
               }));
-              _context6.next = 13;
+              _context8.next = 13;
               break;
 
             case 10:
-              _context6.prev = 10;
-              _context6.t0 = _context6["catch"](0);
+              _context8.prev = 10;
+              _context8.t0 = _context8["catch"](0);
               setCityMangerList(_objectSpread(_objectSpread({}, cityManagerList), {}, {
                 loading: false,
-                error: _context6.t0.message
+                error: _context8.t0.message
               }));
 
             case 13:
             case "end":
-              return _context6.stop();
+              return _context8.stop();
           }
         }
-      }, _callee6, null, [[0, 10]]);
+      }, _callee8, null, [[0, 10]]);
     }));
 
     return function getCityManagers() {
-      return _ref6.apply(this, arguments);
+      return _ref8.apply(this, arguments);
     };
   }();
   /**
@@ -571,38 +726,38 @@ var PlaceList = function PlaceList(props) {
 
 
   var handleAddCity = /*#__PURE__*/function () {
-    var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
-      var _yield$ordering$count9, _yield$ordering$count10, error, result, countries;
+    var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
+      var _yield$ordering$count13, _yield$ordering$count14, error, result, countries;
 
-      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+      return _regeneratorRuntime().wrap(function _callee9$(_context9) {
         while (1) {
-          switch (_context7.prev = _context7.next) {
+          switch (_context9.prev = _context9.next) {
             case 0:
               if (changesState !== null && changesState !== void 0 && changesState.country_id) {
-                _context7.next = 3;
+                _context9.next = 3;
                 break;
               }
 
               setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
                 error: t('SELECT_COUNTRY', 'Select a country')
               }));
-              return _context7.abrupt("return");
+              return _context9.abrupt("return");
 
             case 3:
-              _context7.prev = 3;
+              _context9.prev = 3;
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
                 loading: true
               }));
               changesState.enabled = true;
-              _context7.next = 9;
+              _context9.next = 9;
               return ordering.countries(changesState === null || changesState === void 0 ? void 0 : changesState.country_id).cities().save(changesState);
 
             case 9:
-              _yield$ordering$count9 = _context7.sent;
-              _yield$ordering$count10 = _yield$ordering$count9.content;
-              error = _yield$ordering$count10.error;
-              result = _yield$ordering$count10.result;
+              _yield$ordering$count13 = _context9.sent;
+              _yield$ordering$count14 = _yield$ordering$count13.content;
+              error = _yield$ordering$count14.error;
+              result = _yield$ordering$count14.result;
 
               if (!error) {
                 countries = countriesState.countries.map(function (country) {
@@ -626,27 +781,27 @@ var PlaceList = function PlaceList(props) {
                 }));
               }
 
-              _context7.next = 19;
+              _context9.next = 19;
               break;
 
             case 16:
-              _context7.prev = 16;
-              _context7.t0 = _context7["catch"](3);
+              _context9.prev = 16;
+              _context9.t0 = _context9["catch"](3);
               setActionState({
                 loading: false,
-                error: [_context7.t0.message]
+                error: [_context9.t0.message]
               });
 
             case 19:
             case "end":
-              return _context7.stop();
+              return _context9.stop();
           }
         }
-      }, _callee7, null, [[3, 16]]);
+      }, _callee9, null, [[3, 16]]);
     }));
 
     return function handleAddCity() {
-      return _ref7.apply(this, arguments);
+      return _ref9.apply(this, arguments);
     };
   }();
 
@@ -700,13 +855,13 @@ var PlaceList = function PlaceList(props) {
 
 
   var handleUpdateDropdown = /*#__PURE__*/function () {
-    var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(dropdownId, changes) {
+    var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(dropdownId, changes) {
       var requestOptions, response, content, dropdownOptions;
-      return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+      return _regeneratorRuntime().wrap(function _callee10$(_context10) {
         while (1) {
-          switch (_context8.prev = _context8.next) {
+          switch (_context10.prev = _context10.next) {
             case 0:
-              _context8.prev = 0;
+              _context10.prev = 0;
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
                 loading: true
@@ -719,16 +874,16 @@ var PlaceList = function PlaceList(props) {
                 },
                 body: JSON.stringify(changes)
               };
-              _context8.next = 6;
+              _context10.next = 6;
               return fetch("".concat(ordering.root, "/dropdownoptions/").concat(dropdownId), requestOptions);
 
             case 6:
-              response = _context8.sent;
-              _context8.next = 9;
+              response = _context10.sent;
+              _context10.next = 9;
               return response.json();
 
             case 9:
-              content = _context8.sent;
+              content = _context10.sent;
 
               if (!content.error) {
                 setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
@@ -753,27 +908,27 @@ var PlaceList = function PlaceList(props) {
                 }));
               }
 
-              _context8.next = 16;
+              _context10.next = 16;
               break;
 
             case 13:
-              _context8.prev = 13;
-              _context8.t0 = _context8["catch"](0);
+              _context10.prev = 13;
+              _context10.t0 = _context10["catch"](0);
               setActionState({
                 loading: false,
-                error: [_context8.t0.message]
+                error: [_context10.t0.message]
               });
 
             case 16:
             case "end":
-              return _context8.stop();
+              return _context10.stop();
           }
         }
-      }, _callee8, null, [[0, 13]]);
+      }, _callee10, null, [[0, 13]]);
     }));
 
-    return function handleUpdateDropdown(_x8, _x9) {
-      return _ref8.apply(this, arguments);
+    return function handleUpdateDropdown(_x10, _x11) {
+      return _ref10.apply(this, arguments);
     };
   }();
 
@@ -786,24 +941,24 @@ var PlaceList = function PlaceList(props) {
 
 
   var handleAddZone = /*#__PURE__*/function () {
-    var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
+    var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
       var requestOptions, response, content, dropdownOptions;
-      return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+      return _regeneratorRuntime().wrap(function _callee11$(_context11) {
         while (1) {
-          switch (_context9.prev = _context9.next) {
+          switch (_context11.prev = _context11.next) {
             case 0:
               if (changesState !== null && changesState !== void 0 && changesState.name) {
-                _context9.next = 3;
+                _context11.next = 3;
                 break;
               }
 
               setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
                 error: t('NAME_REQUIRED', 'The name is required.')
               }));
-              return _context9.abrupt("return");
+              return _context11.abrupt("return");
 
             case 3:
-              _context9.prev = 3;
+              _context11.prev = 3;
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
                 loading: true
@@ -817,16 +972,16 @@ var PlaceList = function PlaceList(props) {
                 },
                 body: JSON.stringify(changesState)
               };
-              _context9.next = 10;
+              _context11.next = 10;
               return fetch("".concat(ordering.root, "/dropdownoptions"), requestOptions);
 
             case 10:
-              response = _context9.sent;
-              _context9.next = 13;
+              response = _context11.sent;
+              _context11.next = 13;
               return response.json();
 
             case 13:
-              content = _context9.sent;
+              content = _context11.sent;
 
               if (!content.error) {
                 dropdownOptions = [].concat(_toConsumableArray(dropdownOptionsState.options), [content.result]);
@@ -846,27 +1001,27 @@ var PlaceList = function PlaceList(props) {
                 }));
               }
 
-              _context9.next = 20;
+              _context11.next = 20;
               break;
 
             case 17:
-              _context9.prev = 17;
-              _context9.t0 = _context9["catch"](3);
+              _context11.prev = 17;
+              _context11.t0 = _context11["catch"](3);
               setActionState({
                 loading: false,
-                error: [_context9.t0.message]
+                error: [_context11.t0.message]
               });
 
             case 20:
             case "end":
-              return _context9.stop();
+              return _context11.stop();
           }
         }
-      }, _callee9, null, [[3, 17]]);
+      }, _callee11, null, [[3, 17]]);
     }));
 
     return function handleAddZone() {
-      return _ref9.apply(this, arguments);
+      return _ref11.apply(this, arguments);
     };
   }();
   /**
@@ -875,13 +1030,13 @@ var PlaceList = function PlaceList(props) {
 
 
   var handleDeleteZone = /*#__PURE__*/function () {
-    var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(zoneId) {
+    var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(zoneId) {
       var requestOptions, response, content, dropdownOptions, zoneList;
-      return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+      return _regeneratorRuntime().wrap(function _callee12$(_context12) {
         while (1) {
-          switch (_context10.prev = _context10.next) {
+          switch (_context12.prev = _context12.next) {
             case 0:
-              _context10.prev = 0;
+              _context12.prev = 0;
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
                 loading: true
@@ -893,16 +1048,16 @@ var PlaceList = function PlaceList(props) {
                   Authorization: "Bearer ".concat(token)
                 }
               };
-              _context10.next = 6;
+              _context12.next = 6;
               return fetch("".concat(ordering.root, "/dropdownoptions/").concat(zoneId), requestOptions);
 
             case 6:
-              response = _context10.sent;
-              _context10.next = 9;
+              response = _context12.sent;
+              _context12.next = 9;
               return response.json();
 
             case 9:
-              content = _context10.sent;
+              content = _context12.sent;
 
               if (!content.error) {
                 dropdownOptions = dropdownOptionsState.options.filter(function (zone) {
@@ -931,28 +1086,28 @@ var PlaceList = function PlaceList(props) {
                 setStartSeveralDeleteStart(false);
               }
 
-              _context10.next = 17;
+              _context12.next = 17;
               break;
 
             case 13:
-              _context10.prev = 13;
-              _context10.t0 = _context10["catch"](0);
+              _context12.prev = 13;
+              _context12.t0 = _context12["catch"](0);
               setActionState({
                 loading: false,
-                error: [_context10.t0.message]
+                error: [_context12.t0.message]
               });
               setStartSeveralDeleteStart(false);
 
             case 17:
             case "end":
-              return _context10.stop();
+              return _context12.stop();
           }
         }
-      }, _callee10, null, [[0, 13]]);
+      }, _callee12, null, [[0, 13]]);
     }));
 
-    return function handleDeleteZone(_x10) {
-      return _ref10.apply(this, arguments);
+    return function handleDeleteZone(_x12) {
+      return _ref12.apply(this, arguments);
     };
   }();
 
@@ -1002,6 +1157,12 @@ var PlaceList = function PlaceList(props) {
     handleDeleteCity((_selectedCityList$ = selectedCityList[0]) === null || _selectedCityList$ === void 0 ? void 0 : _selectedCityList$.country_id, (_selectedCityList$2 = selectedCityList[0]) === null || _selectedCityList$2 === void 0 ? void 0 : _selectedCityList$2.id);
   }, [selectedCityList, startSeveralDeleteStart]);
   (0, _react.useEffect)(function () {
+    var _selectedCountries$;
+
+    if (!startSeveralDeleteStart || selectedCountries.length === 0) return;
+    handleDeleteCountry((_selectedCountries$ = selectedCountries[0]) === null || _selectedCountries$ === void 0 ? void 0 : _selectedCountries$.id);
+  }, [selectedCountries, startSeveralDeleteStart]);
+  (0, _react.useEffect)(function () {
     setChangesState({});
   }, [selectedCity]);
   (0, _react.useEffect)(function () {
@@ -1014,7 +1175,11 @@ var PlaceList = function PlaceList(props) {
     dropdownOptionsState: dropdownOptionsState,
     cityManagerList: cityManagerList,
     actionState: actionState,
-    handleChangeCountryName: handleChangeCountryName,
+    handleUpdateCountry: handleUpdateCountry,
+    handleAddCountry: handleAddCountry,
+    setSelectedCountries: setSelectedCountries,
+    selectedCountries: selectedCountries,
+    handleDeleteCountry: handleDeleteCountry,
     handleUpdateCity: handleUpdateCity,
     handleDeleteCity: handleDeleteCity,
     selectedCity: selectedCity,
@@ -1032,6 +1197,9 @@ var PlaceList = function PlaceList(props) {
     handleCheckboxClick: handleCheckboxClick,
     handleAllCheckboxClick: handleAllCheckboxClick,
     handleSeveralDeleteCities: handleSeveralDeleteCities,
+    handleSeveralDeleteCountries: function handleSeveralDeleteCountries() {
+      return setStartSeveralDeleteStart(true);
+    },
     handleUpdateDropdown: handleUpdateDropdown,
     openZoneDropdown: openZoneDropdown,
     setOpenZonedropdown: setOpenZonedropdown,
