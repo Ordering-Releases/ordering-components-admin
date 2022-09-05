@@ -1305,6 +1305,12 @@ Object.defineProperty(exports, "SiteDetails", {
     return _SiteDetails.SiteDetails;
   }
 });
+Object.defineProperty(exports, "SitesAuthSettings", {
+  enumerable: true,
+  get: function get() {
+    return _SitesAuthSettings.SitesAuthSettings;
+  }
+});
 Object.defineProperty(exports, "SitesList", {
   enumerable: true,
   get: function get() {
@@ -1865,6 +1871,8 @@ var _SingleOrderCard = require("./components/SingleOrderCard");
 var _SingleProductCard = require("./components/SingleProductCard");
 
 var _SingleRecoveryNotification = require("./components/SingleRecoveryNotification");
+
+var _SitesAuthSettings = require("./components/SitesAuthSettings");
 
 var _UserFormDetails = require("./components/UserFormDetails");
 

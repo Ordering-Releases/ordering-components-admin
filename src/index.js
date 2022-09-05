@@ -173,6 +173,7 @@ import { LoyaltyLevelDetail } from './components/LoyaltyLevelDetail'
 import { SingleOrderCard } from './components/SingleOrderCard'
 import { SingleProductCard } from './components/SingleProductCard'
 import { SingleRecoveryNotification } from './components/SingleRecoveryNotification'
+import { SitesAuthSettings } from './components/SitesAuthSettings'
 import { UserFormDetails } from './components/UserFormDetails'
 import { UsersExportCSV } from './components/UsersExportCSV'
 import { UpsellingPage } from './components/UpsellingPage'
@@ -340,9 +341,9 @@ export {
   MenuControl,
   MetaFields,
   MomentOption,
-  MultiCountrySettings,
   MyOrders,
   MyOrdersList,
+  MultiCountrySettings,
   OpenCartListing,
   OpenCartsDetail,
   OpenCartFilter,
@@ -395,6 +396,7 @@ export {
   RecoveryActionDetail,
   RecoveryNotificationList,
   SingleRecoveryNotification,
+  SitesAuthSettings,
   SearchOptions,
   Schedule,
   SignupForm,

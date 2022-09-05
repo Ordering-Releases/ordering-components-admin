@@ -12,7 +12,8 @@ const configHideList = [
   'order_validate',
   'time_format',
   'driver_close_distance',
-  'lazy_load_products_when_necessary'
+  'lazy_load_products_when_necessary',
+  'advanced_business_search_enabled'
 ]
 
 /**

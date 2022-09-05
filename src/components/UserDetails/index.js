@@ -18,7 +18,8 @@ export const UserDetails = (props) => {
   const [session] = useSession()
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
-
+  const accessToken = session.token
+  const [scheduleState, setScheduleState] = useState({ loading: false, error: false, change: [] })
   const [userState, setUserState] = useState({ user: null, loading: false, error: null })
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
 
@@ -48,6 +49,13 @@ export const UserDetails = (props) => {
     }
   }
 
+  const handleScheduleState = (scheduleChanges) => {
+    scheduleChanges?.length > 0 && setScheduleState({
+      ...scheduleState,
+      change: scheduleChanges
+    })
+  }
+
   /**
    * Method to delete users from API
    */
@@ -64,6 +72,72 @@ export const UserDetails = (props) => {
         showToast(ToastType.Success, t('USER_DELETED', 'User deleted'))
         handleSuccessDeleteUser && handleSuccessDeleteUser(userState.user)
         props.onClose && props.onClose()
+      }
+    } catch (err) {
+      setActionStatus({ loading: false, error: [err.message] })
+    }
+  }
+
+  const handleScheduleUpdateUser = async () => {
+    try {
+      if (scheduleState?.change?.length > 0 && userState?.user?.id) {
+        showToast(ToastType.Info, t('LOADING', 'Loading'))
+        setScheduleState({ ...scheduleState, loading: true })
+
+        const _change = { schedule: JSON.stringify(scheduleState?.change) }
+        const { content: { error, result } } = await ordering.users(userState?.user?.id).save(_change, {
+          accessToken: accessToken
+        })
+
+        if (!error) {
+          setScheduleState({ ...scheduleState, change: [], loading: false, error: false })
+          setUserState({
+            ...userState,
+            error: false,
+            user: Object.assign(userState.user, result)
+          })
+          showToast(ToastType.Success, t('SCHEDULE_UPDATED', 'Schedule Updated'))
+        } else {
+          setScheduleState({ ...scheduleState, change: [], loading: false, error: true })
+          setUserState({
+            ...userState,
+            error: true
+          })
+          showToast(ToastType.Error, t('SCHEDULE_UPDATED_FAILED', 'Schedule Update Failed'))
+        }
+      } else {
+        showToast(ToastType.Info, t('NOT_CHANGED', 'Not Changed'))
+      }
+    } catch (err) {
+      setScheduleState({ ...scheduleState, change: [], loading: false, error: true })
+      setUserState({
+        ...userState,
+        loading: false,
+        error: err?.message
+      })
+      showToast(ToastType.Error, err?.message)
+    }
+  }
+  /**
+   * Method to connect with Google calendar
+   */
+  const handleGoogleCalendarSync = async () => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setActionStatus({ loading: true, error: null })
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.token}`
+        }
+      }
+      const response = await fetch(`${ordering.root}/users/${userState.user?.id}/google/calendar/sync`, requestOptions)
+      const content = await response.json()
+      if (!content.error) {
+        showToast(ToastType.Success, t('YOUR_CALENDAR_WILL_BE_SYNCHRONIZED', 'Your calendar will be synchronized'))
+      } else {
+        setActionStatus({ loading: false, error: content.result })
       }
     } catch (err) {
       setActionStatus({ loading: false, error: [err.message] })
@@ -99,6 +173,10 @@ export const UserDetails = (props) => {
             actionStatus={actionStatus}
             handleDeleteUser={handleDeleteUser}
             handleSuccessUserUpdate={handleSuccessUserUpdate}
+            handleGoogleCalendarSync={handleGoogleCalendarSync}
+            scheduleState={scheduleState}
+            handleScheduleState={handleScheduleState}
+            handleScheduleUpdateUser={handleScheduleUpdateUser}
           />
         )
       }
@@ -156,6 +234,7 @@ UserDetails.defaultProps = {
   propsToFetch: [
     'name', 'lastname', 'email', 'phone', 'photo', 'cellphone', 'country_phone_code', 'city_id', 'city', 'address',
     'addresses', 'address_notes', 'driver_zone_restriction', 'dropdown_option_id', 'dropdown_option', 'location', 'loyalty_level',
-    'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'phone_verified', 'email_verified', 'schedule', 'max_days_in_future'
+    'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'phone_verified', 'email_verified', 'schedule', 'timezone', 'max_days_in_future',
+    'occupation_id', 'occupation', 'session'
   ]
 }

@@ -60,7 +60,10 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var OrdersManage = function OrdersManage(props) {
   var UIComponent = props.UIComponent,
       statusGroup = props.statusGroup,
-      driversPropsToFetch = props.driversPropsToFetch;
+      driversPropsToFetch = props.driversPropsToFetch,
+      driverId = props.driverId,
+      customerId = props.customerId,
+      businessId = props.businessId;
 
   var _useApi = (0, _ApiContext.useApi)(),
       _useApi2 = _slicedToArray(_useApi, 1),
@@ -641,7 +644,7 @@ var OrdersManage = function OrdersManage(props) {
 
   var getOrderNumbersByStatus = /*#__PURE__*/function () {
     var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-      var where, conditions, filterConditons, searchConditions, requestOptions, response, content, _orderStatusNumbers;
+      var where, conditions, filterConditons, additionalConditions, searchConditions, requestOptions, response, content, _orderStatusNumbers;
 
       return _regeneratorRuntime().wrap(function _callee5$(_context5) {
         while (1) {
@@ -733,6 +736,36 @@ var OrdersManage = function OrdersManage(props) {
                 }
               }
 
+              additionalConditions = [];
+
+              if (driverId) {
+                additionalConditions.push({
+                  attribute: 'driver_id',
+                  value: driverId
+                });
+              }
+
+              if (customerId) {
+                additionalConditions.push({
+                  attribute: 'customer_id',
+                  value: customerId
+                });
+              }
+
+              if (businessId) {
+                additionalConditions.push({
+                  attribute: 'business_id',
+                  value: businessId
+                });
+              }
+
+              if (additionalConditions.length) {
+                conditions.push({
+                  conector: 'AND',
+                  conditions: additionalConditions
+                });
+              }
+
               if (searchValue) {
                 searchConditions = [];
                 searchConditions.push({
@@ -785,7 +818,7 @@ var OrdersManage = function OrdersManage(props) {
                 };
               }
 
-              _context5.prev = 5;
+              _context5.prev = 10;
               setNumberOfOrdersByStatus(_objectSpread(_objectSpread({}, numberOfOrdersByStatus), {}, {
                 loading: true
               }));
@@ -796,15 +829,15 @@ var OrdersManage = function OrdersManage(props) {
                   Authorization: "Bearer ".concat(token)
                 }
               };
-              _context5.next = 10;
+              _context5.next = 15;
               return fetch("".concat(ordering.root, "/orders/dashboard?where=").concat(JSON.stringify(where)), requestOptions);
 
-            case 10:
+            case 15:
               response = _context5.sent;
-              _context5.next = 13;
+              _context5.next = 18;
               return response.json();
 
-            case 13:
+            case 18:
               content = _context5.sent;
 
               if (!(content !== null && content !== void 0 && content.error)) {
@@ -845,23 +878,23 @@ var OrdersManage = function OrdersManage(props) {
                 }));
               }
 
-              _context5.next = 20;
+              _context5.next = 25;
               break;
 
-            case 17:
-              _context5.prev = 17;
-              _context5.t0 = _context5["catch"](5);
+            case 22:
+              _context5.prev = 22;
+              _context5.t0 = _context5["catch"](10);
               setNumberOfOrdersByStatus(_objectSpread(_objectSpread({}, numberOfOrdersByStatus), {}, {
                 loading: false,
                 error: [_context5.t0.message]
               }));
 
-            case 20:
+            case 25:
             case "end":
               return _context5.stop();
           }
         }
-      }, _callee5, null, [[5, 17]]);
+      }, _callee5, null, [[10, 22]]);
     }));
 
     return function getOrderNumbersByStatus() {
@@ -927,7 +960,7 @@ var OrdersManage = function OrdersManage(props) {
     if (!(actionStatus !== null && actionStatus !== void 0 && actionStatus.error) && !(actionStatus !== null && actionStatus !== void 0 && actionStatus.loading)) {
       getOrderNumbersByStatus();
     }
-  }, [actionStatus, filterValues, searchValue]);
+  }, [actionStatus, filterValues, searchValue, driverId, customerId, businessId]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     searchValue: searchValue,
     driverGroupList: driverGroupList,

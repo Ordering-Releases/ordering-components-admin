@@ -73,7 +73,7 @@ var LanguageSelector = function LanguageSelector(props) {
    * This method is used for change the current language
    */
 
-  var onChangeLanguage = function onChangeLanguage(code) {
+  var onChangeLanguage = function onChangeLanguage(code, fromSelector) {
     var language = languageListState.languages.find(function (language) {
       return language.code === code;
     });
@@ -85,7 +85,7 @@ var LanguageSelector = function LanguageSelector(props) {
     }
 
     props.onChangeLanguage && props.onChangeLanguage(language);
-    setLanguage(language);
+    setLanguage(language, fromSelector);
   };
 
   (0, _react.useEffect)(function () {

@@ -225,16 +225,14 @@ var BusinessMenu = function BusinessMenu(props) {
                     menus: menus
                   });
                 } else {
-                  menusShared = businessMenusState.menusShared.filter(function (menu) {
+                  menusShared = businessMenusState.menusShared.map(function (menu) {
                     if (menu.id === menuId) {
-                      var _menu;
-
-                      menu = _objectSpread(_objectSpread(_objectSpread({}, menu), content.result), {}, {
-                        id: (_menu = menu) === null || _menu === void 0 ? void 0 : _menu.id
+                      return _objectSpread(_objectSpread(_objectSpread({}, menu), content.result), {}, {
+                        id: menu === null || menu === void 0 ? void 0 : menu.id
                       });
                     }
 
-                    return true;
+                    return menu;
                   });
                   setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
                     loading: false,

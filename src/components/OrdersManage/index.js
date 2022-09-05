@@ -8,7 +8,10 @@ export const OrdersManage = (props) => {
   const {
     UIComponent,
     statusGroup,
-    driversPropsToFetch
+    driversPropsToFetch,
+    driverId,
+    customerId,
+    businessId
   } = props
 
   const [ordering] = useApi()
@@ -395,6 +398,32 @@ export const OrdersManage = (props) => {
       }
     }
 
+    const additionalConditions = []
+    if (driverId) {
+      additionalConditions.push({
+        attribute: 'driver_id',
+        value: driverId
+      })
+    }
+    if (customerId) {
+      additionalConditions.push({
+        attribute: 'customer_id',
+        value: customerId
+      })
+    }
+    if (businessId) {
+      additionalConditions.push({
+        attribute: 'business_id',
+        value: businessId
+      })
+    }
+    if (additionalConditions.length) {
+      conditions.push({
+        conector: 'AND',
+        conditions: additionalConditions
+      })
+    }
+
     if (searchValue) {
       const searchConditions = []
       searchConditions.push(
@@ -569,7 +598,7 @@ export const OrdersManage = (props) => {
     if (!actionStatus?.error && !actionStatus?.loading) {
       getOrderNumbersByStatus()
     }
-  }, [actionStatus, filterValues, searchValue])
+  }, [actionStatus, filterValues, searchValue, driverId, customerId, businessId])
 
   return (
     <>

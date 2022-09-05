@@ -72,22 +72,33 @@ var UserDetails = function UserDetails(props) {
       _useLanguage2 = _slicedToArray(_useLanguage, 2),
       t = _useLanguage2[1];
 
+  var accessToken = session.token;
+
   var _useState = (0, _react.useState)({
+    loading: false,
+    error: false,
+    change: []
+  }),
+      _useState2 = _slicedToArray(_useState, 2),
+      scheduleState = _useState2[0],
+      setScheduleState = _useState2[1];
+
+  var _useState3 = (0, _react.useState)({
     user: null,
     loading: false,
     error: null
   }),
-      _useState2 = _slicedToArray(_useState, 2),
-      userState = _useState2[0],
-      setUserState = _useState2[1];
+      _useState4 = _slicedToArray(_useState3, 2),
+      userState = _useState4[0],
+      setUserState = _useState4[1];
 
-  var _useState3 = (0, _react.useState)({
+  var _useState5 = (0, _react.useState)({
     loading: false,
     error: null
   }),
-      _useState4 = _slicedToArray(_useState3, 2),
-      actionStatus = _useState4[0],
-      setActionStatus = _useState4[1];
+      _useState6 = _slicedToArray(_useState5, 2),
+      actionStatus = _useState6[0],
+      setActionStatus = _useState6[1];
   /**
    * Method to get user from API
    */
@@ -140,6 +151,12 @@ var UserDetails = function UserDetails(props) {
       return _ref.apply(this, arguments);
     };
   }();
+
+  var handleScheduleState = function handleScheduleState(scheduleChanges) {
+    (scheduleChanges === null || scheduleChanges === void 0 ? void 0 : scheduleChanges.length) > 0 && setScheduleState(_objectSpread(_objectSpread({}, scheduleState), {}, {
+      change: scheduleChanges
+    }));
+  };
   /**
    * Method to delete users from API
    */
@@ -200,6 +217,168 @@ var UserDetails = function UserDetails(props) {
     };
   }();
 
+  var handleScheduleUpdateUser = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var _scheduleState$change, _userState$user, _userState$user2, _change, _yield$ordering$users, _yield$ordering$users2, error, result;
+
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.prev = 0;
+
+              if (!((scheduleState === null || scheduleState === void 0 ? void 0 : (_scheduleState$change = scheduleState.change) === null || _scheduleState$change === void 0 ? void 0 : _scheduleState$change.length) > 0 && userState !== null && userState !== void 0 && (_userState$user = userState.user) !== null && _userState$user !== void 0 && _userState$user.id)) {
+                _context3.next = 14;
+                break;
+              }
+
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              setScheduleState(_objectSpread(_objectSpread({}, scheduleState), {}, {
+                loading: true
+              }));
+              _change = {
+                schedule: JSON.stringify(scheduleState === null || scheduleState === void 0 ? void 0 : scheduleState.change)
+              };
+              _context3.next = 7;
+              return ordering.users(userState === null || userState === void 0 ? void 0 : (_userState$user2 = userState.user) === null || _userState$user2 === void 0 ? void 0 : _userState$user2.id).save(_change, {
+                accessToken: accessToken
+              });
+
+            case 7:
+              _yield$ordering$users = _context3.sent;
+              _yield$ordering$users2 = _yield$ordering$users.content;
+              error = _yield$ordering$users2.error;
+              result = _yield$ordering$users2.result;
+
+              if (!error) {
+                setScheduleState(_objectSpread(_objectSpread({}, scheduleState), {}, {
+                  change: [],
+                  loading: false,
+                  error: false
+                }));
+                setUserState(_objectSpread(_objectSpread({}, userState), {}, {
+                  error: false,
+                  user: Object.assign(userState.user, result)
+                }));
+                showToast(_ToastContext.ToastType.Success, t('SCHEDULE_UPDATED', 'Schedule Updated'));
+              } else {
+                setScheduleState(_objectSpread(_objectSpread({}, scheduleState), {}, {
+                  change: [],
+                  loading: false,
+                  error: true
+                }));
+                setUserState(_objectSpread(_objectSpread({}, userState), {}, {
+                  error: true
+                }));
+                showToast(_ToastContext.ToastType.Error, t('SCHEDULE_UPDATED_FAILED', 'Schedule Update Failed'));
+              }
+
+              _context3.next = 15;
+              break;
+
+            case 14:
+              showToast(_ToastContext.ToastType.Info, t('NOT_CHANGED', 'Not Changed'));
+
+            case 15:
+              _context3.next = 22;
+              break;
+
+            case 17:
+              _context3.prev = 17;
+              _context3.t0 = _context3["catch"](0);
+              setScheduleState(_objectSpread(_objectSpread({}, scheduleState), {}, {
+                change: [],
+                loading: false,
+                error: true
+              }));
+              setUserState(_objectSpread(_objectSpread({}, userState), {}, {
+                loading: false,
+                error: _context3.t0 === null || _context3.t0 === void 0 ? void 0 : _context3.t0.message
+              }));
+              showToast(_ToastContext.ToastType.Error, _context3.t0 === null || _context3.t0 === void 0 ? void 0 : _context3.t0.message);
+
+            case 22:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, null, [[0, 17]]);
+    }));
+
+    return function handleScheduleUpdateUser() {
+      return _ref3.apply(this, arguments);
+    };
+  }();
+  /**
+   * Method to connect with Google calendar
+   */
+
+
+  var handleGoogleCalendarSync = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      var _userState$user3, requestOptions, response, content;
+
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.prev = 0;
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              setActionStatus({
+                loading: true,
+                error: null
+              });
+              requestOptions = {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(session.token)
+                }
+              };
+              _context4.next = 6;
+              return fetch("".concat(ordering.root, "/users/").concat((_userState$user3 = userState.user) === null || _userState$user3 === void 0 ? void 0 : _userState$user3.id, "/google/calendar/sync"), requestOptions);
+
+            case 6:
+              response = _context4.sent;
+              _context4.next = 9;
+              return response.json();
+
+            case 9:
+              content = _context4.sent;
+
+              if (!content.error) {
+                showToast(_ToastContext.ToastType.Success, t('YOUR_CALENDAR_WILL_BE_SYNCHRONIZED', 'Your calendar will be synchronized'));
+              } else {
+                setActionStatus({
+                  loading: false,
+                  error: content.result
+                });
+              }
+
+              _context4.next = 16;
+              break;
+
+            case 13:
+              _context4.prev = 13;
+              _context4.t0 = _context4["catch"](0);
+              setActionStatus({
+                loading: false,
+                error: [_context4.t0.message]
+              });
+
+            case 16:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4, null, [[0, 13]]);
+    }));
+
+    return function handleGoogleCalendarSync() {
+      return _ref4.apply(this, arguments);
+    };
+  }();
+
   (0, _react.useEffect)(function () {
     if (props.user) {
       setUserState(_objectSpread(_objectSpread({}, userState), {}, {
@@ -221,7 +400,11 @@ var UserDetails = function UserDetails(props) {
     userState: userState,
     actionStatus: actionStatus,
     handleDeleteUser: handleDeleteUser,
-    handleSuccessUserUpdate: handleSuccessUserUpdate
+    handleSuccessUserUpdate: handleSuccessUserUpdate,
+    handleGoogleCalendarSync: handleGoogleCalendarSync,
+    scheduleState: scheduleState,
+    handleScheduleState: handleScheduleState,
+    handleScheduleUpdateUser: handleScheduleUpdateUser
   })));
 };
 
@@ -276,5 +459,5 @@ UserDetails.defaultProps = {
   afterComponents: [],
   beforeElements: [],
   afterElements: [],
-  propsToFetch: ['name', 'lastname', 'email', 'phone', 'photo', 'cellphone', 'country_phone_code', 'city_id', 'city', 'address', 'addresses', 'address_notes', 'driver_zone_restriction', 'dropdown_option_id', 'dropdown_option', 'location', 'loyalty_level', 'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'phone_verified', 'email_verified', 'schedule', 'max_days_in_future']
+  propsToFetch: ['name', 'lastname', 'email', 'phone', 'photo', 'cellphone', 'country_phone_code', 'city_id', 'city', 'address', 'addresses', 'address_notes', 'driver_zone_restriction', 'dropdown_option_id', 'dropdown_option', 'location', 'loyalty_level', 'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'phone_verified', 'email_verified', 'schedule', 'timezone', 'max_days_in_future', 'occupation_id', 'occupation', 'session']
 };
