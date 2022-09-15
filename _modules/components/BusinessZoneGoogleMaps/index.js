@@ -431,9 +431,11 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
 
         try {
           for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+            var _deliveryZone$data, _deliveryZone$data2;
+
             var deliveryZone = _step5.value;
 
-            if (deliveryZone.type === 1) {
+            if (deliveryZone.type === 1 && deliveryZone !== null && deliveryZone !== void 0 && (_deliveryZone$data = deliveryZone.data) !== null && _deliveryZone$data !== void 0 && _deliveryZone$data.center && deliveryZone !== null && deliveryZone !== void 0 && (_deliveryZone$data2 = deliveryZone.data) !== null && _deliveryZone$data2 !== void 0 && _deliveryZone$data2.radio) {
               var newCircleZone = new window.google.maps.Circle(_objectSpread(_objectSpread({}, greenFillStyle), {}, {
                 editable: false,
                 center: deliveryZone === null || deliveryZone === void 0 ? void 0 : deliveryZone.data.center,
