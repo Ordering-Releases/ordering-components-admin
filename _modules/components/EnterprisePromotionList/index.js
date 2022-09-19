@@ -119,32 +119,37 @@ var EnterprisePromotionList = function EnterprisePromotionList(props) {
       dataSelected = _useState10[0],
       setDataSelected = _useState10[1];
 
-  var _useState11 = (0, _react.useState)({
+  var _useState11 = (0, _react.useState)(false),
+      _useState12 = _slicedToArray(_useState11, 2),
+      isPromotionBottom = _useState12[0],
+      setIsPromotionBottom = _useState12[1];
+
+  var _useState13 = (0, _react.useState)({
     loading: false,
     sites: [],
     error: null
   }),
-      _useState12 = _slicedToArray(_useState11, 2),
-      sitesState = _useState12[0],
-      setSitesState = _useState12[1];
+      _useState14 = _slicedToArray(_useState13, 2),
+      sitesState = _useState14[0],
+      setSitesState = _useState14[1];
 
-  var _useState13 = (0, _react.useState)({
+  var _useState15 = (0, _react.useState)({
     loading: false,
     paymethods: [],
     error: null
   }),
-      _useState14 = _slicedToArray(_useState13, 2),
-      paymethodsState = _useState14[0],
-      setPaymethodsState = _useState14[1];
+      _useState16 = _slicedToArray(_useState15, 2),
+      paymethodsState = _useState16[0],
+      setPaymethodsState = _useState16[1];
 
-  var _useState15 = (0, _react.useState)({
+  var _useState17 = (0, _react.useState)({
     businesses: [],
     loading: false,
     error: null
   }),
-      _useState16 = _slicedToArray(_useState15, 2),
-      businessesList = _useState16[0],
-      setBusinessesList = _useState16[1];
+      _useState18 = _slicedToArray(_useState17, 2),
+      businessesList = _useState18[0],
+      setBusinessesList = _useState18[1];
   /**
    * Method to get the promotions from API
    */
@@ -358,9 +363,27 @@ var EnterprisePromotionList = function EnterprisePromotionList(props) {
    */
 
 
-  var handleAllowDrop = function handleAllowDrop(event, promotionId) {
+  var handleAllowDrop = function handleAllowDrop(event, promotionId, promoIndex) {
     event.preventDefault();
-    setDataSelected(promotionId);
+    var element = event.target.closest('.draggable_promotion');
+
+    if (element) {
+      if (promoIndex < (promotionListState === null || promotionListState === void 0 ? void 0 : promotionListState.promotions.length) - 1) {
+        setDataSelected(promotionId);
+        setIsPromotionBottom(false);
+      } else {
+        var middlePositionY = window.scrollY + event.target.getBoundingClientRect().top + event.target.offsetHeight / 2;
+        var dragPositionY = event.clientY;
+
+        if (dragPositionY > middlePositionY) {
+          setIsPromotionBottom(true);
+          setDataSelected('');
+        } else {
+          setIsPromotionBottom(false);
+          setDataSelected(promotionId);
+        }
+      }
+    }
   };
   /**
    * Method to handle drag drop
@@ -378,8 +401,15 @@ var EnterprisePromotionList = function EnterprisePromotionList(props) {
 
     if (transferPromotionRank === null && dropPromotionRank === null) {
       dropPromotionRank = 1;
-    } // handleChangeCategoryRank(transferPromotionId, { rank: dropPromotionRank })
+    }
 
+    if (isPromotionBottom) {
+      dropPromotionRank = Number(dropPromotionRank) + 1;
+    }
+
+    handleChangeCategoryRank(transferPromotionId, {
+      rank: dropPromotionRank
+    });
   };
   /**
    * Method to handle drag end
@@ -394,6 +424,7 @@ var EnterprisePromotionList = function EnterprisePromotionList(props) {
     }
 
     setDataSelected('');
+    setIsPromotionBottom(false);
   };
   /**
    * Method to change the rank of transfer category
@@ -402,7 +433,8 @@ var EnterprisePromotionList = function EnterprisePromotionList(props) {
 
   var handleChangeCategoryRank = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(transferCategoryId, params) {
-      var requestOptions, response, content;
+      var requestOptions, response, _yield$response$json, error, result, _promotions;
+
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
@@ -429,29 +461,41 @@ var EnterprisePromotionList = function EnterprisePromotionList(props) {
               return response.json();
 
             case 9:
-              content = _context3.sent;
+              _yield$response$json = _context3.sent;
+              error = _yield$response$json.error;
+              result = _yield$response$json.result;
 
-              if (!content.error) {
+              if (!error) {
                 showToast(_ToastContext.ToastType.Success, t('CATEOGORY_UPDATED', 'Category updated'));
+                _promotions = promotionListState === null || promotionListState === void 0 ? void 0 : promotionListState.promotions.map(function (promotion) {
+                  return (promotion === null || promotion === void 0 ? void 0 : promotion.id) === (result === null || result === void 0 ? void 0 : result.id) ? _objectSpread(_objectSpread({}, promotion), {}, {
+                    rank: result === null || result === void 0 ? void 0 : result.rank
+                  }) : promotion;
+                });
+                setPromotionListState({
+                  promotions: _promotions,
+                  loading: false,
+                  error: false
+                });
               }
 
-              _context3.next = 16;
+              _context3.next = 18;
               break;
 
-            case 13:
-              _context3.prev = 13;
+            case 15:
+              _context3.prev = 15;
               _context3.t0 = _context3["catch"](0);
               setActionState({
                 loading: false,
                 error: [_context3.t0.message]
               });
 
-            case 16:
+            case 18:
             case "end":
               return _context3.stop();
           }
         }
-      }, _callee3, null, [[0, 13]]);
+      }, _callee3, null, [[0, 15]]);
     }));
 
     return function handleChangeCategoryRank(_x5, _x6) {
@@ -714,6 +758,7 @@ var EnterprisePromotionList = function EnterprisePromotionList(props) {
     handleAllowDrop: handleAllowDrop,
     handleDrop: handleDrop,
     handleDragEnd: handleDragEnd,
+    isPromotionBottom: isPromotionBottom,
     handleEnablePromotion: handleEnablePromotion,
     handleSuccessUpdatePromotions: handleSuccessUpdatePromotions,
     handleSuccessAddPromotion: handleSuccessAddPromotion,
