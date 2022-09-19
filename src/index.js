@@ -7,6 +7,7 @@ import { AnalyticsBusinessFilter } from './components/AnalyticsBusinessFilter'
 import { AnalyticsDriversFilter } from './components/AnalyticsDriversFilter'
 import { AnalyticsStatusSubFilter } from './components/AnalyticsStatusSubFilter'
 import { ApiKeysList } from './components/ApiKeysList'
+import { Appointments } from './components/Appointments'
 import { BaseComponent } from './components/BaseComponent'
 import { CannyIdentification } from './components/CannyIdentification'
 import { Settings } from './components/Settings'
@@ -234,6 +235,7 @@ export {
   AnalyticsDriversFilter,
   AnalyticsStatusSubFilter,
   ApiKeysList,
+  Appointments,
   BaseComponent,
   CannyIdentification,
   Settings,
