@@ -95,7 +95,7 @@ export const BusinessProductsListing = (props) => {
       if (categorySelected) {
         let categoryFiltered
         const _categories = [...businessState?.business?.categories]
-        _categories.forEach(function iterate (category) {
+        _categories.forEach(function iterate(category) {
           if (category?.id === categorySelected?.id) {
             categoryFiltered = category
           }
@@ -352,7 +352,7 @@ export const BusinessProductsListing = (props) => {
     const business = { ...businessState?.business }
     Object.assign(business, result)
     if (categorySelected) {
-      business.categories.forEach(function iterate (category) {
+      business.categories.forEach(function iterate(category) {
         if (category?.id === categorySelected?.id) {
           setCategorySelected(category)
         }
@@ -516,6 +516,7 @@ export const BusinessProductsListing = (props) => {
           handleChangeCategory={handleChangeCategory}
           handleChangeSearch={handleChangeSearch}
           getPageProducts={getProducts}
+          getBusiness={getBusiness}
           setCategorySelected={setCategorySelected}
           setBusinessState={setBusinessState}
           handleUpdateBusinessState={handleUpdateBusinessState}

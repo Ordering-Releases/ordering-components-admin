@@ -22,7 +22,9 @@ export const OrdersFilter = (props) => {
     cityIds: [],
     statuses: [],
     deliveryTypes: [],
-    paymethodIds: []
+    paymethodIds: [],
+    countryCode: [],
+    currency: []
   })
 
   /**
@@ -153,6 +155,34 @@ export const OrdersFilter = (props) => {
     setFilterValues({ ...filterValues, cityIds: _cityIds })
   }
   /**
+   * Change country code
+   * * @param {string} code code of country
+  */
+  const handleChangeCountryCode = (code) => {
+    let _countryCode = [...filterValues.countryCode]
+    if (!_countryCode.includes(code)) {
+      _countryCode.push(code)
+    } else {
+      _countryCode = _countryCode.filter((_code) => _code !== code)
+    }
+    setFilterValues({ ...filterValues, countryCode: _countryCode })
+  }
+
+  /**
+   * Change currency
+   * * @param {string} code code of country
+  */
+  const handleChangeCurrency = (code) => {
+    let _currency = [...filterValues.currency]
+    if (!_currency.includes(code)) {
+      _currency.push(code)
+    } else {
+      _currency = _currency.filter((_code) => _code !== code)
+    }
+    setFilterValues({ ...filterValues, currency: _currency })
+  }
+
+  /**
    * Change order status
    * * @param {number} status status
   */
@@ -205,7 +235,9 @@ export const OrdersFilter = (props) => {
       cityIds: [],
       statuses: [],
       deliveryTypes: [],
-      paymethodIds: []
+      paymethodIds: [],
+      countryCode: [],
+      currency: []
     })
   }
 
@@ -242,6 +274,8 @@ export const OrdersFilter = (props) => {
           handleChangeDeliveryType={handleChangeDeliveryType}
           handleChangePaymethodType={handleChangePaymethodType}
           handleResetFilterValues={handleResetFilterValues}
+          handleChangeCountryCode={handleChangeCountryCode}
+          handleChangeCurrency={handleChangeCurrency}
         />
       )}
     </>
