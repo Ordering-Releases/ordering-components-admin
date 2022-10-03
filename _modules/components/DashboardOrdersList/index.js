@@ -19,6 +19,10 @@ var _WebsocketContext = require("../../contexts/WebsocketContext");
 
 var _EventContext = require("../../contexts/EventContext");
 
+var _ConfigContext = require("../../contexts/ConfigContext");
+
+var _LanguageContext = require("../../contexts/LanguageContext");
+
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -91,6 +95,14 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       _useEvent2 = _slicedToArray(_useEvent, 1),
       events = _useEvent2[0];
 
+  var _useConfig = (0, _ConfigContext.useConfig)(),
+      _useConfig2 = _slicedToArray(_useConfig, 1),
+      configState = _useConfig2[0];
+
+  var _useLanguage = (0, _LanguageContext.useLanguage)(),
+      _useLanguage2 = _slicedToArray(_useLanguage, 2),
+      t = _useLanguage2[1];
+
   var _useState = (0, _react.useState)({
     loading: !orders,
     error: null,
@@ -100,13 +112,101 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       orderList = _useState2[0],
       setOrderList = _useState2[1];
 
-  var _useState3 = (0, _react.useState)({
+  var allowColumnsModel = {
+    slaBar: {
+      visable: false,
+      title: '',
+      className: '',
+      draggable: false,
+      colSpan: 1,
+      order: -2
+    },
+    orderNumber: {
+      visable: true,
+      title: '',
+      className: '',
+      draggable: false,
+      colSpan: 1,
+      order: -1
+    },
+    status: {
+      visable: true,
+      title: t('STATUS', 'Status'),
+      className: 'statusInfo',
+      draggable: true,
+      colSpan: 1,
+      order: 1
+    },
+    dateTime: {
+      visable: true,
+      title: '',
+      className: '',
+      draggable: false,
+      colSpan: 1,
+      order: 0
+    },
+    business: {
+      visable: true,
+      title: t('BUSINESS', 'Business'),
+      className: 'businessInfo',
+      draggable: true,
+      colSpan: 1,
+      order: 2
+    },
+    customer: {
+      visable: true,
+      title: t('CUSTOMER', 'Customer'),
+      className: 'customerInfo',
+      draggable: true,
+      colSpan: 1,
+      order: 3
+    },
+    driver: {
+      visable: true,
+      title: t('DRIVER', 'Driver'),
+      className: 'driverInfo',
+      draggable: true,
+      colSpan: 1,
+      order: 4
+    },
+    advanced: {
+      visable: true,
+      title: t('ADVANCED_LOGISTICS', 'Advanced logistics'),
+      className: 'advanced',
+      draggable: true,
+      colSpan: 3,
+      order: 5
+    },
+    timer: {
+      visable: false,
+      title: t('SLA_TIMER', 'SLA’s timer'),
+      className: 'timer',
+      draggable: true,
+      colSpan: 1,
+      order: 6
+    },
+    total: {
+      visable: true,
+      title: '',
+      className: '',
+      draggable: false,
+      colSpan: 1,
+      order: 10
+    }
+  };
+
+  var _useState3 = (0, _react.useState)(null),
+      _useState4 = _slicedToArray(_useState3, 2),
+      allowColumns = _useState4[0],
+      setAllowColumns = _useState4[1];
+
+  var _useState5 = (0, _react.useState)({
     currentPage: paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1 ? paginationSettings.initialPage - 1 : 0,
     pageSize: (_paginationSettings$p = paginationSettings.pageSize) !== null && _paginationSettings$p !== void 0 ? _paginationSettings$p : 10
   }),
-      _useState4 = _slicedToArray(_useState3, 2),
-      pagination = _useState4[0],
-      setPagination = _useState4[1];
+      _useState6 = _slicedToArray(_useState5, 2),
+      pagination = _useState6[0],
+      setPagination = _useState6[1];
 
   var _useSession = (0, _SessionContext.useSession)(),
       _useSession2 = _slicedToArray(_useSession, 1),
@@ -116,13 +216,13 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
   var accessToken = useDefualtSessionManager ? session.token : props.accessToken;
   var requestsState = {};
 
-  var _useState5 = (0, _react.useState)({
+  var _useState7 = (0, _react.useState)({
     loading: false,
     error: null
   }),
-      _useState6 = _slicedToArray(_useState5, 2),
-      actionStatus = _useState6[0],
-      setActionStatus = _useState6[1];
+      _useState8 = _slicedToArray(_useState7, 2),
+      actionStatus = _useState8[0],
+      setActionStatus = _useState8[1];
 
   var sortOrdersArray = function sortOrdersArray(option, array) {
     if (option === 'id') {
@@ -412,6 +512,20 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
                   filterConditons.push({
                     attribute: 'business_id',
                     value: filterValues.businessIds
+                  });
+                }
+
+                if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.countryCode.length) !== 0) {
+                  filterConditons.push({
+                    attribute: 'country_code',
+                    value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.countryCode
+                  });
+                }
+
+                if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.currency.length) !== 0) {
+                  filterConditons.push({
+                    attribute: 'currency',
+                    value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.currency
                   });
                 }
 
@@ -716,6 +830,101 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
     };
   }();
   /**
+  * Method to handle drag drop
+  */
+
+
+  var handleDrop = function handleDrop(event, columnName) {
+    var _allowColumns$transfe, _allowColumns$columnN;
+
+    event.preventDefault();
+    var transferColumnName = event.dataTransfer.getData('transferColumnName');
+    if (columnName === transferColumnName) return;
+    var transferColumnOrder = (_allowColumns$transfe = allowColumns[transferColumnName]) === null || _allowColumns$transfe === void 0 ? void 0 : _allowColumns$transfe.order;
+    var currentColumnOrder = (_allowColumns$columnN = allowColumns[columnName]) === null || _allowColumns$columnN === void 0 ? void 0 : _allowColumns$columnN.order;
+
+    var _ref6 = transferColumnOrder < currentColumnOrder ? [transferColumnOrder, currentColumnOrder] : [currentColumnOrder, transferColumnOrder],
+        _ref7 = _slicedToArray(_ref6, 2),
+        lessOrder = _ref7[0],
+        greaterOrder = _ref7[1];
+
+    var _remainAllowColumns = {};
+    var shouldUpdateColumns = Object.keys(allowColumns).filter(function (col) {
+      var _allowColumns$col, _allowColumns$col2;
+
+      return col !== transferColumnName && ((_allowColumns$col = allowColumns[col]) === null || _allowColumns$col === void 0 ? void 0 : _allowColumns$col.order) >= lessOrder && ((_allowColumns$col2 = allowColumns[col]) === null || _allowColumns$col2 === void 0 ? void 0 : _allowColumns$col2.order) <= greaterOrder;
+    });
+    shouldUpdateColumns.forEach(function (col) {
+      var _allowColumns$col3;
+
+      _remainAllowColumns[col] = _objectSpread(_objectSpread({}, allowColumns[col]), {}, {
+        order: ((_allowColumns$col3 = allowColumns[col]) === null || _allowColumns$col3 === void 0 ? void 0 : _allowColumns$col3.order) + (transferColumnOrder < currentColumnOrder ? -1 : 1)
+      });
+    });
+
+    var _allowColumnsUpdated = _objectSpread(_objectSpread({}, allowColumns), {}, _defineProperty({}, transferColumnName, _objectSpread(_objectSpread({}, allowColumns[transferColumnName]), {}, {
+      order: currentColumnOrder
+    })), _remainAllowColumns);
+
+    saveUserSettings(_allowColumnsUpdated);
+    setAllowColumns(_allowColumnsUpdated);
+  };
+
+  var saveUserSettings = /*#__PURE__*/function () {
+    var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(allowColumnsUpdated) {
+      var _session$user, _session$user2, _session$user3, _settings, _allowColumnsUpdated;
+
+      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              _context6.prev = 0;
+
+              if (session !== null && session !== void 0 && (_session$user = session.user) !== null && _session$user !== void 0 && _session$user.id) {
+                _context6.next = 3;
+                break;
+              }
+
+              return _context6.abrupt("return");
+
+            case 3:
+              _settings = session === null || session === void 0 ? void 0 : (_session$user2 = session.user) === null || _session$user2 === void 0 ? void 0 : _session$user2.settings;
+              _allowColumnsUpdated = _objectSpread(_objectSpread({}, allowColumnsUpdated), {}, {
+                timer: _objectSpread(_objectSpread({}, allowColumnsUpdated === null || allowColumnsUpdated === void 0 ? void 0 : allowColumnsUpdated.timer), {}, {
+                  visable: false
+                })
+              });
+              _context6.next = 7;
+              return ordering.users(session === null || session === void 0 ? void 0 : (_session$user3 = session.user) === null || _session$user3 === void 0 ? void 0 : _session$user3.id).save({
+                settings: _objectSpread(_objectSpread({}, _settings), {}, {
+                  orderColumns: _allowColumnsUpdated
+                })
+              }, {
+                accessToken: accessToken
+              });
+
+            case 7:
+              _context6.next = 12;
+              break;
+
+            case 9:
+              _context6.prev = 9;
+              _context6.t0 = _context6["catch"](0);
+              console.warn(_context6.t0, 'error');
+
+            case 12:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6, null, [[0, 9]]);
+    }));
+
+    return function saveUserSettings(_x6) {
+      return _ref8.apply(this, arguments);
+    };
+  }();
+  /**
    * Listening order id to update for unread_count parameter
    */
 
@@ -949,12 +1158,81 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       events.off('customer_reviewed', handleCustomerReviewed);
     };
   }, [orderList, orderBy]);
+  (0, _react.useEffect)(function () {
+    if (!(session !== null && session !== void 0 && session.user.id) || !configState || allowColumns) return;
+
+    var getUser = /*#__PURE__*/function () {
+      var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+        var _result$settings, _configState$configs, _configState$configs$, _configState$configs2, _configState$configs3, response, _response$content, error, result, _result$settings2, _configState$configs4, _configState$configs5, _configState$configs6, _configState$configs7;
+
+        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                _context7.prev = 0;
+                _context7.next = 3;
+                return ordering.users(session === null || session === void 0 ? void 0 : session.user.id).select(['settings']).get();
+
+              case 3:
+                response = _context7.sent;
+                _response$content = response.content, error = _response$content.error, result = _response$content.result;
+
+                if (!(!error && (_result$settings = result.settings) !== null && _result$settings !== void 0 && _result$settings.orderColumns)) {
+                  _context7.next = 8;
+                  break;
+                }
+
+                setAllowColumns((_result$settings2 = result.settings) === null || _result$settings2 === void 0 ? void 0 : _result$settings2.orderColumns);
+                return _context7.abrupt("return");
+
+              case 8:
+                setAllowColumns(_objectSpread(_objectSpread({}, allowColumnsModel), {}, {
+                  slaBar: _objectSpread(_objectSpread({}, allowColumnsModel === null || allowColumnsModel === void 0 ? void 0 : allowColumnsModel.slaBar), {}, {
+                    visable: (configState === null || configState === void 0 ? void 0 : (_configState$configs = configState.configs) === null || _configState$configs === void 0 ? void 0 : (_configState$configs$ = _configState$configs.order_deadlines_enabled) === null || _configState$configs$ === void 0 ? void 0 : _configState$configs$.value) === '1'
+                  }),
+                  timer: _objectSpread(_objectSpread({}, allowColumnsModel === null || allowColumnsModel === void 0 ? void 0 : allowColumnsModel.timer), {}, {
+                    visable: (configState === null || configState === void 0 ? void 0 : (_configState$configs2 = configState.configs) === null || _configState$configs2 === void 0 ? void 0 : (_configState$configs3 = _configState$configs2.order_deadlines_enabled) === null || _configState$configs3 === void 0 ? void 0 : _configState$configs3.value) === '1'
+                  })
+                }));
+                _context7.next = 14;
+                break;
+
+              case 11:
+                _context7.prev = 11;
+                _context7.t0 = _context7["catch"](0);
+                setAllowColumns(_objectSpread(_objectSpread({}, allowColumnsModel), {}, {
+                  slaBar: _objectSpread(_objectSpread({}, allowColumnsModel === null || allowColumnsModel === void 0 ? void 0 : allowColumnsModel.slaBar), {}, {
+                    visable: (configState === null || configState === void 0 ? void 0 : (_configState$configs4 = configState.configs) === null || _configState$configs4 === void 0 ? void 0 : (_configState$configs5 = _configState$configs4.order_deadlines_enabled) === null || _configState$configs5 === void 0 ? void 0 : _configState$configs5.value) === '1'
+                  }),
+                  timer: _objectSpread(_objectSpread({}, allowColumnsModel === null || allowColumnsModel === void 0 ? void 0 : allowColumnsModel.timer), {}, {
+                    visable: (configState === null || configState === void 0 ? void 0 : (_configState$configs6 = configState.configs) === null || _configState$configs6 === void 0 ? void 0 : (_configState$configs7 = _configState$configs6.order_deadlines_enabled) === null || _configState$configs7 === void 0 ? void 0 : _configState$configs7.value) === '1'
+                  })
+                }));
+
+              case 14:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7, null, [[0, 11]]);
+      }));
+
+      return function getUser() {
+        return _ref9.apply(this, arguments);
+      };
+    }();
+
+    getUser();
+  }, [session === null || session === void 0 ? void 0 : session.user, configState]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     orderList: orderList,
     pagination: pagination,
     loadMoreOrders: loadMoreOrders,
     getPageOrders: getPageOrders,
-    handleUpdateOrderStatus: handleUpdateOrderStatus
+    handleUpdateOrderStatus: handleUpdateOrderStatus,
+    allowColumns: allowColumns,
+    setAllowColumns: setAllowColumns,
+    handleDrop: handleDrop
   })));
 };
 

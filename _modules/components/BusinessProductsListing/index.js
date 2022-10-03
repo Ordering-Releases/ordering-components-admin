@@ -863,6 +863,7 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
     handleChangeCategory: handleChangeCategory,
     handleChangeSearch: handleChangeSearch,
     getPageProducts: getProducts,
+    getBusiness: getBusiness,
     setCategorySelected: setCategorySelected,
     setBusinessState: setBusinessState,
     handleUpdateBusinessState: handleUpdateBusinessState,
