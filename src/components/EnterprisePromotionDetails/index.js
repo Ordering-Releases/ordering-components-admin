@@ -30,6 +30,8 @@ export const EnterprisePromotionDetails = (props) => {
   const [selectedSitesIds, setSelectedSitesIds] = useState([])
   const [selectedProductsIds, setSelectedProductsIds] = useState({})
   const [selectedCategoryIds, setSelectedCategoryIds] = useState({})
+  const [selectedUserIds, setSelectedUserIds] = useState([])
+  const [selectedLoyaltyLevelIds, setSelectedLoyaltyLevelIds] = useState([])
 
   /**
    * Clean formState
@@ -170,6 +172,65 @@ export const EnterprisePromotionDetails = (props) => {
       changes: {
         ...formState.changes,
         sites: filteredIds
+      }
+    })
+  }
+
+  const handleSelectUser = (checked, userId) => {
+    let users = []
+    if (formState.changes?.users) {
+      users = [...formState.changes?.users]
+    } else {
+      if (promotion?.users) {
+        users = promotion?.users?.reduce((ids, user) => [...ids, user.id], [])
+      }
+    }
+    if (checked) {
+      users.push(userId)
+    } else {
+      users = users.filter(id => id !== userId)
+    }
+    setSelectedUserIds(users)
+    setFormState({
+      ...formState,
+      changes: {
+        ...formState.changes,
+        users: users
+      }
+    })
+  }
+
+  const handleSelectLoyaltyLevel = (checked, levelId) => {
+    let loyaltyLevels = []
+    if (formState.changes?.loyalty_levels) {
+      loyaltyLevels = [...formState.changes?.loyalty_levels]
+    } else {
+      if (promotion?.loyalty_levels) {
+        loyaltyLevels = promotion?.loyalty_levels?.reduce((ids, level) => [...ids, level.id], [])
+      }
+    }
+    if (checked) {
+      loyaltyLevels.push(levelId)
+    } else {
+      loyaltyLevels = loyaltyLevels.filter(id => id !== levelId)
+    }
+    setSelectedLoyaltyLevelIds(loyaltyLevels)
+    setFormState({
+      ...formState,
+      changes: {
+        ...formState.changes,
+        loyalty_levels: loyaltyLevels
+      }
+    })
+  }
+
+  const handleSelectAllLoyaltyLevels = (loyaltyLevels) => {
+    setSelectedLoyaltyLevelIds(loyaltyLevels)
+    setFormState({
+      ...formState,
+      changes: {
+        ...formState.changes,
+        loyalty_levels: loyaltyLevels
       }
     })
   }
@@ -319,6 +380,8 @@ export const EnterprisePromotionDetails = (props) => {
       setSelectedSitesIds([])
       setSelectedProductsIds({})
       setSelectedCategoryIds({})
+      setSelectedUserIds([])
+      setSelectedLoyaltyLevelIds([])
     } else {
       setIsAddMode(false)
       cleanFormState()
@@ -330,6 +393,10 @@ export const EnterprisePromotionDetails = (props) => {
       setSelectedProductsIds(_selectedProductsIds)
       const _selectedCategoryIds = promotion?.categories?.reduce((ids, category) => [...ids, category.id], [])
       setSelectedCategoryIds(_selectedCategoryIds)
+      const userIds = promotion?.users?.reduce((ids, user) => [...ids, user.id], [])
+      setSelectedUserIds(userIds || [])
+      const LoyaltyLevelIds = promotion?.loyalty_levels?.reduce((ids, level) => [...ids, level.id], [])
+      setSelectedLoyaltyLevelIds(LoyaltyLevelIds || [])
     }
     setPromotionState({ ...promotionState, promotion: promotion })
   }, [promotion])
@@ -361,6 +428,11 @@ export const EnterprisePromotionDetails = (props) => {
             handleSelectAllBusiness={handleSelectAllBusiness}
             handleSelectBusiness={handleSelectBusiness}
             handleSelectAllSites={handleSelectAllSites}
+            selectedUserIds={selectedUserIds}
+            handleSelectUser={handleSelectUser}
+            selectedLoyaltyLevelIds={selectedLoyaltyLevelIds}
+            handleSelectLoyaltyLevel={handleSelectLoyaltyLevel}
+            handleSelectAllLoyaltyLevels={handleSelectAllLoyaltyLevels}
           />
         )
       }

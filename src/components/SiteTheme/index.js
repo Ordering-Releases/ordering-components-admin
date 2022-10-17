@@ -168,36 +168,20 @@ export const SiteTheme = (props) => {
    * Method to add the theme gallery item from API
    */
   const handleAddThemeGallery = async (base64Image) => {
-    try {
-      setActionState({ ...actionState, loading: true })
-      showToast(ToastType.Info, t('LOADING', 'Loading'))
-      const themeId = siteThemesState.result[0]?.theme_id
-      const requestOptions = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          type: 'image',
-          file: base64Image
-        })
-      }
-      const response = await fetch(`${ordering.root}/themes/${themeId}/gallery`, requestOptions)
-      const { error, result } = await response.json()
-      if (!error) {
-        showToast(ToastType.Success, t('IMAGE_SAVED', 'Image saved'))
-      }
-      setActionState({
-        loading: false,
-        error: error ? result : null
-      })
-    } catch (err) {
-      setActionState({
-        loading: false,
-        error: [err.message]
+    const themeId = siteThemesState.result[0]?.theme_id
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        type: 'image',
+        file: base64Image
       })
     }
+    const response = await fetch(`${ordering.root}/themes/${themeId}/gallery`, requestOptions)
+    return await response.json()
   }
 
   useEffect(() => {
