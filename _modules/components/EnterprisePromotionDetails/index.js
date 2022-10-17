@@ -134,6 +134,16 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
       _useState16 = _slicedToArray(_useState15, 2),
       selectedCategoryIds = _useState16[0],
       setSelectedCategoryIds = _useState16[1];
+
+  var _useState17 = (0, _react.useState)([]),
+      _useState18 = _slicedToArray(_useState17, 2),
+      selectedUserIds = _useState18[0],
+      setSelectedUserIds = _useState18[1];
+
+  var _useState19 = (0, _react.useState)([]),
+      _useState20 = _slicedToArray(_useState19, 2),
+      selectedLoyaltyLevelIds = _useState20[0],
+      setSelectedLoyaltyLevelIds = _useState20[1];
   /**
    * Clean formState
    */
@@ -304,6 +314,85 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
     setFormState(_objectSpread(_objectSpread({}, formState), {}, {
       changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
         sites: filteredIds
+      })
+    }));
+  };
+
+  var handleSelectUser = function handleSelectUser(checked, userId) {
+    var _formState$changes3;
+
+    var users = [];
+
+    if ((_formState$changes3 = formState.changes) !== null && _formState$changes3 !== void 0 && _formState$changes3.users) {
+      var _formState$changes4;
+
+      users = _toConsumableArray((_formState$changes4 = formState.changes) === null || _formState$changes4 === void 0 ? void 0 : _formState$changes4.users);
+    } else {
+      if (promotion !== null && promotion !== void 0 && promotion.users) {
+        var _promotion$users;
+
+        users = promotion === null || promotion === void 0 ? void 0 : (_promotion$users = promotion.users) === null || _promotion$users === void 0 ? void 0 : _promotion$users.reduce(function (ids, user) {
+          return [].concat(_toConsumableArray(ids), [user.id]);
+        }, []);
+      }
+    }
+
+    if (checked) {
+      users.push(userId);
+    } else {
+      users = users.filter(function (id) {
+        return id !== userId;
+      });
+    }
+
+    setSelectedUserIds(users);
+    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+      changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
+        users: users
+      })
+    }));
+  };
+
+  var handleSelectLoyaltyLevel = function handleSelectLoyaltyLevel(checked, levelId) {
+    var _formState$changes5;
+
+    var loyaltyLevels = [];
+
+    if ((_formState$changes5 = formState.changes) !== null && _formState$changes5 !== void 0 && _formState$changes5.loyalty_levels) {
+      var _formState$changes6;
+
+      loyaltyLevels = _toConsumableArray((_formState$changes6 = formState.changes) === null || _formState$changes6 === void 0 ? void 0 : _formState$changes6.loyalty_levels);
+    } else {
+      if (promotion !== null && promotion !== void 0 && promotion.loyalty_levels) {
+        var _promotion$loyalty_le;
+
+        loyaltyLevels = promotion === null || promotion === void 0 ? void 0 : (_promotion$loyalty_le = promotion.loyalty_levels) === null || _promotion$loyalty_le === void 0 ? void 0 : _promotion$loyalty_le.reduce(function (ids, level) {
+          return [].concat(_toConsumableArray(ids), [level.id]);
+        }, []);
+      }
+    }
+
+    if (checked) {
+      loyaltyLevels.push(levelId);
+    } else {
+      loyaltyLevels = loyaltyLevels.filter(function (id) {
+        return id !== levelId;
+      });
+    }
+
+    setSelectedLoyaltyLevelIds(loyaltyLevels);
+    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+      changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
+        loyalty_levels: loyaltyLevels
+      })
+    }));
+  };
+
+  var handleSelectAllLoyaltyLevels = function handleSelectAllLoyaltyLevels(loyaltyLevels) {
+    setSelectedLoyaltyLevelIds(loyaltyLevels);
+    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+      changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
+        loyalty_levels: loyaltyLevels
       })
     }));
   };
@@ -571,8 +660,10 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
       setSelectedSitesIds([]);
       setSelectedProductsIds({});
       setSelectedCategoryIds({});
+      setSelectedUserIds([]);
+      setSelectedLoyaltyLevelIds([]);
     } else {
-      var _promotion$businesses, _promotion$sites2, _promotion$products, _promotion$categories;
+      var _promotion$businesses, _promotion$sites2, _promotion$products, _promotion$categories, _promotion$users2, _promotion$loyalty_le2;
 
       setIsAddMode(false);
       cleanFormState();
@@ -596,6 +687,14 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
       }, []);
 
       setSelectedCategoryIds(_selectedCategoryIds);
+      var userIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$users2 = promotion.users) === null || _promotion$users2 === void 0 ? void 0 : _promotion$users2.reduce(function (ids, user) {
+        return [].concat(_toConsumableArray(ids), [user.id]);
+      }, []);
+      setSelectedUserIds(userIds || []);
+      var LoyaltyLevelIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$loyalty_le2 = promotion.loyalty_levels) === null || _promotion$loyalty_le2 === void 0 ? void 0 : _promotion$loyalty_le2.reduce(function (ids, level) {
+        return [].concat(_toConsumableArray(ids), [level.id]);
+      }, []);
+      setSelectedLoyaltyLevelIds(LoyaltyLevelIds || []);
     }
 
     setPromotionState(_objectSpread(_objectSpread({}, promotionState), {}, {
@@ -623,7 +722,12 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
     handleSelectSite: handleSelectSite,
     handleSelectAllBusiness: handleSelectAllBusiness,
     handleSelectBusiness: handleSelectBusiness,
-    handleSelectAllSites: handleSelectAllSites
+    handleSelectAllSites: handleSelectAllSites,
+    selectedUserIds: selectedUserIds,
+    handleSelectUser: handleSelectUser,
+    selectedLoyaltyLevelIds: selectedLoyaltyLevelIds,
+    handleSelectLoyaltyLevel: handleSelectLoyaltyLevel,
+    handleSelectAllLoyaltyLevels: handleSelectAllLoyaltyLevels
   })));
 };
 

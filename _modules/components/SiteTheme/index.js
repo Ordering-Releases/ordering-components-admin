@@ -402,17 +402,13 @@ var SiteTheme = function SiteTheme(props) {
 
   var handleAddThemeGallery = /*#__PURE__*/function () {
     var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(base64Image) {
-      var _siteThemesState$resu2, themeId, requestOptions, response, _yield$response$json5, error, result;
+      var _siteThemesState$resu2;
 
+      var themeId, requestOptions, response;
       return _regeneratorRuntime().wrap(function _callee5$(_context5) {
         while (1) {
           switch (_context5.prev = _context5.next) {
             case 0:
-              _context5.prev = 0;
-              setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
-                loading: true
-              }));
-              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               themeId = (_siteThemesState$resu2 = siteThemesState.result[0]) === null || _siteThemesState$resu2 === void 0 ? void 0 : _siteThemesState$resu2.theme_id;
               requestOptions = {
                 method: 'POST',
@@ -425,44 +421,23 @@ var SiteTheme = function SiteTheme(props) {
                   file: base64Image
                 })
               };
-              _context5.next = 7;
+              _context5.next = 4;
               return fetch("".concat(ordering.root, "/themes/").concat(themeId, "/gallery"), requestOptions);
 
-            case 7:
+            case 4:
               response = _context5.sent;
-              _context5.next = 10;
+              _context5.next = 7;
               return response.json();
 
-            case 10:
-              _yield$response$json5 = _context5.sent;
-              error = _yield$response$json5.error;
-              result = _yield$response$json5.result;
+            case 7:
+              return _context5.abrupt("return", _context5.sent);
 
-              if (!error) {
-                showToast(_ToastContext.ToastType.Success, t('IMAGE_SAVED', 'Image saved'));
-              }
-
-              setActionState({
-                loading: false,
-                error: error ? result : null
-              });
-              _context5.next = 20;
-              break;
-
-            case 17:
-              _context5.prev = 17;
-              _context5.t0 = _context5["catch"](0);
-              setActionState({
-                loading: false,
-                error: [_context5.t0.message]
-              });
-
-            case 20:
+            case 8:
             case "end":
               return _context5.stop();
           }
         }
-      }, _callee5, null, [[0, 17]]);
+      }, _callee5);
     }));
 
     return function handleAddThemeGallery(_x2) {
