@@ -123,7 +123,10 @@ var LoginForm = function LoginForm(props) {
       _useConfig2 = _slicedToArray(_useConfig, 1),
       configs = _useConfig2[0].configs;
 
-  var _useState9 = (0, _react.useState)(null),
+  var _useState9 = (0, _react.useState)({
+    code: '',
+    version: ''
+  }),
       _useState10 = _slicedToArray(_useState9, 2),
       reCaptchaValue = _useState10[0],
       setReCaptchaValue = _useState10[1];
@@ -169,11 +172,11 @@ var LoginForm = function LoginForm(props) {
               _credentials = (_credentials2 = {}, _defineProperty(_credentials2, loginTab, values && values[loginTab] || credentials[loginTab]), _defineProperty(_credentials2, "password", values && (values === null || values === void 0 ? void 0 : values.password) || credentials.password), _credentials2);
 
               if (!isReCaptchaEnable) {
-                _context.next = 9;
+                _context.next = 10;
                 break;
               }
 
-              if (!(reCaptchaValue === null)) {
+              if (!((reCaptchaValue === null || reCaptchaValue === void 0 ? void 0 : reCaptchaValue.code) === '')) {
                 _context.next = 8;
                 break;
               }
@@ -188,53 +191,57 @@ var LoginForm = function LoginForm(props) {
               return _context.abrupt("return");
 
             case 8:
-              _credentials.verification_code = reCaptchaValue;
+              _credentials.verification_code = reCaptchaValue === null || reCaptchaValue === void 0 ? void 0 : reCaptchaValue.code;
+              _credentials.recaptcha_type = reCaptchaValue === null || reCaptchaValue === void 0 ? void 0 : reCaptchaValue.version;
 
-            case 9:
+            case 10:
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: true
               }));
-              _context.next = 12;
+              _context.next = 13;
               return ordering.users().auth(_credentials);
 
-            case 12:
+            case 13:
               _yield$ordering$users = _context.sent;
               _yield$ordering$users2 = _yield$ordering$users.content;
               error = _yield$ordering$users2.error;
               result = _yield$ordering$users2.result;
 
-              if (isReCaptchaEnable) {
-                window.grecaptcha.reset();
-                setReCaptchaValue(null);
+              if (isReCaptchaEnable && window.grecaptcha) {
+                _credentials.recaptcha_type === 'v2' && window.grecaptcha.reset();
+                setReCaptchaValue({
+                  code: '',
+                  version: ''
+                });
               }
 
               if (error) {
-                _context.next = 39;
+                _context.next = 40;
                 break;
               }
 
               if (!useDefualtSessionManager) {
-                _context.next = 36;
+                _context.next = 37;
                 break;
               }
 
               if (!(allowedLevels && (allowedLevels === null || allowedLevels === void 0 ? void 0 : allowedLevels.length) > 0)) {
-                _context.next = 35;
+                _context.next = 36;
                 break;
               }
 
               level = result.level, access_token = result.session.access_token;
 
               if (allowedLevels.includes(level)) {
-                _context.next = 35;
+                _context.next = 36;
                 break;
               }
 
-              _context.prev = 22;
-              _context.next = 25;
+              _context.prev = 23;
+              _context.next = 26;
               return ordering.setAccessToken(access_token).users().logout();
 
-            case 25:
+            case 26:
               _yield$ordering$setAc = _context.sent;
               logoutResp = _yield$ordering$setAc.content;
 
@@ -249,12 +256,12 @@ var LoginForm = function LoginForm(props) {
                 },
                 loading: false
               });
-              _context.next = 34;
+              _context.next = 35;
               break;
 
-            case 31:
-              _context.prev = 31;
-              _context.t0 = _context["catch"](22);
+            case 32:
+              _context.prev = 32;
+              _context.t0 = _context["catch"](23);
               setFormState({
                 result: {
                   error: true,
@@ -263,17 +270,17 @@ var LoginForm = function LoginForm(props) {
                 loading: false
               });
 
-            case 34:
+            case 35:
               return _context.abrupt("return");
 
-            case 35:
+            case 36:
               login({
                 user: result,
                 token: result.session.access_token,
                 project: ordering === null || ordering === void 0 ? void 0 : ordering.project
               });
 
-            case 36:
+            case 37:
               events.emit('userLogin', result);
 
               if (handleSuccessLogin) {
@@ -284,7 +291,7 @@ var LoginForm = function LoginForm(props) {
                 window.location.href = "".concat(window.location.origin).concat(urlToRedirect);
               }
 
-            case 39:
+            case 40:
               setFormState({
                 result: {
                   error: error,
@@ -292,11 +299,11 @@ var LoginForm = function LoginForm(props) {
                 },
                 loading: false
               });
-              _context.next = 45;
+              _context.next = 46;
               break;
 
-            case 42:
-              _context.prev = 42;
+            case 43:
+              _context.prev = 43;
               _context.t1 = _context["catch"](0);
               setFormState({
                 result: {
@@ -306,12 +313,12 @@ var LoginForm = function LoginForm(props) {
                 loading: false
               });
 
-            case 45:
+            case 46:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 42], [22, 31]]);
+      }, _callee, null, [[0, 43], [23, 32]]);
     }));
 
     return function handleLoginClick(_x) {

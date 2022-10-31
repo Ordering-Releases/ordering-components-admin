@@ -17,6 +17,8 @@ var _LanguageContext = require("../../contexts/LanguageContext");
 
 var _ToastContext = require("../../contexts/ToastContext");
 
+var _utils = require("../../utils");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -431,7 +433,7 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
 
   var createBusinessCategory = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var _changes$ribbon, _businessState$busine3, changes, _yield$ordering$busin3, content, _content$result5, newCategory, _businessState$busine4, _categories;
+      var _formState$changes5, _changes$ribbon, _businessState$busine3, changes, _yield$ordering$busin3, content, _content$result5, newCategory, _businessState$busine4, _categories;
 
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) {
@@ -450,7 +452,9 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: true
               }));
-              changes = _objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes);
+              changes = _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), {}, {
+                slug: (0, _utils.stringToSlug)((formState === null || formState === void 0 ? void 0 : (_formState$changes5 = formState.changes) === null || _formState$changes5 === void 0 ? void 0 : _formState$changes5.name) || '')
+              });
               if (typeof (changes === null || changes === void 0 ? void 0 : changes.ribbon) !== 'undefined' && !(changes !== null && changes !== void 0 && (_changes$ribbon = changes.ribbon) !== null && _changes$ribbon !== void 0 && _changes$ribbon.enabled)) delete changes.ribbon;
               _context3.next = 9;
               return ordering.businesses(parseInt(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine3 = businessState.business) === null || _businessState$busine3 === void 0 ? void 0 : _businessState$busine3.id)).categories().save(changes);

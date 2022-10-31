@@ -59,6 +59,7 @@ var OrderDetails = function OrderDetails(props) {
       asDashboard = props.asDashboard,
       hashKey = props.hashKey,
       userCustomerId = props.userCustomerId,
+      isDisableLoadMessages = props.isDisableLoadMessages,
       UIComponent = props.UIComponent;
 
   var _useSession = (0, _SessionContext.useSession)(),
@@ -591,7 +592,9 @@ var OrderDetails = function OrderDetails(props) {
     };
   }, [orderState]);
   (0, _react.useEffect)(function () {
-    loadMessages();
+    if (!isDisableLoadMessages) {
+      loadMessages();
+    }
   }, [orderId]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     order: orderState,

@@ -306,7 +306,7 @@ var SessionProvider = function SessionProvider(_ref) {
                 });
               }
 
-              if (!token && state.token) {
+              if (!token && !state.token) {
                 logout();
               }
 

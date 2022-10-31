@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.randomString = exports.deepEqual = void 0;
+exports.stringToSlug = exports.randomString = exports.deepEqual = void 0;
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
@@ -49,3 +49,28 @@ exports.deepEqual = deepEqual;
 var isObject = function isObject(object) {
   return object != null && _typeof(object) === 'object';
 };
+
+var stringToSlug = function stringToSlug(str) {
+  var _str;
+
+  str = str.replace(/^\s+|\s+$/g, ''); // trim
+
+  str = (_str = str) === null || _str === void 0 ? void 0 : _str.toLowerCase(); // remove accents, swap ñ for n, etc
+
+  var from = 'åàáãäâèéëêìíïîòóöôùúüûñç·/_,:;';
+  var to = 'aaaaaaeeeeiiiioooouuuunc------';
+
+  for (var i = 0, l = from.length; i < l; i++) {
+    str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+  }
+
+  str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+  .replace(/\s+/g, '_') // collapse whitespace and replace by _
+  .replace(/-+/g, '_') // collapse dashes
+  .replace(/^-+/, '') // trim - from start of text
+  .replace(/-+$/, ''); // trim - from end of text
+
+  return str;
+};
+
+exports.stringToSlug = stringToSlug;

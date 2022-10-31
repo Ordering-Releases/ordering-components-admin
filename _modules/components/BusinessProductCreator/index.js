@@ -19,6 +19,8 @@ var _ToastContext = require("../../contexts/ToastContext");
 
 var _LanguageContext = require("../../contexts/LanguageContext");
 
+var _utils = require("../../utils");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -166,7 +168,7 @@ var BusinessProductCreator = function BusinessProductCreator(props) {
 
   var handleUpdateClick = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var categoryId, _yield$ordering$busin, content, _categories;
+      var _formState$changes, categoryId, payload, _yield$ordering$busin, content, _categories;
 
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
@@ -192,10 +194,13 @@ var BusinessProductCreator = function BusinessProductCreator(props) {
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: true
               }));
-              _context.next = 8;
-              return ordering.businesses(parseInt(business === null || business === void 0 ? void 0 : business.id)).categories(categoryId).products().save(formState.changes);
+              payload = _objectSpread(_objectSpread({}, formState.changes), {}, {
+                slug: (0, _utils.stringToSlug)(((_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.name) || '')
+              });
+              _context.next = 9;
+              return ordering.businesses(parseInt(business === null || business === void 0 ? void 0 : business.id)).categories(categoryId).products().save(payload);
 
-            case 8:
+            case 9:
               _yield$ordering$busin = _context.sent;
               content = _yield$ordering$busin.content;
 
@@ -236,11 +241,11 @@ var BusinessProductCreator = function BusinessProductCreator(props) {
                 }));
               }
 
-              _context.next = 16;
+              _context.next = 17;
               break;
 
-            case 13:
-              _context.prev = 13;
+            case 14:
+              _context.prev = 14;
               _context.t0 = _context["catch"](2);
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 result: {
@@ -250,12 +255,12 @@ var BusinessProductCreator = function BusinessProductCreator(props) {
                 loading: false
               }));
 
-            case 16:
+            case 17:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[2, 13]]);
+      }, _callee, null, [[2, 14]]);
     }));
 
     return function handleUpdateClick() {
