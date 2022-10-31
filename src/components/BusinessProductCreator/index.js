@@ -4,6 +4,7 @@ import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
 import { useLanguage } from '../../contexts/LanguageContext'
+import { stringToSlug } from '../../utils'
 
 /**
  * Component to manage CreateBusinessProduct behavior without UI component
@@ -99,7 +100,11 @@ export const BusinessProductCreator = (props) => {
         ...formState,
         loading: true
       })
-      const { content } = await ordering.businesses(parseInt(business?.id)).categories(categoryId).products().save(formState.changes)
+      const payload = {
+        ...formState.changes,
+        slug: stringToSlug(formState.changes?.name || '')
+      }
+      const { content } = await ordering.businesses(parseInt(business?.id)).categories(categoryId).products().save(payload)
       if (!content.error) {
         setFormState({
           ...formState,

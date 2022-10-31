@@ -14,6 +14,7 @@ export const OrderDetails = (props) => {
     asDashboard,
     hashKey,
     userCustomerId,
+    isDisableLoadMessages,
     UIComponent
   } = props
 
@@ -281,7 +282,9 @@ export const OrderDetails = (props) => {
   }, [orderState])
 
   useEffect(() => {
-    loadMessages()
+    if (!isDisableLoadMessages) {
+      loadMessages()
+    }
   }, [orderId])
 
   return (

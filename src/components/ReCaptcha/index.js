@@ -1,38 +1,42 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import ReCAPTCHA from 'react-google-recaptcha'
+import { GoogleReCaptchaProvider, GoogleReCaptcha } from 'react-google-recaptcha-v3'
 import PropTypes from 'prop-types'
-import { useConfig } from '../../contexts/ConfigContext'
 
 export const ReCaptcha = (props) => {
   const {
-    handleReCaptcha
+    handleReCaptcha,
+    reCaptchaVersion
   } = props
 
-  const [{ configs }] = useConfig()
-  const [recaptchaSiteKey, setRecaptchaSiteKey] = useState(null)
+  const [currVersion, setCurrVersion] = useState(reCaptchaVersion?.version)
 
   /**
    * Change reCaptcha
    */
-  const onChange = (value) => {
-    handleReCaptcha(value)
-  }
+  const onChange = useCallback((value) => {
+    handleReCaptcha({ code: value, version: reCaptchaVersion?.version })
+  }, [reCaptchaVersion])
 
   useEffect(() => {
-    if (configs && Object.keys(configs).length > 0 && configs?.security_recaptcha_site_key?.value) {
-      setRecaptchaSiteKey(configs?.security_recaptcha_site_key.value)
-    } else {
-      setRecaptchaSiteKey(null)
-      console.log('ReCaptcha component: the config doesn\'t have recaptcha site key')
+    if (reCaptchaVersion?.siteKey === '') return
+    if (currVersion?.version !== reCaptchaVersion && window.grecaptcha) {
+      window.grecaptcha = undefined
     }
-  }, [configs])
+    setCurrVersion(reCaptchaVersion?.version)
+  }, [reCaptchaVersion])
 
   return (
     <>
-      {recaptchaSiteKey && (
+      {(reCaptchaVersion?.version === 'v3' && currVersion === 'v3') && (
+        <GoogleReCaptchaProvider reCaptchaKey={reCaptchaVersion?.siteKey}>
+          <GoogleReCaptcha onVerify={onChange} />
+        </GoogleReCaptchaProvider>
+      )}
+      {(reCaptchaVersion?.version === 'v2' && currVersion === 'v2') && (
         <ReCAPTCHA
-          key={recaptchaSiteKey}
-          sitekey={recaptchaSiteKey}
+          key={reCaptchaVersion?.siteKey}
+          sitekey={reCaptchaVersion?.siteKey}
           onChange={onChange}
           onErrored={e => console.log(e)}
         />

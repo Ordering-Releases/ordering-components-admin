@@ -4,6 +4,7 @@ import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
+import { stringToSlug } from '../../utils'
 
 /**
  * Component to manage BusinessProductsCategoyDetails behavior without UI component
@@ -224,7 +225,10 @@ export const BusinessProductsCategoyDetails = (props) => {
         ...formState,
         loading: true
       })
-      const changes = { ...formState?.changes }
+      const changes = {
+        ...formState?.changes,
+        slug: stringToSlug(formState?.changes?.name || '')
+      }
       if (typeof changes?.ribbon !== 'undefined' && !changes?.ribbon?.enabled) delete changes.ribbon
       const { content } = await ordering.businesses(parseInt(businessState?.business?.id)).categories().save(changes)
       if (!content.error) {
