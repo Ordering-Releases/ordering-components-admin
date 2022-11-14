@@ -59,7 +59,8 @@ var CampaignDetailContent = function CampaignDetailContent(props) {
       handleChangeItem = props.handleChangeItem,
       handleChangeContactData = props.handleChangeContactData,
       handleSuccessUpdateCampaign = props.handleSuccessUpdateCampaign,
-      campaignList = props.campaignList;
+      campaignList = props.campaignList,
+      handleChangeParentContact = props.handleChangeParentContact;
 
   var _useApi = (0, _ApiContext.useApi)(),
       _useApi2 = _slicedToArray(_useApi, 1),
@@ -125,6 +126,26 @@ var CampaignDetailContent = function CampaignDetailContent(props) {
     }
   };
   /**
+  * Update credential data
+  */
+
+
+  var handleChangeContact = function handleChangeContact(name, value) {
+    var _formState$changes2;
+
+    var contactData = _objectSpread(_objectSpread({}, (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.contact_data), {}, _defineProperty({}, name, value));
+
+    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+      changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
+        contact_data: contactData
+      })
+    }));
+
+    if (isAddMode) {
+      handleChangeParentContact && handleChangeParentContact(name, value);
+    }
+  };
+  /**
    * Default fuction for recovery action workflow
    */
 
@@ -149,6 +170,8 @@ var CampaignDetailContent = function CampaignDetailContent(props) {
                 if (_typeof(changes[key]) === 'object' && changes[key] !== null || Array.isArray(changes[key])) {
                   changes[key] = JSON.stringify(changes[key]);
                 }
+
+                changes === null || changes === void 0 ? true : delete changes.contact_type;
               }
 
               requestOptions = {
@@ -236,20 +259,6 @@ var CampaignDetailContent = function CampaignDetailContent(props) {
     }
   }, [campaignState === null || campaignState === void 0 ? void 0 : campaignState.campaign]);
   (0, _react.useEffect)(function () {
-    if (isAddMode) return;
-
-    if (campaignState !== null && campaignState !== void 0 && campaignState.campaign && Object.keys(campaignState === null || campaignState === void 0 ? void 0 : campaignState.campaign).length > 0) {
-      var _campaignState$campai5, _campaignState$campai6;
-
-      setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-        changes: {
-          contact_type: (campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai5 = campaignState.campaign) === null || _campaignState$campai5 === void 0 ? void 0 : _campaignState$campai5.contact_type) || '',
-          contact_data: (campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai6 = campaignState.campaign) === null || _campaignState$campai6 === void 0 ? void 0 : _campaignState$campai6.contact_data) || {}
-        }
-      }));
-    }
-  }, [campaignState === null || campaignState === void 0 ? void 0 : campaignState.campaign]);
-  (0, _react.useEffect)(function () {
     if (!isAddMode) return;
 
     if (campaignFormState !== null && campaignFormState !== void 0 && campaignFormState.changes && Object.keys(campaignFormState === null || campaignFormState === void 0 ? void 0 : campaignFormState.changes).length > 0) {
@@ -267,7 +276,8 @@ var CampaignDetailContent = function CampaignDetailContent(props) {
     contactState: formState,
     handleChangeType: handleChangeType,
     handleChangeData: handleChangeData,
-    handleUpdateContact: handleUpdateContact
+    handleUpdateContact: handleUpdateContact,
+    handleChangeContact: handleChangeContact
   })));
 };
 

@@ -117,19 +117,22 @@ var AutocompleteInput = function AutocompleteInput(props) {
   }, [googleReady]);
   (0, _react.useEffect)(function () {
     var interval = setInterval(function () {
-      if (inputRef.current.attributes.autocomplete && inputRef.current.attributes.autocomplete.value === 'new-field') clearInterval(interval);
-      inputRef.current.setAttribute('autocomplete', 'new-field');
+      if (inputRef.current.attributes.autocomplete && inputRef.current.attributes.autocomplete.value === (props.autoComplete || 'new-field')) clearInterval(interval);
+      inputRef.current.setAttribute('autocomplete', props.autoComplete || 'new-field');
     }, 100);
     return function () {
       return clearInterval(interval);
     };
   });
   return /*#__PURE__*/_react.default.createElement("input", _extends({}, inputProps, {
-    autoComplete: "new-field",
+    autoComplete: props.autoComplete || 'new-field',
     disabled: !props.googleReady,
     ref: function ref(e) {
       inputRef.current = e;
       childRef && childRef(e);
+    },
+    onFocus: function onFocus() {
+      return inputRef.current.setAttribute('autocomplete', props.autoComplete || 'new-field');
     }
   }));
 };

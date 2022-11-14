@@ -49,6 +49,7 @@ var ResetPassword = function ResetPassword(props) {
   var UIComponent = props.UIComponent,
       code = props.code,
       random = props.random,
+      handleCustomResetPassword = props.handleCustomResetPassword,
       handleSuccessResetPassword = props.handleSuccessResetPassword;
 
   var _useState = (0, _react.useState)({
@@ -70,6 +71,11 @@ var ResetPassword = function ResetPassword(props) {
       resetPasswordData = _useState4[0],
       setResetPasswordData = _useState4[1];
 
+  var _useState5 = (0, _react.useState)(false),
+      _useState6 = _slicedToArray(_useState5, 2),
+      isSuccessfulReset = _useState6[0],
+      setSuccessfulReset = _useState6[1];
+
   var _useApi = (0, _ApiContext.useApi)(),
       _useApi2 = _slicedToArray(_useApi, 1),
       ordering = _useApi2[0];
@@ -82,14 +88,22 @@ var ResetPassword = function ResetPassword(props) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              _context.prev = 0;
+              if (!handleCustomResetPassword) {
+                _context.next = 2;
+                break;
+              }
+
+              return _context.abrupt("return", handleCustomResetPassword(resetPasswordData));
+
+            case 2:
+              _context.prev = 2;
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: true
               }));
-              _context.next = 4;
+              _context.next = 6;
               return ordering.users().resetPassword(resetPasswordData);
 
-            case 4:
+            case 6:
               _yield$ordering$users = _context.sent;
               response = _yield$ordering$users.response;
               result = response.data;
@@ -102,14 +116,16 @@ var ResetPassword = function ResetPassword(props) {
                 if (handleSuccessResetPassword) {
                   handleSuccessResetPassword(result.result);
                 }
+
+                setSuccessfulReset(true);
               }
 
-              _context.next = 14;
+              _context.next = 16;
               break;
 
-            case 11:
-              _context.prev = 11;
-              _context.t0 = _context["catch"](0);
+            case 13:
+              _context.prev = 13;
+              _context.t0 = _context["catch"](2);
 
               if (_context.t0.constructor.name !== 'Cancel') {
                 setFormState({
@@ -121,12 +137,12 @@ var ResetPassword = function ResetPassword(props) {
                 });
               }
 
-            case 14:
+            case 16:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 11]]);
+      }, _callee, null, [[2, 13]]);
     }));
 
     return function handleResetPassword() {
@@ -142,7 +158,8 @@ var ResetPassword = function ResetPassword(props) {
     handleResetPassword: handleResetPassword,
     handleChangeInput: handleChangeInput,
     resetPasswordData: resetPasswordData,
-    formState: formState
+    formState: formState,
+    isSuccessfulReset: isSuccessfulReset
   })));
 };
 

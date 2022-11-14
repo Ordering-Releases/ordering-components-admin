@@ -309,7 +309,7 @@ var ProfessionalBusinessService = function ProfessionalBusinessService(props) {
   }();
 
   (0, _react.useEffect)(function () {
-    getUserProducts();
+    getUserProducts(); // getBusinessList()
   }, [user === null || user === void 0 ? void 0 : user.id]);
   (0, _react.useEffect)(function () {
     getBusinessList();
@@ -331,6 +331,23 @@ var ProfessionalBusinessService = function ProfessionalBusinessService(props) {
       setBusinessIds(_businessIds);
     }
   }, [businessList === null || businessList === void 0 ? void 0 : businessList.businesses, userServiceList === null || userServiceList === void 0 ? void 0 : userServiceList.services, businessIds]);
+  (0, _react.useEffect)(function () {
+    var _businessList$busines2, _userServiceList$serv2;
+
+    if (businessIds === undefined) return;
+
+    if ((businessList === null || businessList === void 0 ? void 0 : (_businessList$busines2 = businessList.businesses) === null || _businessList$busines2 === void 0 ? void 0 : _businessList$busines2.length) > 0 && (userServiceList === null || userServiceList === void 0 ? void 0 : (_userServiceList$serv2 = userServiceList.services) === null || _userServiceList$serv2 === void 0 ? void 0 : _userServiceList$serv2.length) > 0) {
+      var _businessIds = [];
+      businessList.businesses.forEach(function (business) {
+        if (userServiceList !== null && userServiceList !== void 0 && userServiceList.services.reduce(function (prev, current) {
+          return [].concat(_toConsumableArray(prev), [current.business_id]);
+        }, []).includes(business.id)) {
+          _businessIds.push(business.id);
+        }
+      });
+      setBusinessIds(_businessIds);
+    }
+  }, [user === null || user === void 0 ? void 0 : user.id, userServiceList === null || userServiceList === void 0 ? void 0 : userServiceList.services]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     searchValue: searchValue,
     businessIds: businessIds,

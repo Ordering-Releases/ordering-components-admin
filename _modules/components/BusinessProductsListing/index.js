@@ -302,7 +302,11 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
                 _categoryState.products = _productsFiltered || [];
               }
 
-              setCategoryState(_objectSpread({}, _categoryState));
+              setCategoryState(_objectSpread(_objectSpread({}, _categoryState), {}, {
+                products: _toConsumableArray(new Map(_categoryState.products.map(function (item) {
+                  return [item.id, item];
+                })).values())
+              }));
               return _context.abrupt("return");
 
             case 5:
@@ -379,7 +383,11 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
                   products: newFetch ? _toConsumableArray(result) : [].concat(_toConsumableArray(categoryState.products), _toConsumableArray(result))
                 };
                 categoriesState[categoryKey] = newcategoryState;
-                setCategoryState(_objectSpread({}, newcategoryState));
+                setCategoryState(_objectSpread(_objectSpread({}, newcategoryState), {}, {
+                  products: _toConsumableArray(new Map(newcategoryState.products.map(function (item) {
+                    return [item.id, item];
+                  })).values())
+                }));
                 setCategoriesState(_objectSpread({}, categoriesState));
               } else {
                 setErrors(result);

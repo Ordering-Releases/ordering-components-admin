@@ -378,6 +378,54 @@ var UserDetails = function UserDetails(props) {
       return _ref4.apply(this, arguments);
     };
   }();
+  /**
+   * Method to link the Google account to the professional account
+   */
+
+
+  var handleGoogleAccountLink = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+      var _userState$user4;
+
+      var connect, interval, timeout;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              connect = window.open("".concat(ordering.root, "/users/").concat((_userState$user4 = userState.user) === null || _userState$user4 === void 0 ? void 0 : _userState$user4.id, "/google/permissions/request?name=calendar&token=").concat(session.token), '_blank', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,clearcache=yes');
+              interval = setInterval(function () {
+                if (!connect.closed) {
+                  connect.postMessage('data', ordering.url);
+                } else {
+                  clearInterval(interval);
+                }
+              }, 200);
+              timeout = null;
+              window.addEventListener('message', function (e) {
+                if (e.origin.indexOf('.ordering.co') === -1) {
+                  return;
+                }
+
+                clearInterval(interval);
+                if (timeout) clearTimeout(timeout);
+                timeout = setTimeout(function () {
+                  connect.postMessage('close', ordering.url);
+                  showToast(_ToastContext.ToastType.Success, e.data.message);
+                }, 1000);
+              });
+
+            case 4:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5);
+    }));
+
+    return function handleGoogleAccountLink() {
+      return _ref5.apply(this, arguments);
+    };
+  }();
 
   (0, _react.useEffect)(function () {
     if (props.user) {
@@ -404,7 +452,8 @@ var UserDetails = function UserDetails(props) {
     handleGoogleCalendarSync: handleGoogleCalendarSync,
     scheduleState: scheduleState,
     handleScheduleState: handleScheduleState,
-    handleScheduleUpdateUser: handleScheduleUpdateUser
+    handleScheduleUpdateUser: handleScheduleUpdateUser,
+    handleGoogleAccountLink: handleGoogleAccountLink
   })));
 };
 

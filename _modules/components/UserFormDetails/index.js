@@ -414,6 +414,19 @@ var UserFormDetails = function UserFormDetails(props) {
     };
   };
   /**
+   * Update occupation id
+   * @param {Number} id
+   */
+
+
+  var handleChangeOccupation = function handleChangeOccupation(id) {
+    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+      changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
+        occupation_id: id
+      })
+    }));
+  };
+  /**
    * Check if field should be show
    * @param {string} fieldName Field name
    */
@@ -453,7 +466,8 @@ var UserFormDetails = function UserFormDetails(props) {
     toggleIsEdit: function toggleIsEdit() {
       return setIsEdit(!isEdit);
     },
-    handleChangeUserType: handleChangeUserType
+    handleChangeUserType: handleChangeUserType,
+    handleChangeOccupation: handleChangeOccupation
   })));
 };
 
