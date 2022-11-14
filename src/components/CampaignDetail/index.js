@@ -56,6 +56,20 @@ export const CampaignDetail = (props) => {
   }
 
   /**
+ * Update credential data
+ * @param {EventTarget} e Related HTML event
+ */
+  const handleChangeParentContact = (name, value) => {
+    const changes = formState.changes?.contact_data
+      ? { ...formState.changes?.contact_data, [name]: value }
+      : { [name]: value }
+    setFormState({
+      ...formState,
+      changes: { ...formState.changes, contact_data: changes }
+    })
+  }
+
+  /**
    * Update parameter data
    * @param {string} key parameters to change
    * @param {string} value parameters to change
@@ -296,7 +310,7 @@ export const CampaignDetail = (props) => {
   /**
    * Method to get audience from API
    */
-  const getAudience = async (conditions) => {
+  const getAudience = async (conditions, contactType) => {
     try {
       setAudienceState({ ...audienceState, loading: true })
       const _conditions = [...conditions]
@@ -308,7 +322,7 @@ export const CampaignDetail = (props) => {
         })
       })
 
-      const changes = { conditions: JSON.stringify(_conditions) }
+      const changes = { conditions: JSON.stringify(_conditions), contact_type: contactType }
 
       const requestOptions = {
         method: 'POST',
@@ -322,7 +336,13 @@ export const CampaignDetail = (props) => {
       const response = await fetch(`${ordering.root}/marketing_campaigns/audience`, requestOptions)
       const content = await response.json()
       if (!content.error) {
-        setAudienceState({ ...audienceState, loading: false, error: null, audience: content?.result?.audience })
+        setAudienceState({
+          ...audienceState,
+          loading: false,
+          error: null,
+          audience: content?.result,
+          pagination: content?.pagination
+        })
       } else {
         setAudienceState({
           ...audienceState,
@@ -351,7 +371,6 @@ export const CampaignDetail = (props) => {
         }
       })
     } else {
-      // getAudience(campaign?.conditions)
       setIsAddMode(false)
       cleanFormState()
     }
@@ -359,13 +378,13 @@ export const CampaignDetail = (props) => {
   }, [campaign])
 
   useEffect(() => {
-    getAudience(campaignState?.campaign?.conditions)
+    getAudience(campaignState?.campaign?.conditions, campaignState?.campaign?.contact_type)
   }, [JSON.stringify(campaignState?.campaign?.conditions)])
 
   useEffect(() => {
     if (!isAddMode || !formState?.changes?.conditions) return
-    if (formState?.changes?.conditions?.length > 0) getAudience(formState?.changes?.conditions)
-    else setAudienceState({ ...audienceState, audience: 0 })
+    const contactType = formState?.changes?.contact_type || campaignState?.campaign?.contact_type
+    if (formState?.changes?.conditions?.length > 0 && contactType) getAudience(formState?.changes?.conditions, contactType)
   }, [JSON.stringify(formState?.changes?.conditions)])
 
   return (
@@ -385,6 +404,7 @@ export const CampaignDetail = (props) => {
             handleUpdateClick={handleUpdateClick}
             handleRemoveKey={handleRemoveKey}
             handleChangeContactData={handleChangeContactData}
+            handleChangeParentContact={handleChangeParentContact}
             setCampaignState={setCampaignState}
             handleDeleteCondition={handleDeleteCondition}
           />

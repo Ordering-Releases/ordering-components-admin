@@ -95,7 +95,7 @@ export const BusinessProductsListing = (props) => {
       if (categorySelected) {
         let categoryFiltered
         const _categories = [...businessState?.business?.categories]
-        _categories.forEach(function iterate(category) {
+        _categories.forEach(function iterate (category) {
           if (category?.id === categorySelected?.id) {
             categoryFiltered = category
           }
@@ -127,7 +127,10 @@ export const BusinessProductsListing = (props) => {
         categoryState.products = productsFiltered || []
       }
 
-      setCategoryState({ ...categoryState })
+      setCategoryState({
+        ...categoryState,
+        products: [...new Map(categoryState.products.map(item => [item.id, item])).values()]
+      })
       return
     }
 
@@ -208,7 +211,10 @@ export const BusinessProductsListing = (props) => {
         }
 
         categoriesState[categoryKey] = newcategoryState
-        setCategoryState({ ...newcategoryState })
+        setCategoryState({
+          ...newcategoryState,
+          products: [...new Map(newcategoryState.products.map(item => [item.id, item])).values()]
+        })
         setCategoriesState({ ...categoriesState })
       } else {
         setErrors(result)
@@ -352,7 +358,7 @@ export const BusinessProductsListing = (props) => {
     const business = { ...businessState?.business }
     Object.assign(business, result)
     if (categorySelected) {
-      business.categories.forEach(function iterate(category) {
+      business.categories.forEach(function iterate (category) {
         if (category?.id === categorySelected?.id) {
           setCategorySelected(category)
         }

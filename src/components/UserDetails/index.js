@@ -144,6 +144,32 @@ export const UserDetails = (props) => {
     }
   }
 
+  /**
+   * Method to link the Google account to the professional account
+   */
+  const handleGoogleAccountLink = async () => {
+    const connect = window.open(`${ordering.root}/users/${userState.user?.id}/google/permissions/request?name=calendar&token=${session.token}`, '_blank', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,clearcache=yes')
+    const interval = setInterval(function () {
+      if (!connect.closed) {
+        connect.postMessage('data', ordering.url)
+      } else {
+        clearInterval(interval)
+      }
+    }, 200)
+    let timeout = null
+    window.addEventListener('message', function (e) {
+      if (e.origin.indexOf('.ordering.co') === -1) {
+        return
+      }
+      clearInterval(interval)
+      if (timeout) clearTimeout(timeout)
+      timeout = setTimeout(function () {
+        connect.postMessage('close', ordering.url)
+        showToast(ToastType.Success, e.data.message)
+      }, 1000)
+    })
+  }
+
   useEffect(() => {
     if (props.user) {
       setUserState({
@@ -177,6 +203,7 @@ export const UserDetails = (props) => {
             scheduleState={scheduleState}
             handleScheduleState={handleScheduleState}
             handleScheduleUpdateUser={handleScheduleUpdateUser}
+            handleGoogleAccountLink={handleGoogleAccountLink}
           />
         )
       }

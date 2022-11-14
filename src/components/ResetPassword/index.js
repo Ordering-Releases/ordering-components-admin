@@ -7,14 +7,19 @@ export const ResetPassword = (props) => {
     UIComponent,
     code,
     random,
+    handleCustomResetPassword,
     handleSuccessResetPassword
   } = props
 
   const [formState, setFormState] = useState({ loading: false, result: { error: false } })
   const [resetPasswordData, setResetPasswordData] = useState({ code: code, random: random, password: '' })
+  const [isSuccessfulReset, setSuccessfulReset] = useState(false)
   const [ordering] = useApi()
 
   const handleResetPassword = async () => {
+    if (handleCustomResetPassword) {
+      return handleCustomResetPassword(resetPasswordData)
+    }
     try {
       setFormState({ ...formState, loading: true })
       const { response } = await ordering.users().resetPassword(resetPasswordData)
@@ -27,6 +32,7 @@ export const ResetPassword = (props) => {
         if (handleSuccessResetPassword) {
           handleSuccessResetPassword(result.result)
         }
+        setSuccessfulReset(true)
       }
     } catch (error) {
       if (error.constructor.name !== 'Cancel') {
@@ -54,6 +60,7 @@ export const ResetPassword = (props) => {
           handleChangeInput={handleChangeInput}
           resetPasswordData={resetPasswordData}
           formState={formState}
+          isSuccessfulReset={isSuccessfulReset}
         />
       )}
     </>

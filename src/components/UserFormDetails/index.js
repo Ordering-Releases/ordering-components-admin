@@ -262,6 +262,20 @@ export const UserFormDetails = (props) => {
   }
 
   /**
+   * Update occupation id
+   * @param {Number} id
+   */
+  const handleChangeOccupation = (id) => {
+    setFormState({
+      ...formState,
+      changes: {
+        ...formState.changes,
+        occupation_id: id
+      }
+    })
+  }
+
+  /**
    * Check if field should be show
    * @param {string} fieldName Field name
    */
@@ -304,6 +318,7 @@ export const UserFormDetails = (props) => {
           handlechangeImage={handlechangeImage}
           toggleIsEdit={() => setIsEdit(!isEdit)}
           handleChangeUserType={handleChangeUserType}
+          handleChangeOccupation={handleChangeOccupation}
         />
       )}
     </>

@@ -163,6 +163,7 @@ export const ProfessionalBusinessService = (props) => {
 
   useEffect(() => {
     getUserProducts()
+    // getBusinessList()
   }, [user?.id])
 
   useEffect(() => {
@@ -181,6 +182,19 @@ export const ProfessionalBusinessService = (props) => {
       setBusinessIds(_businessIds)
     }
   }, [businessList?.businesses, userServiceList?.services, businessIds])
+
+  useEffect(() => {
+    if (businessIds === undefined) return
+    if (businessList?.businesses?.length > 0 && userServiceList?.services?.length > 0) {
+      const _businessIds = []
+      businessList.businesses.forEach(business => {
+        if (userServiceList?.services.reduce((prev, current) => [...prev, current.business_id], []).includes(business.id)) {
+          _businessIds.push(business.id)
+        }
+      })
+      setBusinessIds(_businessIds)
+    }
+  }, [user?.id, userServiceList?.services])
 
   return (
     <>

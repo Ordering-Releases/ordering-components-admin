@@ -73,9 +73,9 @@ const AutocompleteInput = (props) => {
   useEffect(() => {
     const interval = setInterval(() => {
       if (inputRef.current.attributes.autocomplete &&
-        inputRef.current.attributes.autocomplete.value === 'new-field'
+        inputRef.current.attributes.autocomplete.value === (props.autoComplete || 'new-field')
       ) clearInterval(interval)
-      inputRef.current.setAttribute('autocomplete', 'new-field')
+      inputRef.current.setAttribute('autocomplete', (props.autoComplete || 'new-field'))
     }, 100)
     return () => clearInterval(interval)
   })
@@ -83,12 +83,13 @@ const AutocompleteInput = (props) => {
   return (
     <input
       {...inputProps}
-      autoComplete='new-field'
+      autoComplete={(props.autoComplete || 'new-field')}
       disabled={!props.googleReady}
       ref={(e) => {
         inputRef.current = e
         childRef && childRef(e)
       }}
+      onFocus={() => inputRef.current.setAttribute('autocomplete', (props.autoComplete || 'new-field'))}
     />
   )
 }

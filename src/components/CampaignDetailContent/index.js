@@ -14,7 +14,8 @@ export const CampaignDetailContent = (props) => {
     handleChangeItem,
     handleChangeContactData,
     handleSuccessUpdateCampaign,
-    campaignList
+    campaignList,
+    handleChangeParentContact
   } = props
 
   const [ordering] = useApi()
@@ -55,6 +56,21 @@ export const CampaignDetailContent = (props) => {
   }
 
   /**
+ * Update credential data
+ */
+  const handleChangeContact = (name, value) => {
+    const contactData = { ...formState.changes?.contact_data, [name]: value }
+    setFormState({
+      ...formState,
+      changes: { ...formState.changes, contact_data: contactData }
+    })
+
+    if (isAddMode) {
+      handleChangeParentContact && handleChangeParentContact(name, value)
+    }
+  }
+
+  /**
    * Default fuction for recovery action workflow
    */
   const handleUpdateContact = async () => {
@@ -67,6 +83,7 @@ export const CampaignDetailContent = (props) => {
         if ((typeof changes[key] === 'object' && changes[key] !== null) || Array.isArray(changes[key])) {
           changes[key] = JSON.stringify(changes[key])
         }
+        delete changes?.contact_type
       }
       const requestOptions = {
         method: 'PUT',
@@ -123,20 +140,6 @@ export const CampaignDetailContent = (props) => {
   }, [campaignState?.campaign])
 
   useEffect(() => {
-    if (isAddMode) return
-
-    if (campaignState?.campaign && Object.keys(campaignState?.campaign).length > 0) {
-      setFormState({
-        ...formState,
-        changes: {
-          contact_type: campaignState?.campaign?.contact_type || '',
-          contact_data: campaignState?.campaign?.contact_data || {}
-        }
-      })
-    }
-  }, [campaignState?.campaign])
-
-  useEffect(() => {
     if (!isAddMode) return
 
     if (campaignFormState?.changes && Object.keys(campaignFormState?.changes).length > 0) {
@@ -159,6 +162,7 @@ export const CampaignDetailContent = (props) => {
           handleChangeType={handleChangeType}
           handleChangeData={handleChangeData}
           handleUpdateContact={handleUpdateContact}
+          handleChangeContact={handleChangeContact}
         />
       )}
     </>

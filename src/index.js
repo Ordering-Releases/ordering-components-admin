@@ -10,6 +10,7 @@ import { ApiKeysList } from './components/ApiKeysList'
 import { Appointments } from './components/Appointments'
 import { BaseComponent } from './components/BaseComponent'
 import { CannyIdentification } from './components/CannyIdentification'
+import { CampaignEmail } from './components/CampaignEmail'
 import { Settings } from './components/Settings'
 import { BatchImageForm } from './components/BatchImageForm'
 import { BusinessAndProductList } from './components/BusinessAndProductList'
@@ -240,6 +241,7 @@ export {
   Appointments,
   BaseComponent,
   CannyIdentification,
+  CampaignEmail,
   Settings,
   BatchImageForm,
   BusinessAndProductList,

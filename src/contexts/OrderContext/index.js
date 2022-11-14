@@ -82,8 +82,10 @@ export const OrderProvider = ({ Alert, children, strategy }) => {
         }
       }
       if (error) {
-        setAlert({ show: true, content: result })
-        if (res?.status === 401) {
+        if (session?.user?.level !== 8) {
+          setAlert({ show: true, content: result })
+        }
+        if (res?.status === 401 && session?.user?.level !== 8) {
           session.auth && logout()
         }
       }
@@ -601,7 +603,7 @@ export const OrderProvider = ({ Alert, children, strategy }) => {
     if (session.auth) {
       refreshOrderOptions()
     }
-  }, [session.auth, session.loading, languageState.loading])
+  }, [session.auth, session.loading, languageState.loading, session?.user])
 
   useEffect(() => {
     if (session.loading || configState.loading) return

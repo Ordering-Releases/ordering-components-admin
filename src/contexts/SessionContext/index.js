@@ -32,7 +32,7 @@ export const SessionProvider = ({ children, strategy }) => {
         }
       }
       const response = await fetch(`${ordering.root}/order_options`, requestOptions)
-      if (!response.ok) {
+      if (!response.ok && user?.level !== 8) {
         logout()
       }
     }
