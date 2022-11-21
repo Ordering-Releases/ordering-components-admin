@@ -125,6 +125,7 @@ export const BusinessFormDetails = (props) => {
    */
   const handleAddBusiness = async () => {
     try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
       setFormState({ ...formState, loading: true })
       const changes = { ...formState.changes, ...defaultAddBusinessParams }
       const response = await ordering.businesses().save(changes, {
@@ -145,6 +146,7 @@ export const BusinessFormDetails = (props) => {
             ...response.content.result
           }
         })
+        showToast(ToastType.Success, t('BUSINESS_ADDED', 'Business added'))
 
         if (handleSucessAddBusiness) {
           handleSucessAddBusiness(response.content.result)

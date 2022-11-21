@@ -15,6 +15,7 @@ export const OrderDetails = (props) => {
     hashKey,
     userCustomerId,
     isDisableLoadMessages,
+    drivers,
     UIComponent
   } = props
 
@@ -251,6 +252,12 @@ export const OrderDetails = (props) => {
       if (order?.id !== orderState?.order?.id) return
       delete order.total
       delete order.subtotal
+      if (!order?.driver && order?.driver_id) {
+        const updatedDriver = drivers.find(driver => driver.id === order.driver_id)
+        if (updatedDriver) {
+          order.driver = { ...updatedDriver }
+        }
+      }
       setOrderState({
         ...orderState,
         order: Object.assign(orderState.order, order)
@@ -266,7 +273,7 @@ export const OrderDetails = (props) => {
       }
       socket.off('update_order', handleUpdateOrder)
     }
-  }, [orderState.order, socket, loading])
+  }, [orderState.order, socket, loading, drivers])
 
   useEffect(() => {
     const handleCustomerReviewed = (review) => {

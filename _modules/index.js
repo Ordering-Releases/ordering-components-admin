@@ -471,6 +471,12 @@ Object.defineProperty(exports, "ConfigProvider", {
     return _ConfigContext.ConfigProvider;
   }
 });
+Object.defineProperty(exports, "ContentForm", {
+  enumerable: true,
+  get: function get() {
+    return _ContentForm.ContentForm;
+  }
+});
 Object.defineProperty(exports, "CountryList", {
   enumerable: true,
   get: function get() {
@@ -655,6 +661,12 @@ Object.defineProperty(exports, "GoogleMaps", {
   enumerable: true,
   get: function get() {
     return _GoogleMaps.GoogleMaps;
+  }
+});
+Object.defineProperty(exports, "GoogleMapsApiKeySetting", {
+  enumerable: true,
+  get: function get() {
+    return _GoogleMapsApiKeySetting.GoogleMapsApiKeySetting;
   }
 });
 Object.defineProperty(exports, "GoogleMapsMap", {
@@ -901,6 +913,12 @@ Object.defineProperty(exports, "OrderingProvider", {
   enumerable: true,
   get: function get() {
     return _OrderingContext.OrderingProvider;
+  }
+});
+Object.defineProperty(exports, "OrderingWebsite", {
+  enumerable: true,
+  get: function get() {
+    return _OrderingWebsite.OrderingWebsite;
   }
 });
 Object.defineProperty(exports, "OrdersFilter", {
@@ -1263,6 +1281,12 @@ Object.defineProperty(exports, "SessionProvider", {
     return _SessionContext.SessionProvider;
   }
 });
+Object.defineProperty(exports, "Sessions", {
+  enumerable: true,
+  get: function get() {
+    return _Sessions.Sessions;
+  }
+});
 Object.defineProperty(exports, "Settings", {
   enumerable: true,
   get: function get() {
@@ -1273,6 +1297,12 @@ Object.defineProperty(exports, "SettingsList", {
   enumerable: true,
   get: function get() {
     return _SettingsList.SettingsList;
+  }
+});
+Object.defineProperty(exports, "SidebarMenu", {
+  enumerable: true,
+  get: function get() {
+    return _SidebarMenu.SidebarMenu;
   }
 });
 Object.defineProperty(exports, "SignupForm", {
@@ -1545,461 +1575,237 @@ Object.defineProperty(exports, "useWebsocket", {
     return _WebsocketContext.useWebsocket;
   }
 });
-
 var _AddressDetails = require("./components/AddressDetails");
-
 var _AddressFieldsSetting = require("./components/AddressFieldsSetting");
-
 var _AddressForm = require("./components/AddressForm");
-
 var _AddressList = require("./components/AddressList");
-
 var _AdvancedReports = require("./components/AdvancedReports");
-
 var _AnalyticsBusinessFilter = require("./components/AnalyticsBusinessFilter");
-
 var _AnalyticsDriversFilter = require("./components/AnalyticsDriversFilter");
-
 var _AnalyticsStatusSubFilter = require("./components/AnalyticsStatusSubFilter");
-
 var _ApiKeysList = require("./components/ApiKeysList");
-
 var _Appointments = require("./components/Appointments");
-
 var _BaseComponent = require("./components/BaseComponent");
-
 var _CannyIdentification = require("./components/CannyIdentification");
-
 var _CampaignEmail = require("./components/CampaignEmail");
-
 var _Settings = require("./components/Settings");
-
 var _BatchImageForm = require("./components/BatchImageForm");
-
 var _BusinessAndProductList = require("./components/BusinessAndProductList");
-
 var _BusinessAnalytics = require("./components/BusinessAnalytics");
-
 var _BusinessBasicInformation = require("./components/BusinessBasicInformation");
-
 var _BusinessBrandBUSIDetail = require("./components/BusinessBrandBUSIDetail");
-
 var _BusinessBrandGENDetail = require("./components/BusinessBrandGENDetail");
-
 var _BusinessBrandListing = require("./components/BusinessBrandListing");
-
 var _BusinessController = require("./components/BusinessController");
-
 var _BusinessDeliveryDetails = require("./components/BusinessDeliveryDetails");
-
 var _BusinessDeliveryZone = require("./components/BusinessDeliveryZone");
-
 var _BusinessDeliveryZoneShare = require("./components/BusinessDeliveryZoneShare");
-
 var _BusinessDetails = require("./components/BusinessDetails");
-
 var _BusinessFormDetails = require("./components/BusinessFormDetails");
-
 var _BusinessGallery = require("./components/BusinessGallery");
-
 var _BusinessGprsPrinters = require("./components/BusinessGprsPrinters");
-
 var _BusinessInformation = require("./components/BusinessInformation");
-
 var _BusinessList = require("./components/BusinessList");
-
 var _BusinessManagerBusinesses = require("./components/BusinessManagerBusinesses");
-
 var _BusinessMenu = require("./components/BusinessMenu");
-
 var _BusinessProductsListing = require("./components/BusinessProductsListing");
-
 var _BusinessMenuMetaFields = require("./components/BusinessMenuMetaFields");
-
 var _BusinessMenuOptions = require("./components/BusinessMenuOptions");
-
 var _BusinessMenuShare = require("./components/BusinessMenuShare");
-
 var _BusinessMetaFields = require("./components/BusinessMetaFields");
-
 var _BusinessPaymethods = require("./components/BusinessPaymethods");
-
 var _BusinessPickupDetails = require("./components/BusinessPickupDetails");
-
 var _BusinessProductsCategoyDetails = require("./components/BusinessProductsCategoyDetails");
-
 var _BusinessProductsCategories = require("./components/BusinessProductsCategories");
-
 var _BusinessProductsSearch = require("./components/BusinessProductsSearch");
-
 var _BusinessPromotionForm = require("./components/BusinessPromotionForm");
-
 var _BusinessPromotionList = require("./components/BusinessPromotionList");
-
 var _BusinessPromotionMetaFields = require("./components/BusinessPromotionMetaFields");
-
 var _BusinessReviews = require("./components/BusinessReviews");
-
 var _BusinessReviewsList = require("./components/BusinessReviewsList");
-
 var _BusinessSchedule = require("./components/BusinessSchedule");
-
 var _BusinessSharedMenuProductDetails = require("./components/BusinessSharedMenuProductDetails");
-
 var _BusinessSharedMenuProducts = require("./components/BusinessSharedMenuProducts");
-
 var _BusinessSortControl = require("./components/BusinessSortControl");
-
 var _BusinessSpreadSheet = require("./components/BusinessSpreadSheet");
-
 var _BusinessTypeFilter = require("./components/BusinessTypeFilter");
-
 var _BusinessTypeDetail = require("./components/BusinessTypeDetail");
-
 var _BusinessWebhooks = require("./components/BusinessWebhooks");
-
 var _BusinessZoneGoogleMaps = require("./components/BusinessZoneGoogleMaps");
-
 var _BusinessProductCreator = require("./components/BusinessProductCreator");
-
 var _BusinessWalletsList = require("./components/BusinessWalletsList");
-
 var _CampaignListing = require("./components/CampaignListing");
-
 var _CampaignDetail = require("./components/CampaignDetail");
-
 var _CampaignDetailContent = require("./components/CampaignDetailContent");
-
 var _CampaignSignUpOption = require("./components/CampaignSignUpOption");
-
 var _CampaignAmountOption = require("./components/CampaignAmountOption");
-
 var _Cart = require("./components/Cart");
-
 var _Checkout = require("./components/Checkout");
-
 var _CheckoutFieldsSetting = require("./components/CheckoutFieldsSetting");
-
 var _CheckPassword = require("./components/CheckPassword");
-
 var _CityList = require("./components/CityList");
-
 var _CountryList = require("./components/CountryList");
-
 var _CouponControl = require("./components/CouponControl");
-
+var _ContentForm = require("./components/ContentForm");
 var _DashboardBusinessList = require("./components/DashboardBusinessList");
-
 var _DashboardOrdersList = require("./components/DashboardOrdersList");
-
 var _DeliveryzoneList = require("./components/DeliveryzoneList");
-
 var _DragAndDrop = require("./components/DragAndDrop");
-
 var _DriversCompanyDetails = require("./components/DriversCompanyDetails");
-
 var _DriverGroupSetting = require("./components/DriverGroupSetting");
-
 var _UserReviewDetails = require("./components/UserReviewDetails");
-
 var _DriversCompaniesList = require("./components/DriversCompaniesList");
-
 var _DriversGroupAutoassign = require("./components/DriversGroupAutoassign");
-
 var _DriversGroupDetails = require("./components/DriversGroupDetails");
-
 var _DriversGroupOrders = require("./components/DriversGroupOrders");
-
 var _DriversGroupsList = require("./components/DriversGroupsList");
-
 var _DriversGroupLogs = require("./components/DriversGroupLogs");
-
 var _DriverTips = require("./components/DriverTips");
-
 var _DriversList = require("./components/DriversList");
-
 var _DriverAnalytics = require("./components/DriverAnalytics");
-
 var _EnterprisePromotionList = require("./components/EnterprisePromotionList");
-
 var _EnterprisePromotionDetails = require("./components/EnterprisePromotionDetails");
-
 var _ExamineClick = require("./components/ExamineClick");
-
 var _ExportCSV = require("./components/ExportCSV");
-
 var _FacebookLoginButton = require("./components/FacebookLoginButton");
-
 var _ForgotPasswordForm = require("./components/ForgotPasswordForm");
-
 var _GoogleAutocompleteInput = require("./components/GoogleAutocompleteInput");
-
 var _GoogleMaps = require("./components/GoogleMaps");
-
+var _GoogleMapsApiKeySetting = require("./components/GoogleMapsApiKeySetting");
 var _GpsButton = require("./components/GpsButton");
-
 var _GoogleTagManager = require("./components/GoogleTagManager");
-
 var _Home = require("./components/Home");
-
 var _ImporterForm = require("./components/ImporterForm");
-
 var _ImporterJobForm = require("./components/ImporterJobForm");
-
 var _ImporterListing = require("./components/ImporterListing");
-
 var _InvoiceBusinessManager = require("./components/InvoiceBusinessManager");
-
 var _InvoiceDriverManager = require("./components/InvoiceDriverManager");
-
 var _LanguageManager = require("./components/LanguageManager");
-
 var _LanguageSelector = require("./components/LanguageSelector");
-
 var _LanguageSetting = require("./components/LanguageSetting");
-
 var _LanguageTransSpread = require("./components/LanguageTransSpread");
-
 var _LanguageTransTable = require("./components/LanguageTransTable");
-
 var _LoginForm = require("./components/LoginForm");
-
 var _LogisticInformation = require("./components/LogisticInformation");
-
 var _Logistics = require("./components/Logistics");
-
 var _LogoutAction = require("./components/LogoutAction");
-
 var _PointsWalletBusinessDetail = require("./components/PointsWalletBusinessDetail");
-
 var _PointsWalletBusinessList = require("./components/PointsWalletBusinessList");
-
 var _MainSearch = require("./components/MainSearch");
-
 var _MenuControl = require("./components/MenuControl");
-
 var _Messages = require("./components/Messages");
-
 var _MetaFields = require("./components/MetaFields");
-
 var _MomentOption = require("./components/MomentOption");
-
 var _MultiCountrySettings = require("./components/MultiCountrySettings");
-
 var _MyOrders = require("./components/MyOrders");
-
 var _MyOrdersList = require("./components/MyOrdersList");
-
 var _OpenCartListing = require("./components/OpenCartListing");
-
 var _OpenCartsDetail = require("./components/OpenCartsDetail");
-
 var _OpenCartFilter = require("./components/OpenCartFilter");
-
 var _OrderList = require("./components/OrderList");
-
 var _OrderNotification = require("./components/OrderNotification");
-
+var _OrderingWebsite = require("./components/OrderingWebsite");
 var _OrdersFilter = require("./components/OrdersFilter");
-
 var _OrdersManage = require("./components/OrdersManage");
-
 var _OrdersOverview = require("./components/OrdersOverview");
-
 var _OrderTypeControl = require("./components/OrderTypeControl");
-
 var _PaymentOptions = require("./components/PaymentOptions");
-
 var _PaymentOptionSquare = require("./components/PaymentOptionSquare");
-
 var _PagesList = require("./components/PagesList");
-
 var _PageForm = require("./components/PageForm");
-
 var _PlaceList = require("./components/PlaceList");
-
 var _PluginList = require("./components/PluginList");
-
 var _Popup = require("./components/Popup");
-
 var _PointsWalletLevels = require("./components/PointsWalletLevels");
-
 var _ProductComponent = require("./components/ProductComponent");
-
 var _ProductDetatils = require("./components/ProductDetatils");
-
 var _ProductExtraMetaFields = require("./components/ProductExtraMetaFields");
-
 var _ProductExtraOptionDetails = require("./components/ProductExtraOptionDetails");
-
 var _ProductExtraOptionMetaFields = require("./components/ProductExtraOptionMetaFields");
-
 var _ProductExtraOptions = require("./components/ProductExtraOptions");
-
 var _ProductExtraSubOptionMetaFields = require("./components/ProductExtraSubOptionMetaFields");
-
 var _ProductExtras = require("./components/ProductExtras");
-
 var _ProductForm = require("./components/ProductForm");
-
 var _ProductGallery = require("./components/ProductGallery");
-
 var _ProductMetaFields = require("./components/ProductMetaFields");
-
 var _ProductDetailsAdvanced = require("./components/ProductDetailsAdvanced");
-
 var _ProductReviews = require("./components/ProductReviews");
-
 var _ProductShare = require("./components/ProductShare");
-
 var _ProductTagDetails = require("./components/ProductTagDetails");
-
 var _ProductTagsList = require("./components/ProductTagsList");
-
 var _ProductImages = require("./components/ProductImages");
-
 var _ProductIngredient = require("./components/ProductIngredient");
-
 var _ProductOption = require("./components/ProductOption");
-
 var _ProductOptionSuboption = require("./components/ProductOptionSuboption");
-
 var _ProductsList = require("./components/ProductsList");
-
 var _ProductsListing = require("./components/ProductsListing");
-
 var _ProfessionalBusinessService = require("./components/ProfessionalBusinessService");
-
 var _ProfessionalSchedule = require("./components/ProfessionalSchedule");
-
 var _ProfessionalServices = require("./components/ProfessionalServices");
-
 var _QueryLogin = require("./components/QueryLogin");
-
 var _ReCaptcha = require("./components/ReCaptcha");
-
 var _RewardsPrograms = require("./components/RewardsPrograms");
-
 var _RecoveryActionListing = require("./components/RecoveryActionListing");
-
 var _RecoveryActionDetail = require("./components/RecoveryActionDetail");
-
 var _RecoveryNotificationList = require("./components/RecoveryNotificationList");
-
 var _SearchOptions = require("./components/SearchOptions");
-
 var _Schedule = require("./components/Schedule");
-
+var _SidebarMenu = require("./components/SidebarMenu");
 var _SignupForm = require("./components/SignupForm");
-
 var _SingleBusinessCard = require("./components/SingleBusinessCard");
-
 var _LoyaltyLevelDetail = require("./components/LoyaltyLevelDetail");
-
 var _SingleOrderCard = require("./components/SingleOrderCard");
-
 var _SingleProductCard = require("./components/SingleProductCard");
-
 var _SingleRecoveryNotification = require("./components/SingleRecoveryNotification");
-
 var _SitesAuthSettings = require("./components/SitesAuthSettings");
-
 var _SiteTheme = require("./components/SiteTheme");
-
 var _UserFormDetails = require("./components/UserFormDetails");
-
 var _UsersExportCSV = require("./components/UsersExportCSV");
-
 var _UpsellingPage = require("./components/UpsellingPage");
-
 var _WrapperGoogleMaps = require("./components/WrapperGoogleMaps");
-
 var _OrderDetails = require("./components/OrderDetails");
-
 var _OrderReview = require("./components/OrderReview");
-
 var _CmsContent = require("./components/CmsContent");
-
 var _PhoneAutocomplete = require("./components/PhoneAutocomplete");
-
 var _BusinessesMap = require("./components/BusinessesMap");
-
 var _ConfigContext = require("./contexts/ConfigContext");
-
 var _LanguageContext = require("./contexts/LanguageContext");
-
 var _OrderContext = require("./contexts/OrderContext");
-
 var _BusinessContext = require("./contexts/BusinessContext");
-
 var _SessionContext = require("./contexts/SessionContext");
-
 var _WebsocketContext = require("./contexts/WebsocketContext");
-
 var _ApiContext = require("./contexts/ApiContext");
-
 var _EventContext = require("./contexts/EventContext");
-
 var _UtilsContext = require("./contexts/UtilsContext");
-
 var _OrderingContext = require("./contexts/OrderingContext");
-
 var _CustomerContext = require("./contexts/CustomerContext");
-
 var _ValidationsFieldsContext = require("./contexts/ValidationsFieldsContext");
-
 var _ToastContext = require("./contexts/ToastContext");
-
 var _PaymentOptionCash = require("./components/PaymentOptionCash");
-
 var _PaymentOptionPaypal = require("./components/PaymentOptionPaypal");
-
 var _PaymentOptionStripe = require("./components/PaymentOptionStripe");
-
 var _PaymentOptionStripeDirect = require("./components/PaymentOptionStripeDirect");
-
 var _PaymentOptionStripeRedirect = require("./components/PaymentOptionStripeRedirect");
-
 var _ReportsDriverFilter = require("./components/ReportsDriverFilter");
-
 var _ReviewCustomer = require("./components/ReviewCustomer");
-
 var _StripeElementsForm = require("./components/StripeElementsForm");
-
 var _SingleBusinessProduct = require("./components/SingleBusinessProduct");
-
 var _SingleBusinessCategory = require("./components/SingleBusinessCategory");
-
+var _Sessions = require("./components/Sessions");
 var _SettingsList = require("./components/SettingsList");
-
 var _CardForm = require("./components/StripeElementsForm/CardForm");
-
 var _StripeRedirectForm = require("./components/PaymentOptionStripeRedirect/StripeRedirectForm");
-
 var _FloatingButton = require("./components/FloatingButton");
-
 var _ResetPassword = require("./components/ResetPassword");
-
 var _ReportsBrandFilter = require("./components/ReportsBrandFilter");
-
 var _ReportsAppIdFilter = require("./components/ReportsAppIdFilter");
-
 var _ReportsDriverGroupFilter = require("./components/ReportsDriverGroupFilter");
-
 var _SiteDetails = require("./components/SiteDetails");
-
 var _SitesList = require("./components/SitesList");
-
 var _Analitycs = require("./components/Analitycs");
-
 var _UsersList = require("./components/UsersList");
-
 var _UserMetaFields = require("./components/UserMetaFields");
-
 var _UserTypeFilter = require("./components/UserTypeFilter");
-
 var _UserDetails = require("./components/UserDetails");
-
 var _UserWallet = require("./components/UserWallet");
-
 var _WebhookList = require("./components/WebhookList");

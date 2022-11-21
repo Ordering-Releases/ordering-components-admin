@@ -14,8 +14,6 @@ export const LoginForm = (props) => {
     UIComponent,
     handleButtonLoginClick,
     handleSuccessLogin,
-    useLoginByEmail,
-    useLoginByCellphone,
     useDefualtSessionManager,
     urlToRedirect,
     allowedLevels
@@ -34,15 +32,16 @@ export const LoginForm = (props) => {
   const [reCaptchaValue, setReCaptchaValue] = useState({ code: '', version: '' })
   const [isReCaptchaEnable, setIsReCaptchaEnable] = useState(false)
 
-  if (!useLoginByEmail && !useLoginByCellphone) {
-    defaultLoginTab = 'none'
-  } else if (defaultLoginTab === 'email' && !useLoginByEmail && useLoginByCellphone) {
-    defaultLoginTab = 'cellphone'
-  } else if (defaultLoginTab === 'cellphone' && !useLoginByCellphone && useLoginByEmail) {
-    defaultLoginTab = 'email'
-  }
+  const useLoginOtpEmail = configs?.opt_email_enabled?.value === '1'
+  const useLoginByEmail = useLoginOtpEmail ? configs?.email_password_login_enabled?.value === '1' : true
 
-  const [loginTab, setLoginTab] = useState(defaultLoginTab || (useLoginByCellphone && !useLoginByEmail ? 'cellphone' : 'email'))
+  const useLoginOtp = useLoginOtpEmail
+  defaultLoginTab = useLoginByEmail ? 'email' : 'otp'
+
+  const [loginTab, setLoginTab] = useState(defaultLoginTab)
+  const [otpType, setOtpType] = useState('email')
+  const [otpState, setOtpState] = useState('')
+
   const [, { login, logout }] = useSession()
 
   /**
@@ -51,9 +50,17 @@ export const LoginForm = (props) => {
    */
   const handleLoginClick = async (values) => {
     try {
-      const _credentials = {
-        [loginTab]: (values && values[loginTab]) || credentials[loginTab],
-        password: (values && values?.password) || credentials.password
+      let _credentials
+      if (loginTab === 'otp') {
+        _credentials = {
+          [otpType]: (values && values[otpType]) || credentials[otpType],
+          one_time_password: (values && values?.code) || otpState
+        }
+      } else {
+        _credentials = {
+          [loginTab]: (values && values[loginTab]) || credentials[loginTab],
+          password: (values && values?.password) || credentials.password
+        }
       }
 
       if (isReCaptchaEnable) {
@@ -237,6 +244,46 @@ export const LoginForm = (props) => {
     }
   }
 
+  const generateOtpCode = async (values) => {
+    const body = {
+      type: 4,
+      channel: otpType === 'email' ? 1 : 2,
+      size: 6
+    }
+    const email = values?.email || credentials?.email
+    const cellphone = values?.cellphone || credentials?.cellphone
+    const countryPhoneCode = values?.countryPhoneCode || values?.country_phone_code || credentials.country_phone_code
+
+    try {
+      if (otpType === 'cellphone') {
+        body.country_phone_code = countryPhoneCode
+        body.cellphone = cellphone
+        setCredentials({
+          cellphone,
+          country_phone_code: countryPhoneCode
+        })
+      } else {
+        body.email = email
+        setCredentials({
+          email
+        })
+      }
+      const response = await fetch(`${ordering.root}/codes/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      })
+      const { result, error } = await response.json()
+      if (!error) {
+        setCheckPhoneCodeState({ ...checkPhoneCodeState, result: { result: result, error: null } })
+        return
+      }
+      setCheckPhoneCodeState({ ...checkPhoneCodeState, result: { error: result } })
+    } catch (err) {
+      setCheckPhoneCodeState({ ...checkPhoneCodeState, result: { error: err.message } })
+    }
+  }
+
   useEffect(() => {
     setIsReCaptchaEnable(ordering?.project && configs &&
       Object.keys(configs).length > 0 &&
@@ -261,6 +308,15 @@ export const LoginForm = (props) => {
           handleCheckPhoneCode={checkVerifyPhoneCode}
           isReCaptchaEnable={isReCaptchaEnable}
           handleReCaptcha={setReCaptchaValue}
+
+          useLoginOtp={useLoginOtp}
+          setOtpType={setOtpType}
+          otpType={otpType}
+          setOtpState={setOtpState}
+          otpState={otpState}
+          useLoginByEmail={useLoginByEmail}
+          useLoginOtpEmail={useLoginOtpEmail}
+          generateOtpCode={generateOtpCode}
         />
       )}
     </>

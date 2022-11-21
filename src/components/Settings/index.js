@@ -98,7 +98,7 @@ export const Settings = (props) => {
       const filterConditons = []
       filterConditons.push({ attribute: 'parent_category_id', value: parseInt(parentId) })
 
-      const functionFetch = `${ordering.root}/config_categories?orderBy=id&where=${JSON.stringify(filterConditons)}`
+      const functionFetch = `${ordering.root}/config_categories?orderBy=rank&where=${JSON.stringify(filterConditons)}`
 
       const response = await fetch(functionFetch, requestOptions)
       const { error, result } = await response.json()

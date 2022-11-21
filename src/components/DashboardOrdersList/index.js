@@ -30,7 +30,8 @@ export const DashboardOrdersList = (props) => {
     isSearchByCustomerPhone,
     isSearchByBusinessName,
     orderIdForUnreadCountUpdate,
-    timeStatus
+    timeStatus,
+    driversList
   } = props
 
   const [ordering] = useApi()
@@ -607,6 +608,12 @@ export const DashboardOrdersList = (props) => {
     if (orderList.loading) return
     const handleUpdateOrder = (order) => {
       if (isOnlyDelivery && order?.delivery_type !== 1) return
+      if (!order?.driver && order?.driver_id) {
+        const updatedDriver = driversList?.drivers.find(driver => driver.id === order.driver_id)
+        if (updatedDriver) {
+          order.driver = { ...updatedDriver }
+        }
+      }
       const found = orderList.orders.find(_order => _order?.id === order?.id)
       let orders = []
       if (found) {
@@ -718,7 +725,7 @@ export const DashboardOrdersList = (props) => {
       socket.off('orders_register', handleRegisterOrder)
       socket.off('message', handleNewMessage)
     }
-  }, [orderList.orders, pagination, orderBy, socket])
+  }, [orderList.orders, pagination, orderBy, socket, driversList])
 
   // Listening for customer rating
   useEffect(() => {
