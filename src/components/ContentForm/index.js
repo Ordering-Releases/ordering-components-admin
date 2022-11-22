@@ -132,8 +132,9 @@ export const ContentForm = (props) => {
     })
   }
 
-  const handleSave = () => {
-    handleChangeContent(type, formState?.changes?.body)
+  const handleSave = (value) => {
+    const editValue = value ?? formState?.changes?.body
+    handleChangeContent(type, editValue)
     onClose()
   }
 
@@ -171,7 +172,6 @@ export const ContentForm = (props) => {
     </>
   )
 }
-
 ContentForm.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props

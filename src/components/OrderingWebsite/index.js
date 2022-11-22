@@ -62,7 +62,7 @@ export const OrderingWebsite = (props) => {
     try {
       const initialData = {
         code: appId,
-        name: 'Ordering'
+        name: 'Ordering.co'
       }
       const requestOptions = {
         method: 'POST',
