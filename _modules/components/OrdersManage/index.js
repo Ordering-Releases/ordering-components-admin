@@ -10,6 +10,8 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 var _SessionContext = require("../../contexts/SessionContext");
 var _ApiContext = require("../../contexts/ApiContext");
 var _WebsocketContext = require("../../contexts/WebsocketContext");
+var _ConfigContext = require("../../contexts/ConfigContext");
+var _LanguageContext = require("../../contexts/LanguageContext");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -47,6 +49,12 @@ var OrdersManage = function OrdersManage(props) {
     user = _useSession2$.user,
     token = _useSession2$.token,
     loading = _useSession2$.loading;
+  var _useConfig = (0, _ConfigContext.useConfig)(),
+    _useConfig2 = _slicedToArray(_useConfig, 1),
+    configState = _useConfig2[0];
+  var _useLanguage = (0, _LanguageContext.useLanguage)(),
+    _useLanguage2 = _slicedToArray(_useLanguage, 2),
+    t = _useLanguage2[1];
   var requestsState = {};
   var orderStatuesList = {
     pending: [0, 13],
@@ -97,78 +105,165 @@ var OrdersManage = function OrdersManage(props) {
     _useState18 = _slicedToArray(_useState17, 2),
     numberOfOrdersByStatus = _useState18[0],
     setNumberOfOrdersByStatus = _useState18[1];
+  var _useState19 = (0, _react.useState)(null),
+    _useState20 = _slicedToArray(_useState19, 2),
+    allowColumns = _useState20[0],
+    setAllowColumns = _useState20[1];
+  var allowColumnsModel = {
+    slaBar: {
+      visable: false,
+      title: '',
+      className: '',
+      draggable: false,
+      colSpan: 1,
+      order: -2
+    },
+    orderNumber: {
+      visable: true,
+      title: '',
+      className: '',
+      draggable: false,
+      colSpan: 1,
+      order: -1
+    },
+    status: {
+      visable: true,
+      title: t('STATUS', 'Status'),
+      className: 'statusInfo',
+      draggable: true,
+      colSpan: 1,
+      order: 1
+    },
+    dateTime: {
+      visable: true,
+      title: '',
+      className: '',
+      draggable: false,
+      colSpan: 1,
+      order: 0
+    },
+    business: {
+      visable: true,
+      title: t('BUSINESS', 'Business'),
+      className: 'businessInfo',
+      draggable: true,
+      colSpan: 1,
+      order: 2
+    },
+    customer: {
+      visable: true,
+      title: t('CUSTOMER', 'Customer'),
+      className: 'customerInfo',
+      draggable: true,
+      colSpan: 1,
+      order: 3
+    },
+    driver: {
+      visable: true,
+      title: t('DRIVER', 'Driver'),
+      className: 'driverInfo',
+      draggable: true,
+      colSpan: 1,
+      order: 4
+    },
+    advanced: {
+      visable: true,
+      title: t('ADVANCED_LOGISTICS', 'Advanced logistics'),
+      className: 'advanced',
+      draggable: true,
+      colSpan: 3,
+      order: 5
+    },
+    timer: {
+      visable: false,
+      title: t('SLA_TIMER', 'SLA’s timer'),
+      className: 'timer',
+      draggable: true,
+      colSpan: 1,
+      order: 6
+    },
+    total: {
+      visable: true,
+      title: '',
+      className: '',
+      draggable: false,
+      colSpan: 1,
+      order: 10
+    }
+  };
+
   /**
    * Object to save driver group list
    */
-  var _useState19 = (0, _react.useState)({
+  var _useState21 = (0, _react.useState)({
       groups: [],
       loading: false,
       error: null
     }),
-    _useState20 = _slicedToArray(_useState19, 2),
-    driverGroupList = _useState20[0],
-    setDriverGroupList = _useState20[1];
+    _useState22 = _slicedToArray(_useState21, 2),
+    driverGroupList = _useState22[0],
+    setDriverGroupList = _useState22[1];
   /**
    * Object to save drivers
    */
-  var _useState21 = (0, _react.useState)({
+  var _useState23 = (0, _react.useState)({
       drivers: [],
       loading: true,
       error: null
     }),
-    _useState22 = _slicedToArray(_useState21, 2),
-    driversList = _useState22[0],
-    setDriversList = _useState22[1];
+    _useState24 = _slicedToArray(_useState23, 2),
+    driversList = _useState24[0],
+    setDriversList = _useState24[1];
   /**
    * Object to save paymethods
    */
-  var _useState23 = (0, _react.useState)({
+  var _useState25 = (0, _react.useState)({
       paymethods: [],
       loading: true,
       error: null
     }),
-    _useState24 = _slicedToArray(_useState23, 2),
-    paymethodsList = _useState24[0],
-    setPaymethodsList = _useState24[1];
+    _useState26 = _slicedToArray(_useState25, 2),
+    paymethodsList = _useState26[0],
+    setPaymethodsList = _useState26[1];
   /**
    * Object to save businesses
    */
-  var _useState25 = (0, _react.useState)({
+  var _useState27 = (0, _react.useState)({
       businesses: [],
       loading: true,
       error: null
     }),
-    _useState26 = _slicedToArray(_useState25, 2),
-    businessesList = _useState26[0],
-    setBusinessesList = _useState26[1];
+    _useState28 = _slicedToArray(_useState27, 2),
+    businessesList = _useState28[0],
+    setBusinessesList = _useState28[1];
   /**
    * Array to save the cities
    */
-  var _useState27 = (0, _react.useState)([]),
-    _useState28 = _slicedToArray(_useState27, 2),
-    citiesList = _useState28[0],
-    setCitiesList = _useState28[1];
+  var _useState29 = (0, _react.useState)([]),
+    _useState30 = _slicedToArray(_useState29, 2),
+    citiesList = _useState30[0],
+    setCitiesList = _useState30[1];
 
   /**
    * Object to save selected order ids
    */
-  var _useState29 = (0, _react.useState)([]),
-    _useState30 = _slicedToArray(_useState29, 2),
-    selectedOrderIds = _useState30[0],
-    setSelectedOrderIds = _useState30[1];
+  var _useState31 = (0, _react.useState)([]),
+    _useState32 = _slicedToArray(_useState31, 2),
+    selectedOrderIds = _useState32[0],
+    setSelectedOrderIds = _useState32[1];
   /**
    * Object to save order substatuses
    */
-  var _useState31 = (0, _react.useState)({
+  var _useState33 = (0, _react.useState)({
       pending: orderStatuesList.pending,
       inProgress: orderStatuesList.inProgress,
       completed: orderStatuesList.completed,
       cancelled: orderStatuesList.cancelled,
       all: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
     }),
-    _useState32 = _slicedToArray(_useState31, 2),
-    selectedSubOrderStatus = _useState32[0],
-    setSelectedSubOrderStatus = _useState32[1];
+    _useState34 = _slicedToArray(_useState33, 2),
+    selectedSubOrderStatus = _useState34[0],
+    setSelectedSubOrderStatus = _useState34[1];
 
   /**
    * Save ids of orders selected
@@ -817,10 +912,64 @@ var OrdersManage = function OrdersManage(props) {
     };
   }, [user, loading]);
   (0, _react.useEffect)(function () {
-    if (!(actionStatus !== null && actionStatus !== void 0 && actionStatus.error) && !(actionStatus !== null && actionStatus !== void 0 && actionStatus.loading)) {
-      getOrderNumbersByStatus();
-    }
-  }, [actionStatus, filterValues, searchValue, driverId, customerId, businessId]);
+    getOrderNumbersByStatus();
+  }, [filterValues, searchValue, driverId, customerId, businessId]);
+  (0, _react.useEffect)(function () {
+    if (!user.id || configState !== null && configState !== void 0 && configState.loading || allowColumns) return;
+    var getUser = /*#__PURE__*/function () {
+      var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+        var _result$settings, _configState$configs, _configState$configs$, _configState$configs2, _configState$configs3, response, _response$content, error, result, _result$settings2, _configState$configs4, _configState$configs5, _configState$configs6, _configState$configs7;
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _context6.prev = 0;
+                _context6.next = 3;
+                return ordering.users(user.id).select(['settings']).get();
+              case 3:
+                response = _context6.sent;
+                _response$content = response.content, error = _response$content.error, result = _response$content.result;
+                if (!(!error && (_result$settings = result.settings) !== null && _result$settings !== void 0 && _result$settings.orderColumns)) {
+                  _context6.next = 8;
+                  break;
+                }
+                setAllowColumns((_result$settings2 = result.settings) === null || _result$settings2 === void 0 ? void 0 : _result$settings2.orderColumns);
+                return _context6.abrupt("return");
+              case 8:
+                setAllowColumns(_objectSpread(_objectSpread({}, allowColumnsModel), {}, {
+                  slaBar: _objectSpread(_objectSpread({}, allowColumnsModel === null || allowColumnsModel === void 0 ? void 0 : allowColumnsModel.slaBar), {}, {
+                    visable: (configState === null || configState === void 0 ? void 0 : (_configState$configs = configState.configs) === null || _configState$configs === void 0 ? void 0 : (_configState$configs$ = _configState$configs.order_deadlines_enabled) === null || _configState$configs$ === void 0 ? void 0 : _configState$configs$.value) === '1'
+                  }),
+                  timer: _objectSpread(_objectSpread({}, allowColumnsModel === null || allowColumnsModel === void 0 ? void 0 : allowColumnsModel.timer), {}, {
+                    visable: (configState === null || configState === void 0 ? void 0 : (_configState$configs2 = configState.configs) === null || _configState$configs2 === void 0 ? void 0 : (_configState$configs3 = _configState$configs2.order_deadlines_enabled) === null || _configState$configs3 === void 0 ? void 0 : _configState$configs3.value) === '1'
+                  })
+                }));
+                _context6.next = 14;
+                break;
+              case 11:
+                _context6.prev = 11;
+                _context6.t0 = _context6["catch"](0);
+                setAllowColumns(_objectSpread(_objectSpread({}, allowColumnsModel), {}, {
+                  slaBar: _objectSpread(_objectSpread({}, allowColumnsModel === null || allowColumnsModel === void 0 ? void 0 : allowColumnsModel.slaBar), {}, {
+                    visable: (configState === null || configState === void 0 ? void 0 : (_configState$configs4 = configState.configs) === null || _configState$configs4 === void 0 ? void 0 : (_configState$configs5 = _configState$configs4.order_deadlines_enabled) === null || _configState$configs5 === void 0 ? void 0 : _configState$configs5.value) === '1'
+                  }),
+                  timer: _objectSpread(_objectSpread({}, allowColumnsModel === null || allowColumnsModel === void 0 ? void 0 : allowColumnsModel.timer), {}, {
+                    visable: (configState === null || configState === void 0 ? void 0 : (_configState$configs6 = configState.configs) === null || _configState$configs6 === void 0 ? void 0 : (_configState$configs7 = _configState$configs6.order_deadlines_enabled) === null || _configState$configs7 === void 0 ? void 0 : _configState$configs7.value) === '1'
+                  })
+                }));
+              case 14:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, null, [[0, 11]]);
+      }));
+      return function getUser() {
+        return _ref7.apply(this, arguments);
+      };
+    }();
+    getUser();
+  }, [user, configState]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     searchValue: searchValue,
     driverGroupList: driverGroupList,
@@ -845,7 +994,9 @@ var OrdersManage = function OrdersManage(props) {
     handleChangeMultiOrdersStatus: handleChangeMultiOrdersStatus,
     handleDeleteMultiOrders: handleDeleteMultiOrders,
     setSelectedOrderIds: setSelectedOrderIds,
-    numberOfOrdersByStatus: numberOfOrdersByStatus
+    numberOfOrdersByStatus: numberOfOrdersByStatus,
+    allowColumns: allowColumns,
+    setAllowColumns: setAllowColumns
   })));
 };
 exports.OrdersManage = OrdersManage;

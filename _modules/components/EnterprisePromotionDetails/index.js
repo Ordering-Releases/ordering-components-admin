@@ -276,6 +276,14 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
       })
     }));
   };
+  var handleSelectAllUsers = function handleSelectAllUsers() {
+    setSelectedUserIds([]);
+    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+      changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
+        users: []
+      })
+    }));
+  };
   var handleSelectLoyaltyLevel = function handleSelectLoyaltyLevel(checked, levelId) {
     var _formState$changes5;
     var loyaltyLevels = [];
@@ -605,7 +613,8 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
     handleSelectUser: handleSelectUser,
     selectedLoyaltyLevelIds: selectedLoyaltyLevelIds,
     handleSelectLoyaltyLevel: handleSelectLoyaltyLevel,
-    handleSelectAllLoyaltyLevels: handleSelectAllLoyaltyLevels
+    handleSelectAllLoyaltyLevels: handleSelectAllLoyaltyLevels,
+    handleSelectAllUsers: handleSelectAllUsers
   })));
 };
 exports.EnterprisePromotionDetails = EnterprisePromotionDetails;

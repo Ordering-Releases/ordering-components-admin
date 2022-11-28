@@ -529,6 +529,7 @@ var BusinessDetails = function BusinessDetails(props) {
   }, [businessId, business]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     businessState: businessState,
+    actionStatus: actionStatus,
     formState: formState,
     setFormState: setFormState,
     cleanFormState: cleanFormState,
