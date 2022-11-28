@@ -315,6 +315,7 @@ export const BusinessDetails = (props) => {
           <UIComponent
             {...props}
             businessState={businessState}
+            actionStatus={actionStatus}
             formState={formState}
             setFormState={setFormState}
             cleanFormState={cleanFormState}

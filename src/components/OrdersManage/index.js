@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
 import { useWebsocket } from '../../contexts/WebsocketContext'
+import { useConfig } from '../../contexts/ConfigContext'
+import { useLanguage } from '../../contexts/LanguageContext'
 
 export const OrdersManage = (props) => {
   const {
@@ -17,6 +19,8 @@ export const OrdersManage = (props) => {
   const [ordering] = useApi()
   const socket = useWebsocket()
   const [{ user, token, loading }] = useSession()
+  const [configState] = useConfig()
+  const [, t] = useLanguage()
 
   const requestsState = {}
   const orderStatuesList = {
@@ -35,6 +39,20 @@ export const OrdersManage = (props) => {
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
   const [deletedOrderId, setDeletedOrderId] = useState(null)
   const [numberOfOrdersByStatus, setNumberOfOrdersByStatus] = useState({ result: null, loading: false, error: false })
+  const [allowColumns, setAllowColumns] = useState(null)
+  const allowColumnsModel = {
+    slaBar: { visable: false, title: '', className: '', draggable: false, colSpan: 1, order: -2 },
+    orderNumber: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: -1 },
+    status: { visable: true, title: t('STATUS', 'Status'), className: 'statusInfo', draggable: true, colSpan: 1, order: 1 },
+    dateTime: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 0 },
+    business: { visable: true, title: t('BUSINESS', 'Business'), className: 'businessInfo', draggable: true, colSpan: 1, order: 2 },
+    customer: { visable: true, title: t('CUSTOMER', 'Customer'), className: 'customerInfo', draggable: true, colSpan: 1, order: 3 },
+    driver: { visable: true, title: t('DRIVER', 'Driver'), className: 'driverInfo', draggable: true, colSpan: 1, order: 4 },
+    advanced: { visable: true, title: t('ADVANCED_LOGISTICS', 'Advanced logistics'), className: 'advanced', draggable: true, colSpan: 3, order: 5 },
+    timer: { visable: false, title: t('SLA_TIMER', 'SLA’s timer'), className: 'timer', draggable: true, colSpan: 1, order: 6 },
+    total: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 10 }
+  }
+
   /**
    * Object to save driver group list
    */
@@ -611,10 +629,35 @@ export const OrdersManage = (props) => {
   }, [user, loading])
 
   useEffect(() => {
-    if (!actionStatus?.error && !actionStatus?.loading) {
-      getOrderNumbersByStatus()
+    getOrderNumbersByStatus()
+  }, [filterValues, searchValue, driverId, customerId, businessId])
+
+  useEffect(() => {
+    if (!user.id || configState?.loading || allowColumns) return
+    const getUser = async () => {
+      try {
+        const response = await ordering.users(user.id).select(['settings']).get()
+        const { content: { error, result } } = response
+        if (!error && result.settings?.orderColumns) {
+          setAllowColumns(result.settings?.orderColumns)
+          return
+        }
+
+        setAllowColumns({
+          ...allowColumnsModel,
+          slaBar: { ...allowColumnsModel?.slaBar, visable: configState?.configs?.order_deadlines_enabled?.value === '1' },
+          timer: { ...allowColumnsModel?.timer, visable: configState?.configs?.order_deadlines_enabled?.value === '1' }
+        })
+      } catch (err) {
+        setAllowColumns({
+          ...allowColumnsModel,
+          slaBar: { ...allowColumnsModel?.slaBar, visable: configState?.configs?.order_deadlines_enabled?.value === '1' },
+          timer: { ...allowColumnsModel?.timer, visable: configState?.configs?.order_deadlines_enabled?.value === '1' }
+        })
+      }
     }
-  }, [actionStatus, filterValues, searchValue, driverId, customerId, businessId])
+    getUser()
+  }, [user, configState])
 
   return (
     <>
@@ -645,6 +688,8 @@ export const OrdersManage = (props) => {
           handleDeleteMultiOrders={handleDeleteMultiOrders}
           setSelectedOrderIds={setSelectedOrderIds}
           numberOfOrdersByStatus={numberOfOrdersByStatus}
+          allowColumns={allowColumns}
+          setAllowColumns={setAllowColumns}
         />
       )}
     </>

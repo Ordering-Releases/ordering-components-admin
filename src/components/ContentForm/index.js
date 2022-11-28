@@ -172,6 +172,7 @@ export const ContentForm = (props) => {
     </>
   )
 }
+
 ContentForm.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props
