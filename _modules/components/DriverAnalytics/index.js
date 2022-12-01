@@ -38,6 +38,7 @@ var DriverAnalytics = function DriverAnalytics(props) {
   var _useState = (0, _react.useState)({
       lapse: 'today',
       userIds: null,
+      businessIds: null,
       app_id: 'all',
       driver_groups_ids: null,
       franchises_id: null,
@@ -158,11 +159,19 @@ var DriverAnalytics = function DriverAnalytics(props) {
     _useState30 = _slicedToArray(_useState29, 2),
     deliverySpendList = _useState30[0],
     setDeliverySpendList = _useState30[1];
+  var _useState31 = (0, _react.useState)(''),
+    _useState32 = _slicedToArray(_useState31, 2),
+    countryCode = _useState32[0],
+    setCountryCode = _useState32[1];
+  var handleChangeCode = function handleChangeCode(code) {
+    if (code === countryCode) setCountryCode('');else setCountryCode(code);
+  };
   var paramsForAPI = function paramsForAPI(type) {
-    var _filterList$userIds;
+    var _filterList$userIds, _filterList$businessI;
     var rootUrl = "".concat(ordering.root, "/reports/").concat(type);
     var params = "lapse=".concat(filterList === null || filterList === void 0 ? void 0 : filterList.lapse, "&timezone=").concat(filterList === null || filterList === void 0 ? void 0 : filterList.timeZone);
     if (filterList !== null && filterList !== void 0 && filterList.userIds) params = "".concat(params, "&drivers=").concat(filterList === null || filterList === void 0 ? void 0 : (_filterList$userIds = filterList.userIds) === null || _filterList$userIds === void 0 ? void 0 : _filterList$userIds.toString());
+    if (filterList !== null && filterList !== void 0 && filterList.businessIds && (filterList === null || filterList === void 0 ? void 0 : filterList.businessIds.length) > 0) params = "".concat(params, "&businesses=").concat(filterList === null || filterList === void 0 ? void 0 : (_filterList$businessI = filterList.businessIds) === null || _filterList$businessI === void 0 ? void 0 : _filterList$businessI.toString());
     if (filterList !== null && filterList !== void 0 && filterList.app_id && filterList.app_id !== 'all') params = "".concat(params, "&app_id=").concat(filterList === null || filterList === void 0 ? void 0 : filterList.app_id);
     if (filterList !== null && filterList !== void 0 && filterList.driver_groups_ids) params = "".concat(params, "&driver_groups_ids=").concat(JSON.stringify(filterList === null || filterList === void 0 ? void 0 : filterList.driver_groups_ids));
     if (filterList !== null && filterList !== void 0 && filterList.franchises_id) params = "".concat(params, "&franchises_id=").concat(JSON.stringify(filterList === null || filterList === void 0 ? void 0 : filterList.franchises_id));
@@ -1180,7 +1189,9 @@ var DriverAnalytics = function DriverAnalytics(props) {
     completeSpendList: completeSpendList,
     pickUpSpendList: pickUpSpendList,
     deliverySpendList: deliverySpendList,
-    handleChangeFilterList: setFilterList
+    handleChangeFilterList: setFilterList,
+    countryCode: countryCode,
+    handleChangeCode: handleChangeCode
   })));
 };
 exports.DriverAnalytics = DriverAnalytics;

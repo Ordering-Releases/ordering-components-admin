@@ -57,7 +57,11 @@ var AdvancedReports = function AdvancedReports(props) {
     _useState4 = _slicedToArray(_useState3, 2),
     businessDistanceList1 = _useState4[0],
     setBusinessDistanceList1 = _useState4[1];
-  var _useState5 = (0, _react.useState)({
+  var _useState5 = (0, _react.useState)(''),
+    _useState6 = _slicedToArray(_useState5, 2),
+    countryCode = _useState6[0],
+    setCountryCode = _useState6[1];
+  var _useState7 = (0, _react.useState)({
       from: '',
       to: '',
       businessIds: null,
@@ -68,9 +72,12 @@ var AdvancedReports = function AdvancedReports(props) {
       delivery_types_ids: null,
       app_ids: null
     }),
-    _useState6 = _slicedToArray(_useState5, 2),
-    filterList = _useState6[0],
-    setFilterList = _useState6[1];
+    _useState8 = _slicedToArray(_useState7, 2),
+    filterList = _useState8[0],
+    setFilterList = _useState8[1];
+  var handleChangeCode = function handleChangeCode(code) {
+    if (code === countryCode) setCountryCode('');else setCountryCode(code);
+  };
 
   /**
    * Function to get Business distance list from API
@@ -237,7 +244,9 @@ var AdvancedReports = function AdvancedReports(props) {
     filterList: filterList,
     handleChangeFilterList: setFilterList,
     reportData: businessDistanceList,
-    reportData1: businessDistanceList1
+    reportData1: businessDistanceList1,
+    countryCode: countryCode,
+    handleChangeCode: handleChangeCode
   })));
 };
 exports.AdvancedReports = AdvancedReports;
