@@ -9,20 +9,23 @@ export const CountryList = (props) => {
     countryCode,
     filterList,
     handleChangeFilterList,
-    onClose
+    onClose,
+    handleChangeCode
   } = props
   const [ordering] = useApi()
 
   const [countriesState, setCountriesState] = useState({ countries: [], loading: true, error: null })
   const [searchValue, setSearchValue] = useState(null)
+  const [code, setCode] = useState(countryCode)
 
   const rex = new RegExp(/^[A-Za-z0-9\s]+$/g)
 
   /**
- * Method to change filter list
- */
+   * Method to change filter list
+   */
   const handleClickFilterButton = async () => {
     await getBusinessList()
+    handleChangeCode(code)
     onClose && onClose()
   }
 
@@ -30,14 +33,14 @@ export const CountryList = (props) => {
    * Method to get businessList
    */
   const getBusinessList = async () => {
-    if (!countryCode) {
+    if (!code) {
       handleChangeFilterList({ ...filterList, businessIds: null })
       return
     }
 
     try {
       setCountriesState({ ...countriesState, loading: true })
-      const { content: { error, result } } = await ordering.businesses().asDashboard().get({ headers: { 'X-Country-Code-X': countryCode } })
+      const { content: { error, result } } = await ordering.businesses().asDashboard().get({ headers: { 'X-Country-Code-X': code } })
       if (!error) {
         const _businessIds = result.map(business => business.id)
         handleChangeFilterList({ ...filterList, businessIds: _businessIds })
@@ -100,7 +103,7 @@ export const CountryList = (props) => {
   }, [searchValue])
 
   useEffect(() => {
-    if (!searchValue && !countriesState?.loading && !countriesState?.countries?.length) {
+    if (!searchValue && !countriesState?.loading && countriesState?.countries?.length <= 1) {
       onClose && onClose()
     }
   }, [searchValue, countriesState])
@@ -114,6 +117,8 @@ export const CountryList = (props) => {
           countriesState={countriesState}
           onSearch={setSearchValue}
           handleClickFilterButton={handleClickFilterButton}
+          code={code}
+          setCode={setCode}
         />
       )}
     </>
