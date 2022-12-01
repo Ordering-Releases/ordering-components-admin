@@ -14,6 +14,7 @@ export const DriverAnalytics = (props) => {
   const [filterList, setFilterList] = useState({
     lapse: 'today',
     userIds: null,
+    businessIds: null,
     app_id: 'all',
     driver_groups_ids: null,
     franchises_id: null,
@@ -33,11 +34,18 @@ export const DriverAnalytics = (props) => {
   const [completeSpendList, setCompleteSpendList] = useState({ loading: false, data: [], error: null })
   const [pickUpSpendList, setPickUpSpendList] = useState({ loading: false, data: [], error: null })
   const [deliverySpendList, setDeliverySpendList] = useState({ loading: false, data: [], error: null })
+  const [countryCode, setCountryCode] = useState('')
+
+  const handleChangeCode = (code) => {
+    if (code === countryCode) setCountryCode('')
+    else setCountryCode(code)
+  }
 
   const paramsForAPI = (type) => {
     const rootUrl = `${ordering.root}/reports/${type}`
     let params = `lapse=${filterList?.lapse}&timezone=${filterList?.timeZone}`
     if (filterList?.userIds) params = `${params}&drivers=${filterList?.userIds?.toString()}`
+    if (filterList?.businessIds && filterList?.businessIds.length > 0) params = `${params}&businesses=${filterList?.businessIds?.toString()}`
     if (filterList?.app_id && filterList.app_id !== 'all') params = `${params}&app_id=${filterList?.app_id}`
     if (filterList?.driver_groups_ids) params = `${params}&driver_groups_ids=${JSON.stringify(filterList?.driver_groups_ids)}`
     if (filterList?.franchises_id) params = `${params}&franchises_id=${JSON.stringify(filterList?.franchises_id)}`
@@ -642,6 +650,8 @@ export const DriverAnalytics = (props) => {
           pickUpSpendList={pickUpSpendList}
           deliverySpendList={deliverySpendList}
           handleChangeFilterList={setFilterList}
+          countryCode={countryCode}
+          handleChangeCode={handleChangeCode}
         />
       )}
     </>

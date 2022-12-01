@@ -18,6 +18,7 @@ export const AdvancedReports = (props) => {
   const [{ token, loading }] = useSession()
   const [businessDistanceList, setBusinessDistanceList] = useState({ content: [], loading: false, error: null })
   const [businessDistanceList1, setBusinessDistanceList1] = useState({ content: [], loading: false, error: null })
+  const [countryCode, setCountryCode] = useState('')
   const [filterList, setFilterList] = useState(
     {
       from: '',
@@ -31,6 +32,11 @@ export const AdvancedReports = (props) => {
       app_ids: null
     }
   )
+
+  const handleChangeCode = (code) => {
+    if (code === countryCode) setCountryCode('')
+    else setCountryCode(code)
+  }
 
   /**
    * Function to get Business distance list from API
@@ -146,6 +152,8 @@ export const AdvancedReports = (props) => {
           handleChangeFilterList={setFilterList}
           reportData={businessDistanceList}
           reportData1={businessDistanceList1}
+          countryCode={countryCode}
+          handleChangeCode={handleChangeCode}
         />
       )}
     </>

@@ -22,6 +22,12 @@ export const BusinessAnalytics = (props) => {
   const [ordersAcceptSpendList, setOrdersAcceptSpendList] = useState({ loading: false, data: [], error: null })
   const [arrivedPickUpSpendList, setArrivedPickUpSpendList] = useState({ loading: false, data: [], error: null })
   const [orderLocationList, setOrderLocationList] = useState({ loading: false, data: [], error: null })
+  const [countryCode, setCountryCode] = useState('')
+
+  const handleChangeCode = (code) => {
+    if (code === countryCode) setCountryCode('')
+    else setCountryCode(code)
+  }
 
   const paramsForAPI = (type) => {
     const rootUrl = `${ordering.root}/reports/${type}`
@@ -463,6 +469,8 @@ export const BusinessAnalytics = (props) => {
           arrivedPickUpSpendList={arrivedPickUpSpendList}
           orderLocationList={orderLocationList}
           handleChangeFilterList={setFilterList}
+          countryCode={countryCode}
+          handleChangeCode={handleChangeCode}
         />
       )}
     </>
