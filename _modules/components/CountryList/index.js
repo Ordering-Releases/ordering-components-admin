@@ -30,7 +30,8 @@ var CountryList = function CountryList(props) {
     countryCode = props.countryCode,
     filterList = props.filterList,
     handleChangeFilterList = props.handleChangeFilterList,
-    onClose = props.onClose;
+    onClose = props.onClose,
+    handleChangeCode = props.handleChangeCode;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -46,11 +47,15 @@ var CountryList = function CountryList(props) {
     _useState4 = _slicedToArray(_useState3, 2),
     searchValue = _useState4[0],
     setSearchValue = _useState4[1];
+  var _useState5 = (0, _react.useState)(countryCode),
+    _useState6 = _slicedToArray(_useState5, 2),
+    code = _useState6[0],
+    setCode = _useState6[1];
   var rex = new RegExp(/^[A-Za-z0-9\s]+$/g);
 
   /**
-  * Method to change filter list
-  */
+   * Method to change filter list
+   */
   var handleClickFilterButton = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
       return _regeneratorRuntime().wrap(function _callee$(_context) {
@@ -60,8 +65,9 @@ var CountryList = function CountryList(props) {
               _context.next = 2;
               return getBusinessList();
             case 2:
+              handleChangeCode(code);
               onClose && onClose();
-            case 3:
+            case 4:
             case "end":
               return _context.stop();
           }
@@ -83,7 +89,7 @@ var CountryList = function CountryList(props) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              if (countryCode) {
+              if (code) {
                 _context2.next = 3;
                 break;
               }
@@ -99,7 +105,7 @@ var CountryList = function CountryList(props) {
               _context2.next = 7;
               return ordering.businesses().asDashboard().get({
                 headers: {
-                  'X-Country-Code-X': countryCode
+                  'X-Country-Code-X': code
                 }
               });
             case 7:
@@ -222,7 +228,7 @@ var CountryList = function CountryList(props) {
   }, [searchValue]);
   (0, _react.useEffect)(function () {
     var _countriesState$count;
-    if (!searchValue && !(countriesState !== null && countriesState !== void 0 && countriesState.loading) && !(countriesState !== null && countriesState !== void 0 && (_countriesState$count = countriesState.countries) !== null && _countriesState$count !== void 0 && _countriesState$count.length)) {
+    if (!searchValue && !(countriesState !== null && countriesState !== void 0 && countriesState.loading) && (countriesState === null || countriesState === void 0 ? void 0 : (_countriesState$count = countriesState.countries) === null || _countriesState$count === void 0 ? void 0 : _countriesState$count.length) <= 1) {
       onClose && onClose();
     }
   }, [searchValue, countriesState]);
@@ -230,7 +236,9 @@ var CountryList = function CountryList(props) {
     searchValue: searchValue,
     countriesState: countriesState,
     onSearch: setSearchValue,
-    handleClickFilterButton: handleClickFilterButton
+    handleClickFilterButton: handleClickFilterButton,
+    code: code,
+    setCode: setCode
   })));
 };
 exports.CountryList = CountryList;
