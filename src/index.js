@@ -80,6 +80,8 @@ import { UserReviewDetails } from './components/UserReviewDetails'
 import { DriversCompaniesList } from './components/DriversCompaniesList'
 import { DriversGroupAutoassign } from './components/DriversGroupAutoassign'
 import { DriversGroupDetails } from './components/DriversGroupDetails'
+import { DriverGroupDeliveryZone } from './components/DriverGroupDeliveryZone'
+import { DriverGroupDeliveryDetails } from './components/DriverGroupDeliveryDetails'
 import { DriversGroupOrders } from './components/DriversGroupOrders'
 import { DriversGroupsList } from './components/DriversGroupsList'
 import { DriversGroupLogs } from './components/DriversGroupLogs'
@@ -320,6 +322,8 @@ export {
   DriversGroupAutoassign,
   DriversGroupDetails,
   DriversGroupOrders,
+  DriverGroupDeliveryDetails,
+  DriverGroupDeliveryZone,
   DriversGroupsList,
   DriversGroupLogs,
   EnterprisePromotionList,

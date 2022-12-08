@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import PropTypes, { string } from 'prop-types'
 import { useApi } from '../../contexts/ApiContext'
 import { useSession } from '../../contexts/SessionContext'
+import { useToast, ToastType } from '../../contexts/ToastContext'
+import { useLanguage } from '../../contexts/LanguageContext'
 
 export const DashboardBusinessList = (props) => {
   const {
@@ -20,6 +22,8 @@ export const DashboardBusinessList = (props) => {
 
   const [ordering] = useApi()
   const [session] = useSession()
+  const [, t] = useLanguage()
+  const [, { showToast }] = useToast()
 
   const [businessList, setBusinessList] = useState({ loading: false, error: null, businesses: [] })
   const [pagination, setPagination] = useState({
@@ -30,6 +34,7 @@ export const DashboardBusinessList = (props) => {
   const [searchValue, setSearchValue] = useState(null)
   const [selectedBusinessActiveState, setSelectedBusinessActiveState] = useState(true)
   const [businessTypeSelected, setBusinessTypeSelected] = useState(null)
+  const [businessIds, setBusinessIds] = useState([])
 
   /**
    * Method to get businesses from API
@@ -219,6 +224,78 @@ export const DashboardBusinessList = (props) => {
   }
 
   /**
+   * Method to change businesses enable/disable
+   * @param {Boolean} enabled businesses enable state
+   * @param {Boolean} isFeatured flag to check if featured or enabled
+   */
+  const handleEnableAllBusiness = async (enabled, isFeatured = false) => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      const changes = {
+        businesses_id: businessIds,
+        ...(isFeatured ? { featured: enabled } : { enabled })
+      }
+      const requestOptions = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.token}`
+        },
+        body: JSON.stringify(changes)
+      }
+      const response = await fetch(`${ordering.root}/business`, requestOptions)
+      const content = await response.json()
+      if (!content?.error) {
+        const updatedBusinessList = isFeatured
+          ? businessList?.businesses.map(business => (businessIds.includes(business?.id)) ? { ...business, featured: enabled } : business)
+          : businessList?.businesses.filter(business => !businessIds.includes(business?.id))
+        setBusinessList({
+          ...businessList,
+          businesses: updatedBusinessList
+        })
+        if (!isFeatured) setBusinessIds([])
+        showToast(ToastType.Success, t('BUSINESS_UPDATED', 'Business updated'))
+      } else {
+        showToast(ToastType.Error, content?.result)
+      }
+    } catch (err) {
+      showToast(ToastType.Error, err.message)
+    }
+  }
+
+  /**
+   * Method to delete business list
+   */
+  const handleDeleteMultiBusinesses = async () => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      const requestOptions = {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.token}`
+        },
+        body: JSON.stringify({ businesses_id: businessIds })
+      }
+      const response = await fetch(`${ordering.root}/business`, requestOptions)
+      const content = await response.json()
+      if (!content?.error) {
+        const updatedBusinessList = businessList?.businesses.filter(business => !businessIds.includes(business?.id))
+        setBusinessList({
+          ...businessList,
+          businesses: updatedBusinessList
+        })
+        setBusinessIds([])
+        showToast(ToastType.Success, t('BUSINESS_DELETED', 'Business deleted'))
+      } else {
+        showToast(ToastType.Error, content?.result)
+      }
+    } catch (err) {
+      showToast(ToastType.Error, err.message)
+    }
+  }
+
+  /**
    * Method to change user active state for filter
    */
   const handleChangeBusinessActiveState = () => {
@@ -295,6 +372,17 @@ export const DashboardBusinessList = (props) => {
     }
   }
 
+  /**
+ * Method to change selected businesses
+ * @param {Number} businessId business id to change selected state
+ */
+  const handleChangeBusinessIds = (businessId) => {
+    const updatedBusinessIds = businessIds.includes(businessId)
+      ? businessIds.filter(id => id !== businessId)
+      : [...businessIds, businessId]
+    setBusinessIds(updatedBusinessIds)
+  }
+
   useEffect(() => {
     if (businessList.loading || businessList.businesses.length > 0) return
     if (pagination?.currentPage !== 0 && pagination?.total !== 0) {
@@ -326,19 +414,24 @@ export const DashboardBusinessList = (props) => {
         UIComponent && (
           <UIComponent
             {...props}
-            businessList={businessList}
             pagination={pagination}
             searchValue={searchValue}
-            onSearch={setSearchValue}
+            businessIds={businessIds}
+            businessList={businessList}
             selectedBusinessActiveState={selectedBusinessActiveState}
+            onSearch={setSearchValue}
             loadBusinesses={loadBusinesses}
-            loadMoreBusinesses={loadMoreBusinesses}
+            setBusinessIds={setBusinessIds}
             getPageBusinesses={getPageBusinesses}
-            handleChangeBusinessActiveState={handleChangeBusinessActiveState}
+            loadMoreBusinesses={loadMoreBusinesses}
+            handleSucessAddBusiness={handleSucessAddBusiness}
+            handleChangeBusinessIds={handleChangeBusinessIds}
+            handleEnableAllBusiness={handleEnableAllBusiness}
             handleChangeBusinessType={handleChangeBusinessType}
             handleSucessRemoveBusiness={handleSucessRemoveBusiness}
-            handleSucessAddBusiness={handleSucessAddBusiness}
             handleSucessUpdateBusiness={handleSucessUpdateBusiness}
+            handleDeleteMultiBusinesses={handleDeleteMultiBusinesses}
+            handleChangeBusinessActiveState={handleChangeBusinessActiveState}
           />
         )
       }

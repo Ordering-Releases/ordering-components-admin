@@ -5,12 +5,14 @@ import { useApi } from '../../contexts/ApiContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
 import { useLanguage } from '../../contexts/LanguageContext'
 
-export const BusinessDeliveryZone = (props) => {
+export const DriverGroupDeliveryZone = (props) => {
   const {
-    business,
+    drivergroup,
     zone,
+    driverGroupsZones,
     UIComponent,
-    handleSuccessUpdate
+    handleSuccessUpdate,
+    setZoneList,
   } = props
 
   const [ordering] = useApi()
@@ -28,9 +30,9 @@ export const BusinessDeliveryZone = (props) => {
   const cleanFormState = () => setFormState({ loading: false, changes: {}, error: null })
 
   /**
-   * Method to update the business delivery zone from API
+   * Method to update the drivergroup delivery zone from API
    */
-  const handleUpdateBusinessDeliveryZone = async () => {
+  const handleUpdateDriverGroupDeliveryZone = async () => {
     try {
       let currentChanges = { ...formState.changes }
       currentChanges = {
@@ -47,7 +49,7 @@ export const BusinessDeliveryZone = (props) => {
         },
         body: JSON.stringify(currentChanges)
       }
-      const response = await fetch(`${ordering.root}/business/${business?.id}/deliveryzones/${zone.id}`, requestOptions)
+      const response = await fetch(`${ordering.root}/drivergroups/${drivergroup?.id}/deliveryzones/${zone.id}`, requestOptions)
       const content = await response.json()
       if (!content.error) {
         setFormState({
@@ -55,15 +57,19 @@ export const BusinessDeliveryZone = (props) => {
           loading: false,
           changes: {}
         })
-        const zones = business.zones.filter(_zone => {
+        const zones = driverGroupsZones?.zones?.filter(_zone => {
           if (_zone?.id === zone.id) {
             Object.assign(zone, content.result)
           }
           return true
         })
-        const _business = { ...business, zones: zones }
-        handleSuccessUpdate && handleSuccessUpdate(_business)
+        setZoneList({
+          zones: zones,
+          loading: false,
+          error: null
+        })
         showToast(ToastType.Success, t('DELIVERYZONE_SAVED', 'Delivery zone saved'))
+        props.onClose && props.onClose()
       } else {
         setFormState({
           ...formState,
@@ -81,9 +87,9 @@ export const BusinessDeliveryZone = (props) => {
   }
 
   /**
-   * Method to add new business delivery zone from API
+   * Method to add new drivergroup delivery zone from API
    */
-  const handleAddBusinessDeliveryZone = async () => {
+  const handleAddDriverGroupDeliveryZone = async () => {
     try {
       let currentChanges = { ...formState.changes }
       currentChanges = {
@@ -111,7 +117,7 @@ export const BusinessDeliveryZone = (props) => {
         },
         body: JSON.stringify(currentChanges)
       }
-      const response = await fetch(`${ordering.root}/business/${business?.id}/deliveryzones`, requestOptions)
+      const response = await fetch(`${ordering.root}/drivergroups/${drivergroup?.id}/deliveryzones`, requestOptions)
       const content = await response.json()
       if (!content.error) {
         setFormState({
@@ -120,11 +126,14 @@ export const BusinessDeliveryZone = (props) => {
           loading: false
         })
         const zones = [
-          ...business.zones,
+          ...driverGroupsZones?.zones,
           content.result
         ]
-        const _business = { ...business, zones: zones }
-        handleSuccessUpdate && handleSuccessUpdate(_business)
+        setZoneList({
+          zones: zones,
+          loading: false,
+          error: null
+        })
         showToast(ToastType.Success, t('DELIVERYZONE_ADDED', 'Delivery zone added'))
         props.onClose && props.onClose()
       } else {
@@ -135,6 +144,7 @@ export const BusinessDeliveryZone = (props) => {
         })
       }
     } catch (err) {
+      console.log('entro')
       setFormState({
         ...formState,
         error: err.message,
@@ -144,10 +154,10 @@ export const BusinessDeliveryZone = (props) => {
   }
 
   /**
-   * Method to delete the business delivery zone
-   * @param {Number} zoneId id of business dleivery zone
+   * Method to delete the drivergroup delivery zone
+   * @param {Number} zoneId id of drivergroup dleivery zone
    */
-  const handleDeleteBusinessDeliveryZone = async () => {
+  const handleDeleteDriverGroupDeliveryZone = async () => {
     try {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
       setFormState({
@@ -161,17 +171,21 @@ export const BusinessDeliveryZone = (props) => {
           Authorization: `Bearer ${token}`
         }
       }
-      const response = await fetch(`${ordering.root}/business/${business?.id}/deliveryzones/${zone.id}`, requestOptions)
+      const response = await fetch(`${ordering.root}/drivergroups/${drivergroup?.id}/deliveryzones/${zone.id}`, requestOptions)
       const content = await response.json()
       if (!content.error) {
-        const zones = business.zones.filter(_zone => _zone?.id !== zone.id)
+        const zones = driverGroupsZones?.zones?.filter(_zone => _zone?.id !== zone.id)
         setFormState({
           ...formState,
           loading: false
         })
-        const _business = { ...business, zones: zones }
-        handleSuccessUpdate && handleSuccessUpdate(_business)
-        showToast(ToastType.Success, t('DELIVERYZONE_DELETED', 'Business delivery zone deleted'))
+        setZoneList({
+          zones: zones,
+          loading: false,
+          error: null
+        })
+        handleSuccessUpdate && handleSuccessUpdate(_driverGroupsZones)
+        showToast(ToastType.Success, t('DELIVERYZONE_DELETED', 'Driver group delivery zone deleted'))
         props.onClose && props.onClose()
       } else {
         setFormState({
@@ -190,30 +204,17 @@ export const BusinessDeliveryZone = (props) => {
   }
 
   /**
-   * Method to change the business dleivey zone name, price, minimum
+   * Method to change the drivergroup dleivey zone name, price, minimum
    * @param {EventTarget} e Related HTML event
    */
-  const handleChangeInput = (e, unit) => {
-    if (e.target.name === 'distance') {
-      setFormState({
-        ...formState,
-        changes: {
-          ...formState.changes,
-          data: {
-            [e.target.name]: e.target.value,
-            unit: unit
-          }
-        }
-      })
-    } else {
-      setFormState({
-        ...formState,
-        changes: {
-          ...formState.changes,
-          [e.target.name]: e.target.value
-        }
-      })
-    }
+  const handleChangeInput = (e) => {
+    setFormState({
+      ...formState,
+      changes: {
+        ...formState.changes,
+        [e.target.name]: e.target.value
+      }
+    })
   }
 
   /**
@@ -308,9 +309,9 @@ export const BusinessDeliveryZone = (props) => {
             kmlData={kmlData}
             handleChangeInput={handleChangeInput}
             handleChangeFormState={handleChangeFormState}
-            handleDeleteBusinessDeliveryZone={handleDeleteBusinessDeliveryZone}
-            handleUpdateBusinessDeliveryZone={handleUpdateBusinessDeliveryZone}
-            handleAddBusinessDeliveryZone={handleAddBusinessDeliveryZone}
+            handleDeleteDriverGroupDeliveryZone={handleDeleteDriverGroupDeliveryZone}
+            handleUpdateDriverGroupDeliveryZone={handleUpdateDriverGroupDeliveryZone}
+            handleAddDriverGroupDeliveryZone={handleAddDriverGroupDeliveryZone}
             handleUploadKmlFiles={handleUploadKmlFiles}
           />
         )
@@ -319,15 +320,15 @@ export const BusinessDeliveryZone = (props) => {
   )
 }
 
-BusinessDeliveryZone.propTypes = {
+DriverGroupDeliveryZone.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props
    */
   UIComponent: PropTypes.elementType,
   /**
-  * Business, this must be contains an object with all business info
+  * drivergroup, this must be contains an object with all drivergroup info
   */
-  business: PropTypes.object,
+  drivergroup: PropTypes.object,
   /**
    * Components types before order details
    * Array of type components, the parent props will pass to these components
@@ -350,7 +351,7 @@ BusinessDeliveryZone.propTypes = {
   afterElements: PropTypes.arrayOf(PropTypes.element)
 }
 
-BusinessDeliveryZone.defaultProps = {
+DriverGroupDeliveryZone.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],

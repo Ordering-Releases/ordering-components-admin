@@ -310,10 +310,10 @@ export const BusinessPaymethods = (props) => {
   /**
    * Method to control the sanbox enable state
    */
-  const handleChangeSandbox = () => {
+  const handleChangeSandbox = (checked) => {
     setChangesState({
       ...changesState,
-      sandbox: !changesState?.sandbox
+      sandbox: checked ?? !changesState?.sandbox
     })
   }
 
@@ -434,7 +434,6 @@ export const BusinessPaymethods = (props) => {
       }
     }
     handleUpdateBusinessPaymethodOpton(paymethodId, changes)
-    handleUpdateBusiness()
   }
 
   const handleSuccessPaymethodUpdate = (updatedPaymethods) => {

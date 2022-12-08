@@ -59,15 +59,17 @@ export const BusinessDetails = (props) => {
   }
 
   /**
-   * Method to change business enable/disable
+   * Method to change business enable/disable or featured/not featured
    * @param {Boolean} enabled business enable state
+   * @param {Boolean} isFeatured state to check enable or featured
    */
 
-  const handleChangeActiveBusiness = async (enabled) => {
+  const handleChangeActiveBusiness = async (enabled, isFeatured = false) => {
     try {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
       setActionStatus({ ...actionStatus, loading: true })
-      const { content: { error, result } } = await ordering.setAccessToken(session.token).businesses(businessId).save({ enabled: enabled })
+      const changes = isFeatured ? { featured: enabled } : { enabled }
+      const { content: { error, result } } = await ordering.setAccessToken(session.token).businesses(businessId).save(changes)
       setActionStatus({
         ...actionStatus,
         loading: false,
