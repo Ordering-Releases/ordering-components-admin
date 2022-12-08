@@ -9,6 +9,8 @@ var _react = _interopRequireWildcard(require("react"));
 var _propTypes = _interopRequireWildcard(require("prop-types"));
 var _ApiContext = require("../../contexts/ApiContext");
 var _SessionContext = require("../../contexts/SessionContext");
+var _ToastContext = require("../../contexts/ToastContext");
+var _LanguageContext = require("../../contexts/LanguageContext");
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -47,6 +49,12 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
   var _useSession = (0, _SessionContext.useSession)(),
     _useSession2 = _slicedToArray(_useSession, 1),
     session = _useSession2[0];
+  var _useLanguage = (0, _LanguageContext.useLanguage)(),
+    _useLanguage2 = _slicedToArray(_useLanguage, 2),
+    t = _useLanguage2[1];
+  var _useToast = (0, _ToastContext.useToast)(),
+    _useToast2 = _slicedToArray(_useToast, 2),
+    showToast = _useToast2[1].showToast;
   var _useState = (0, _react.useState)({
       loading: false,
       error: null,
@@ -74,6 +82,10 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
     _useState10 = _slicedToArray(_useState9, 2),
     businessTypeSelected = _useState10[0],
     setBusinessTypeSelected = _useState10[1];
+  var _useState11 = (0, _react.useState)([]),
+    _useState12 = _slicedToArray(_useState11, 2),
+    businessIds = _useState12[0],
+    setBusinessIds = _useState12[1];
 
   /**
    * Method to get businesses from API
@@ -350,6 +362,144 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
   }();
 
   /**
+   * Method to change businesses enable/disable
+   * @param {Boolean} enabled businesses enable state
+   * @param {Boolean} isFeatured flag to check if featured or enabled
+   */
+  var handleEnableAllBusiness = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(enabled) {
+      var isFeatured,
+        changes,
+        requestOptions,
+        response,
+        content,
+        updatedBusinessList,
+        _args5 = arguments;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              isFeatured = _args5.length > 1 && _args5[1] !== undefined ? _args5[1] : false;
+              _context5.prev = 1;
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              changes = _objectSpread({
+                businesses_id: businessIds
+              }, isFeatured ? {
+                featured: enabled
+              } : {
+                enabled: enabled
+              });
+              requestOptions = {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(session.token)
+                },
+                body: JSON.stringify(changes)
+              };
+              _context5.next = 7;
+              return fetch("".concat(ordering.root, "/business"), requestOptions);
+            case 7:
+              response = _context5.sent;
+              _context5.next = 10;
+              return response.json();
+            case 10:
+              content = _context5.sent;
+              if (!(content !== null && content !== void 0 && content.error)) {
+                updatedBusinessList = isFeatured ? businessList === null || businessList === void 0 ? void 0 : businessList.businesses.map(function (business) {
+                  return businessIds.includes(business === null || business === void 0 ? void 0 : business.id) ? _objectSpread(_objectSpread({}, business), {}, {
+                    featured: enabled
+                  }) : business;
+                }) : businessList === null || businessList === void 0 ? void 0 : businessList.businesses.filter(function (business) {
+                  return !businessIds.includes(business === null || business === void 0 ? void 0 : business.id);
+                });
+                setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
+                  businesses: updatedBusinessList
+                }));
+                if (!isFeatured) setBusinessIds([]);
+                showToast(_ToastContext.ToastType.Success, t('BUSINESS_UPDATED', 'Business updated'));
+              } else {
+                showToast(_ToastContext.ToastType.Error, content === null || content === void 0 ? void 0 : content.result);
+              }
+              _context5.next = 17;
+              break;
+            case 14:
+              _context5.prev = 14;
+              _context5.t0 = _context5["catch"](1);
+              showToast(_ToastContext.ToastType.Error, _context5.t0.message);
+            case 17:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5, null, [[1, 14]]);
+    }));
+    return function handleEnableAllBusiness(_x5) {
+      return _ref5.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Method to delete business list
+   */
+  var handleDeleteMultiBusinesses = /*#__PURE__*/function () {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+      var requestOptions, response, content, updatedBusinessList;
+      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              _context6.prev = 0;
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              requestOptions = {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(session.token)
+                },
+                body: JSON.stringify({
+                  businesses_id: businessIds
+                })
+              };
+              _context6.next = 5;
+              return fetch("".concat(ordering.root, "/business"), requestOptions);
+            case 5:
+              response = _context6.sent;
+              _context6.next = 8;
+              return response.json();
+            case 8:
+              content = _context6.sent;
+              if (!(content !== null && content !== void 0 && content.error)) {
+                updatedBusinessList = businessList === null || businessList === void 0 ? void 0 : businessList.businesses.filter(function (business) {
+                  return !businessIds.includes(business === null || business === void 0 ? void 0 : business.id);
+                });
+                setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
+                  businesses: updatedBusinessList
+                }));
+                setBusinessIds([]);
+                showToast(_ToastContext.ToastType.Success, t('BUSINESS_DELETED', 'Business deleted'));
+              } else {
+                showToast(_ToastContext.ToastType.Error, content === null || content === void 0 ? void 0 : content.result);
+              }
+              _context6.next = 15;
+              break;
+            case 12:
+              _context6.prev = 12;
+              _context6.t0 = _context6["catch"](0);
+              showToast(_ToastContext.ToastType.Error, _context6.t0.message);
+            case 15:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6, null, [[0, 12]]);
+    }));
+    return function handleDeleteMultiBusinesses() {
+      return _ref6.apply(this, arguments);
+    };
+  }();
+
+  /**
    * Method to change user active state for filter
    */
   var handleChangeBusinessActiveState = function handleChangeBusinessActiveState() {
@@ -432,6 +582,17 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
       }
     }
   };
+
+  /**
+  * Method to change selected businesses
+  * @param {Number} businessId business id to change selected state
+  */
+  var handleChangeBusinessIds = function handleChangeBusinessIds(businessId) {
+    var updatedBusinessIds = businessIds.includes(businessId) ? businessIds.filter(function (id) {
+      return id !== businessId;
+    }) : [].concat(_toConsumableArray(businessIds), [businessId]);
+    setBusinessIds(updatedBusinessIds);
+  };
   (0, _react.useEffect)(function () {
     if (businessList.loading || businessList.businesses.length > 0) return;
     if ((pagination === null || pagination === void 0 ? void 0 : pagination.currentPage) !== 0 && (pagination === null || pagination === void 0 ? void 0 : pagination.total) !== 0) {
@@ -456,19 +617,24 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
     }
   }, [session, searchValue, selectedBusinessActiveState, businessTypeSelected]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
-    businessList: businessList,
     pagination: pagination,
     searchValue: searchValue,
-    onSearch: setSearchValue,
+    businessIds: businessIds,
+    businessList: businessList,
     selectedBusinessActiveState: selectedBusinessActiveState,
+    onSearch: setSearchValue,
     loadBusinesses: loadBusinesses,
-    loadMoreBusinesses: loadMoreBusinesses,
+    setBusinessIds: setBusinessIds,
     getPageBusinesses: getPageBusinesses,
-    handleChangeBusinessActiveState: handleChangeBusinessActiveState,
+    loadMoreBusinesses: loadMoreBusinesses,
+    handleSucessAddBusiness: handleSucessAddBusiness,
+    handleChangeBusinessIds: handleChangeBusinessIds,
+    handleEnableAllBusiness: handleEnableAllBusiness,
     handleChangeBusinessType: handleChangeBusinessType,
     handleSucessRemoveBusiness: handleSucessRemoveBusiness,
-    handleSucessAddBusiness: handleSucessAddBusiness,
-    handleSucessUpdateBusiness: handleSucessUpdateBusiness
+    handleSucessUpdateBusiness: handleSucessUpdateBusiness,
+    handleDeleteMultiBusinesses: handleDeleteMultiBusinesses,
+    handleChangeBusinessActiveState: handleChangeBusinessActiveState
   })));
 };
 exports.DashboardBusinessList = DashboardBusinessList;

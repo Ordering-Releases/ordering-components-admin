@@ -531,6 +531,18 @@ Object.defineProperty(exports, "DriverAnalytics", {
     return _DriverAnalytics.DriverAnalytics;
   }
 });
+Object.defineProperty(exports, "DriverGroupDeliveryDetails", {
+  enumerable: true,
+  get: function get() {
+    return _DriverGroupDeliveryDetails.DriverGroupDeliveryDetails;
+  }
+});
+Object.defineProperty(exports, "DriverGroupDeliveryZone", {
+  enumerable: true,
+  get: function get() {
+    return _DriverGroupDeliveryZone.DriverGroupDeliveryZone;
+  }
+});
 Object.defineProperty(exports, "DriverGroupSetting", {
   enumerable: true,
   get: function get() {
@@ -1657,6 +1669,8 @@ var _UserReviewDetails = require("./components/UserReviewDetails");
 var _DriversCompaniesList = require("./components/DriversCompaniesList");
 var _DriversGroupAutoassign = require("./components/DriversGroupAutoassign");
 var _DriversGroupDetails = require("./components/DriversGroupDetails");
+var _DriverGroupDeliveryZone = require("./components/DriverGroupDeliveryZone");
+var _DriverGroupDeliveryDetails = require("./components/DriverGroupDeliveryDetails");
 var _DriversGroupOrders = require("./components/DriversGroupOrders");
 var _DriversGroupsList = require("./components/DriversGroupsList");
 var _DriversGroupLogs = require("./components/DriversGroupLogs");
