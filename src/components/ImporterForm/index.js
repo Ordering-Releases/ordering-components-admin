@@ -29,6 +29,11 @@ export const ImporterForm = (props) => {
   const [isEdit, setIsEdit] = useState(false)
   const [editState, setEditState] = useState({})
 
+  const integerKeys = [
+    'business_id', 'external_business_id', 'category_id', 'external_category_id', 'external_parent_category_id',
+    'product_id', 'rank', 'external_product_id', 'extra_id', 'external_extra_id', 'extra_option_id', 'external_extra_option_id',
+    'extra_option_suboption_id', 'external_extra_option_suboption_id'
+  ]
   /**
  * Update form state data
  * @param {EventTarget} e Related HTML event
@@ -66,6 +71,14 @@ export const ImporterForm = (props) => {
       mappingData = {
         [e.target.name]: e.target.value
       }
+    }
+    if (integerKeys.includes(e.target.name) && e.target.value === '') {
+      const removeKey = e.target.name
+      let _mappingState = mappingState
+
+      delete _mappingState[removeKey]
+      setMappingState({..._mappingState})
+      return
     }
     setMappingState({
       ...mappingState, ...mappingData
@@ -278,7 +291,7 @@ export const ImporterForm = (props) => {
         })
 
         handleSuccessUpdateImporter && handleSuccessUpdateImporter(result)
-        props.onClos && props.onClos()
+        props.onClose && props.onClose()
       }
     } catch (error) {
       setFormState({
@@ -386,11 +399,6 @@ export const ImporterForm = (props) => {
       max: 1
     }
 
-    const integerKeys = [
-      'busines_id', 'external_business_id', 'category_id', 'external_category_id', 'external_parent_category_id',
-      'product_id', 'rank', 'external_product_id', 'extra_id', 'external_extra_id', 'extra_option_id', 'external_extra_option_id',
-      'extra_option_suboption_id', 'external_extra_option_suboption_id'
-    ]
     const uniqueKeys = ['slug', 'name', 'sku', 'seo_keywords']
 
     let csvFields = {}
