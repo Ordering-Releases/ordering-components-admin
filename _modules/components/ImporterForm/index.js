@@ -80,7 +80,7 @@ var ImporterForm = function ImporterForm(props) {
     _useState12 = _slicedToArray(_useState11, 2),
     editState = _useState12[0],
     setEditState = _useState12[1];
-
+  var integerKeys = ['business_id', 'external_business_id', 'category_id', 'external_category_id', 'external_parent_category_id', 'product_id', 'rank', 'external_product_id', 'extra_id', 'external_extra_id', 'extra_option_id', 'external_extra_option_id', 'extra_option_suboption_id', 'external_extra_option_suboption_id'];
   /**
   * Update form state data
   * @param {EventTarget} e Related HTML event
@@ -106,6 +106,13 @@ var ImporterForm = function ImporterForm(props) {
       });
     } else {
       mappingData = _defineProperty({}, e.target.name, e.target.value);
+    }
+    if (integerKeys.includes(e.target.name) && e.target.value === '') {
+      var removeKey = e.target.name;
+      var _mappingState = mappingState;
+      delete _mappingState[removeKey];
+      setMappingState(_objectSpread({}, _mappingState));
+      return;
     }
     setMappingState(_objectSpread(_objectSpread({}, mappingState), mappingData));
   };
@@ -340,7 +347,7 @@ var ImporterForm = function ImporterForm(props) {
                   }
                 });
                 handleSuccessUpdateImporter && handleSuccessUpdateImporter(result);
-                props.onClos && props.onClos();
+                props.onClose && props.onClose();
               }
               _context2.next = 22;
               break;
@@ -448,7 +455,6 @@ var ImporterForm = function ImporterForm(props) {
       min: 1,
       max: 1
     };
-    var integerKeys = ['busines_id', 'external_business_id', 'category_id', 'external_category_id', 'external_parent_category_id', 'product_id', 'rank', 'external_product_id', 'extra_id', 'external_extra_id', 'extra_option_id', 'external_extra_option_id', 'extra_option_suboption_id', 'external_extra_option_suboption_id'];
     var uniqueKeys = ['slug', 'name', 'sku', 'seo_keywords'];
     var csvFields = {};
     if ((selectedImporter === null || selectedImporter === void 0 ? void 0 : selectedImporter.type) === 'sync_multiple') {
