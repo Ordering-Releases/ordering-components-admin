@@ -194,7 +194,7 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
   var getProducts = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(newFetch, currentPage, currentPageSize) {
       var _businessState$busine;
-      var _categoryState, _businessState$busine2, _categoryFiltered, _categoryFiltered$pro, categoryFiltered, _categories, productsFiltered, _categorySelected$pro, _businessState$busine3, _businessState$busine4, _productsFiltered, categoryKey, categoryState, pagination, parameters, where, searchConditions, _businessState$busine5, _businessState$busine6, functionFetch, source, productEndpoint, _yield$productEndpoin, _yield$productEndpoin2, error, result, _pagination, newcategoryState;
+      var _categoryState, _businessState$busine2, _categoryFinded, _categoryFinded2, _productsFinded, categoryFinded, _categories, productsFinded, productsFiltered, _categorySelected$pro, _businessState$busine3, _businessState$busine4, _productsFiltered, categoryKey, categoryState, pagination, parameters, where, searchConditions, _businessState$busine5, _businessState$busine6, functionFetch, source, productEndpoint, _yield$productEndpoin, _yield$productEndpoin2, error, result, _pagination, newcategoryState;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -210,11 +210,18 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
                 _categories = _toConsumableArray(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine2 = businessState.business) === null || _businessState$busine2 === void 0 ? void 0 : _businessState$busine2.categories);
                 _categories.forEach(function iterate(category) {
                   if ((category === null || category === void 0 ? void 0 : category.id) === (categorySelected === null || categorySelected === void 0 ? void 0 : categorySelected.id)) {
-                    categoryFiltered = category;
+                    categoryFinded = category;
                   }
                   Array.isArray(category === null || category === void 0 ? void 0 : category.subcategories) && category.subcategories.forEach(iterate);
                 });
-                productsFiltered = (_categoryFiltered = categoryFiltered) === null || _categoryFiltered === void 0 ? void 0 : (_categoryFiltered$pro = _categoryFiltered.products) === null || _categoryFiltered$pro === void 0 ? void 0 : _categoryFiltered$pro.filter(function (product) {
+                productsFinded = _toConsumableArray((_categoryFinded = categoryFinded) === null || _categoryFinded === void 0 ? void 0 : _categoryFinded.products);
+                if (categoryFinded && (_categoryFinded2 = categoryFinded) !== null && _categoryFinded2 !== void 0 && _categoryFinded2.subcategories) {
+                  categoryFinded.subcategories.forEach(function iterate(category) {
+                    productsFinded = [].concat(_toConsumableArray(productsFinded), _toConsumableArray(category.products));
+                    Array.isArray(category === null || category === void 0 ? void 0 : category.subcategories) && category.subcategories.forEach(iterate);
+                  });
+                }
+                productsFiltered = (_productsFinded = productsFinded) === null || _productsFinded === void 0 ? void 0 : _productsFinded.filter(function (product) {
                   return isMatchSearch(product.name, product.description);
                 });
                 if (!productsFiltered) {

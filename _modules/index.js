@@ -93,6 +93,12 @@ Object.defineProperty(exports, "BatchImageForm", {
     return _BatchImageForm.BatchImageForm;
   }
 });
+Object.defineProperty(exports, "BusinessAdd", {
+  enumerable: true,
+  get: function get() {
+    return _BusinessAdd.BusinessAdd;
+  }
+});
 Object.defineProperty(exports, "BusinessAnalytics", {
   enumerable: true,
   get: function get() {
@@ -1155,6 +1161,12 @@ Object.defineProperty(exports, "ProductShare", {
     return _ProductShare.ProductShare;
   }
 });
+Object.defineProperty(exports, "ProductStep", {
+  enumerable: true,
+  get: function get() {
+    return _ProductStep.ProductStep;
+  }
+});
 Object.defineProperty(exports, "ProductTagDetails", {
   enumerable: true,
   get: function get() {
@@ -1602,6 +1614,7 @@ var _CannyIdentification = require("./components/CannyIdentification");
 var _CampaignEmail = require("./components/CampaignEmail");
 var _Settings = require("./components/Settings");
 var _BatchImageForm = require("./components/BatchImageForm");
+var _BusinessAdd = require("./components/BusinessAdd");
 var _BusinessAndProductList = require("./components/BusinessAndProductList");
 var _BusinessAnalytics = require("./components/BusinessAnalytics");
 var _BusinessBasicInformation = require("./components/BusinessBasicInformation");
@@ -1756,6 +1769,7 @@ var _ProductsListing = require("./components/ProductsListing");
 var _ProfessionalBusinessService = require("./components/ProfessionalBusinessService");
 var _ProfessionalSchedule = require("./components/ProfessionalSchedule");
 var _ProfessionalServices = require("./components/ProfessionalServices");
+var _ProductStep = require("./components/ProductStep");
 var _QueryLogin = require("./components/QueryLogin");
 var _ReCaptcha = require("./components/ReCaptcha");
 var _RewardsPrograms = require("./components/RewardsPrograms");

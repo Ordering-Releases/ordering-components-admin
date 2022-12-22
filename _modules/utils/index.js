@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.stringToSlug = exports.randomString = exports.deepEqual = void 0;
+exports.stringToSlug = exports.randomString = exports.getDistance = exports.deepEqual = exports.convertToRadian = void 0;
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 var randomString = function randomString() {
   var length = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
@@ -56,4 +56,33 @@ var stringToSlug = function stringToSlug(str) {
 
   return str;
 };
+
+/**
+ * Function to transform degree to radian
+ * @param {number} value for transform
+ *
+ */
 exports.stringToSlug = stringToSlug;
+var convertToRadian = function convertToRadian(value) {
+  return value * Math.PI / 180;
+};
+
+/**
+ * Function to calculate distance
+ * @param {*} lat1 lat from fist point
+ * @param {*} lon1 lon from fist point
+ * @param {*} lat2 lat from second point
+ * @param {*} lon2 lon from second point
+ */
+exports.convertToRadian = convertToRadian;
+var getDistance = function getDistance(lat1, lon1, lat2, lon2) {
+  var R = 6371; // km
+  var dLat = convertToRadian(lat2 - lat1);
+  var dLon = convertToRadian(lon2 - lon1);
+  var curLat1 = convertToRadian(lat1);
+  var curLat2 = convertToRadian(lat2);
+  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(curLat1) * Math.cos(curLat2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
+exports.getDistance = getDistance;
