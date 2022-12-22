@@ -13,6 +13,7 @@ import { CannyIdentification } from './components/CannyIdentification'
 import { CampaignEmail } from './components/CampaignEmail'
 import { Settings } from './components/Settings'
 import { BatchImageForm } from './components/BatchImageForm'
+import { BusinessAdd } from './components/BusinessAdd'
 import { BusinessAndProductList } from './components/BusinessAndProductList'
 import { BusinessAnalytics } from './components/BusinessAnalytics'
 import { BusinessBasicInformation } from './components/BusinessBasicInformation'
@@ -167,6 +168,7 @@ import { ProductsListing } from './components/ProductsListing'
 import { ProfessionalBusinessService } from './components/ProfessionalBusinessService'
 import { ProfessionalSchedule } from './components/ProfessionalSchedule'
 import { ProfessionalServices } from './components/ProfessionalServices'
+import { ProductStep } from './components/ProductStep'
 import { QueryLogin } from './components/QueryLogin'
 import { ReCaptcha } from './components/ReCaptcha'
 import { RewardsPrograms } from './components/RewardsPrograms'
@@ -250,6 +252,7 @@ export {
   CannyIdentification,
   CampaignEmail,
   Settings,
+  BusinessAdd,
   BatchImageForm,
   BusinessAndProductList,
   BusinessAnalytics,
@@ -407,6 +410,7 @@ export {
   ProfessionalBusinessService,
   ProfessionalSchedule,
   ProfessionalServices,
+  ProductStep,
   ReportsDriverFilter,
   QueryLogin,
   ReCaptcha,

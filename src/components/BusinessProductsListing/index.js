@@ -93,16 +93,24 @@ export const BusinessProductsListing = (props) => {
         loading: false
       }
       if (categorySelected) {
-        let categoryFiltered
+        let categoryFinded
         const _categories = [...businessState?.business?.categories]
         _categories.forEach(function iterate (category) {
           if (category?.id === categorySelected?.id) {
-            categoryFiltered = category
+            categoryFinded = category
           }
           Array.isArray(category?.subcategories) && category.subcategories.forEach(iterate)
         })
 
-        let productsFiltered = categoryFiltered?.products?.filter(
+        let productsFinded = [...categoryFinded?.products]
+        if (categoryFinded && categoryFinded?.subcategories) {
+          categoryFinded.subcategories.forEach(function iterate (category) {
+            productsFinded = [...productsFinded, ...category.products]
+            Array.isArray(category?.subcategories) && category.subcategories.forEach(iterate)
+          })
+        }
+
+        let productsFiltered = productsFinded?.filter(
           product => isMatchSearch(product.name, product.description)
         )
 
