@@ -401,10 +401,19 @@ var DriverGroupDeliveryZone = function DriverGroupDeliveryZone(props) {
    * Method to change the drivergroup dleivey zone name, price, minimum
    * @param {EventTarget} e Related HTML event
    */
-  var handleChangeInput = function handleChangeInput(e) {
-    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-      changes: _objectSpread(_objectSpread({}, formState.changes), {}, _defineProperty({}, e.target.name, e.target.value))
-    }));
+  var handleChangeInput = function handleChangeInput(e, unit) {
+    if (e.target.name === 'distance') {
+      var _data;
+      setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+        changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
+          data: (_data = {}, _defineProperty(_data, e.target.name, e.target.value), _defineProperty(_data, "unit", unit), _data)
+        })
+      }));
+    } else {
+      setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+        changes: _objectSpread(_objectSpread({}, formState.changes), {}, _defineProperty({}, e.target.name, e.target.value))
+      }));
+    }
   };
 
   /**
