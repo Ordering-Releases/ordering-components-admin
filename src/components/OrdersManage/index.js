@@ -39,7 +39,6 @@ export const OrdersManage = (props) => {
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
   const [deletedOrderId, setDeletedOrderId] = useState(null)
   const [numberOfOrdersByStatus, setNumberOfOrdersByStatus] = useState({ result: null, loading: false, error: false })
-  const [allowColumns, setAllowColumns] = useState(null)
   const allowColumnsModel = {
     slaBar: { visable: false, title: '', className: '', draggable: false, colSpan: 1, order: -2 },
     orderNumber: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: -1 },
@@ -50,8 +49,10 @@ export const OrdersManage = (props) => {
     driver: { visable: true, title: t('DRIVER', 'Driver'), className: 'driverInfo', draggable: true, colSpan: 1, order: 4 },
     advanced: { visable: true, title: t('ADVANCED_LOGISTICS', 'Advanced logistics'), className: 'advanced', draggable: true, colSpan: 3, order: 5 },
     timer: { visable: false, title: t('SLA_TIMER', 'SLA’s timer'), className: 'timer', draggable: true, colSpan: 1, order: 6 },
+    eta: { visable: true, title: t('ETA', 'ETA'), className: 'eta', draggable: true, colSpan: 1, order: 7 },
     total: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 10 }
   }
+  const [allowColumns, setAllowColumns] = useState(allowColumnsModel)
 
   /**
    * Object to save driver group list

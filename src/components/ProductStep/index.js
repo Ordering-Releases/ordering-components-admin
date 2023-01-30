@@ -22,7 +22,7 @@ export const ProductStep = (props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [business, setBusiness] = useState()
 
-  const allowCodes = ['us', 'ca']
+  const allowCodes = ['us', 'usa', 'united states', 'united states of american', 'ca', 'canada']
 
   /**
    * Method to get business from location
@@ -88,8 +88,7 @@ export const ProductStep = (props) => {
       setCountriesState({ ...countriesState, loading: true })
       const { content: { error, result } } = await ordering.countries().get()
       if (!error) {
-        const codes = result.filter(country => country?.enabled).map(country => country?.code?.toLowerCase())
-        const enabled = allowCodes.some(code => codes.includes(code))
+        const enabled = result.filter(country => country?.enabled).some(country => (allowCodes.includes(country?.code?.toLowerCase()) || allowCodes.includes(country?.name?.toLowerCase())))
         setCountriesState({ ...countriesState, loading: false, countries: result, enabled })
       } else {
         setCountriesState({ ...countriesState, loading: false, error: result })

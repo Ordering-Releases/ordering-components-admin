@@ -88,51 +88,81 @@ export const UserFormDetails = (props) => {
     }
     try {
       let response
+      let content = {}
       setFormState({ ...formState, loading: true })
       if (changes) {
         formState.changes = { ...formState.changes, ...changes }
       }
       if (isImage) {
-        response = await ordering.users(user?.id || userState.result.result.id).save({ photo: image || formState.changes.photo }, {
-          accessToken: accessToken
-        })
+        if (session.user?.level !== 2) {
+          response = await ordering.users(user?.id || userState.result.result.id).save({ photo: image || formState.changes.photo }, {
+            accessToken: accessToken
+          })
+          content = response.content
+        } else {
+          const requestOptions = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${session.token}`
+            },
+            body: JSON.stringify({ photo: image || formState.changes.photo })
+          }
+          const response = await fetch(`${ordering.root}/professionals/${(user?.id || userState.result.result.id)}`, requestOptions)
+          content = await response.json()
+        }
 
         const { photo, ...changes } = formState.changes
 
         setFormState({
           ...formState,
-          changes: response.content.error ? formState.changes : changes,
-          result: response.content,
+          changes: content.error ? formState.changes : changes,
+          result: content,
           loading: false
         })
       } else {
-        response = await ordering.users(user?.id || userState.result.result.id).save(formState.changes, {
-          accessToken: accessToken
-        })
+        if (session.user?.level !== 2) {
+          response = await ordering.users(user?.id || userState.result.result.id).save(formState.changes, {
+            accessToken: accessToken
+          })
+          content = response.content
+        } else {
+          const requestOptions = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${session.token}`
+            },
+            body: JSON.stringify(formState.changes)
+          }
+          const response = await fetch(`${ordering.root}/professionals/${(user?.id || userState.result.result.id)}`, requestOptions)
+          content = await response.json()
+        }
+
         setFormState({
           ...formState,
-          changes: response.content.error ? formState.changes : {},
-          result: response.content,
+          changes: content.error ? formState.changes : {},
+          result: content,
           loading: false
         })
       }
 
-      if (!response.content.error) {
+      if (!content.error) {
         setUserState({
           ...userState,
           result: {
             ...userState.result,
-            ...response.content
+            ...content
           }
         })
         if (useSessionUser) {
           changeUser({
             ...session.user,
-            ...response.content.result
+            ...content.result
           })
         }
         if (handleSuccessUpdate) {
-          handleSuccessUpdate(response.content.result)
+          handleSuccessUpdate(content.result)
         }
       }
     } catch (err) {

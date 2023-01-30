@@ -80,3 +80,12 @@ export const getDistance = (lat1, lon1, lat2, lon2) => {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
   return R * c
 }
+
+/**
+ * Function to get unique id
+ */
+export const getUniqueId = () => {
+  const dateString = Date.now().toString(36)
+  const randomness = Math.random().toString(36).substr(2)
+  return dateString + randomness
+}

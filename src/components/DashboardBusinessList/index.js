@@ -25,7 +25,10 @@ export const DashboardBusinessList = (props) => {
   const [, t] = useLanguage()
   const [, { showToast }] = useToast()
 
+  const allowCodes = ['us', 'usa', 'united states', 'united states of american', 'ca', 'canada']
+
   const [businessList, setBusinessList] = useState({ loading: false, error: null, businesses: [] })
+  const [countriesState, setCountriesState] = useState({ countries: [], loading: true, error: null, enabled: false })
   const [pagination, setPagination] = useState({
     currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage - 1 : 0,
     pageSize: paginationSettings.pageSize ?? 10
@@ -131,6 +134,24 @@ export const DashboardBusinessList = (props) => {
       : ordering.setAccessToken(session.token).businesses().select(propsToFetch).where(where)
 
     return await functionFetch.get(options)
+  }
+
+  /**
+   * Method to get the countries from API
+   */
+  const getCountries = async () => {
+    try {
+      setCountriesState({ ...countriesState, loading: true })
+      const { content: { error, result } } = await ordering.countries().get()
+      if (!error) {
+        const enabled = result.filter(country => country?.enabled).some(country => (allowCodes.includes(country?.code?.toLowerCase()) || allowCodes.includes(country?.name?.toLowerCase())))
+        setCountriesState({ ...countriesState, loading: false, countries: result, enabled })
+      } else {
+        setCountriesState({ ...countriesState, loading: false, error: result })
+      }
+    } catch (err) {
+      setCountriesState({ ...countriesState, loading: false, error: [err.message] })
+    }
   }
 
   /**
@@ -408,6 +429,10 @@ export const DashboardBusinessList = (props) => {
     }
   }, [session, searchValue, selectedBusinessActiveState, businessTypeSelected])
 
+  useEffect(() => {
+    getCountries()
+  }, [])
+
   return (
     <>
       {
@@ -432,6 +457,7 @@ export const DashboardBusinessList = (props) => {
             handleSucessUpdateBusiness={handleSucessUpdateBusiness}
             handleDeleteMultiBusinesses={handleDeleteMultiBusinesses}
             handleChangeBusinessActiveState={handleChangeBusinessActiveState}
+            countriesState={countriesState}
           />
         )
       }

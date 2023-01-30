@@ -4,6 +4,7 @@ import { useApi } from '../../contexts/ApiContext'
 import { useSession } from '../../contexts/SessionContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
 import { useLanguage } from '../../contexts/LanguageContext'
+import { useEvent } from '../../contexts/EventContext'
 
 export const UsersList = (props) => {
   const {
@@ -25,6 +26,7 @@ export const UsersList = (props) => {
   const [session] = useSession()
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
+  const [events] = useEvent()
 
   const [usersList, setUsersList] = useState({ users: [], loading: false, error: null })
   const [filterValues, setFilterValues] = useState({ clear: false, changes: {} })
@@ -247,12 +249,33 @@ export const UsersList = (props) => {
         }
       }
 
-      const fetchEndpoint = where
-        ? ordering.setAccessToken(session.token).users().select(propsToFetch).parameters(parameters).where(where)
-        : ordering.setAccessToken(session.token).users().select(propsToFetch).parameters(parameters)
-      const { content: { result, pagination } } = await fetchEndpoint.get()
-      usersList.users = result
+      let fetchEndpoint = null
+      let content = {}
 
+      if (session.user?.level !== 2) {
+        fetchEndpoint = where
+          ? ordering.setAccessToken(session.token).users().select(propsToFetch).parameters(parameters).where(where)
+          : ordering.setAccessToken(session.token).users().select(propsToFetch).parameters(parameters)
+        const response = await fetchEndpoint.get()
+        content = response.content
+      } else {
+        const requestOptions = {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.token}`
+          }
+        }
+        const fetchEndpoint = where
+          ? `${ordering.root}/professionals?page=${page}&page_size=${pageSize}&&where=${JSON.stringify(where)}`
+          : `${ordering.root}/professionals?page=${page}&page_size=${pageSize}`
+
+        const response = await fetch(fetchEndpoint, requestOptions)
+        content = await response.json()
+      }
+
+      const { result, pagination } = content
+      usersList.users = result
       setUsersList({
         ...usersList,
         loading: false
@@ -566,6 +589,18 @@ export const UsersList = (props) => {
       getOccupations()
     }
   }, [isProfessional])
+
+  useEffect(() => {
+    events.on('occupations_update', (data) => {
+      setOccupationsState({
+        ...occupationsState,
+        occupations: data
+      })
+    })
+    return () => {
+      events.off('occupations_update')
+    }
+  }, [events])
 
   return (
     <>

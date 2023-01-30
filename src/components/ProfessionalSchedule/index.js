@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
@@ -15,6 +16,7 @@ export const ProfessionalSchedule = (props) => {
   } = props
 
   const [ordering] = useApi()
+  const [session] = useSession()
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
   const [formState, setFormState] = useState({ loading: false, changes: {}, result: { error: false } })
@@ -26,21 +28,44 @@ export const ProfessionalSchedule = (props) => {
     try {
       setFormState({ ...formState, loading: true })
       showToast(ToastType.Info, t('LOADING', 'Loading'))
+      let content = {}
       if (changes) {
         formState.changes = { ...formState.changes, ...changes }
       }
-      const response = await ordering.users(user?.id).save(formState.changes)
+      if (session.user?.level !== 2) {
+        const response = await ordering.users(user?.id).save(formState.changes)
+        content = response.content
+      } else {
+        const changes = { ...formState.changes }
+        for (const key in changes) {
+          if ((typeof changes[key] === 'object' && changes[key] !== null) || Array.isArray(changes[key])) {
+            changes[key] = JSON.stringify(changes[key])
+          }
+        }
+        const requestOptions = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.token}`
+          },
+          body: JSON.stringify(changes)
+        }
+        const response = await fetch(`${ordering.root}/professionals/${user?.id}`, requestOptions)
+        content = await response.json()
+      }
+      const { result, error } = content
+
       setFormState({
         ...formState,
-        changes: response.content.error ? formState.changes : {},
-        result: response.content,
+        changes: error ? formState.changes : {},
+        result: result,
         loading: false
       })
 
-      if (!response.content.error) {
+      if (!error) {
         showToast(ToastType.Success, t('SCHEDULE_UPDATED', 'Schedule updated'))
         if (handleSuccessUpdate) {
-          handleSuccessUpdate(response.content.result)
+          handleSuccessUpdate(result)
         }
       }
     } catch (err) {

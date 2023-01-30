@@ -31,6 +31,7 @@ export const BusinessProductsListing = (props) => {
   const [fees, setFees] = useState({})
   const [formTaxState, setFormTaxState] = useState({ loading: false, changes: {}, result: { error: false } })
   const [formFeeState, setFormFeeState] = useState({ loading: false, changes: {}, result: { error: false } })
+  const [businessTypes, setBusinessTypes] = useState([])
   const categoryStateDefault = {
     loading: true,
     pagination: { currentPage: 0, pageSize: 10, totalItems: null, totalPages: 0, nextPageItems: 10 },
@@ -321,6 +322,21 @@ export const BusinessProductsListing = (props) => {
     })
   }
 
+  const getBusinessTypes = async () => {
+    try {
+      const response = await fetch(`${ordering.root}/business_types?where=[{"attribute":"enabled","value":true}]`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      const { error, result } = await response.json()
+      if (!error) {
+        setBusinessTypes(result)
+      }
+    } catch (error) {
+      console.log(error?.message)
+    }
+  }
+
   useEffect(() => {
     if (isInitialRender) {
       getProduct()
@@ -513,6 +529,7 @@ export const BusinessProductsListing = (props) => {
   useEffect(() => {
     getTaxes()
     getFees()
+    getBusinessTypes()
   }, [])
 
   return (
@@ -545,6 +562,8 @@ export const BusinessProductsListing = (props) => {
           setTaxes={setTaxes}
           fees={fees}
           setFees={setFees}
+          businessTypes={businessTypes}
+          setBusinessTypes={setBusinessTypes}
         />
       )}
     </>

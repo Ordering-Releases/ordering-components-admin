@@ -22,7 +22,9 @@ export const GoogleMaps = (props) => {
     isFitCenter,
     handleChangeCenter,
     data,
-    fillStyle
+    fillStyle,
+    placeId,
+    setDetails
   } = props
 
   const [{ optimizeImage }] = useUtils()
@@ -338,6 +340,19 @@ export const GoogleMaps = (props) => {
       return () => clearInterval(interval)
     }
   }, [locations])
+
+  useEffect(() => {
+    if (googleMap && placeId) {
+      const request = { placeId }
+      const service = new window.google.maps.places.PlacesService(googleMap)
+      const callback = (place, status) => {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+          setDetails && setDetails(place)
+        }
+      }
+      service.getDetails(request, callback)
+    }
+  }, [googleMap, placeId])
 
   return (
     googleReady && (

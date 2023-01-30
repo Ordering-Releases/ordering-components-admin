@@ -5,6 +5,7 @@ import { useApi } from '../../contexts/ApiContext'
 import { useConfig } from '../../contexts/ConfigContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
 import { useLanguage } from '../../contexts/LanguageContext'
+import { getUniqueId, stringToSlug } from '../../utils'
 
 /**
  * Component to manage business form details behavior without UI component
@@ -31,6 +32,7 @@ export const BusinessAdd = (props) => {
   const [schedule, setSchedule] = useState([])
   const [kmlData, setKmlData] = useState(null)
   const [cityId, setCityId] = useState(null)
+  const [details, setDetails] = useState(null)
   let timeout = null
 
   const paymethodsNotAllowed = ['paypal_express', 'authorize']
@@ -108,6 +110,7 @@ export const BusinessAdd = (props) => {
     try {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
       setFormState({ ...formState, loading: true })
+      delete formState?.changes?.schedule
       const changes = { ...formState.changes, ...defaultAddBusinessParams, schedule, ...(cityId && { city_id: cityId }) }
       const response = await ordering.businesses().save(changes, {
         accessToken: session.token
@@ -407,6 +410,57 @@ export const BusinessAdd = (props) => {
     }
   }
 
+  const getSchedule = (periods) => {
+    let extraHours = null
+    const schedule = []
+    for (let i = 0; i < 7; i++) {
+      const period = periods.find(item => item?.open?.day === i)
+      if (!period) {
+        !extraHours ? schedule.push({ enabled: false }) : schedule.push({ enabled: true, lapses: extraHours })
+      }
+      if (period?.open?.day === i && period?.close.day === i) {
+        const lapses = [{ open: { hour: period?.open?.hours, minute: period?.open?.minutes }, close: { hour: period?.close?.hours, minute: period?.close?.minutes } }]
+        extraHours && lapses.unshift(extraHours)
+        extraHours = null
+        schedule.push({ enabled: true, lapses })
+      }
+      if (period?.open?.day === i && period?.close.day !== i) {
+        const lapses = [{ open: { hour: period?.open?.hours, minute: period?.open?.minutes }, close: { hour: 23, minute: 59 } }]
+        extraHours && lapses.unshift(extraHours)
+        extraHours = { open: { hour: 0, minute: 0 }, close: { hour: period?.close?.hours, minute: period?.close?.minutes } }
+        schedule.push({ enabled: true, lapses })
+      }
+    }
+
+    if (extraHours && schedule[0]?.enabled) schedule[0].lapses.unshift(extraHours)
+    if (extraHours && !schedule[0]?.enabled) schedule[0] = { enabled: true, lapses: extraHours }
+
+    return schedule
+  }
+
+  useEffect(() => {
+    if (details) {
+      const photos = details?.photos?.map(photo => ({ temp_id: getUniqueId(), file: photo.getUrl() }))
+      photos?.length > 0 && setGallery(photos)
+      const changes = {
+        name: details?.name,
+        slug: stringToSlug(details?.name),
+        cellphone: details?.international_phone_number,
+        price_level: details?.price_level?.toString(),
+        logo: details?.icon,
+        address: details?.formatted_address,
+        ...(details?.opening_hours?.periods && { schedule: getSchedule(details?.opening_hours?.periods) }),
+        location: {
+          lat: details?.geometry?.location?.lat(),
+          lng: details?.geometry?.location?.lng(),
+          zipcode: -1,
+          zoom: 15
+        }
+      }
+      changeFormState(changes)
+    }
+  }, [details])
+
   useEffect(() => {
     if (!addressChange) return
     setFormState({
@@ -449,6 +503,8 @@ export const BusinessAdd = (props) => {
           paymethodIds={paymethodIds}
           handleChangePaymethodIds={setPaymethodIds}
           handleChangeSchedule={setSchedule}
+          details={details}
+          setDetails={setDetails}
         />
       )}
     </>
