@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.stringToSlug = exports.randomString = exports.getDistance = exports.deepEqual = exports.convertToRadian = void 0;
+exports.stringToSlug = exports.randomString = exports.getUniqueId = exports.getDistance = exports.deepEqual = exports.convertToRadian = void 0;
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 var randomString = function randomString() {
   var length = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
@@ -85,4 +85,14 @@ var getDistance = function getDistance(lat1, lon1, lat2, lon2) {
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 };
+
+/**
+ * Function to get unique id
+ */
 exports.getDistance = getDistance;
+var getUniqueId = function getUniqueId() {
+  var dateString = Date.now().toString(36);
+  var randomness = Math.random().toString(36).substr(2);
+  return dateString + randomness;
+};
+exports.getUniqueId = getUniqueId;

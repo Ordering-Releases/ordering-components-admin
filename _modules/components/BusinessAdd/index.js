@@ -12,6 +12,7 @@ var _ApiContext = require("../../contexts/ApiContext");
 var _ConfigContext = require("../../contexts/ConfigContext");
 var _ToastContext = require("../../contexts/ToastContext");
 var _LanguageContext = require("../../contexts/LanguageContext");
+var _utils = require("../../utils");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -102,6 +103,10 @@ var BusinessAdd = function BusinessAdd(props) {
     _useState18 = _slicedToArray(_useState17, 2),
     cityId = _useState18[0],
     setCityId = _useState18[1];
+  var _useState19 = (0, _react.useState)(null),
+    _useState20 = _slicedToArray(_useState19, 2),
+    details = _useState20[0],
+    setDetails = _useState20[1];
   var timeout = null;
   var paymethodsNotAllowed = ['paypal_express', 'authorize'];
   var googleMapsApiKey = configs === null || configs === void 0 ? void 0 : (_configs$google_maps_ = configs.google_maps_api_key) === null || _configs$google_maps_ === void 0 ? void 0 : _configs$google_maps_.value;
@@ -207,7 +212,7 @@ var BusinessAdd = function BusinessAdd(props) {
    */
   var handleAddBusiness = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-      var changes, response;
+      var _formState$changes, changes, response;
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) {
           switch (_context4.prev = _context4.next) {
@@ -217,26 +222,27 @@ var BusinessAdd = function BusinessAdd(props) {
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: true
               }));
+              formState === null || formState === void 0 ? true : (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? true : delete _formState$changes.schedule;
               changes = _objectSpread(_objectSpread(_objectSpread({}, formState.changes), defaultAddBusinessParams), {}, {
                 schedule: schedule
               }, cityId && {
                 city_id: cityId
               });
-              _context4.next = 6;
+              _context4.next = 7;
               return ordering.businesses().save(changes, {
                 accessToken: session.token
               });
-            case 6:
+            case 7:
               response = _context4.sent;
               if (response.content.error) {
-                _context4.next = 19;
+                _context4.next = 20;
                 break;
               }
               if (!(paymethodIds.length > 0)) {
-                _context4.next = 11;
+                _context4.next = 12;
                 break;
               }
-              _context4.next = 11;
+              _context4.next = 12;
               return Promise.all(paymethodIds.map( /*#__PURE__*/function () {
                 var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(paymethodId) {
                   return _regeneratorRuntime().wrap(function _callee2$(_context2) {
@@ -258,12 +264,12 @@ var BusinessAdd = function BusinessAdd(props) {
                   return _ref3.apply(this, arguments);
                 };
               }()));
-            case 11:
+            case 12:
               if (!(gallery.length > 0)) {
-                _context4.next = 14;
+                _context4.next = 15;
                 break;
               }
-              _context4.next = 14;
+              _context4.next = 15;
               return Promise.all(gallery.map( /*#__PURE__*/function () {
                 var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(galleryItem) {
                   var _response$content, _response$content$res;
@@ -292,26 +298,26 @@ var BusinessAdd = function BusinessAdd(props) {
                   return _ref4.apply(this, arguments);
                 };
               }()));
-            case 14:
+            case 15:
               if (!(zoneState !== null && zoneState !== void 0 && zoneState.name && zoneState !== null && zoneState !== void 0 && zoneState.minimum && zoneState !== null && zoneState !== void 0 && zoneState.price)) {
-                _context4.next = 17;
+                _context4.next = 18;
                 break;
               }
-              _context4.next = 17;
+              _context4.next = 18;
               return handleAddDeliveryZone(response.content.result.id);
-            case 17:
+            case 18:
               showToast(_ToastContext.ToastType.Success, t('BUSINESS_ADDED', 'Business added'));
               handleOpenCategory && handleOpenCategory(response.content.result.slug);
-            case 19:
+            case 20:
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 changes: response.content.error ? formState.changes : {},
                 result: response.content,
                 loading: false
               }));
-              _context4.next = 25;
+              _context4.next = 26;
               break;
-            case 22:
-              _context4.prev = 22;
+            case 23:
+              _context4.prev = 23;
               _context4.t0 = _context4["catch"](0);
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 result: {
@@ -320,12 +326,12 @@ var BusinessAdd = function BusinessAdd(props) {
                 },
                 loading: false
               }));
-            case 25:
+            case 26:
             case "end":
               return _context4.stop();
           }
         }
-      }, _callee4, null, [[0, 22]]);
+      }, _callee4, null, [[0, 23]]);
     }));
     return function handleAddBusiness() {
       return _ref2.apply(this, arguments);
@@ -626,8 +632,8 @@ var BusinessAdd = function BusinessAdd(props) {
    * @param {Object} changes Related HTML event
    */
   var handleChangeRibbon = function handleChangeRibbon(changes) {
-    var _formState$changes, _formState$changes2;
-    var ribbonChanges = formState !== null && formState !== void 0 && (_formState$changes = formState.changes) !== null && _formState$changes !== void 0 && _formState$changes.ribbon ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.ribbon), changes) : _objectSpread({}, changes);
+    var _formState$changes2, _formState$changes3;
+    var ribbonChanges = formState !== null && formState !== void 0 && (_formState$changes2 = formState.changes) !== null && _formState$changes2 !== void 0 && _formState$changes2.ribbon ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : (_formState$changes3 = formState.changes) === null || _formState$changes3 === void 0 ? void 0 : _formState$changes3.ribbon), changes) : _objectSpread({}, changes);
     var currentChanges = _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), {}, {
       ribbon: ribbonChanges
     });
@@ -823,6 +829,112 @@ var BusinessAdd = function BusinessAdd(props) {
       }));
     }
   };
+  var getSchedule = function getSchedule(periods) {
+    var _schedule$, _schedule$2;
+    var extraHours = null;
+    var schedule = [];
+    var _loop = function _loop(i) {
+      var _period$open, _period$open4;
+      var period = periods.find(function (item) {
+        var _item$open;
+        return (item === null || item === void 0 ? void 0 : (_item$open = item.open) === null || _item$open === void 0 ? void 0 : _item$open.day) === i;
+      });
+      if (!period) {
+        !extraHours ? schedule.push({
+          enabled: false
+        }) : schedule.push({
+          enabled: true,
+          lapses: extraHours
+        });
+      }
+      if ((period === null || period === void 0 ? void 0 : (_period$open = period.open) === null || _period$open === void 0 ? void 0 : _period$open.day) === i && (period === null || period === void 0 ? void 0 : period.close.day) === i) {
+        var _period$open2, _period$open3, _period$close, _period$close2;
+        var lapses = [{
+          open: {
+            hour: period === null || period === void 0 ? void 0 : (_period$open2 = period.open) === null || _period$open2 === void 0 ? void 0 : _period$open2.hours,
+            minute: period === null || period === void 0 ? void 0 : (_period$open3 = period.open) === null || _period$open3 === void 0 ? void 0 : _period$open3.minutes
+          },
+          close: {
+            hour: period === null || period === void 0 ? void 0 : (_period$close = period.close) === null || _period$close === void 0 ? void 0 : _period$close.hours,
+            minute: period === null || period === void 0 ? void 0 : (_period$close2 = period.close) === null || _period$close2 === void 0 ? void 0 : _period$close2.minutes
+          }
+        }];
+        extraHours && lapses.unshift(extraHours);
+        extraHours = null;
+        schedule.push({
+          enabled: true,
+          lapses: lapses
+        });
+      }
+      if ((period === null || period === void 0 ? void 0 : (_period$open4 = period.open) === null || _period$open4 === void 0 ? void 0 : _period$open4.day) === i && (period === null || period === void 0 ? void 0 : period.close.day) !== i) {
+        var _period$open5, _period$open6, _period$close3, _period$close4;
+        var _lapses = [{
+          open: {
+            hour: period === null || period === void 0 ? void 0 : (_period$open5 = period.open) === null || _period$open5 === void 0 ? void 0 : _period$open5.hours,
+            minute: period === null || period === void 0 ? void 0 : (_period$open6 = period.open) === null || _period$open6 === void 0 ? void 0 : _period$open6.minutes
+          },
+          close: {
+            hour: 23,
+            minute: 59
+          }
+        }];
+        extraHours && _lapses.unshift(extraHours);
+        extraHours = {
+          open: {
+            hour: 0,
+            minute: 0
+          },
+          close: {
+            hour: period === null || period === void 0 ? void 0 : (_period$close3 = period.close) === null || _period$close3 === void 0 ? void 0 : _period$close3.hours,
+            minute: period === null || period === void 0 ? void 0 : (_period$close4 = period.close) === null || _period$close4 === void 0 ? void 0 : _period$close4.minutes
+          }
+        };
+        schedule.push({
+          enabled: true,
+          lapses: _lapses
+        });
+      }
+    };
+    for (var i = 0; i < 7; i++) {
+      _loop(i);
+    }
+    if (extraHours && (_schedule$ = schedule[0]) !== null && _schedule$ !== void 0 && _schedule$.enabled) schedule[0].lapses.unshift(extraHours);
+    if (extraHours && !((_schedule$2 = schedule[0]) !== null && _schedule$2 !== void 0 && _schedule$2.enabled)) schedule[0] = {
+      enabled: true,
+      lapses: extraHours
+    };
+    return schedule;
+  };
+  (0, _react.useEffect)(function () {
+    if (details) {
+      var _details$photos, _details$price_level, _details$opening_hour, _details$opening_hour2, _details$geometry, _details$geometry$loc, _details$geometry2, _details$geometry2$lo;
+      var photos = details === null || details === void 0 ? void 0 : (_details$photos = details.photos) === null || _details$photos === void 0 ? void 0 : _details$photos.map(function (photo) {
+        return {
+          temp_id: (0, _utils.getUniqueId)(),
+          file: photo.getUrl()
+        };
+      });
+      (photos === null || photos === void 0 ? void 0 : photos.length) > 0 && setGallery(photos);
+      var changes = _objectSpread(_objectSpread({
+        name: details === null || details === void 0 ? void 0 : details.name,
+        slug: (0, _utils.stringToSlug)(details === null || details === void 0 ? void 0 : details.name),
+        cellphone: details === null || details === void 0 ? void 0 : details.international_phone_number,
+        price_level: details === null || details === void 0 ? void 0 : (_details$price_level = details.price_level) === null || _details$price_level === void 0 ? void 0 : _details$price_level.toString(),
+        logo: details === null || details === void 0 ? void 0 : details.icon,
+        address: details === null || details === void 0 ? void 0 : details.formatted_address
+      }, (details === null || details === void 0 ? void 0 : (_details$opening_hour = details.opening_hours) === null || _details$opening_hour === void 0 ? void 0 : _details$opening_hour.periods) && {
+        schedule: getSchedule(details === null || details === void 0 ? void 0 : (_details$opening_hour2 = details.opening_hours) === null || _details$opening_hour2 === void 0 ? void 0 : _details$opening_hour2.periods)
+      }), {}, {
+        location: {
+          lat: details === null || details === void 0 ? void 0 : (_details$geometry = details.geometry) === null || _details$geometry === void 0 ? void 0 : (_details$geometry$loc = _details$geometry.location) === null || _details$geometry$loc === void 0 ? void 0 : _details$geometry$loc.lat(),
+          lng: details === null || details === void 0 ? void 0 : (_details$geometry2 = details.geometry) === null || _details$geometry2 === void 0 ? void 0 : (_details$geometry2$lo = _details$geometry2.location) === null || _details$geometry2$lo === void 0 ? void 0 : _details$geometry2$lo.lng(),
+          zipcode: -1,
+          zoom: 15
+        }
+      });
+      changeFormState(changes);
+    }
+  }, [details]);
   (0, _react.useEffect)(function () {
     if (!addressChange) return;
     setFormState(_objectSpread(_objectSpread({}, formState), {}, {
@@ -854,7 +966,9 @@ var BusinessAdd = function BusinessAdd(props) {
     gallery: gallery,
     paymethodIds: paymethodIds,
     handleChangePaymethodIds: setPaymethodIds,
-    handleChangeSchedule: setSchedule
+    handleChangeSchedule: setSchedule,
+    details: details,
+    setDetails: setDetails
   })));
 };
 exports.BusinessAdd = BusinessAdd;

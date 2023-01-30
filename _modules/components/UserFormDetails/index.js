@@ -136,7 +136,7 @@ var UserFormDetails = function UserFormDetails(props) {
    */
   var handleUpdateClick = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(changes, isImage, image) {
-      var response, _formState$changes, photo, _changes;
+      var response, content, _session$user, requestOptions, _response, _formState$changes, photo, _changes, _session$user2, _requestOptions, _response2;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -148,6 +148,7 @@ var UserFormDetails = function UserFormDetails(props) {
               return _context.abrupt("return", handleButtonUpdateClick(userState.result.result, formState.changes));
             case 2:
               _context.prev = 2;
+              content = {};
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: true
               }));
@@ -155,53 +156,105 @@ var UserFormDetails = function UserFormDetails(props) {
                 formState.changes = _objectSpread(_objectSpread({}, formState.changes), changes);
               }
               if (!isImage) {
-                _context.next = 13;
+                _context.next = 25;
                 break;
               }
-              _context.next = 8;
+              if (!(((_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.level) !== 2)) {
+                _context.next = 14;
+                break;
+              }
+              _context.next = 10;
               return ordering.users((user === null || user === void 0 ? void 0 : user.id) || userState.result.result.id).save({
                 photo: image || formState.changes.photo
               }, {
                 accessToken: accessToken
               });
-            case 8:
+            case 10:
               response = _context.sent;
+              content = response.content;
+              _context.next = 21;
+              break;
+            case 14:
+              requestOptions = {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(session.token)
+                },
+                body: JSON.stringify({
+                  photo: image || formState.changes.photo
+                })
+              };
+              _context.next = 17;
+              return fetch("".concat(ordering.root, "/professionals/").concat((user === null || user === void 0 ? void 0 : user.id) || userState.result.result.id), requestOptions);
+            case 17:
+              _response = _context.sent;
+              _context.next = 20;
+              return _response.json();
+            case 20:
+              content = _context.sent;
+            case 21:
               _formState$changes = formState.changes, photo = _formState$changes.photo, _changes = _objectWithoutProperties(_formState$changes, _excluded);
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-                changes: response.content.error ? formState.changes : _changes,
-                result: response.content,
+                changes: content.error ? formState.changes : _changes,
+                result: content,
                 loading: false
               }));
-              _context.next = 17;
+              _context.next = 40;
               break;
-            case 13:
-              _context.next = 15;
+            case 25:
+              if (!(((_session$user2 = session.user) === null || _session$user2 === void 0 ? void 0 : _session$user2.level) !== 2)) {
+                _context.next = 32;
+                break;
+              }
+              _context.next = 28;
               return ordering.users((user === null || user === void 0 ? void 0 : user.id) || userState.result.result.id).save(formState.changes, {
                 accessToken: accessToken
               });
-            case 15:
+            case 28:
               response = _context.sent;
+              content = response.content;
+              _context.next = 39;
+              break;
+            case 32:
+              _requestOptions = {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(session.token)
+                },
+                body: JSON.stringify(formState.changes)
+              };
+              _context.next = 35;
+              return fetch("".concat(ordering.root, "/professionals/").concat((user === null || user === void 0 ? void 0 : user.id) || userState.result.result.id), _requestOptions);
+            case 35:
+              _response2 = _context.sent;
+              _context.next = 38;
+              return _response2.json();
+            case 38:
+              content = _context.sent;
+            case 39:
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-                changes: response.content.error ? formState.changes : {},
-                result: response.content,
+                changes: content.error ? formState.changes : {},
+                result: content,
                 loading: false
               }));
-            case 17:
-              if (!response.content.error) {
+            case 40:
+              if (!content.error) {
                 setUserState(_objectSpread(_objectSpread({}, userState), {}, {
-                  result: _objectSpread(_objectSpread({}, userState.result), response.content)
+                  result: _objectSpread(_objectSpread({}, userState.result), content)
                 }));
                 if (useSessionUser) {
-                  changeUser(_objectSpread(_objectSpread({}, session.user), response.content.result));
+                  changeUser(_objectSpread(_objectSpread({}, session.user), content.result));
                 }
                 if (handleSuccessUpdate) {
-                  handleSuccessUpdate(response.content.result);
+                  handleSuccessUpdate(content.result);
                 }
               }
-              _context.next = 23;
+              _context.next = 46;
               break;
-            case 20:
-              _context.prev = 20;
+            case 43:
+              _context.prev = 43;
               _context.t0 = _context["catch"](2);
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 result: {
@@ -210,12 +263,12 @@ var UserFormDetails = function UserFormDetails(props) {
                 },
                 loading: false
               }));
-            case 23:
+            case 46:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[2, 20]]);
+      }, _callee, null, [[2, 43]]);
     }));
     return function handleUpdateClick(_x, _x2, _x3) {
       return _ref.apply(this, arguments);

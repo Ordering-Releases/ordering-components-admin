@@ -44,7 +44,9 @@ var GoogleMaps = function GoogleMaps(props) {
     isFitCenter = props.isFitCenter,
     handleChangeCenter = props.handleChangeCenter,
     data = props.data,
-    fillStyle = props.fillStyle;
+    fillStyle = props.fillStyle,
+    placeId = props.placeId,
+    setDetails = props.setDetails;
   var _useUtils = (0, _UtilsContext.useUtils)(),
     _useUtils2 = _slicedToArray(_useUtils, 1),
     optimizeImage = _useUtils2[0].optimizeImage;
@@ -396,6 +398,20 @@ var GoogleMaps = function GoogleMaps(props) {
       };
     }
   }, [locations]);
+  (0, _react.useEffect)(function () {
+    if (googleMap && placeId) {
+      var request = {
+        placeId: placeId
+      };
+      var service = new window.google.maps.places.PlacesService(googleMap);
+      var callback = function callback(place, status) {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+          setDetails && setDetails(place);
+        }
+      };
+      service.getDetails(request, callback);
+    }
+  }, [googleMap, placeId]);
   return googleReady && /*#__PURE__*/_react.default.createElement("div", {
     id: "map",
     ref: divRef,

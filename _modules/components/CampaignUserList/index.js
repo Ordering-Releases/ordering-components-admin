@@ -4,13 +4,12 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.UserDetails = void 0;
+exports.CampaignUserList = void 0;
 var _react = _interopRequireWildcard(require("react"));
-var _propTypes = _interopRequireWildcard(require("prop-types"));
-var _SessionContext = require("../../contexts/SessionContext");
+var _propTypes = _interopRequireDefault(require("prop-types"));
 var _ApiContext = require("../../contexts/ApiContext");
-var _ToastContext = require("../../contexts/ToastContext");
-var _LanguageContext = require("../../contexts/LanguageContext");
+var _SessionContext = require("../../contexts/SessionContext");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -26,467 +25,122 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-var UserDetails = function UserDetails(props) {
-  var userId = props.userId,
-    propsToFetch = props.propsToFetch,
-    UIComponent = props.UIComponent,
-    handleSuccessUpdate = props.handleSuccessUpdate,
-    handleSuccessDeleteUser = props.handleSuccessDeleteUser;
+var CampaignUserList = function CampaignUserList(props) {
+  var UIComponent = props.UIComponent,
+    campaignId = props.campaignId;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
   var _useSession = (0, _SessionContext.useSession)(),
     _useSession2 = _slicedToArray(_useSession, 1),
-    session = _useSession2[0];
-  var _useToast = (0, _ToastContext.useToast)(),
-    _useToast2 = _slicedToArray(_useToast, 2),
-    showToast = _useToast2[1].showToast;
-  var _useLanguage = (0, _LanguageContext.useLanguage)(),
-    _useLanguage2 = _slicedToArray(_useLanguage, 2),
-    t = _useLanguage2[1];
-  var accessToken = session.token;
+    token = _useSession2[0].token;
   var _useState = (0, _react.useState)({
-      loading: false,
-      error: false,
-      change: []
+      users: [],
+      loading: true,
+      error: null
     }),
     _useState2 = _slicedToArray(_useState, 2),
-    scheduleState = _useState2[0],
-    setScheduleState = _useState2[1];
-  var _useState3 = (0, _react.useState)({
-      user: null,
-      loading: false,
-      error: null
-    }),
-    _useState4 = _slicedToArray(_useState3, 2),
-    userState = _useState4[0],
-    setUserState = _useState4[1];
-  var _useState5 = (0, _react.useState)({
-      loading: false,
-      error: null
-    }),
-    _useState6 = _slicedToArray(_useState5, 2),
-    actionStatus = _useState6[0],
-    setActionStatus = _useState6[1];
+    userListState = _useState2[0],
+    setUserListState = _useState2[1];
 
   /**
-   * Method to get user from API
+   * Method to get the user list from API
    */
-  var getUser = /*#__PURE__*/function () {
+  var getUserList = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var _session$user, fetchEndpoint, content, response, requestOptions, _response, _content, result, user;
+      var requestOptions, response, content;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
-              setUserState(_objectSpread(_objectSpread({}, userState), {}, {
+              setUserListState(_objectSpread(_objectSpread({}, userListState), {}, {
                 loading: true
               }));
-              fetchEndpoint = null;
-              content = {};
-              if (!(((_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.level) !== 2)) {
-                _context.next = 12;
-                break;
-              }
-              fetchEndpoint = ordering.setAccessToken(session.token).users(userId).select(propsToFetch);
-              _context.next = 8;
-              return fetchEndpoint.get();
-            case 8:
-              response = _context.sent;
-              content = response.content;
-              _context.next = 20;
-              break;
-            case 12:
               requestOptions = {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: "Bearer ".concat(session.token)
+                  Authorization: "Bearer ".concat(token)
                 }
               };
-              fetchEndpoint = "".concat(ordering.root, "/professionals/").concat(userId);
-              _context.next = 16;
-              return fetch(fetchEndpoint, requestOptions);
-            case 16:
-              _response = _context.sent;
-              _context.next = 19;
-              return _response.json();
-            case 19:
+              _context.next = 5;
+              return fetch("".concat(ordering.root, "/marketing_campaigns/").concat(campaignId, "/users"), requestOptions);
+            case 5:
+              response = _context.sent;
+              _context.next = 8;
+              return response.json();
+            case 8:
               content = _context.sent;
-            case 20:
-              _content = content, result = _content.result;
-              user = Array.isArray(result) ? null : result;
-              setUserState(_objectSpread(_objectSpread({}, userState), {}, {
-                loading: false,
-                user: user
-              }));
-              _context.next = 28;
+              if (!content.error) {
+                setUserListState(_objectSpread(_objectSpread({}, userListState), {}, {
+                  loading: false,
+                  error: null,
+                  users: content.result
+                }));
+              } else {
+                setUserListState(_objectSpread(_objectSpread({}, userListState), {}, {
+                  loading: false,
+                  error: content.result
+                }));
+              }
+              _context.next = 15;
               break;
-            case 25:
-              _context.prev = 25;
+            case 12:
+              _context.prev = 12;
               _context.t0 = _context["catch"](0);
-              setUserState(_objectSpread(_objectSpread({}, userState), {}, {
+              setUserListState(_objectSpread(_objectSpread({}, userListState), {}, {
                 loading: false,
-                error: [_context.t0.message]
+                error: _context.t0.message
               }));
-            case 28:
+            case 15:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 25]]);
+      }, _callee, null, [[0, 12]]);
     }));
-    return function getUser() {
+    return function getUserList() {
       return _ref.apply(this, arguments);
     };
   }();
-  var handleScheduleState = function handleScheduleState(scheduleChanges) {
-    (scheduleChanges === null || scheduleChanges === void 0 ? void 0 : scheduleChanges.length) > 0 && setScheduleState(_objectSpread(_objectSpread({}, scheduleState), {}, {
-      change: scheduleChanges
-    }));
-  };
-
-  /**
-   * Method to delete users from API
-   */
-  var handleDeleteUser = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var _yield$ordering$setAc, content;
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.prev = 0;
-              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-              setActionStatus({
-                loading: true,
-                error: null
-              });
-              _context2.next = 5;
-              return ordering.setAccessToken(session.token).users(userId).delete();
-            case 5:
-              _yield$ordering$setAc = _context2.sent;
-              content = _yield$ordering$setAc.content;
-              setActionStatus({
-                loading: false,
-                error: content.error ? content.result : null
-              });
-              if (!content.error) {
-                showToast(_ToastContext.ToastType.Success, t('USER_DELETED', 'User deleted'));
-                handleSuccessDeleteUser && handleSuccessDeleteUser(userState.user);
-                props.onClose && props.onClose();
-              }
-              _context2.next = 14;
-              break;
-            case 11:
-              _context2.prev = 11;
-              _context2.t0 = _context2["catch"](0);
-              setActionStatus({
-                loading: false,
-                error: [_context2.t0.message]
-              });
-            case 14:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2, null, [[0, 11]]);
-    }));
-    return function handleDeleteUser() {
-      return _ref2.apply(this, arguments);
-    };
-  }();
-  var handleScheduleUpdateUser = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var _scheduleState$change, _userState$user, _session$user2, _change, content, _userState$user2, response, _userState$user3, requestOptions, _response2, _content2, result, error;
-      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              _context3.prev = 0;
-              if (!((scheduleState === null || scheduleState === void 0 ? void 0 : (_scheduleState$change = scheduleState.change) === null || _scheduleState$change === void 0 ? void 0 : _scheduleState$change.length) > 0 && userState !== null && userState !== void 0 && (_userState$user = userState.user) !== null && _userState$user !== void 0 && _userState$user.id)) {
-                _context3.next = 24;
-                break;
-              }
-              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-              setScheduleState(_objectSpread(_objectSpread({}, scheduleState), {}, {
-                loading: true
-              }));
-              _change = {
-                schedule: JSON.stringify(scheduleState === null || scheduleState === void 0 ? void 0 : scheduleState.change)
-              };
-              content = {};
-              if (!(((_session$user2 = session.user) === null || _session$user2 === void 0 ? void 0 : _session$user2.level) !== 2)) {
-                _context3.next = 13;
-                break;
-              }
-              _context3.next = 9;
-              return ordering.users(userState === null || userState === void 0 ? void 0 : (_userState$user2 = userState.user) === null || _userState$user2 === void 0 ? void 0 : _userState$user2.id).save(_change, {
-                accessToken: accessToken
-              });
-            case 9:
-              response = _context3.sent;
-              content = response.content;
-              _context3.next = 20;
-              break;
-            case 13:
-              requestOptions = {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: "Bearer ".concat(session.token)
-                },
-                body: JSON.stringify(_change)
-              };
-              _context3.next = 16;
-              return fetch("".concat(ordering.root, "/professionals/").concat(userState === null || userState === void 0 ? void 0 : (_userState$user3 = userState.user) === null || _userState$user3 === void 0 ? void 0 : _userState$user3.id), requestOptions);
-            case 16:
-              _response2 = _context3.sent;
-              _context3.next = 19;
-              return _response2.json();
-            case 19:
-              content = _context3.sent;
-            case 20:
-              _content2 = content, result = _content2.result, error = _content2.error;
-              if (!error) {
-                setScheduleState(_objectSpread(_objectSpread({}, scheduleState), {}, {
-                  change: [],
-                  loading: false,
-                  error: false
-                }));
-                setUserState(_objectSpread(_objectSpread({}, userState), {}, {
-                  error: false,
-                  user: Object.assign(userState.user, result)
-                }));
-                showToast(_ToastContext.ToastType.Success, t('SCHEDULE_UPDATED', 'Schedule Updated'));
-              } else {
-                setScheduleState(_objectSpread(_objectSpread({}, scheduleState), {}, {
-                  change: [],
-                  loading: false,
-                  error: true
-                }));
-                setUserState(_objectSpread(_objectSpread({}, userState), {}, {
-                  error: true
-                }));
-                showToast(_ToastContext.ToastType.Error, t('SCHEDULE_UPDATED_FAILED', 'Schedule Update Failed'));
-              }
-              _context3.next = 25;
-              break;
-            case 24:
-              showToast(_ToastContext.ToastType.Info, t('NOT_CHANGED', 'Not Changed'));
-            case 25:
-              _context3.next = 32;
-              break;
-            case 27:
-              _context3.prev = 27;
-              _context3.t0 = _context3["catch"](0);
-              setScheduleState(_objectSpread(_objectSpread({}, scheduleState), {}, {
-                change: [],
-                loading: false,
-                error: true
-              }));
-              setUserState(_objectSpread(_objectSpread({}, userState), {}, {
-                loading: false,
-                error: _context3.t0 === null || _context3.t0 === void 0 ? void 0 : _context3.t0.message
-              }));
-              showToast(_ToastContext.ToastType.Error, _context3.t0 === null || _context3.t0 === void 0 ? void 0 : _context3.t0.message);
-            case 32:
-            case "end":
-              return _context3.stop();
-          }
-        }
-      }, _callee3, null, [[0, 27]]);
-    }));
-    return function handleScheduleUpdateUser() {
-      return _ref3.apply(this, arguments);
-    };
-  }();
-  /**
-   * Method to connect with Google calendar
-   */
-  var handleGoogleCalendarSync = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-      var _session$user3, requestOptions, response, _userState$user4, _userState$user5, content;
-      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              _context4.prev = 0;
-              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-              setActionStatus({
-                loading: true,
-                error: null
-              });
-              requestOptions = {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: "Bearer ".concat(session.token)
-                }
-              };
-              response = null;
-              if (!(((_session$user3 = session.user) === null || _session$user3 === void 0 ? void 0 : _session$user3.level) !== 2)) {
-                _context4.next = 11;
-                break;
-              }
-              _context4.next = 8;
-              return fetch("".concat(ordering.root, "/users/").concat((_userState$user4 = userState.user) === null || _userState$user4 === void 0 ? void 0 : _userState$user4.id, "/google/calendar/sync"), requestOptions);
-            case 8:
-              response = _context4.sent;
-              _context4.next = 14;
-              break;
-            case 11:
-              _context4.next = 13;
-              return fetch("".concat(ordering.root, "/professionals/").concat((_userState$user5 = userState.user) === null || _userState$user5 === void 0 ? void 0 : _userState$user5.id, "/google/calendar/sync"), requestOptions);
-            case 13:
-              response = _context4.sent;
-            case 14:
-              _context4.next = 16;
-              return response.json();
-            case 16:
-              content = _context4.sent;
-              if (!content.error) {
-                showToast(_ToastContext.ToastType.Success, t('YOUR_CALENDAR_WILL_BE_SYNCHRONIZED', 'Your calendar will be synchronized'));
-              } else {
-                setActionStatus({
-                  loading: false,
-                  error: content.result
-                });
-              }
-              _context4.next = 23;
-              break;
-            case 20:
-              _context4.prev = 20;
-              _context4.t0 = _context4["catch"](0);
-              setActionStatus({
-                loading: false,
-                error: [_context4.t0.message]
-              });
-            case 23:
-            case "end":
-              return _context4.stop();
-          }
-        }
-      }, _callee4, null, [[0, 20]]);
-    }));
-    return function handleGoogleCalendarSync() {
-      return _ref4.apply(this, arguments);
-    };
-  }();
-
-  /**
-   * Method to link the Google account to the professional account
-   */
-  var handleGoogleAccountLink = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-      var _userState$user6;
-      var connect, interval, timeout;
-      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-        while (1) {
-          switch (_context5.prev = _context5.next) {
-            case 0:
-              connect = window.open("".concat(ordering.root, "/users/").concat((_userState$user6 = userState.user) === null || _userState$user6 === void 0 ? void 0 : _userState$user6.id, "/google/permissions/request?name=calendar&token=").concat(session.token), '_blank', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,clearcache=yes');
-              interval = setInterval(function () {
-                if (!connect.closed) {
-                  connect.postMessage('data', ordering.url);
-                } else {
-                  clearInterval(interval);
-                }
-              }, 200);
-              timeout = null;
-              window.addEventListener('message', function (e) {
-                if (e.origin.indexOf('.ordering.co') === -1) {
-                  return;
-                }
-                clearInterval(interval);
-                if (timeout) clearTimeout(timeout);
-                timeout = setTimeout(function () {
-                  connect.postMessage('close', ordering.url);
-                  showToast(_ToastContext.ToastType.Success, e.data.message);
-                }, 1000);
-              });
-            case 4:
-            case "end":
-              return _context5.stop();
-          }
-        }
-      }, _callee5);
-    }));
-    return function handleGoogleAccountLink() {
-      return _ref5.apply(this, arguments);
-    };
-  }();
   (0, _react.useEffect)(function () {
-    if (props.user) {
-      setUserState(_objectSpread(_objectSpread({}, userState), {}, {
-        user: props.user
-      }));
-    } else {
-      getUser();
-    }
-  }, [userId]);
-  var handleSuccessUserUpdate = function handleSuccessUserUpdate(updatedUser) {
-    setUserState(_objectSpread(_objectSpread({}, userState), {}, {
-      user: Object.assign(userState.user, updatedUser)
-    }));
-    handleSuccessUpdate && handleSuccessUpdate(updatedUser);
-  };
+    getUserList();
+  }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
-    userState: userState,
-    actionStatus: actionStatus,
-    handleDeleteUser: handleDeleteUser,
-    handleSuccessUserUpdate: handleSuccessUserUpdate,
-    handleGoogleCalendarSync: handleGoogleCalendarSync,
-    scheduleState: scheduleState,
-    handleScheduleState: handleScheduleState,
-    handleScheduleUpdateUser: handleScheduleUpdateUser,
-    handleGoogleAccountLink: handleGoogleAccountLink
+    userListState: userListState
   })));
 };
-exports.UserDetails = UserDetails;
-UserDetails.propTypes = {
+exports.CampaignUserList = CampaignUserList;
+CampaignUserList.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props
    */
   UIComponent: _propTypes.default.elementType,
   /**
-   * Array of drivers props to fetch
-   */
-  propsToFetch: _propTypes.default.arrayOf(_propTypes.string),
-  /**
-  * This must be contains userId to fetch
-  */
-  userId: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.string]),
-  /**
-  * User, this must be contains an object with all user info
-  */
-  user: _propTypes.default.object,
-  /**
-   * Components types before order details
+   * Components types before place list
    * Array of type components, the parent props will pass to these components
    */
   beforeComponents: _propTypes.default.arrayOf(_propTypes.default.elementType),
   /**
-    * Components types after order details
-    * Array of type components, the parent props will pass to these components
-    */
+   * Components types after place list
+   * Array of type components, the parent props will pass to these components
+   */
   afterComponents: _propTypes.default.arrayOf(_propTypes.default.elementType),
   /**
-    * Elements before order details
-    * Array of HTML/Components elements, these components will not get the parent props
-    */
+   * Elements before place list
+   * Array of HTML/Components elements, these components will not get the parent props
+   */
   beforeElements: _propTypes.default.arrayOf(_propTypes.default.element),
   /**
-    * Elements after order details
-    * Array of HTML/Components elements, these components will not get the parent props
-    */
+   * Elements after place list
+   * Array of HTML/Components elements, these components will not get the parent props
+   */
   afterElements: _propTypes.default.arrayOf(_propTypes.default.element)
 };
-UserDetails.defaultProps = {
+CampaignUserList.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: [],
-  propsToFetch: ['name', 'lastname', 'email', 'phone', 'photo', 'cellphone', 'country_phone_code', 'city_id', 'city', 'address', 'addresses', 'address_notes', 'driver_zone_restriction', 'dropdown_option_id', 'dropdown_option', 'location', 'loyalty_level', 'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'phone_verified', 'email_verified', 'schedule', 'timezone', 'max_days_in_future', 'occupation_id', 'occupation', 'session']
+  afterElements: []
 };

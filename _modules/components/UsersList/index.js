@@ -11,6 +11,7 @@ var _ApiContext = require("../../contexts/ApiContext");
 var _SessionContext = require("../../contexts/SessionContext");
 var _ToastContext = require("../../contexts/ToastContext");
 var _LanguageContext = require("../../contexts/LanguageContext");
+var _EventContext = require("../../contexts/EventContext");
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -56,6 +57,9 @@ var UsersList = function UsersList(props) {
   var _useLanguage = (0, _LanguageContext.useLanguage)(),
     _useLanguage2 = _slicedToArray(_useLanguage, 2),
     t = _useLanguage2[1];
+  var _useEvent = (0, _EventContext.useEvent)(),
+    _useEvent2 = _slicedToArray(_useEvent, 1),
+    events = _useEvent2[0];
   var _useState = (0, _react.useState)({
       users: [],
       loading: false,
@@ -137,7 +141,7 @@ var UsersList = function UsersList(props) {
    */
   var getUsers = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(page, pageSize) {
-      var parameters, paginationParams, where, conditions, verifiedConditions, searchConditions, _filterValues$changes, _filterValues$changes2, filterConditions, _filterValues$changes3, fetchEndpoint, _yield$fetchEndpoint$, _yield$fetchEndpoint$2, result, pagination, nextPageItems, remainingItems;
+      var _session$user, parameters, paginationParams, where, conditions, verifiedConditions, searchConditions, _filterValues$changes, _filterValues$changes2, filterConditions, _filterValues$changes3, fetchEndpoint, content, response, requestOptions, _fetchEndpoint, _response, _content, result, pagination, nextPageItems, remainingItems;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -308,14 +312,39 @@ var UsersList = function UsersList(props) {
                   conector: 'AND'
                 };
               }
+              fetchEndpoint = null;
+              content = {};
+              if (!(((_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.level) !== 2)) {
+                _context.next = 24;
+                break;
+              }
               fetchEndpoint = where ? ordering.setAccessToken(session.token).users().select(propsToFetch).parameters(parameters).where(where) : ordering.setAccessToken(session.token).users().select(propsToFetch).parameters(parameters);
-              _context.next = 17;
+              _context.next = 20;
               return fetchEndpoint.get();
-            case 17:
-              _yield$fetchEndpoint$ = _context.sent;
-              _yield$fetchEndpoint$2 = _yield$fetchEndpoint$.content;
-              result = _yield$fetchEndpoint$2.result;
-              pagination = _yield$fetchEndpoint$2.pagination;
+            case 20:
+              response = _context.sent;
+              content = response.content;
+              _context.next = 32;
+              break;
+            case 24:
+              requestOptions = {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(session.token)
+                }
+              };
+              _fetchEndpoint = where ? "".concat(ordering.root, "/professionals?page=").concat(page, "&page_size=").concat(pageSize, "&&where=").concat(JSON.stringify(where)) : "".concat(ordering.root, "/professionals?page=").concat(page, "&page_size=").concat(pageSize);
+              _context.next = 28;
+              return fetch(_fetchEndpoint, requestOptions);
+            case 28:
+              _response = _context.sent;
+              _context.next = 31;
+              return _response.json();
+            case 31:
+              content = _context.sent;
+            case 32:
+              _content = content, result = _content.result, pagination = _content.pagination;
               usersList.users = result;
               setUsersList(_objectSpread(_objectSpread({}, usersList), {}, {
                 loading: false
@@ -335,10 +364,10 @@ var UsersList = function UsersList(props) {
                 nextPageItems: nextPageItems
               }));
               setPaginationDetail(_objectSpread({}, pagination));
-              _context.next = 32;
+              _context.next = 44;
               break;
-            case 29:
-              _context.prev = 29;
+            case 41:
+              _context.prev = 41;
               _context.t0 = _context["catch"](0);
               if (_context.t0.constructor.name !== 'Cancel') {
                 setUsersList(_objectSpread(_objectSpread({}, usersList), {}, {
@@ -346,12 +375,12 @@ var UsersList = function UsersList(props) {
                   error: [_context.t0.message]
                 }));
               }
-            case 32:
+            case 44:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 29]]);
+      }, _callee, null, [[0, 41]]);
     }));
     return function getUsers(_x, _x2) {
       return _ref.apply(this, arguments);
@@ -761,6 +790,16 @@ var UsersList = function UsersList(props) {
       getOccupations();
     }
   }, [isProfessional]);
+  (0, _react.useEffect)(function () {
+    events.on('occupations_update', function (data) {
+      setOccupationsState(_objectSpread(_objectSpread({}, occupationsState), {}, {
+        occupations: data
+      }));
+    });
+    return function () {
+      events.off('occupations_update');
+    };
+  }, [events]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     actionStatus: actionStatus,
     usersList: usersList,

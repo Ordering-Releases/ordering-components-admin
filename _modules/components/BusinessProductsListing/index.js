@@ -121,6 +121,10 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
     _useState26 = _slicedToArray(_useState25, 2),
     formFeeState = _useState26[0],
     setFormFeeState = _useState26[1];
+  var _useState27 = (0, _react.useState)([]),
+    _useState28 = _slicedToArray(_useState27, 2),
+    businessTypes = _useState28[0],
+    setBusinessTypes = _useState28[1];
   var categoryStateDefault = {
     loading: true,
     pagination: {
@@ -132,18 +136,18 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
     },
     products: []
   };
-  var _useState27 = (0, _react.useState)(categoryStateDefault),
-    _useState28 = _slicedToArray(_useState27, 2),
-    categoryState = _useState28[0],
-    setCategoryState = _useState28[1];
-  var _useState29 = (0, _react.useState)(null),
+  var _useState29 = (0, _react.useState)(categoryStateDefault),
     _useState30 = _slicedToArray(_useState29, 2),
-    errors = _useState30[0],
-    setErrors = _useState30[1];
-  var _useState31 = (0, _react.useState)(false),
+    categoryState = _useState30[0],
+    setCategoryState = _useState30[1];
+  var _useState31 = (0, _react.useState)(null),
     _useState32 = _slicedToArray(_useState31, 2),
-    errorQuantityProducts = _useState32[0],
-    setErrorQuantityProducts = _useState32[1];
+    errors = _useState32[0],
+    setErrors = _useState32[1];
+  var _useState33 = (0, _react.useState)(false),
+    _useState34 = _slicedToArray(_useState33, 2),
+    errorQuantityProducts = _useState34[0],
+    setErrorQuantityProducts = _useState34[1];
 
   /**
    * Change category selected
@@ -500,6 +504,49 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
       return _ref4.apply(this, arguments);
     };
   }();
+  var getBusinessTypes = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+      var response, _yield$response$json3, error, result;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.prev = 0;
+              _context5.next = 3;
+              return fetch("".concat(ordering.root, "/business_types?where=[{\"attribute\":\"enabled\",\"value\":true}]"), {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+            case 3:
+              response = _context5.sent;
+              _context5.next = 6;
+              return response.json();
+            case 6:
+              _yield$response$json3 = _context5.sent;
+              error = _yield$response$json3.error;
+              result = _yield$response$json3.result;
+              if (!error) {
+                setBusinessTypes(result);
+              }
+              _context5.next = 15;
+              break;
+            case 12:
+              _context5.prev = 12;
+              _context5.t0 = _context5["catch"](0);
+              console.log(_context5.t0 === null || _context5.t0 === void 0 ? void 0 : _context5.t0.message);
+            case 15:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5, null, [[0, 12]]);
+    }));
+    return function getBusinessTypes() {
+      return _ref5.apply(this, arguments);
+    };
+  }();
   (0, _react.useEffect)(function () {
     if (isInitialRender) {
       getProduct();
@@ -509,23 +556,23 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
     setBusinessSlug(slug);
   }, [slug]);
   var getBusiness = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
       var _result$categories, source, _yield$ordering$busin2, result;
-      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
         while (1) {
-          switch (_context5.prev = _context5.next) {
+          switch (_context6.prev = _context6.next) {
             case 0:
-              _context5.prev = 0;
+              _context6.prev = 0;
               setBusinessState(_objectSpread(_objectSpread({}, businessState), {}, {
                 loading: true
               }));
               source = {};
               requestsState.business = source;
               setRequestsState(_objectSpread({}, requestsState));
-              _context5.next = 7;
+              _context6.next = 7;
               return ordering.businesses(businessSlug).asDashboard().get();
             case 7:
-              _yield$ordering$busin2 = _context5.sent;
+              _yield$ordering$busin2 = _context6.sent;
               result = _yield$ordering$busin2.content.result;
               if (!(result !== null && result !== void 0 && result.categories) || (result === null || result === void 0 ? void 0 : (_result$categories = result.categories) === null || _result$categories === void 0 ? void 0 : _result$categories.length) === 0) {
                 setErrorQuantityProducts(true);
@@ -534,24 +581,24 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
                 business: result,
                 loading: false
               }));
-              _context5.next = 16;
+              _context6.next = 16;
               break;
             case 13:
-              _context5.prev = 13;
-              _context5.t0 = _context5["catch"](0);
+              _context6.prev = 13;
+              _context6.t0 = _context6["catch"](0);
               setBusinessState(_objectSpread(_objectSpread({}, businessState), {}, {
                 loading: false,
-                error: [_context5.t0.message]
+                error: [_context6.t0.message]
               }));
             case 16:
             case "end":
-              return _context5.stop();
+              return _context6.stop();
           }
         }
-      }, _callee5, null, [[0, 13]]);
+      }, _callee6, null, [[0, 13]]);
     }));
     return function getBusiness() {
-      return _ref5.apply(this, arguments);
+      return _ref6.apply(this, arguments);
     };
   }();
 
@@ -581,11 +628,11 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
   var handleUpdateCategoryState = function handleUpdateCategoryState(updatedCategory) {
     setCategoryState(updatedCategory);
   };
-  var handleUpdateTaxesProducts = function handleUpdateTaxesProducts(_ref6) {
+  var handleUpdateTaxesProducts = function handleUpdateTaxesProducts(_ref7) {
     var _businessState$busine10;
-    var tax = _ref6.tax,
-      isRemove = _ref6.isRemove,
-      id = _ref6.id;
+    var tax = _ref7.tax,
+      isRemove = _ref7.isRemove,
+      id = _ref7.id;
     var _categories = _toConsumableArray(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine10 = businessState.business) === null || _businessState$busine10 === void 0 ? void 0 : _businessState$busine10.categories);
     var replaceSameTaxes = function replaceSameTaxes(categories, tax) {
       for (var i = 0; i < (categories === null || categories === void 0 ? void 0 : categories.length); i++) {
@@ -614,10 +661,10 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
       })
     }));
   };
-  var handleUpdateFeesProducts = function handleUpdateFeesProducts(_ref7) {
+  var handleUpdateFeesProducts = function handleUpdateFeesProducts(_ref8) {
     var _businessState$busine11;
-    var fee = _ref7.fee,
-      isRemove = _ref7.isRemove;
+    var fee = _ref8.fee,
+      isRemove = _ref8.isRemove;
     var _categories = _toConsumableArray(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine11 = businessState.business) === null || _businessState$busine11 === void 0 ? void 0 : _businessState$busine11.categories);
     var replaceSameFees = function replaceSameFees(categories, fee) {
       for (var i = 0; i < (categories === null || categories === void 0 ? void 0 : categories.length); i++) {
@@ -716,6 +763,7 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
   (0, _react.useEffect)(function () {
     getTaxes();
     getFees();
+    getBusinessTypes();
   }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     errors: errors,
@@ -746,7 +794,9 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
     taxes: taxes,
     setTaxes: setTaxes,
     fees: fees,
-    setFees: setFees
+    setFees: setFees,
+    businessTypes: businessTypes,
+    setBusinessTypes: setBusinessTypes
   })));
 };
 exports.BusinessProductsListing = BusinessProductsListing;

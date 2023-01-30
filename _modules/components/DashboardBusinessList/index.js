@@ -55,6 +55,7 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
   var _useToast = (0, _ToastContext.useToast)(),
     _useToast2 = _slicedToArray(_useToast, 2),
     showToast = _useToast2[1].showToast;
+  var allowCodes = ['us', 'usa', 'united states', 'united states of american', 'ca', 'canada'];
   var _useState = (0, _react.useState)({
       loading: false,
       error: null,
@@ -64,28 +65,37 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
     businessList = _useState2[0],
     setBusinessList = _useState2[1];
   var _useState3 = (0, _react.useState)({
+      countries: [],
+      loading: true,
+      error: null,
+      enabled: false
+    }),
+    _useState4 = _slicedToArray(_useState3, 2),
+    countriesState = _useState4[0],
+    setCountriesState = _useState4[1];
+  var _useState5 = (0, _react.useState)({
       currentPage: paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1 ? paginationSettings.initialPage - 1 : 0,
       pageSize: (_paginationSettings$p = paginationSettings.pageSize) !== null && _paginationSettings$p !== void 0 ? _paginationSettings$p : 10
     }),
-    _useState4 = _slicedToArray(_useState3, 2),
-    pagination = _useState4[0],
-    setPagination = _useState4[1];
-  var _useState5 = (0, _react.useState)(null),
     _useState6 = _slicedToArray(_useState5, 2),
-    searchValue = _useState6[0],
-    setSearchValue = _useState6[1];
-  var _useState7 = (0, _react.useState)(true),
+    pagination = _useState6[0],
+    setPagination = _useState6[1];
+  var _useState7 = (0, _react.useState)(null),
     _useState8 = _slicedToArray(_useState7, 2),
-    selectedBusinessActiveState = _useState8[0],
-    setSelectedBusinessActiveState = _useState8[1];
-  var _useState9 = (0, _react.useState)(null),
+    searchValue = _useState8[0],
+    setSearchValue = _useState8[1];
+  var _useState9 = (0, _react.useState)(true),
     _useState10 = _slicedToArray(_useState9, 2),
-    businessTypeSelected = _useState10[0],
-    setBusinessTypeSelected = _useState10[1];
-  var _useState11 = (0, _react.useState)([]),
+    selectedBusinessActiveState = _useState10[0],
+    setSelectedBusinessActiveState = _useState10[1];
+  var _useState11 = (0, _react.useState)(null),
     _useState12 = _slicedToArray(_useState11, 2),
-    businessIds = _useState12[0],
-    setBusinessIds = _useState12[1];
+    businessTypeSelected = _useState12[0],
+    setBusinessTypeSelected = _useState12[1];
+  var _useState13 = (0, _react.useState)([]),
+    _useState14 = _slicedToArray(_useState13, 2),
+    businessIds = _useState14[0],
+    setBusinessIds = _useState14[1];
 
   /**
    * Method to get businesses from API
@@ -188,29 +198,89 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
   }();
 
   /**
-   * Method to load businesses
+   * Method to get the countries from API
    */
-  var loadBusinesses = /*#__PURE__*/function () {
+  var getCountries = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var response, _err$constructor;
+      var _yield$ordering$count, _yield$ordering$count2, error, result, enabled;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
+              _context2.prev = 0;
+              setCountriesState(_objectSpread(_objectSpread({}, countriesState), {}, {
+                loading: true
+              }));
+              _context2.next = 4;
+              return ordering.countries().get();
+            case 4:
+              _yield$ordering$count = _context2.sent;
+              _yield$ordering$count2 = _yield$ordering$count.content;
+              error = _yield$ordering$count2.error;
+              result = _yield$ordering$count2.result;
+              if (!error) {
+                enabled = result.filter(function (country) {
+                  return country === null || country === void 0 ? void 0 : country.enabled;
+                }).some(function (country) {
+                  var _country$code, _country$name;
+                  return allowCodes.includes(country === null || country === void 0 ? void 0 : (_country$code = country.code) === null || _country$code === void 0 ? void 0 : _country$code.toLowerCase()) || allowCodes.includes(country === null || country === void 0 ? void 0 : (_country$name = country.name) === null || _country$name === void 0 ? void 0 : _country$name.toLowerCase());
+                });
+                setCountriesState(_objectSpread(_objectSpread({}, countriesState), {}, {
+                  loading: false,
+                  countries: result,
+                  enabled: enabled
+                }));
+              } else {
+                setCountriesState(_objectSpread(_objectSpread({}, countriesState), {}, {
+                  loading: false,
+                  error: result
+                }));
+              }
+              _context2.next = 14;
+              break;
+            case 11:
+              _context2.prev = 11;
+              _context2.t0 = _context2["catch"](0);
+              setCountriesState(_objectSpread(_objectSpread({}, countriesState), {}, {
+                loading: false,
+                error: [_context2.t0.message]
+              }));
+            case 14:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, null, [[0, 11]]);
+    }));
+    return function getCountries() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Method to load businesses
+   */
+  var loadBusinesses = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var response, _err$constructor;
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
               if (session.token) {
-                _context2.next = 2;
+                _context3.next = 2;
                 break;
               }
-              return _context2.abrupt("return");
+              return _context3.abrupt("return");
             case 2:
-              _context2.prev = 2;
+              _context3.prev = 2;
               setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
                 loading: true
               }));
-              _context2.next = 6;
+              _context3.next = 6;
               return getBusinesses(initialPageSize || pagination.pageSize, 1);
             case 6:
-              response = _context2.sent;
+              response = _context3.sent;
               setBusinessList({
                 loading: false,
                 businesses: response.content.error ? [] : response.content.result,
@@ -226,26 +296,26 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
                   to: response.content.pagination.to
                 });
               }
-              _context2.next = 14;
+              _context3.next = 14;
               break;
             case 11:
-              _context2.prev = 11;
-              _context2.t0 = _context2["catch"](2);
-              if ((_context2.t0 === null || _context2.t0 === void 0 ? void 0 : (_err$constructor = _context2.t0.constructor) === null || _err$constructor === void 0 ? void 0 : _err$constructor.name) !== 'Cancel') {
+              _context3.prev = 11;
+              _context3.t0 = _context3["catch"](2);
+              if ((_context3.t0 === null || _context3.t0 === void 0 ? void 0 : (_err$constructor = _context3.t0.constructor) === null || _err$constructor === void 0 ? void 0 : _err$constructor.name) !== 'Cancel') {
                 setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
                   loading: false,
-                  error: [_context2.t0.message]
+                  error: [_context3.t0.message]
                 }));
               }
             case 14:
             case "end":
-              return _context2.stop();
+              return _context3.stop();
           }
         }
-      }, _callee2, null, [[2, 11]]);
+      }, _callee3, null, [[2, 11]]);
     }));
     return function loadBusinesses() {
-      return _ref2.apply(this, arguments);
+      return _ref3.apply(this, arguments);
     };
   }();
 
@@ -253,63 +323,7 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
    * Method to get businesses more
    */
   var loadMoreBusinesses = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var response;
-      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
-                loading: true
-              }));
-              _context3.prev = 1;
-              _context3.next = 4;
-              return getBusinesses(loadMorePageSize, Math.ceil((pagination === null || pagination === void 0 ? void 0 : pagination.to) / loadMorePageSize) + 1);
-            case 4:
-              response = _context3.sent;
-              setBusinessList({
-                loading: false,
-                businesses: response.content.error ? businessList.businesses : businessList.businesses.concat(response.content.result),
-                error: response.content.error ? response.content.result : null
-              });
-              if (!response.content.error) {
-                setPagination({
-                  currentPage: response.content.pagination.current_page,
-                  pageSize: response.content.pagination.page_size === 0 ? pagination.pageSize : response.content.pagination.page_size,
-                  totalPages: response.content.pagination.total_pages,
-                  total: response.content.pagination.total,
-                  from: response.content.pagination.from,
-                  to: response.content.pagination.to
-                });
-              }
-              _context3.next = 12;
-              break;
-            case 9:
-              _context3.prev = 9;
-              _context3.t0 = _context3["catch"](1);
-              if (_context3.t0.constructor.name !== 'Cancel') {
-                setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
-                  loading: false,
-                  error: [_context3.t0.message]
-                }));
-              }
-            case 12:
-            case "end":
-              return _context3.stop();
-          }
-        }
-      }, _callee3, null, [[1, 9]]);
-    }));
-    return function loadMoreBusinesses() {
-      return _ref3.apply(this, arguments);
-    };
-  }();
-
-  /**
-   * Method to get businesses for page and pageSize
-   */
-  var getPageBusinesses = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(pageSize, page) {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
       var response;
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) {
@@ -320,12 +334,12 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
               }));
               _context4.prev = 1;
               _context4.next = 4;
-              return getBusinesses(pageSize, page);
+              return getBusinesses(loadMorePageSize, Math.ceil((pagination === null || pagination === void 0 ? void 0 : pagination.to) / loadMorePageSize) + 1);
             case 4:
               response = _context4.sent;
               setBusinessList({
                 loading: false,
-                businesses: response.content.error ? businessList.businesses : response.content.result,
+                businesses: response.content.error ? businessList.businesses : businessList.businesses.concat(response.content.result),
                 error: response.content.error ? response.content.result : null
               });
               if (!response.content.error) {
@@ -356,8 +370,64 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
         }
       }, _callee4, null, [[1, 9]]);
     }));
-    return function getPageBusinesses(_x3, _x4) {
+    return function loadMoreBusinesses() {
       return _ref4.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Method to get businesses for page and pageSize
+   */
+  var getPageBusinesses = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(pageSize, page) {
+      var response;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
+                loading: true
+              }));
+              _context5.prev = 1;
+              _context5.next = 4;
+              return getBusinesses(pageSize, page);
+            case 4:
+              response = _context5.sent;
+              setBusinessList({
+                loading: false,
+                businesses: response.content.error ? businessList.businesses : response.content.result,
+                error: response.content.error ? response.content.result : null
+              });
+              if (!response.content.error) {
+                setPagination({
+                  currentPage: response.content.pagination.current_page,
+                  pageSize: response.content.pagination.page_size === 0 ? pagination.pageSize : response.content.pagination.page_size,
+                  totalPages: response.content.pagination.total_pages,
+                  total: response.content.pagination.total,
+                  from: response.content.pagination.from,
+                  to: response.content.pagination.to
+                });
+              }
+              _context5.next = 12;
+              break;
+            case 9:
+              _context5.prev = 9;
+              _context5.t0 = _context5["catch"](1);
+              if (_context5.t0.constructor.name !== 'Cancel') {
+                setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
+                  loading: false,
+                  error: [_context5.t0.message]
+                }));
+              }
+            case 12:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5, null, [[1, 9]]);
+    }));
+    return function getPageBusinesses(_x3, _x4) {
+      return _ref5.apply(this, arguments);
     };
   }();
 
@@ -367,20 +437,20 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
    * @param {Boolean} isFeatured flag to check if featured or enabled
    */
   var handleEnableAllBusiness = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(enabled) {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(enabled) {
       var isFeatured,
         changes,
         requestOptions,
         response,
         content,
         updatedBusinessList,
-        _args5 = arguments;
-      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        _args6 = arguments;
+      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
         while (1) {
-          switch (_context5.prev = _context5.next) {
+          switch (_context6.prev = _context6.next) {
             case 0:
-              isFeatured = _args5.length > 1 && _args5[1] !== undefined ? _args5[1] : false;
-              _context5.prev = 1;
+              isFeatured = _args6.length > 1 && _args6[1] !== undefined ? _args6[1] : false;
+              _context6.prev = 1;
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               changes = _objectSpread({
                 businesses_id: businessIds
@@ -397,14 +467,14 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
                 },
                 body: JSON.stringify(changes)
               };
-              _context5.next = 7;
+              _context6.next = 7;
               return fetch("".concat(ordering.root, "/business"), requestOptions);
             case 7:
-              response = _context5.sent;
-              _context5.next = 10;
+              response = _context6.sent;
+              _context6.next = 10;
               return response.json();
             case 10:
-              content = _context5.sent;
+              content = _context6.sent;
               if (!(content !== null && content !== void 0 && content.error)) {
                 updatedBusinessList = isFeatured ? businessList === null || businessList === void 0 ? void 0 : businessList.businesses.map(function (business) {
                   return businessIds.includes(business === null || business === void 0 ? void 0 : business.id) ? _objectSpread(_objectSpread({}, business), {}, {
@@ -421,21 +491,21 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
               } else {
                 showToast(_ToastContext.ToastType.Error, content === null || content === void 0 ? void 0 : content.result);
               }
-              _context5.next = 17;
+              _context6.next = 17;
               break;
             case 14:
-              _context5.prev = 14;
-              _context5.t0 = _context5["catch"](1);
-              showToast(_ToastContext.ToastType.Error, _context5.t0.message);
+              _context6.prev = 14;
+              _context6.t0 = _context6["catch"](1);
+              showToast(_ToastContext.ToastType.Error, _context6.t0.message);
             case 17:
             case "end":
-              return _context5.stop();
+              return _context6.stop();
           }
         }
-      }, _callee5, null, [[1, 14]]);
+      }, _callee6, null, [[1, 14]]);
     }));
     return function handleEnableAllBusiness(_x5) {
-      return _ref5.apply(this, arguments);
+      return _ref6.apply(this, arguments);
     };
   }();
 
@@ -443,13 +513,13 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
    * Method to delete business list
    */
   var handleDeleteMultiBusinesses = /*#__PURE__*/function () {
-    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+    var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
       var requestOptions, response, content, updatedBusinessList;
-      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
         while (1) {
-          switch (_context6.prev = _context6.next) {
+          switch (_context7.prev = _context7.next) {
             case 0:
-              _context6.prev = 0;
+              _context7.prev = 0;
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               requestOptions = {
                 method: 'DELETE',
@@ -461,14 +531,14 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
                   businesses_id: businessIds
                 })
               };
-              _context6.next = 5;
+              _context7.next = 5;
               return fetch("".concat(ordering.root, "/business"), requestOptions);
             case 5:
-              response = _context6.sent;
-              _context6.next = 8;
+              response = _context7.sent;
+              _context7.next = 8;
               return response.json();
             case 8:
-              content = _context6.sent;
+              content = _context7.sent;
               if (!(content !== null && content !== void 0 && content.error)) {
                 updatedBusinessList = businessList === null || businessList === void 0 ? void 0 : businessList.businesses.filter(function (business) {
                   return !businessIds.includes(business === null || business === void 0 ? void 0 : business.id);
@@ -481,21 +551,21 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
               } else {
                 showToast(_ToastContext.ToastType.Error, content === null || content === void 0 ? void 0 : content.result);
               }
-              _context6.next = 15;
+              _context7.next = 15;
               break;
             case 12:
-              _context6.prev = 12;
-              _context6.t0 = _context6["catch"](0);
-              showToast(_ToastContext.ToastType.Error, _context6.t0.message);
+              _context7.prev = 12;
+              _context7.t0 = _context7["catch"](0);
+              showToast(_ToastContext.ToastType.Error, _context7.t0.message);
             case 15:
             case "end":
-              return _context6.stop();
+              return _context7.stop();
           }
         }
-      }, _callee6, null, [[0, 12]]);
+      }, _callee7, null, [[0, 12]]);
     }));
     return function handleDeleteMultiBusinesses() {
-      return _ref6.apply(this, arguments);
+      return _ref7.apply(this, arguments);
     };
   }();
 
@@ -616,6 +686,9 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
       loadBusinesses();
     }
   }, [session, searchValue, selectedBusinessActiveState, businessTypeSelected]);
+  (0, _react.useEffect)(function () {
+    getCountries();
+  }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     pagination: pagination,
     searchValue: searchValue,
@@ -634,7 +707,8 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
     handleSucessRemoveBusiness: handleSucessRemoveBusiness,
     handleSucessUpdateBusiness: handleSucessUpdateBusiness,
     handleDeleteMultiBusinesses: handleDeleteMultiBusinesses,
-    handleChangeBusinessActiveState: handleChangeBusinessActiveState
+    handleChangeBusinessActiveState: handleChangeBusinessActiveState,
+    countriesState: countriesState
   })));
 };
 exports.DashboardBusinessList = DashboardBusinessList;
