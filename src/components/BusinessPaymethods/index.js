@@ -6,7 +6,7 @@ import { useConfig } from '../../contexts/ConfigContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
 import { useLanguage } from '../../contexts/LanguageContext'
 
-const paymethodsNotAllowed = ['paypal_express', 'authorize', 'google_pay', 'apple_pay', 'microsoft_pay']
+const paymethodsNotAllowed = ['paypal_express', 'authorize', 'microsoft_pay']
 
 export const BusinessPaymethods = (props) => {
   const {
