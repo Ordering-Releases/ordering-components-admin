@@ -43,6 +43,11 @@ var OrderNotification = function OrderNotification(props) {
     socket.on('orders_register', handleRegisterOrder);
     return function () {
       socket.off('orders_register', handleRegisterOrder);
+      if (user.level === 0) {
+        socket.leave('orders');
+      } else {
+        socket.leave("orders_".concat(user === null || user === void 0 ? void 0 : user.id));
+      }
     };
   }, [socket, loading, user]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, props));

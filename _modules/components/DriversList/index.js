@@ -472,6 +472,10 @@ var DriversList = function DriversList(props) {
   (0, _react.useEffect)(function () {
     if (!(session !== null && session !== void 0 && session.user) || drivers) return;
     socket.join('drivers');
+    return function () {
+      if (!(session !== null && session !== void 0 && session.user) || drivers) return;
+      socket.leave('drivers');
+    };
   }, [socket, session === null || session === void 0 ? void 0 : session.user, asDashboard]);
   (0, _react.useEffect)(function () {
     getOnlineOfflineDrivers(driversList.drivers);

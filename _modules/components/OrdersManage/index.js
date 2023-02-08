@@ -890,6 +890,17 @@ var OrdersManage = function OrdersManage(props) {
       socket.join("orders_".concat(user === null || user === void 0 ? void 0 : user.id));
       socket.join("messages_orders_".concat(user === null || user === void 0 ? void 0 : user.id));
     }
+    return function () {
+      if (!user) return;
+      socket.leave('drivers');
+      if (user.level === 0) {
+        socket.leave('orders');
+        socket.leave('messages_orders');
+      } else {
+        socket.leave("orders_".concat(user === null || user === void 0 ? void 0 : user.id));
+        socket.leave("messages_orders_".concat(user === null || user === void 0 ? void 0 : user.id));
+      }
+    };
   }, [socket, loading, user]);
 
   /**
