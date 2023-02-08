@@ -597,6 +597,18 @@ export const OrdersManage = (props) => {
       socket.join(`orders_${user?.id}`)
       socket.join(`messages_orders_${user?.id}`)
     }
+
+    return () => {
+      if (!user) return
+      socket.leave('drivers')
+      if (user.level === 0) {
+        socket.leave('orders')
+        socket.leave('messages_orders')
+      } else {
+        socket.leave(`orders_${user?.id}`)
+        socket.leave(`messages_orders_${user?.id}`)
+      }
+    }
   }, [socket, loading, user])
 
   /**

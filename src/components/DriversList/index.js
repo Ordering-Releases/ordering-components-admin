@@ -330,6 +330,11 @@ export const DriversList = (props) => {
   useEffect(() => {
     if (!session?.user || drivers) return
     socket.join('drivers')
+
+    return () => {
+      if (!session?.user || drivers) return
+      socket.leave('drivers')
+    }
   }, [socket, session?.user, asDashboard])
 
   useEffect(() => {

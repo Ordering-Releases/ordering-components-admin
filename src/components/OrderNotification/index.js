@@ -26,6 +26,11 @@ export const OrderNotification = (props) => {
     socket.on('orders_register', handleRegisterOrder)
     return () => {
       socket.off('orders_register', handleRegisterOrder)
+      if (user.level === 0) {
+        socket.leave('orders')
+      } else {
+        socket.leave(`orders_${user?.id}`)
+      }
     }
   }, [socket, loading, user])
 
