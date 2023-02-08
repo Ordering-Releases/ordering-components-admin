@@ -12,7 +12,7 @@ export const BusinessDeliveryZoneShare = (props) => {
     zone,
     businesses,
     busienssesPropsToFetch,
-    handleUpdateBusinessDeliveryZone
+    handleSuccessUpdate
   } = props
 
   const [ordering] = useApi()
@@ -81,10 +81,11 @@ export const BusinessDeliveryZoneShare = (props) => {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
-        }
+        },
+        body: JSON.stringify({ businesses: selectedBusinessIds })
       }
 
-      const response = await fetch(`${ordering.root}/business/${business.id}/deliveryzones/${zone.id}?businesses=[${selectedBusinessIds}]`, requestOptions)
+      const response = await fetch(`${ordering.root}/business/${business.id}/deliveryzones/${zone.id}`, requestOptions)
       const content = await response.json()
 
       if (!content.error) {
@@ -104,7 +105,7 @@ export const BusinessDeliveryZoneShare = (props) => {
           return true
         })
         const _business = { ...business, zones: zones }
-        handleUpdateBusinessDeliveryZone && handleUpdateBusinessDeliveryZone(_business)
+        handleSuccessUpdate && handleSuccessUpdate(_business)
         setActionState({ loading: false, result: { error: false } })
         showToast(ToastType.Success, t('BUSINESS_SAVED', 'Business saved'))
       }

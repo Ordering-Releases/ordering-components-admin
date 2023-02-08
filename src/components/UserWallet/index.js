@@ -37,6 +37,7 @@ export const UserWallet = (props) => {
       const requestOptions = {
         method: 'GET',
         headers: {
+          'X-App-X': ordering.appId,
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         }
@@ -77,6 +78,7 @@ export const UserWallet = (props) => {
       const requestOptions = {
         method: 'GET',
         headers: {
+          'X-App-X': ordering.appId,
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         }
@@ -144,6 +146,7 @@ export const UserWallet = (props) => {
       const requestOptions = {
         method: 'POST',
         headers: {
+          'X-App-X': ordering.appId,
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
@@ -185,6 +188,7 @@ export const UserWallet = (props) => {
       const requestOptions = {
         method: 'POST',
         headers: {
+          'X-App-X': ordering.appId,
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },

@@ -19,7 +19,7 @@ export const DriversGroupDetails = (props) => {
   } = props
 
   const [ordering] = useApi()
-  const [{ token }] = useSession()
+  const [{ token, user }] = useSession()
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
 
@@ -131,7 +131,8 @@ export const DriversGroupDetails = (props) => {
         orders_group_max_time_between_delivery: 600,
         orders_group_max_time_between_pickup: 600,
         orders_group_start_in_status: '7',
-        orders_group_use_maps_api: false
+        orders_group_use_maps_api: false,
+        ...(user?.level === 5 && { administrator_id: user?.id })
       }
       const changes = { ...changesState, ...extraAttributes }
       const requestOptions = {
@@ -147,9 +148,12 @@ export const DriversGroupDetails = (props) => {
       if (!content.error) {
         setActionState({ loading: false, error: null })
         let newGroup = { ...content.result }
-        if (!content.result?.administrator && driversManagers.length > 0) {
+        if (!content.result?.administrator && (driversManagers.length > 0 || user?.level === 5)) {
           const newAdmin = driversManagers.find(manager => manager.id === content.result?.administrator_id)
-          newGroup = { ...newGroup, administrator: newAdmin }
+          newGroup = {
+            ...newGroup,
+            administrator: user?.level !== 5 ? newAdmin : JSON.parse(JSON.stringify(user))
+          }
         }
         const groups = [...driversGroupsState.groups, newGroup]
         setDriversGroupsState({ ...driversGroupsState, groups: groups })

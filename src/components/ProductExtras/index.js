@@ -342,6 +342,7 @@ export const ProductExtras = (props) => {
           hanldeDragOver={hanldeDragOver}
           handleDrop={handleDrop}
           handleDragEnd={handleDragEnd}
+          handleUpdateExtraState={handleUpdateExtraState}
         />
       )}
     </>
