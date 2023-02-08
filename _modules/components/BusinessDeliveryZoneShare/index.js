@@ -38,7 +38,7 @@ var BusinessDeliveryZoneShare = function BusinessDeliveryZoneShare(props) {
     zone = props.zone,
     businesses = props.businesses,
     busienssesPropsToFetch = props.busienssesPropsToFetch,
-    handleUpdateBusinessDeliveryZone = props.handleUpdateBusinessDeliveryZone;
+    handleSuccessUpdate = props.handleSuccessUpdate;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -177,10 +177,13 @@ var BusinessDeliveryZoneShare = function BusinessDeliveryZoneShare(props) {
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: "Bearer ".concat(token)
-                }
+                },
+                body: JSON.stringify({
+                  businesses: selectedBusinessIds
+                })
               };
               _context2.next = 6;
-              return fetch("".concat(ordering.root, "/business/").concat(business.id, "/deliveryzones/").concat(zone.id, "?businesses=[").concat(selectedBusinessIds, "]"), requestOptions);
+              return fetch("".concat(ordering.root, "/business/").concat(business.id, "/deliveryzones/").concat(zone.id), requestOptions);
             case 6:
               response = _context2.sent;
               _context2.next = 9;
@@ -225,7 +228,7 @@ var BusinessDeliveryZoneShare = function BusinessDeliveryZoneShare(props) {
                 _business = _objectSpread(_objectSpread({}, business), {}, {
                   zones: zones
                 });
-                handleUpdateBusinessDeliveryZone && handleUpdateBusinessDeliveryZone(_business);
+                handleSuccessUpdate && handleSuccessUpdate(_business);
                 setActionState({
                   loading: false,
                   result: {

@@ -101,6 +101,7 @@ var UserWallet = function UserWallet(props) {
               requestOptions = {
                 method: 'GET',
                 headers: {
+                  'X-App-X': ordering.appId,
                   'Content-Type': 'application/json',
                   Authorization: "Bearer ".concat(token)
                 }
@@ -165,6 +166,7 @@ var UserWallet = function UserWallet(props) {
               requestOptions = {
                 method: 'GET',
                 headers: {
+                  'X-App-X': ordering.appId,
                   'Content-Type': 'application/json',
                   Authorization: "Bearer ".concat(token)
                 }
@@ -279,6 +281,7 @@ var UserWallet = function UserWallet(props) {
               requestOptions = {
                 method: 'POST',
                 headers: {
+                  'X-App-X': ordering.appId,
                   'Content-Type': 'application/json',
                   Authorization: "Bearer ".concat(token)
                 },
@@ -352,6 +355,7 @@ var UserWallet = function UserWallet(props) {
               requestOptions = {
                 method: 'POST',
                 headers: {
+                  'X-App-X': ordering.appId,
                   'Content-Type': 'application/json',
                   Authorization: "Bearer ".concat(token)
                 },

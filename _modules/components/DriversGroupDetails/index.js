@@ -46,7 +46,9 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
     ordering = _useApi2[0];
   var _useSession = (0, _SessionContext.useSession)(),
     _useSession2 = _slicedToArray(_useSession, 1),
-    token = _useSession2[0].token;
+    _useSession2$ = _useSession2[0],
+    token = _useSession2$.token,
+    user = _useSession2$.user;
   var _useToast = (0, _ToastContext.useToast)(),
     _useToast2 = _slicedToArray(_useToast, 2),
     showToast = _useToast2[1].showToast;
@@ -253,7 +255,7 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
                 loading: true,
                 error: null
               });
-              extraAttributes = {
+              extraAttributes = _objectSpread({
                 enabled: true,
                 autoassign_amount_drivers: 1,
                 autoassign_autoaccept_by_driver: false,
@@ -276,7 +278,9 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
                 orders_group_max_time_between_pickup: 600,
                 orders_group_start_in_status: '7',
                 orders_group_use_maps_api: false
-              };
+              }, (user === null || user === void 0 ? void 0 : user.level) === 5 && {
+                administrator_id: user === null || user === void 0 ? void 0 : user.id
+              });
               changes = _objectSpread(_objectSpread({}, changesState), extraAttributes);
               requestOptions = {
                 method: 'POST',
@@ -300,13 +304,13 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
                   error: null
                 });
                 newGroup = _objectSpread({}, content.result);
-                if (!((_content$result = content.result) !== null && _content$result !== void 0 && _content$result.administrator) && driversManagers.length > 0) {
+                if (!((_content$result = content.result) !== null && _content$result !== void 0 && _content$result.administrator) && (driversManagers.length > 0 || (user === null || user === void 0 ? void 0 : user.level) === 5)) {
                   newAdmin = driversManagers.find(function (manager) {
                     var _content$result2;
                     return manager.id === ((_content$result2 = content.result) === null || _content$result2 === void 0 ? void 0 : _content$result2.administrator_id);
                   });
                   newGroup = _objectSpread(_objectSpread({}, newGroup), {}, {
-                    administrator: newAdmin
+                    administrator: (user === null || user === void 0 ? void 0 : user.level) !== 5 ? newAdmin : JSON.parse(JSON.stringify(user))
                   });
                 }
                 groups = [].concat(_toConsumableArray(driversGroupsState.groups), [newGroup]);

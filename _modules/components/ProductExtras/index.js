@@ -582,7 +582,8 @@ var ProductExtras = function ProductExtras(props) {
     handleDragStart: handleDragStart,
     hanldeDragOver: hanldeDragOver,
     handleDrop: handleDrop,
-    handleDragEnd: handleDragEnd
+    handleDragEnd: handleDragEnd,
+    handleUpdateExtraState: handleUpdateExtraState
   })));
 };
 exports.ProductExtras = ProductExtras;
