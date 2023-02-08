@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
 
-const categoryHideList = ['cloudinary', 'tookan', 'order_messages', 'others', 'professional_signup']
+const categoryHideList = ['cloudinary', 'tookan', 'order_messages', 'others']
 const configHideList = [
   'search_by_address',
   'distance_unit_km',
