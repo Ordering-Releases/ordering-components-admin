@@ -44,7 +44,14 @@ export class Socket {
 
   join (room) {
     if (this.socket?.connected) {
-      this.socket.emit('join', `${this.project}_${room}`)
+      let paramRoom = null
+      if (typeof room === 'object') {
+        room.project = this.project
+        paramRoom = room
+      } else {
+        paramRoom = `${this.project}_${room}`
+      }
+      this.socket.emit('join', paramRoom)
     } else {
       this.queue.push({ action: 'join', room })
     }
@@ -53,7 +60,14 @@ export class Socket {
 
   leave (room) {
     if (this.socket?.connected) {
-      this.socket.emit('leave', `${this.project}_${room}`)
+      let paramRoom = null
+      if (typeof room === 'object') {
+        room.project = this.project
+        paramRoom = room
+      } else {
+        paramRoom = `${this.project}_${room}`
+      }
+      this.socket.emit('leave', paramRoom)
     } else {
       this.queue.push({ action: 'leave', room })
     }
