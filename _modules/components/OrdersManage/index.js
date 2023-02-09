@@ -122,14 +122,6 @@ var OrdersManage = function OrdersManage(props) {
       colSpan: 1,
       order: -1
     },
-    status: {
-      visable: true,
-      title: t('STATUS', 'Status'),
-      className: 'statusInfo',
-      draggable: true,
-      colSpan: 1,
-      order: 1
-    },
     dateTime: {
       visable: true,
       title: '',
@@ -138,13 +130,29 @@ var OrdersManage = function OrdersManage(props) {
       colSpan: 1,
       order: 0
     },
+    status: {
+      visable: true,
+      title: t('STATUS', 'Status'),
+      className: 'statusInfo',
+      draggable: true,
+      colSpan: 1,
+      order: 1
+    },
+    cartGroupId: {
+      visable: true,
+      title: t('GROUP_ORDER', 'Group Order'),
+      className: 'groupOrderId',
+      draggable: true,
+      colSpan: 1,
+      order: 2
+    },
     business: {
       visable: true,
       title: t('BUSINESS', 'Business'),
       className: 'businessInfo',
       draggable: true,
       colSpan: 1,
-      order: 2
+      order: 3
     },
     customer: {
       visable: true,
@@ -152,7 +160,7 @@ var OrdersManage = function OrdersManage(props) {
       className: 'customerInfo',
       draggable: true,
       colSpan: 1,
-      order: 3
+      order: 4
     },
     driver: {
       visable: true,
@@ -160,7 +168,7 @@ var OrdersManage = function OrdersManage(props) {
       className: 'driverInfo',
       draggable: true,
       colSpan: 1,
-      order: 4
+      order: 5
     },
     advanced: {
       visable: true,
@@ -168,7 +176,7 @@ var OrdersManage = function OrdersManage(props) {
       className: 'advanced',
       draggable: true,
       colSpan: 3,
-      order: 5
+      order: 6
     },
     timer: {
       visable: false,
@@ -176,7 +184,7 @@ var OrdersManage = function OrdersManage(props) {
       className: 'timer',
       draggable: true,
       colSpan: 1,
-      order: 6
+      order: 7
     },
     eta: {
       visable: true,
@@ -184,7 +192,7 @@ var OrdersManage = function OrdersManage(props) {
       className: 'eta',
       draggable: true,
       colSpan: 1,
-      order: 7
+      order: 8
     },
     total: {
       visable: true,
@@ -934,7 +942,7 @@ var OrdersManage = function OrdersManage(props) {
     getOrderNumbersByStatus();
   }, [filterValues, searchValue, driverId, customerId, businessId]);
   (0, _react.useEffect)(function () {
-    if (!user.id || configState !== null && configState !== void 0 && configState.loading || allowColumns) return;
+    if (!user.id || configState !== null && configState !== void 0 && configState.loading) return;
     var getUser = /*#__PURE__*/function () {
       var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
         var _result$settings, _configState$configs, _configState$configs$, _configState$configs2, _configState$configs3, response, _response$content, error, result, _result$settings2, _configState$configs4, _configState$configs5, _configState$configs6, _configState$configs7;
