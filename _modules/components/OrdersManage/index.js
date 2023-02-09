@@ -817,7 +817,7 @@ var OrdersManage = function OrdersManage(props) {
                 }
               };
               _context5.next = 15;
-              return fetch("".concat(ordering.root, "/orders/dashboard?where=").concat(JSON.stringify(where)), requestOptions);
+              return fetch("".concat(ordering.root, "/orders/dashboard?v=2&where=").concat(JSON.stringify(where)), requestOptions);
             case 15:
               response = _context5.sent;
               _context5.next = 18;
@@ -877,37 +877,67 @@ var OrdersManage = function OrdersManage(props) {
       return _ref5.apply(this, arguments);
     };
   }();
-  var handleUpdateOrder = function handleUpdateOrder() {
-    getOrderNumbersByStatus();
+  var handleChangeOrder = function handleChangeOrder(order) {
+    var _order$changes;
+    var statusChange = order === null || order === void 0 ? void 0 : (_order$changes = order.changes) === null || _order$changes === void 0 ? void 0 : _order$changes.find(function (_ref7) {
+      var attribute = _ref7.attribute;
+      return attribute === 'status';
+    });
+    if (statusChange && !numberOfOrdersByStatus.loading) {
+      var from = statusChange.old;
+      var to = statusChange.new;
+      var _orderStatusNumbers = numberOfOrdersByStatus.result;
+      var fromTab = null;
+      var toTab = null;
+      Object.values(orderStatuesList).map(function (statusTabs, key) {
+        if (statusTabs.includes(from)) {
+          fromTab = Object.keys(orderStatuesList)[key];
+          _orderStatusNumbers[fromTab] -= 1;
+        }
+        if (statusTabs.includes(to)) {
+          toTab = Object.keys(orderStatuesList)[key];
+          _orderStatusNumbers[toTab] += 1;
+        }
+      });
+      setNumberOfOrdersByStatus(_objectSpread(_objectSpread({}, numberOfOrdersByStatus), {}, {
+        loading: false,
+        error: false,
+        result: _orderStatusNumbers
+      }));
+    }
   };
   (0, _react.useEffect)(function () {
-    socket.on('update_order', handleUpdateOrder);
-    socket.on('orders_register', handleUpdateOrder);
+    socket.on('order_change', handleChangeOrder);
     return function () {
-      socket.off('update_order', handleUpdateOrder);
-      socket.off('orders_register', handleUpdateOrder);
+      socket.off('order_change', handleChangeOrder);
     };
   }, [socket, filterValues, searchValue, numberOfOrdersByStatus]);
   (0, _react.useEffect)(function () {
     if (!user) return;
     socket.join('drivers');
     if (user.level === 0) {
-      socket.join('orders');
       socket.join('messages_orders');
     } else {
-      socket.join("orders_".concat(user === null || user === void 0 ? void 0 : user.id));
       socket.join("messages_orders_".concat(user === null || user === void 0 ? void 0 : user.id));
     }
+    socket.join({
+      room: 'orders',
+      user_id: user === null || user === void 0 ? void 0 : user.id,
+      role: 'manager'
+    });
     return function () {
       if (!user) return;
       socket.leave('drivers');
       if (user.level === 0) {
-        socket.leave('orders');
         socket.leave('messages_orders');
       } else {
-        socket.leave("orders_".concat(user === null || user === void 0 ? void 0 : user.id));
         socket.leave("messages_orders_".concat(user === null || user === void 0 ? void 0 : user.id));
       }
+      socket.leave({
+        room: 'orders',
+        user_id: user === null || user === void 0 ? void 0 : user.id,
+        role: 'manager'
+      });
     };
   }, [socket, loading, user]);
 
@@ -944,7 +974,7 @@ var OrdersManage = function OrdersManage(props) {
   (0, _react.useEffect)(function () {
     if (!user.id || configState !== null && configState !== void 0 && configState.loading) return;
     var getUser = /*#__PURE__*/function () {
-      var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+      var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
         var _result$settings, _configState$configs, _configState$configs$, _configState$configs2, _configState$configs3, response, _response$content, error, result, _result$settings2, _configState$configs4, _configState$configs5, _configState$configs6, _configState$configs7;
         return _regeneratorRuntime().wrap(function _callee6$(_context6) {
           while (1) {
@@ -992,7 +1022,7 @@ var OrdersManage = function OrdersManage(props) {
         }, _callee6, null, [[0, 11]]);
       }));
       return function getUser() {
-        return _ref7.apply(this, arguments);
+        return _ref8.apply(this, arguments);
       };
     }();
     getUser();

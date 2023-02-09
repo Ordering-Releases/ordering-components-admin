@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Socket = void 0;
 var _socket = _interopRequireDefault(require("socket.io-client"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -65,7 +66,14 @@ var Socket = /*#__PURE__*/function () {
     value: function join(room) {
       var _this$socket3;
       if ((_this$socket3 = this.socket) !== null && _this$socket3 !== void 0 && _this$socket3.connected) {
-        this.socket.emit('join', "".concat(this.project, "_").concat(room));
+        var paramRoom = null;
+        if (_typeof(room) === 'object') {
+          room.project = this.project;
+          paramRoom = room;
+        } else {
+          paramRoom = "".concat(this.project, "_").concat(room);
+        }
+        this.socket.emit('join', paramRoom);
       } else {
         this.queue.push({
           action: 'join',
@@ -79,7 +87,14 @@ var Socket = /*#__PURE__*/function () {
     value: function leave(room) {
       var _this$socket4;
       if ((_this$socket4 = this.socket) !== null && _this$socket4 !== void 0 && _this$socket4.connected) {
-        this.socket.emit('leave', "".concat(this.project, "_").concat(room));
+        var paramRoom = null;
+        if (_typeof(room) === 'object') {
+          room.project = this.project;
+          paramRoom = room;
+        } else {
+          paramRoom = "".concat(this.project, "_").concat(room);
+        }
+        this.socket.emit('leave', paramRoom);
       } else {
         this.queue.push({
           action: 'leave',
