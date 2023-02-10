@@ -834,29 +834,39 @@ var BusinessAdd = function BusinessAdd(props) {
     var extraHours = null;
     var schedule = [];
     var _loop = function _loop(i) {
-      var _period$open, _period$open4;
+      var _period$open, _period$close, _period$open4, _period$close4, _period$open7;
       var period = periods.find(function (item) {
         var _item$open;
         return (item === null || item === void 0 ? void 0 : (_item$open = item.open) === null || _item$open === void 0 ? void 0 : _item$open.day) === i;
       });
       if (!period) {
         !extraHours ? schedule.push({
-          enabled: false
+          enabled: true,
+          lapses: [{
+            open: {
+              hour: 0,
+              minute: 0
+            },
+            close: {
+              hour: 23,
+              minute: 59
+            }
+          }]
         }) : schedule.push({
           enabled: true,
           lapses: extraHours
         });
       }
-      if ((period === null || period === void 0 ? void 0 : (_period$open = period.open) === null || _period$open === void 0 ? void 0 : _period$open.day) === i && (period === null || period === void 0 ? void 0 : period.close.day) === i) {
-        var _period$open2, _period$open3, _period$close, _period$close2;
+      if ((period === null || period === void 0 ? void 0 : (_period$open = period.open) === null || _period$open === void 0 ? void 0 : _period$open.day) === i && (period === null || period === void 0 ? void 0 : (_period$close = period.close) === null || _period$close === void 0 ? void 0 : _period$close.day) === i) {
+        var _period$open2, _period$open3, _period$close2, _period$close3;
         var lapses = [{
           open: {
             hour: period === null || period === void 0 ? void 0 : (_period$open2 = period.open) === null || _period$open2 === void 0 ? void 0 : _period$open2.hours,
             minute: period === null || period === void 0 ? void 0 : (_period$open3 = period.open) === null || _period$open3 === void 0 ? void 0 : _period$open3.minutes
           },
           close: {
-            hour: period === null || period === void 0 ? void 0 : (_period$close = period.close) === null || _period$close === void 0 ? void 0 : _period$close.hours,
-            minute: period === null || period === void 0 ? void 0 : (_period$close2 = period.close) === null || _period$close2 === void 0 ? void 0 : _period$close2.minutes
+            hour: period === null || period === void 0 ? void 0 : (_period$close2 = period.close) === null || _period$close2 === void 0 ? void 0 : _period$close2.hours,
+            minute: period === null || period === void 0 ? void 0 : (_period$close3 = period.close) === null || _period$close3 === void 0 ? void 0 : _period$close3.minutes
           }
         }];
         extraHours && lapses.unshift(extraHours);
@@ -866,8 +876,8 @@ var BusinessAdd = function BusinessAdd(props) {
           lapses: lapses
         });
       }
-      if ((period === null || period === void 0 ? void 0 : (_period$open4 = period.open) === null || _period$open4 === void 0 ? void 0 : _period$open4.day) === i && (period === null || period === void 0 ? void 0 : period.close.day) !== i) {
-        var _period$open5, _period$open6, _period$close3, _period$close4;
+      if ((period === null || period === void 0 ? void 0 : (_period$open4 = period.open) === null || _period$open4 === void 0 ? void 0 : _period$open4.day) === i && period !== null && period !== void 0 && period.close && (period === null || period === void 0 ? void 0 : (_period$close4 = period.close) === null || _period$close4 === void 0 ? void 0 : _period$close4.day) !== i) {
+        var _period$open5, _period$open6, _period$close5, _period$close6;
         var _lapses = [{
           open: {
             hour: period === null || period === void 0 ? void 0 : (_period$open5 = period.open) === null || _period$open5 === void 0 ? void 0 : _period$open5.hours,
@@ -879,19 +889,40 @@ var BusinessAdd = function BusinessAdd(props) {
           }
         }];
         extraHours && _lapses.unshift(extraHours);
-        extraHours = {
-          open: {
-            hour: 0,
-            minute: 0
-          },
-          close: {
-            hour: period === null || period === void 0 ? void 0 : (_period$close3 = period.close) === null || _period$close3 === void 0 ? void 0 : _period$close3.hours,
-            minute: period === null || period === void 0 ? void 0 : (_period$close4 = period.close) === null || _period$close4 === void 0 ? void 0 : _period$close4.minutes
-          }
-        };
+        if ((period === null || period === void 0 ? void 0 : (_period$close5 = period.close) === null || _period$close5 === void 0 ? void 0 : _period$close5.hours) !== 0 && (period === null || period === void 0 ? void 0 : (_period$close6 = period.close) === null || _period$close6 === void 0 ? void 0 : _period$close6.minutes) !== 0) {
+          var _period$close7, _period$close8;
+          extraHours = {
+            open: {
+              hour: 0,
+              minute: 0
+            },
+            close: {
+              hour: period === null || period === void 0 ? void 0 : (_period$close7 = period.close) === null || _period$close7 === void 0 ? void 0 : _period$close7.hours,
+              minute: period === null || period === void 0 ? void 0 : (_period$close8 = period.close) === null || _period$close8 === void 0 ? void 0 : _period$close8.minutes
+            }
+          };
+        }
         schedule.push({
           enabled: true,
           lapses: _lapses
+        });
+      }
+      if ((period === null || period === void 0 ? void 0 : (_period$open7 = period.open) === null || _period$open7 === void 0 ? void 0 : _period$open7.day) === i && !(period !== null && period !== void 0 && period.close)) {
+        var _period$open8, _period$open9;
+        var _lapses2 = [{
+          open: {
+            hour: period === null || period === void 0 ? void 0 : (_period$open8 = period.open) === null || _period$open8 === void 0 ? void 0 : _period$open8.hours,
+            minute: period === null || period === void 0 ? void 0 : (_period$open9 = period.open) === null || _period$open9 === void 0 ? void 0 : _period$open9.minutes
+          },
+          close: {
+            hour: 23,
+            minute: 59
+          }
+        }];
+        extraHours = null;
+        schedule.push({
+          enabled: true,
+          lapses: _lapses2
         });
       }
     };
