@@ -524,6 +524,75 @@ var BusinessDetails = function BusinessDetails(props) {
       business: business
     }));
   };
+  var handleUpdatePreorderConfigs = /*#__PURE__*/function () {
+    var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(params, configId) {
+      var requestOptions, response, content;
+      return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+        while (1) {
+          switch (_context8.prev = _context8.next) {
+            case 0:
+              _context8.prev = 0;
+              setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
+                loading: true
+              }));
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              requestOptions = {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(session.token)
+                },
+                body: JSON.stringify({
+                  value: params
+                })
+              };
+              _context8.next = 6;
+              return fetch("".concat(ordering.root, "/business/").concat((business === null || business === void 0 ? void 0 : business.id) || businessId, "/configs/").concat(configId), requestOptions);
+            case 6:
+              response = _context8.sent;
+              _context8.next = 9;
+              return response.json();
+            case 9:
+              content = _context8.sent;
+              if (!content.error) {
+                setActionStatus({
+                  loading: false,
+                  error: null
+                });
+                setBusinessState(_objectSpread(_objectSpread({}, businessState), {}, {
+                  business: _objectSpread(_objectSpread({}, businessState.business), {}, {
+                    configs: businessState.business.configs.map(function (config) {
+                      return config.id === configId ? content.result : config;
+                    })
+                  })
+                }));
+                showToast(_ToastContext.ToastType.Success, t('CHANGES_SAVED', 'Changes saved'));
+              } else {
+                setActionStatus({
+                  loading: false,
+                  error: content.result
+                });
+              }
+              _context8.next = 16;
+              break;
+            case 13:
+              _context8.prev = 13;
+              _context8.t0 = _context8["catch"](0);
+              setActionStatus({
+                loading: false,
+                error: [_context8.t0.message]
+              });
+            case 16:
+            case "end":
+              return _context8.stop();
+          }
+        }
+      }, _callee8, null, [[0, 13]]);
+    }));
+    return function handleUpdatePreorderConfigs(_x5, _x6) {
+      return _ref8.apply(this, arguments);
+    };
+  }();
   (0, _react.useEffect)(function () {
     if (!(businessState !== null && businessState !== void 0 && businessState.business)) return;
     handleSucessUpdateBusiness && handleSucessUpdateBusiness(businessState === null || businessState === void 0 ? void 0 : businessState.business);
@@ -552,7 +621,8 @@ var BusinessDetails = function BusinessDetails(props) {
     handleUpdateBusinessClick: handleUpdateBusinessClick,
     handleUpdateBusinessState: handleUpdateBusinessState,
     handleSuccessAddBusinessItem: handleSuccessAddBusinessItem,
-    handleSuccessDeleteBusinessItem: handleSuccessDeleteBusinessItem
+    handleSuccessDeleteBusinessItem: handleSuccessDeleteBusinessItem,
+    handleUpdatePreorderConfigs: handleUpdatePreorderConfigs
   })));
 };
 exports.BusinessDetails = BusinessDetails;
