@@ -379,6 +379,26 @@ export const BannerDetails = (props) => {
     }
   }
 
+  const handleSuccessBannerItemAdd = (newItem) => {
+    const items = [...bannerItemsState.items, newItem]
+    if (newItem?.type === 'image') {
+      setBannerItemsState({
+        ...bannerItemsState,
+        items: items,
+        images: [...bannerItemsState.images, newItem]
+      })
+    }
+    if (newItem?.type === 'video') {
+      setBannerItemsState({
+        ...bannerItemsState,
+        items: items,
+        videos: [...bannerItemsState.videos, newItem]
+      })
+    }
+    const updatedBanner = { ...banner, items: items }
+    handleSuccessUpdate && handleSuccessUpdate(updatedBanner)
+  }
+
   useEffect(() => {
     if (Object.keys(banner).length === 0) {
       setIsAddMode(true)
@@ -435,6 +455,7 @@ export const BannerDetails = (props) => {
           handleAddBanner={handleAddBanner}
           handleDeleteBanner={handleDeleteBanner}
           handleDeleteBannerItem={handleDeleteBannerItem}
+          handleSuccessBannerItemAdd={handleSuccessBannerItemAdd}
         />
       )}
     </>

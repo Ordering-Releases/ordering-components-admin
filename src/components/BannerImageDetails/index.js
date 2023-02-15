@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes, { string } from 'prop-types'
 import { useApi } from '../../contexts/ApiContext'
+import { useSession } from '../../contexts/SessionContext'
 import { useLanguage } from '../../contexts/LanguageContext'
+import { useToast, ToastType } from '../../contexts/ToastContext'
 
 /**
  * Component to manage Banner Image link behavior without UI component
@@ -10,13 +12,17 @@ export const BannerImageDetails = (props) => {
   const {
     UIComponent,
     propsToFetch,
+    bannerId,
     isSearchByName,
     handleUpdateBannerItem,
-    handleAddBannerItem
+    handleSuccessBannerItemAdd
   } = props
 
   const [, t] = useLanguage()
   const [ordering] = useApi()
+  const [{ token }] = useSession()
+  const [, { showToast }] = useToast()
+
   const [searchValue, setSearchValue] = useState(null)
   const [imageState, setImageState] = useState({ image: props.image, loading: false, error: null })
   const [changesState, setChangesState] = useState({ changes: {}, loading: false, error: null })
@@ -102,6 +108,41 @@ export const BannerImageDetails = (props) => {
         loading: false,
         error: [error || error?.toString() || error?.message]
       })
+    }
+  }
+
+  /**
+   * Method to add new banner item from API
+   * @param {Object} params
+   */
+  const handleAddBannerItem = async (params, isReturn = false) => {
+    try {
+      setChangesState(prevState => ({ ...prevState, loading: true }))
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(params)
+      }
+      const response = await fetch(`${ordering.root}/banners/${bannerId}/items`, requestOptions)
+      const content = await response.json()
+      if (!content.error) {
+        setChangesState({ ...changesState, loading: false, changes: {} })
+        showToast(ToastType.Success, t('BANNER_ITEM_ADDED', 'Banner item added'))
+        handleSuccessBannerItemAdd && handleSuccessBannerItemAdd(content.result)
+        props.onClose && props.onClose()
+      } else {
+        setChangesState({ ...changesState, loading: false, error: content.result })
+      }
+      if (isReturn) return content
+    } catch (err) {
+      setChangesState({ ...changesState, loading: false, error: [err.message] })
+      if (isReturn) {
+        return { error: true, result: err }
+      }
     }
   }
 
