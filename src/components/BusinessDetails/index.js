@@ -293,6 +293,41 @@ export const BusinessDetails = (props) => {
     })
   }
 
+  const handleUpdatePreorderConfigs = async (params, configId) => {
+    try {
+      setActionStatus({ ...actionStatus, loading: true })
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.token}`
+        },
+        body: JSON.stringify({ value: params })
+      }
+      const response = await fetch(`${ordering.root}/business/${business?.id || businessId}/configs/${configId}`, requestOptions)
+      const content = await response.json()
+      if (!content.error) {
+        setActionStatus({ loading: false, error: null })
+        setBusinessState({
+          ...businessState,
+          business: {
+            ...businessState.business,
+            configs: businessState.business.configs.map(config => config.id === configId ? content.result : config)
+          }
+        })
+        showToast(ToastType.Success, t('CHANGES_SAVED', 'Changes saved'))
+      } else {
+        setActionStatus({ loading: false, error: content.result })
+      }
+    } catch (err) {
+      setActionStatus({
+        loading: false,
+        error: [err.message]
+      })
+    }
+  }
+
   useEffect(() => {
     if (!businessState?.business) return
     handleSucessUpdateBusiness && handleSucessUpdateBusiness(businessState?.business)
@@ -330,6 +365,7 @@ export const BusinessDetails = (props) => {
             handleUpdateBusinessState={handleUpdateBusinessState}
             handleSuccessAddBusinessItem={handleSuccessAddBusinessItem}
             handleSuccessDeleteBusinessItem={handleSuccessDeleteBusinessItem}
+            handleUpdatePreorderConfigs={handleUpdatePreorderConfigs}
           />
         )
       }
