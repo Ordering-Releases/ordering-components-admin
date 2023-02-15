@@ -8,7 +8,9 @@ exports.BannerImageDetails = void 0;
 var _react = _interopRequireWildcard(require("react"));
 var _propTypes = _interopRequireWildcard(require("prop-types"));
 var _ApiContext = require("../../contexts/ApiContext");
+var _SessionContext = require("../../contexts/SessionContext");
 var _LanguageContext = require("../../contexts/LanguageContext");
+var _ToastContext = require("../../contexts/ToastContext");
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -31,15 +33,22 @@ var BannerImageDetails = function BannerImageDetails(props) {
   var _props$image, _props$image$action;
   var UIComponent = props.UIComponent,
     propsToFetch = props.propsToFetch,
+    bannerId = props.bannerId,
     isSearchByName = props.isSearchByName,
     handleUpdateBannerItem = props.handleUpdateBannerItem,
-    handleAddBannerItem = props.handleAddBannerItem;
+    handleSuccessBannerItemAdd = props.handleSuccessBannerItemAdd;
   var _useLanguage = (0, _LanguageContext.useLanguage)(),
     _useLanguage2 = _slicedToArray(_useLanguage, 2),
     t = _useLanguage2[1];
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
+  var _useSession = (0, _SessionContext.useSession)(),
+    _useSession2 = _slicedToArray(_useSession, 1),
+    token = _useSession2[0].token;
+  var _useToast = (0, _ToastContext.useToast)(),
+    _useToast2 = _slicedToArray(_useToast, 2),
+    showToast = _useToast2[1].showToast;
   var _useState = (0, _react.useState)(null),
     _useState2 = _slicedToArray(_useState, 2),
     searchValue = _useState2[0],
@@ -179,14 +188,102 @@ var BannerImageDetails = function BannerImageDetails(props) {
       return _ref.apply(this, arguments);
     };
   }();
-  var handleSaveImage = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var action, payload, content, _imageState$image, _changesState$changes;
+
+  /**
+   * Method to add new banner item from API
+   * @param {Object} params
+   */
+  var handleAddBannerItem = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(params) {
+      var isReturn,
+        requestOptions,
+        response,
+        content,
+        _args2 = arguments;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              _context2.prev = 0;
+              isReturn = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : false;
+              _context2.prev = 1;
+              setChangesState(function (prevState) {
+                return _objectSpread(_objectSpread({}, prevState), {}, {
+                  loading: true
+                });
+              });
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              requestOptions = {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                },
+                body: JSON.stringify(params)
+              };
+              _context2.next = 7;
+              return fetch("".concat(ordering.root, "/banners/").concat(bannerId, "/items"), requestOptions);
+            case 7:
+              response = _context2.sent;
+              _context2.next = 10;
+              return response.json();
+            case 10:
+              content = _context2.sent;
+              if (!content.error) {
+                setChangesState(_objectSpread(_objectSpread({}, changesState), {}, {
+                  loading: false,
+                  changes: {}
+                }));
+                showToast(_ToastContext.ToastType.Success, t('BANNER_ITEM_ADDED', 'Banner item added'));
+                handleSuccessBannerItemAdd && handleSuccessBannerItemAdd(content.result);
+                props.onClose && props.onClose();
+              } else {
+                setChangesState(_objectSpread(_objectSpread({}, changesState), {}, {
+                  loading: false,
+                  error: content.result
+                }));
+              }
+              if (!isReturn) {
+                _context2.next = 14;
+                break;
+              }
+              return _context2.abrupt("return", content);
+            case 14:
+              _context2.next = 21;
+              break;
+            case 16:
+              _context2.prev = 16;
+              _context2.t0 = _context2["catch"](1);
+              setChangesState(_objectSpread(_objectSpread({}, changesState), {}, {
+                loading: false,
+                error: [_context2.t0.message]
+              }));
+              if (!isReturn) {
+                _context2.next = 21;
+                break;
+              }
+              return _context2.abrupt("return", {
+                error: true,
+                result: _context2.t0
+              });
+            case 21:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, null, [[1, 16]]);
+    }));
+    return function handleAddBannerItem(_x) {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+  var handleSaveImage = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var action, payload, content, _imageState$image, _changesState$changes;
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.prev = 0;
               setImageState(_objectSpread(_objectSpread({}, imageState), {}, {
                 loading: true,
                 error: null
@@ -212,60 +309,60 @@ var BannerImageDetails = function BannerImageDetails(props) {
                 payload = _objectSpread(_objectSpread({}, payload), changesState.changes);
               }
               if (selectedLinkType) {
-                _context2.next = 11;
+                _context3.next = 11;
                 break;
               }
               setImageState(_objectSpread(_objectSpread({}, imageState), {}, {
                 loading: false,
                 error: [t('VALIDATION_ERROR_REQUIRED', 'The link type is required').replace('_attribute_', t('LINK_TYPE', 'Link type'))]
               }));
-              return _context2.abrupt("return");
+              return _context3.abrupt("return");
             case 11:
               if (!(selectedLinkType === 'business' && !selectedBusinessId)) {
-                _context2.next = 14;
+                _context3.next = 14;
                 break;
               }
               setImageState(_objectSpread(_objectSpread({}, imageState), {}, {
                 loading: false,
                 error: [t('VALIDATION_ERROR_REQUIRED', 'The business is required').replace('_attribute_', t('BUSINESS', 'Business'))]
               }));
-              return _context2.abrupt("return");
+              return _context3.abrupt("return");
             case 14:
               if (!(selectedLinkType === 'product' && !selectedProductId)) {
-                _context2.next = 17;
+                _context3.next = 17;
                 break;
               }
               setImageState(_objectSpread(_objectSpread({}, imageState), {}, {
                 loading: false,
                 error: [t('VALIDATION_ERROR_REQUIRED', 'The business is required').replace('_attribute_', t('PRODUCT', 'Product'))]
               }));
-              return _context2.abrupt("return");
+              return _context3.abrupt("return");
             case 17:
               if (!props.image) {
-                _context2.next = 23;
+                _context3.next = 23;
                 break;
               }
-              _context2.next = 20;
+              _context3.next = 20;
               return handleUpdateBannerItem(payload, (_imageState$image = imageState.image) === null || _imageState$image === void 0 ? void 0 : _imageState$image.id, true);
             case 20:
-              content = _context2.sent;
-              _context2.next = 29;
+              content = _context3.sent;
+              _context3.next = 29;
               break;
             case 23:
               if ((_changesState$changes = changesState.changes) !== null && _changesState$changes !== void 0 && _changesState$changes.image) {
-                _context2.next = 26;
+                _context3.next = 26;
                 break;
               }
               setImageState(_objectSpread(_objectSpread({}, imageState), {}, {
                 loading: false,
                 error: [t('VALIDATION_ERROR_REQUIRED', 'The image is required').replace('_attribute_', t('IMAGE', ''))]
               }));
-              return _context2.abrupt("return");
+              return _context3.abrupt("return");
             case 26:
-              _context2.next = 28;
+              _context3.next = 28;
               return handleAddBannerItem(payload, true);
             case 28:
-              content = _context2.sent;
+              content = _context3.sent;
             case 29:
               if (content.error) {
                 setImageState(_objectSpread(_objectSpread({}, imageState), {}, {
@@ -279,24 +376,24 @@ var BannerImageDetails = function BannerImageDetails(props) {
                   error: null
                 });
               }
-              _context2.next = 35;
+              _context3.next = 35;
               break;
             case 32:
-              _context2.prev = 32;
-              _context2.t0 = _context2["catch"](0);
+              _context3.prev = 32;
+              _context3.t0 = _context3["catch"](0);
               setImageState(_objectSpread(_objectSpread({}, imageState), {}, {
                 loading: true,
-                error: [_context2.t0.message]
+                error: [_context3.t0.message]
               }));
             case 35:
             case "end":
-              return _context2.stop();
+              return _context3.stop();
           }
         }
-      }, _callee2, null, [[0, 32]]);
+      }, _callee3, null, [[0, 32]]);
     }));
     return function handleSaveImage() {
-      return _ref2.apply(this, arguments);
+      return _ref3.apply(this, arguments);
     };
   }();
   (0, _react.useEffect)(function () {
