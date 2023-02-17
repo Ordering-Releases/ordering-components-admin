@@ -449,24 +449,29 @@ export const BusinessAdd = (props) => {
 
   useEffect(() => {
     if (details) {
-      const photos = details?.photos?.map(photo => ({ temp_id: getUniqueId(), file: photo.getUrl() }))
-      photos?.length > 0 && setGallery(photos)
-      const changes = {
-        name: details?.name,
-        slug: stringToSlug(details?.name),
-        cellphone: details?.international_phone_number,
-        price_level: details?.price_level?.toString(),
-        logo: details?.icon,
-        address: details?.formatted_address,
-        ...(details?.opening_hours?.periods && { schedule: getSchedule(details?.opening_hours?.periods) }),
-        location: {
-          lat: details?.geometry?.location?.lat(),
-          lng: details?.geometry?.location?.lng(),
-          zipcode: -1,
-          zoom: 15
+      const updateStoreData = async () => {
+        const photos = details?.photos?.map(photo => ({ temp_id: getUniqueId(), file: photo.getUrl() }))
+        photos?.length > 0 && setGallery(photos)
+        const timezone = await getTimeZone(details?.geometry?.location?.lat(), details?.geometry?.location?.lng())
+        const changes = {
+          name: details?.name,
+          slug: stringToSlug(details?.name),
+          cellphone: details?.international_phone_number,
+          price_level: details?.price_level?.toString(),
+          logo: details?.icon,
+          address: details?.formatted_address,
+          ...(details?.opening_hours?.periods && { schedule: getSchedule(details?.opening_hours?.periods) }),
+          location: {
+            lat: details?.geometry?.location?.lat(),
+            lng: details?.geometry?.location?.lng(),
+            zipcode: -1,
+            zoom: 15
+          },
+          timezone: timezone ?? 'America/New_York'
         }
+        changeFormState(changes)
       }
-      changeFormState(changes)
+      updateStoreData()
     }
   }, [details])
 
