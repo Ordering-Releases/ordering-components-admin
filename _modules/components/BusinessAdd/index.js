@@ -938,32 +938,56 @@ var BusinessAdd = function BusinessAdd(props) {
   };
   (0, _react.useEffect)(function () {
     if (details) {
-      var _details$photos, _details$price_level, _details$opening_hour, _details$opening_hour2, _details$geometry, _details$geometry$loc, _details$geometry2, _details$geometry2$lo;
-      var photos = details === null || details === void 0 ? void 0 : (_details$photos = details.photos) === null || _details$photos === void 0 ? void 0 : _details$photos.map(function (photo) {
-        return {
-          temp_id: (0, _utils.getUniqueId)(),
-          file: photo.getUrl()
+      var updateStoreData = /*#__PURE__*/function () {
+        var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12() {
+          var _details$photos, _details$geometry, _details$geometry$loc, _details$geometry2, _details$geometry2$lo, _details$price_level, _details$opening_hour, _details$opening_hour2, _details$geometry3, _details$geometry3$lo, _details$geometry4, _details$geometry4$lo;
+          var photos, timezone, changes;
+          return _regeneratorRuntime().wrap(function _callee12$(_context12) {
+            while (1) {
+              switch (_context12.prev = _context12.next) {
+                case 0:
+                  photos = details === null || details === void 0 ? void 0 : (_details$photos = details.photos) === null || _details$photos === void 0 ? void 0 : _details$photos.map(function (photo) {
+                    return {
+                      temp_id: (0, _utils.getUniqueId)(),
+                      file: photo.getUrl()
+                    };
+                  });
+                  (photos === null || photos === void 0 ? void 0 : photos.length) > 0 && setGallery(photos);
+                  _context12.next = 4;
+                  return getTimeZone(details === null || details === void 0 ? void 0 : (_details$geometry = details.geometry) === null || _details$geometry === void 0 ? void 0 : (_details$geometry$loc = _details$geometry.location) === null || _details$geometry$loc === void 0 ? void 0 : _details$geometry$loc.lat(), details === null || details === void 0 ? void 0 : (_details$geometry2 = details.geometry) === null || _details$geometry2 === void 0 ? void 0 : (_details$geometry2$lo = _details$geometry2.location) === null || _details$geometry2$lo === void 0 ? void 0 : _details$geometry2$lo.lng());
+                case 4:
+                  timezone = _context12.sent;
+                  changes = _objectSpread(_objectSpread({
+                    name: details === null || details === void 0 ? void 0 : details.name,
+                    slug: (0, _utils.stringToSlug)(details === null || details === void 0 ? void 0 : details.name),
+                    cellphone: details === null || details === void 0 ? void 0 : details.international_phone_number,
+                    price_level: details === null || details === void 0 ? void 0 : (_details$price_level = details.price_level) === null || _details$price_level === void 0 ? void 0 : _details$price_level.toString(),
+                    logo: details === null || details === void 0 ? void 0 : details.icon,
+                    address: details === null || details === void 0 ? void 0 : details.formatted_address
+                  }, (details === null || details === void 0 ? void 0 : (_details$opening_hour = details.opening_hours) === null || _details$opening_hour === void 0 ? void 0 : _details$opening_hour.periods) && {
+                    schedule: getSchedule(details === null || details === void 0 ? void 0 : (_details$opening_hour2 = details.opening_hours) === null || _details$opening_hour2 === void 0 ? void 0 : _details$opening_hour2.periods)
+                  }), {}, {
+                    location: {
+                      lat: details === null || details === void 0 ? void 0 : (_details$geometry3 = details.geometry) === null || _details$geometry3 === void 0 ? void 0 : (_details$geometry3$lo = _details$geometry3.location) === null || _details$geometry3$lo === void 0 ? void 0 : _details$geometry3$lo.lat(),
+                      lng: details === null || details === void 0 ? void 0 : (_details$geometry4 = details.geometry) === null || _details$geometry4 === void 0 ? void 0 : (_details$geometry4$lo = _details$geometry4.location) === null || _details$geometry4$lo === void 0 ? void 0 : _details$geometry4$lo.lng(),
+                      zipcode: -1,
+                      zoom: 15
+                    },
+                    timezone: timezone !== null && timezone !== void 0 ? timezone : 'America/New_York'
+                  });
+                  changeFormState(changes);
+                case 7:
+                case "end":
+                  return _context12.stop();
+              }
+            }
+          }, _callee12);
+        }));
+        return function updateStoreData() {
+          return _ref12.apply(this, arguments);
         };
-      });
-      (photos === null || photos === void 0 ? void 0 : photos.length) > 0 && setGallery(photos);
-      var changes = _objectSpread(_objectSpread({
-        name: details === null || details === void 0 ? void 0 : details.name,
-        slug: (0, _utils.stringToSlug)(details === null || details === void 0 ? void 0 : details.name),
-        cellphone: details === null || details === void 0 ? void 0 : details.international_phone_number,
-        price_level: details === null || details === void 0 ? void 0 : (_details$price_level = details.price_level) === null || _details$price_level === void 0 ? void 0 : _details$price_level.toString(),
-        logo: details === null || details === void 0 ? void 0 : details.icon,
-        address: details === null || details === void 0 ? void 0 : details.formatted_address
-      }, (details === null || details === void 0 ? void 0 : (_details$opening_hour = details.opening_hours) === null || _details$opening_hour === void 0 ? void 0 : _details$opening_hour.periods) && {
-        schedule: getSchedule(details === null || details === void 0 ? void 0 : (_details$opening_hour2 = details.opening_hours) === null || _details$opening_hour2 === void 0 ? void 0 : _details$opening_hour2.periods)
-      }), {}, {
-        location: {
-          lat: details === null || details === void 0 ? void 0 : (_details$geometry = details.geometry) === null || _details$geometry === void 0 ? void 0 : (_details$geometry$loc = _details$geometry.location) === null || _details$geometry$loc === void 0 ? void 0 : _details$geometry$loc.lat(),
-          lng: details === null || details === void 0 ? void 0 : (_details$geometry2 = details.geometry) === null || _details$geometry2 === void 0 ? void 0 : (_details$geometry2$lo = _details$geometry2.location) === null || _details$geometry2$lo === void 0 ? void 0 : _details$geometry2$lo.lng(),
-          zipcode: -1,
-          zoom: 15
-        }
-      });
-      changeFormState(changes);
+      }();
+      updateStoreData();
     }
   }, [details]);
   (0, _react.useEffect)(function () {
