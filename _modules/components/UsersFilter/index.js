@@ -4,12 +4,12 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.RewardsPrograms = void 0;
+exports.UsersFilter = void 0;
 var _react = _interopRequireWildcard(require("react"));
 var _propTypes = _interopRequireDefault(require("prop-types"));
+var _dayjs = _interopRequireDefault(require("dayjs"));
 var _ApiContext = require("../../contexts/ApiContext");
 var _SessionContext = require("../../contexts/SessionContext");
-var _LanguageContext = require("../../contexts/LanguageContext");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -30,97 +30,92 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-var RewardsPrograms = function RewardsPrograms(props) {
-  var UIComponent = props.UIComponent,
-    type = props.type;
+var UsersFilter = function UsersFilter(props) {
+  var UIComponent = props.UIComponent;
+  var initialFilterValues = {
+    name: null,
+    lastname: null,
+    email: null,
+    cityIds: [],
+    cellphone: null,
+    countryPhoneCode: null,
+    phoneVerified: null,
+    emailVerified: null,
+    userType: null,
+    loyaltyLevel: null,
+    enabled: null,
+    ordersCount: {
+      value: '',
+      condition: 'eq'
+    },
+    dateType: null,
+    deliveryFromDatetime: null,
+    deliveryEndDatetime: null
+  };
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
   var _useSession = (0, _SessionContext.useSession)(),
     _useSession2 = _slicedToArray(_useSession, 1),
-    _useSession2$ = _useSession2[0],
-    token = _useSession2$.token,
-    loading = _useSession2$.loading;
-  var _useLanguage = (0, _LanguageContext.useLanguage)(),
-    _useLanguage2 = _slicedToArray(_useLanguage, 2),
-    t = _useLanguage2[1];
-  var _useState = (0, _react.useState)({
-      loading: true,
-      error: null,
-      loyaltyPlans: [],
-      pagination: null
-    }),
+    token = _useSession2[0].token;
+
+  /**
+   * This property is used to set in state the current value
+  */
+  var _useState = (0, _react.useState)(JSON.parse(JSON.stringify(initialFilterValues))),
     _useState2 = _slicedToArray(_useState, 2),
-    loyaltyPlanList = _useState2[0],
-    setLoyaltyPlanList = _useState2[1];
-  var _useState3 = (0, _react.useState)(null),
+    filterValues = _useState2[0],
+    setFilterValues = _useState2[1];
+  var _useState3 = (0, _react.useState)({
+      loading: false,
+      error: null,
+      levels: []
+    }),
     _useState4 = _slicedToArray(_useState3, 2),
-    pointWallet = _useState4[0],
-    setPointWallet = _useState4[1];
+    loyaltyLevelState = _useState4[0],
+    setLoyaltyLevelState = _useState4[1];
 
   /**
-   * Method to update the pointsWallet business
+   * Changer order Id
+   * @param {object} changes filter values
    */
-  var handleUpdateWalletBusiness = function handleUpdateWalletBusiness(result) {
-    var businesses = pointWallet === null || pointWallet === void 0 ? void 0 : pointWallet.businesses.map(function (business) {
-      if (business.id === result.id) {
-        return _objectSpread(_objectSpread({}, business), result);
-      }
-      return business;
-    });
-    setPointWallet(_objectSpread(_objectSpread({}, pointWallet), {}, {
-      businesses: businesses
+  var handleChangeValue = function handleChangeValue(changes) {
+    setFilterValues(_objectSpread(_objectSpread({}, filterValues), changes));
+  };
+
+  /**
+   * Change city
+   * * @param {number} cityId city id of business
+  */
+  var handleChangeCity = function handleChangeCity(cityId) {
+    var _cityIds = _toConsumableArray(filterValues.cityIds);
+    if (!_cityIds.includes(cityId)) {
+      _cityIds.push(cityId);
+    } else {
+      _cityIds = _cityIds.filter(function (_cityId) {
+        return _cityId !== cityId;
+      });
+    }
+    setFilterValues(_objectSpread(_objectSpread({}, filterValues), {}, {
+      cityIds: _cityIds
     }));
   };
 
   /**
-   * Method to add the pointsWallet business
-   */
-  var handleAddWalletBusiness = function handleAddWalletBusiness(result) {
-    var businesses = [].concat(_toConsumableArray(pointWallet === null || pointWallet === void 0 ? void 0 : pointWallet.businesses), [result]);
-    setPointWallet(_objectSpread(_objectSpread({}, pointWallet), {}, {
-      businesses: businesses
-    }));
+   * Reset filter values
+  */
+  var handleResetFilterValues = function handleResetFilterValues() {
+    setFilterValues(JSON.parse(JSON.stringify(initialFilterValues)));
   };
-
-  /**
-   * Method to add the pointsWallet business
-   */
-  var handleDeleteWalletBusiness = function handleDeleteWalletBusiness(result) {
-    var _pointWallet$business;
-    var businesses = pointWallet === null || pointWallet === void 0 ? void 0 : (_pointWallet$business = pointWallet.businesses) === null || _pointWallet$business === void 0 ? void 0 : _pointWallet$business.filter(function (business) {
-      return business.id !== result.id;
-    });
-    setPointWallet(_objectSpread(_objectSpread({}, pointWallet), {}, {
-      businesses: businesses
-    }));
-  };
-
-  /**
-   * Method to update the pointsWallet
-   */
-  var handleUpdatePointsWallet = function handleUpdatePointsWallet(changes) {
-    setPointWallet(_objectSpread({}, changes));
-  };
-
-  /**
-   * Method to get loyalty plans from API
-   */
-  var getLoyaltyPlans = /*#__PURE__*/function () {
+  var getLoyaltyLevels = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var requestOptions, functionFetch, response, _yield$response$json, error, result, pagination, loyalty;
+      var requestOptions, fetchEndpoint, response, _yield$response$json, error, result;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              if (!loading) {
-                _context.next = 2;
-                break;
-              }
-              return _context.abrupt("return");
-            case 2:
-              _context.prev = 2;
-              setLoyaltyPlanList(_objectSpread(_objectSpread({}, loyaltyPlanList), {}, {
+              _context.prev = 0;
+              setLoyaltyLevelState(_objectSpread(_objectSpread({}, loyaltyLevelState), {}, {
                 loading: true
               }));
               requestOptions = {
@@ -130,227 +125,166 @@ var RewardsPrograms = function RewardsPrograms(props) {
                   Authorization: "Bearer ".concat(token)
                 }
               };
-              functionFetch = "".concat(ordering.root, "/loyalty_plans");
-              _context.next = 8;
-              return fetch(functionFetch, requestOptions);
-            case 8:
+              fetchEndpoint = "".concat(ordering.root, "/loyalty_levels");
+              _context.next = 6;
+              return fetch(fetchEndpoint, requestOptions);
+            case 6:
               response = _context.sent;
-              _context.next = 11;
+              _context.next = 9;
               return response.json();
-            case 11:
+            case 9:
               _yield$response$json = _context.sent;
               error = _yield$response$json.error;
               result = _yield$response$json.result;
-              pagination = _yield$response$json.pagination;
-              if (error) {
-                _context.next = 26;
-                break;
+              if (!error) {
+                setLoyaltyLevelState(_objectSpread(_objectSpread({}, loyaltyLevelState), {}, {
+                  loading: false,
+                  error: null,
+                  levels: result
+                }));
+              } else {
+                setLoyaltyLevelState(_objectSpread(_objectSpread({}, loyaltyLevelState), {}, {
+                  loading: false,
+                  error: result
+                }));
               }
-              loyalty = result.find(function (plan) {
-                return plan.type === type;
-              });
-              setLoyaltyPlanList(_objectSpread(_objectSpread(_objectSpread({}, loyaltyPlanList), loyalty && {
-                loading: false
-              }), {}, {
-                loyaltyPlans: result,
-                pagination: pagination
-              }));
-              if (!loyalty) {
-                _context.next = 22;
-                break;
-              }
-              setPointWallet(JSON.parse(JSON.stringify(loyalty)));
-              _context.next = 24;
+              _context.next = 18;
               break;
-            case 22:
-              _context.next = 24;
-              return getBusinessTypes();
-            case 24:
-              _context.next = 27;
-              break;
-            case 26:
-              setLoyaltyPlanList(_objectSpread(_objectSpread({}, loyaltyPlanList), {}, {
+            case 15:
+              _context.prev = 15;
+              _context.t0 = _context["catch"](0);
+              setLoyaltyLevelState(_objectSpread(_objectSpread({}, loyaltyLevelState), {}, {
                 loading: false,
-                error: result
+                error: _context.t0.message
               }));
-            case 27:
-              _context.next = 32;
-              break;
-            case 29:
-              _context.prev = 29;
-              _context.t0 = _context["catch"](2);
-              setLoyaltyPlanList(_objectSpread(_objectSpread({}, loyaltyPlanList), {}, {
-                loading: false,
-                error: _context.t0
-              }));
-            case 32:
+            case 18:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[2, 29]]);
+      }, _callee, null, [[0, 15]]);
     }));
-    return function getLoyaltyPlans() {
+    return function getLoyaltyLevels() {
       return _ref.apply(this, arguments);
-    };
-  }();
-  var createWallet = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(businessId) {
-      var payload, requestOptions, response, content, loyaltyPlans;
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.prev = 0;
-              payload = {
-                name: "Loyalty ".concat(type === 'cashback' ? 'Cash' : 'Point', " Plan"),
-                type: type,
-                redemption_rate: 1,
-                accumulation_rate: 1,
-                businesses: JSON.stringify([{
-                  id: businessId,
-                  accumulates: true,
-                  redeems: true
-                }])
-              };
-              requestOptions = {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: "Bearer ".concat(token)
-                },
-                body: JSON.stringify(payload)
-              };
-              _context2.next = 5;
-              return fetch("".concat(ordering.root, "/loyalty_plans"), requestOptions);
-            case 5:
-              response = _context2.sent;
-              _context2.next = 8;
-              return response.json();
-            case 8:
-              content = _context2.sent;
-              if (!content.error) {
-                setPointWallet(content.result);
-                loyaltyPlans = JSON.parse(JSON.stringify(loyaltyPlanList.loyaltyPlans));
-                loyaltyPlans.push(content.result);
-                setLoyaltyPlanList(_objectSpread(_objectSpread({}, loyaltyPlanList), {}, {
-                  loading: false,
-                  loyaltyPlans: loyaltyPlans
-                }));
-              } else {
-                setLoyaltyPlanList(_objectSpread(_objectSpread({}, loyaltyPlanList), {}, {
-                  loading: false,
-                  error: content.result
-                }));
-              }
-              _context2.next = 15;
-              break;
-            case 12:
-              _context2.prev = 12;
-              _context2.t0 = _context2["catch"](0);
-              setLoyaltyPlanList(_objectSpread(_objectSpread({}, loyaltyPlanList), {}, {
-                loading: false,
-                error: _context2.t0
-              }));
-            case 15:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2, null, [[0, 12]]);
-    }));
-    return function createWallet(_x) {
-      return _ref2.apply(this, arguments);
     };
   }();
 
   /**
-   * Method to get business types from API
-   */
-  var getBusinessTypes = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var fetchEndpoint, _yield$fetchEndpoint$, _yield$fetchEndpoint$2, error, result, _result$;
-      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              _context3.prev = 0;
-              fetchEndpoint = ordering.businesses().asDashboard().select(['id']);
-              _context3.next = 4;
-              return fetchEndpoint.get();
-            case 4:
-              _yield$fetchEndpoint$ = _context3.sent;
-              _yield$fetchEndpoint$2 = _yield$fetchEndpoint$.content;
-              error = _yield$fetchEndpoint$2.error;
-              result = _yield$fetchEndpoint$2.result;
-              if (error) {
-                _context3.next = 17;
-                break;
-              }
-              if (!((result === null || result === void 0 ? void 0 : result.length) > 0)) {
-                _context3.next = 14;
-                break;
-              }
-              _context3.next = 12;
-              return createWallet((_result$ = result[0]) === null || _result$ === void 0 ? void 0 : _result$.id);
-            case 12:
-              _context3.next = 15;
-              break;
-            case 14:
-              setLoyaltyPlanList(_objectSpread(_objectSpread({}, loyaltyPlanList), {}, {
-                loading: false,
-                error: t('MOBILE_HAVE_NO_BUSINESS', 'You have no businesses available.')
-              }));
-            case 15:
-              _context3.next = 18;
-              break;
-            case 17:
-              setLoyaltyPlanList(_objectSpread(_objectSpread({}, loyaltyPlanList), {}, {
-                loading: false,
-                error: result
-              }));
-            case 18:
-              _context3.next = 23;
-              break;
-            case 20:
-              _context3.prev = 20;
-              _context3.t0 = _context3["catch"](0);
-              setLoyaltyPlanList(_objectSpread(_objectSpread({}, loyaltyPlanList), {}, {
-                loading: false,
-                error: _context3.t0
-              }));
-            case 23:
-            case "end":
-              return _context3.stop();
-          }
+   * Change date type
+   * * @param {string} dateType date type
+  */
+  var handleChangeDateType = function handleChangeDateType(dateType) {
+    var now = (0, _dayjs.default)();
+    switch (dateType) {
+      case 'default':
+        setFilterValues(_objectSpread(_objectSpread({}, filterValues), {}, {
+          dateType: 'default',
+          deliveryFromDatetime: null,
+          deliveryEndDatetime: null
+        }));
+        break;
+      case 'today':
+        {
+          var today = now.format('YYYY-MM-DD');
+          var todayDatetime = (0, _dayjs.default)(today).format('YYYY-MM-DD HH:mm:ss');
+          setFilterValues(_objectSpread(_objectSpread({}, filterValues), {}, {
+            dateType: 'today',
+            deliveryFromDatetime: todayDatetime
+          }));
+          break;
         }
-      }, _callee3, null, [[0, 20]]);
+      case 'yesterday':
+        {
+          var yesterday = now.subtract('1', 'day').format('YYYY-MM-DD');
+          var yesterdayDatetime = (0, _dayjs.default)(yesterday).format('YYYY-MM-DD HH:mm:ss');
+          setFilterValues(_objectSpread(_objectSpread({}, filterValues), {}, {
+            dateType: 'yesterday',
+            deliveryFromDatetime: yesterdayDatetime
+          }));
+          break;
+        }
+      case 'last7':
+        {
+          var last7day = now.subtract('7', 'day').format('YYYY-MM-DD');
+          var last7Datetime = (0, _dayjs.default)(last7day).format('YYYY-MM-DD HH:mm:ss');
+          setFilterValues(_objectSpread(_objectSpread({}, filterValues), {}, {
+            dateType: 'last7',
+            deliveryFromDatetime: last7Datetime
+          }));
+          break;
+        }
+      case 'last30':
+        {
+          var last30day = now.subtract('30', 'day').format('YYYY-MM-DD');
+          var last30Datetime = (0, _dayjs.default)(last30day).format('YYYY-MM-DD HH:mm:ss');
+          setFilterValues(_objectSpread(_objectSpread({}, filterValues), {}, {
+            dateType: 'last30',
+            deliveryFromDatetime: last30Datetime
+          }));
+          break;
+        }
+      case 'term':
+        setFilterValues(_objectSpread(_objectSpread({}, filterValues), {}, {
+          dateType: 'term',
+          deliveryFromDatetime: null,
+          deliveryEndDatetime: null
+        }));
+    }
+  };
+
+  /**
+   * Change start date
+   * * @param {date} fromDate start date
+  */
+  var handleChangeFromDate = function handleChangeFromDate(fromDate) {
+    var fromDatetime;
+    if (fromDate !== null) {
+      fromDatetime = (0, _dayjs.default)(fromDate).format('YYYY-MM-DD HH:mm:ss');
+    } else {
+      fromDatetime = null;
+    }
+    setFilterValues(_objectSpread(_objectSpread({}, filterValues), {}, {
+      deliveryFromDatetime: fromDatetime
     }));
-    return function getBusinessTypes() {
-      return _ref3.apply(this, arguments);
-    };
-  }();
+  };
+
+  /**
+   * Change end date
+   * * @param {date} endDate end date
+  */
+  var handleChangeEndDate = function handleChangeEndDate(endDate) {
+    var endDatetime;
+    if (endDate !== null) {
+      endDatetime = (0, _dayjs.default)(endDate).format('YYYY-MM-DD HH:mm:ss');
+    } else {
+      endDate = null;
+    }
+    setFilterValues(_objectSpread(_objectSpread({}, filterValues), {}, {
+      deliveryEndDatetime: endDatetime
+    }));
+  };
   (0, _react.useEffect)(function () {
-    getLoyaltyPlans();
-  }, [type]);
+    getLoyaltyLevels();
+  }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
-    loyaltyPlanList: loyaltyPlanList,
-    pointWallet: pointWallet,
-    handleUpdateWalletBusiness: handleUpdateWalletBusiness,
-    handleUpdatePointsWallet: handleUpdatePointsWallet,
-    handleAddWalletBusiness: handleAddWalletBusiness,
-    handleDeleteWalletBusiness: handleDeleteWalletBusiness
+    filterValues: filterValues,
+    handleChangeValue: handleChangeValue,
+    handleChangeCity: handleChangeCity,
+    handleResetFilterValues: handleResetFilterValues,
+    loyaltyLevelState: loyaltyLevelState,
+    handleChangeDateType: handleChangeDateType,
+    handleChangeFromDate: handleChangeFromDate,
+    handleChangeEndDate: handleChangeEndDate
   })));
 };
-exports.RewardsPrograms = RewardsPrograms;
-RewardsPrograms.propTypes = {
+exports.UsersFilter = UsersFilter;
+UsersFilter.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props
    */
   UIComponent: _propTypes.default.elementType,
   /**
-   * Components types before business type filter
-   * Array of type components, the parent props will pass to these components
+   * Array that contains business types to filter
    */
   beforeComponents: _propTypes.default.arrayOf(_propTypes.default.elementType),
   /**
@@ -369,7 +303,7 @@ RewardsPrograms.propTypes = {
    */
   afterElements: _propTypes.default.arrayOf(_propTypes.default.element)
 };
-RewardsPrograms.defaultProps = {
+UsersFilter.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],

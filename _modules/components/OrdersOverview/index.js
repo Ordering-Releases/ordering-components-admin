@@ -215,11 +215,9 @@ var OrdersOverview = function OrdersOverview(props) {
         overview: _overview
       }));
     };
-    socket.join('orders');
     socket.on('update_order', handleUpdateOrder);
     socket.on('orders_register', handleRegisterOrder);
     return function () {
-      socket.leave('orders');
       socket.off('update_order', handleUpdateOrder);
       socket.off('orders_register', handleRegisterOrder);
     };

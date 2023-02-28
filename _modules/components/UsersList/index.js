@@ -134,6 +134,22 @@ var UsersList = function UsersList(props) {
     _useState26 = _slicedToArray(_useState25, 2),
     selectedOccupation = _useState26[0],
     setSelectedOccupation = _useState26[1];
+  var _useState27 = (0, _react.useState)(null),
+    _useState28 = _slicedToArray(_useState27, 2),
+    orderFilterValue = _useState28[0],
+    setOrderFilterValue = _useState28[1];
+  var _useState29 = (0, _react.useState)({}),
+    _useState30 = _slicedToArray(_useState29, 2),
+    multiFilterValues = _useState30[0],
+    setMultiFilterValues = _useState30[1];
+
+  /**
+   * Save filter type values
+   * @param {object} types
+   */
+  var handleChangeMultiFilterValues = function handleChangeMultiFilterValues(types) {
+    setMultiFilterValues(types);
+  };
 
   /**
    * Get users by params, order options and filters
@@ -141,7 +157,7 @@ var UsersList = function UsersList(props) {
    */
   var getUsers = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(page, pageSize) {
-      var _session$user, parameters, paginationParams, where, conditions, verifiedConditions, searchConditions, _filterValues$changes, _filterValues$changes2, filterConditions, _filterValues$changes3, fetchEndpoint, content, response, requestOptions, _fetchEndpoint, _response, _content, result, pagination, nextPageItems, remainingItems;
+      var _session$user, parameters, paginationParams, where, conditions, verifiedConditions, searchConditions, _filterValues$changes, _filterValues$changes2, filterConditions, _filterValues$changes3, _multiFilterValues$or, filterConditons, _multiFilterValues$or2, _multiFilterValues$or3, fetchEndpoint, content, response, requestOptions, _fetchEndpoint, _response, _content, result, pagination, nextPageItems, remainingItems;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -157,6 +173,12 @@ var UsersList = function UsersList(props) {
               };
               if (!isBusinessOwners) {
                 parameters = _objectSpread({}, paginationParams);
+              }
+              if (orderFilterValue !== null) {
+                parameters = _objectSpread(_objectSpread({}, parameters), {}, {
+                  orders_count_condition: orderFilterValue === 0 ? 'eq' : 'gt',
+                  orders_count_value: orderFilterValue
+                });
               }
               where = null;
               conditions = [];
@@ -306,6 +328,120 @@ var UsersList = function UsersList(props) {
                   });
                 }
               }
+              if (Object.keys(multiFilterValues).length > 0) {
+                filterConditons = [];
+                if (multiFilterValues !== null && multiFilterValues !== void 0 && multiFilterValues.name && (multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.name) !== null) {
+                  filterConditons.push({
+                    attribute: 'name',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI("%".concat(multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.name, "%"))
+                    }
+                  });
+                }
+                if (multiFilterValues !== null && multiFilterValues !== void 0 && multiFilterValues.lastname && (multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.lastname) !== null) {
+                  filterConditons.push({
+                    attribute: 'lastname',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI("%".concat(multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.lastname, "%"))
+                    }
+                  });
+                }
+                if (multiFilterValues !== null && multiFilterValues !== void 0 && multiFilterValues.email && (multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.email) !== null) {
+                  filterConditons.push({
+                    attribute: 'email',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI("%".concat(multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.email, "%"))
+                    }
+                  });
+                }
+                if (multiFilterValues !== null && multiFilterValues !== void 0 && multiFilterValues.cellphone && (multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.cellphone) !== null) {
+                  filterConditons.push({
+                    attribute: 'cellphone',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI("%".concat(multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.cellphone, "%"))
+                    }
+                  });
+                }
+                if ((multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.countryPhoneCode) !== null) {
+                  filterConditons.push({
+                    attribute: 'country_phone_code',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI("%".concat(multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.countryPhoneCode, "%"))
+                    }
+                  });
+                }
+                if ((multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.cityIds.length) !== 0) {
+                  filterConditons.push({
+                    attribute: 'city_id',
+                    value: multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.cityIds
+                  });
+                }
+                if ((multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.phoneVerified) !== null) {
+                  filterConditons.push({
+                    attribute: 'phone_verified',
+                    value: multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.phoneVerified
+                  });
+                }
+                if ((multiFilterValues === null || multiFilterValues === void 0 ? void 0 : (_multiFilterValues$or = multiFilterValues.ordersCount) === null || _multiFilterValues$or === void 0 ? void 0 : _multiFilterValues$or.value) !== '') {
+                  parameters = _objectSpread(_objectSpread({}, parameters), {}, {
+                    orders_count_condition: multiFilterValues === null || multiFilterValues === void 0 ? void 0 : (_multiFilterValues$or2 = multiFilterValues.ordersCount) === null || _multiFilterValues$or2 === void 0 ? void 0 : _multiFilterValues$or2.condition,
+                    orders_count_value: multiFilterValues === null || multiFilterValues === void 0 ? void 0 : (_multiFilterValues$or3 = multiFilterValues.ordersCount) === null || _multiFilterValues$or3 === void 0 ? void 0 : _multiFilterValues$or3.value
+                  });
+                }
+                if ((multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.emailVerified) !== null) {
+                  filterConditons.push({
+                    attribute: 'email_verified',
+                    value: multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.emailVerified
+                  });
+                }
+                if ((multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.userType) !== null) {
+                  filterConditons.push({
+                    attribute: 'level',
+                    value: multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.userType
+                  });
+                }
+                if ((multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.loyaltyLevel) !== null) {
+                  filterConditons.push({
+                    attribute: 'loyalty_level_id',
+                    value: multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.loyaltyLevel
+                  });
+                }
+                if ((multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.enabled) !== null) {
+                  filterConditons.push({
+                    attribute: 'enabled',
+                    value: multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.enabled
+                  });
+                }
+                if ((multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.deliveryFromDatetime) !== null) {
+                  filterConditons.push({
+                    attribute: 'created_at',
+                    value: {
+                      condition: '>=',
+                      value: multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.deliveryFromDatetime
+                    }
+                  });
+                }
+                if ((multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.deliveryEndDatetime) !== null) {
+                  filterConditons.push({
+                    attribute: 'created_at',
+                    value: {
+                      condition: '<=',
+                      value: multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.deliveryEndDatetime
+                    }
+                  });
+                }
+                if (filterConditons.length) {
+                  conditions.push({
+                    conector: 'AND',
+                    conditions: filterConditons
+                  });
+                }
+              }
               if (conditions.length) {
                 where = {
                   conditions: conditions,
@@ -315,18 +451,18 @@ var UsersList = function UsersList(props) {
               fetchEndpoint = null;
               content = {};
               if (!(((_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.level) !== 2)) {
-                _context.next = 24;
+                _context.next = 26;
                 break;
               }
               fetchEndpoint = where ? ordering.setAccessToken(session.token).users().select(propsToFetch).parameters(parameters).where(where) : ordering.setAccessToken(session.token).users().select(propsToFetch).parameters(parameters);
-              _context.next = 20;
+              _context.next = 22;
               return fetchEndpoint.get();
-            case 20:
+            case 22:
               response = _context.sent;
               content = response.content;
-              _context.next = 32;
+              _context.next = 34;
               break;
-            case 24:
+            case 26:
               requestOptions = {
                 method: 'GET',
                 headers: {
@@ -335,15 +471,15 @@ var UsersList = function UsersList(props) {
                 }
               };
               _fetchEndpoint = where ? "".concat(ordering.root, "/professionals?page=").concat(page, "&page_size=").concat(pageSize, "&&where=").concat(JSON.stringify(where)) : "".concat(ordering.root, "/professionals?page=").concat(page, "&page_size=").concat(pageSize);
-              _context.next = 28;
+              _context.next = 30;
               return fetch(_fetchEndpoint, requestOptions);
-            case 28:
+            case 30:
               _response = _context.sent;
-              _context.next = 31;
+              _context.next = 33;
               return _response.json();
-            case 31:
+            case 33:
               content = _context.sent;
-            case 32:
+            case 34:
               _content = content, result = _content.result, pagination = _content.pagination;
               usersList.users = result;
               setUsersList(_objectSpread(_objectSpread({}, usersList), {}, {
@@ -364,10 +500,10 @@ var UsersList = function UsersList(props) {
                 nextPageItems: nextPageItems
               }));
               setPaginationDetail(_objectSpread({}, pagination));
-              _context.next = 44;
+              _context.next = 46;
               break;
-            case 41:
-              _context.prev = 41;
+            case 43:
+              _context.prev = 43;
               _context.t0 = _context["catch"](0);
               if (_context.t0.constructor.name !== 'Cancel') {
                 setUsersList(_objectSpread(_objectSpread({}, usersList), {}, {
@@ -375,12 +511,12 @@ var UsersList = function UsersList(props) {
                   error: [_context.t0.message]
                 }));
               }
-            case 44:
+            case 46:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 41]]);
+      }, _callee, null, [[0, 43]]);
     }));
     return function getUsers(_x, _x2) {
       return _ref.apply(this, arguments);
@@ -786,6 +922,12 @@ var UsersList = function UsersList(props) {
     if ((Object.keys(filterValues === null || filterValues === void 0 ? void 0 : filterValues.changes).length > 0 || filterValues.clear) && !usersList.loading) getUsers(1, null);
   }, [filterValues]);
   (0, _react.useEffect)(function () {
+    getUsers(1, null);
+  }, [multiFilterValues]);
+  (0, _react.useEffect)(function () {
+    if (orderFilterValue !== null && !usersList.loading) getUsers(1, null);
+  }, [orderFilterValue]);
+  (0, _react.useEffect)(function () {
     if (isProfessional) {
       getOccupations();
     }
@@ -830,7 +972,11 @@ var UsersList = function UsersList(props) {
     occupationsState: occupationsState,
     selectedOccupation: selectedOccupation,
     handleSelectOccupation: setSelectedOccupation,
-    setSelectedUsers: setSelectedUsers
+    setSelectedUsers: setSelectedUsers,
+    orderFilterValue: orderFilterValue,
+    handleChangeOrderFilterValue: setOrderFilterValue,
+    multiFilterValues: multiFilterValues,
+    handleChangeMultiFilterValues: handleChangeMultiFilterValues
   })));
 };
 exports.UsersList = UsersList;
@@ -860,7 +1006,7 @@ UsersList.propTypes = {
   propsToFetch: _propTypes.default.arrayOf(_propTypes.string)
 };
 UsersList.defaultProps = {
-  propsToFetch: ['name', 'lastname', 'email', 'phone', 'photo', 'cellphone', 'schedule', 'country_phone_code', 'city_id', 'city', 'address', 'addresses', 'max_days_in_future', 'address_notes', 'driver_zone_restriction', 'dropdown_option_id', 'dropdown_option', 'location', 'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups'],
+  propsToFetch: ['name', 'lastname', 'email', 'phone', 'photo', 'cellphone', 'schedule', 'country_phone_code', 'city_id', 'city', 'address', 'addresses', 'max_days_in_future', 'address_notes', 'driver_zone_restriction', 'dropdown_option_id', 'dropdown_option', 'location', 'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups', 'created_at'],
   paginationSettings: {
     initialPage: 1,
     pageSize: 10,

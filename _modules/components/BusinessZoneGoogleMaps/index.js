@@ -384,6 +384,7 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
       if ((_window$google$maps2 = window.google.maps) !== null && _window$google$maps2 !== void 0 && (_window$google$maps2$ = _window$google$maps2.drawing) !== null && _window$google$maps2$ !== void 0 && _window$google$maps2$.DrawingManager) {
         var _drawingManager = new window.google.maps.drawing.DrawingManager({
           drawingControl: isDriverGroup !== null && isDriverGroup !== void 0 ? isDriverGroup : disabled && type !== 5,
+          drawingMode: type === 1 ? window.google.maps.drawing.OverlayType.CIRCLE : type === 2 ? window.google.maps.drawing.OverlayType.POLYGON : null,
           drawingControlOptions: {
             position: window.google.maps.ControlPosition.TOP_CENTER,
             drawingModes: (isDriverGroup !== null && isDriverGroup !== void 0 ? isDriverGroup : disabled && type !== 5) && type === 1 ? [window.google.maps.drawing.OverlayType.CIRCLE] : [window.google.maps.drawing.OverlayType.POLYGON]
@@ -459,7 +460,7 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
         }
       }
     }
-  }, [googleReady, distance]);
+  }, [googleReady, distance, type]);
 
   /**
    * append google map script

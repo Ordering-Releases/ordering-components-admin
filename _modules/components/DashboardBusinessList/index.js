@@ -31,7 +31,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var DashboardBusinessList = function DashboardBusinessList(props) {
-  var _paginationSettings$p;
+  var _paginationSettings$p, _businessList$busines;
   var asDashboard = props.asDashboard,
     UIComponent = props.UIComponent,
     paginationSettings = props.paginationSettings,
@@ -96,14 +96,30 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
     _useState14 = _slicedToArray(_useState13, 2),
     businessIds = _useState14[0],
     setBusinessIds = _useState14[1];
+  var _useState15 = (0, _react.useState)({}),
+    _useState16 = _slicedToArray(_useState15, 2),
+    filterValues = _useState16[0],
+    setFilterValues = _useState16[1];
+  var _useState17 = (0, _react.useState)([]),
+    _useState18 = _slicedToArray(_useState17, 2),
+    inActiveBusinesses = _useState18[0],
+    setInActiveBusinesses = _useState18[1];
+
+  /**
+   * Save filter type values
+   * @param {object} types
+   */
+  var handleChangeFilterValues = function handleChangeFilterValues(types) {
+    setFilterValues(types);
+  };
 
   /**
    * Method to get businesses from API
    * @param {number, number} pageSize page
    */
   var getBusinesses = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(pageSize, page) {
-      var where, conditions, options, searchConditions, functionFetch;
+    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(pageSize, page, isInactive) {
+      var where, conditions, options, searchConditions, _filterValues$availab, _filterValues$menus, filterConditons, _filterValues$availab2, _filterValues$availab3, _filterValues$menus2, _filterValues$menus3, functionFetch;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -116,10 +132,10 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
                   page_size: pageSize
                 }
               };
-              if (!noActiveStatusCondition) {
+              if (!noActiveStatusCondition || isInactive) {
                 conditions.push({
                   attribute: 'enabled',
-                  value: selectedBusinessActiveState
+                  value: isInactive ? false : selectedBusinessActiveState
                 });
               }
               if (businessTypeSelected) {
@@ -174,6 +190,60 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
                   conditions: searchConditions
                 });
               }
+              if (Object.keys(filterValues).length > 0) {
+                filterConditons = [];
+                if (filterValues !== null && filterValues !== void 0 && filterValues.name && (filterValues === null || filterValues === void 0 ? void 0 : filterValues.name) !== null) {
+                  filterConditons.push({
+                    attribute: 'name',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.name, "%"))
+                    }
+                  });
+                }
+                if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$availab = filterValues.availableMenus) === null || _filterValues$availab === void 0 ? void 0 : _filterValues$availab.value) !== '') {
+                  filterConditons.push({
+                    attribute: 'available_menus_count',
+                    value: {
+                      condition: filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$availab2 = filterValues.availableMenus) === null || _filterValues$availab2 === void 0 ? void 0 : _filterValues$availab2.condition,
+                      value: filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$availab3 = filterValues.availableMenus) === null || _filterValues$availab3 === void 0 ? void 0 : _filterValues$availab3.value
+                    }
+                  });
+                }
+                if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$menus = filterValues.menus) === null || _filterValues$menus === void 0 ? void 0 : _filterValues$menus.value) !== '') {
+                  filterConditons.push({
+                    attribute: 'menus_count',
+                    value: {
+                      condition: filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$menus2 = filterValues.menus) === null || _filterValues$menus2 === void 0 ? void 0 : _filterValues$menus2.condition,
+                      value: filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$menus3 = filterValues.menus) === null || _filterValues$menus3 === void 0 ? void 0 : _filterValues$menus3.value
+                    }
+                  });
+                }
+                if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.cityIds.length) !== 0) {
+                  filterConditons.push({
+                    attribute: 'city_id',
+                    value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.cityIds
+                  });
+                }
+                if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.enabled) !== null) {
+                  filterConditons.push({
+                    attribute: 'enabled',
+                    value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.enabled
+                  });
+                }
+                if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.featured) !== null) {
+                  filterConditons.push({
+                    attribute: 'featured',
+                    value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.featured
+                  });
+                }
+                if (filterConditons.length) {
+                  conditions.push({
+                    conector: 'AND',
+                    conditions: filterConditons
+                  });
+                }
+              }
               if (conditions.length) {
                 where = {
                   conditions: conditions,
@@ -181,18 +251,18 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
                 };
               }
               functionFetch = asDashboard ? ordering.setAccessToken(session.token).businesses().select(propsToFetch).asDashboard().where(where) : ordering.setAccessToken(session.token).businesses().select(propsToFetch).where(where);
-              _context.next = 10;
+              _context.next = 11;
               return functionFetch.get(options);
-            case 10:
-              return _context.abrupt("return", _context.sent);
             case 11:
+              return _context.abrupt("return", _context.sent);
+            case 12:
             case "end":
               return _context.stop();
           }
         }
       }, _callee);
     }));
-    return function getBusinesses(_x, _x2) {
+    return function getBusinesses(_x, _x2, _x3) {
       return _ref.apply(this, arguments);
     };
   }();
@@ -320,66 +390,52 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
   }();
 
   /**
-   * Method to get businesses more
+   * Method to get businesses
    */
-  var loadMoreBusinesses = /*#__PURE__*/function () {
+  var getInActiveBusinesses = /*#__PURE__*/function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-      var response;
+      var response, _response$content;
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
-              setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
-                loading: true
-              }));
-              _context4.prev = 1;
-              _context4.next = 4;
-              return getBusinesses(loadMorePageSize, Math.ceil((pagination === null || pagination === void 0 ? void 0 : pagination.to) / loadMorePageSize) + 1);
-            case 4:
+              if (session.token) {
+                _context4.next = 2;
+                break;
+              }
+              return _context4.abrupt("return");
+            case 2:
+              _context4.prev = 2;
+              _context4.next = 5;
+              return getBusinesses(10, 1, true);
+            case 5:
               response = _context4.sent;
-              setBusinessList({
-                loading: false,
-                businesses: response.content.error ? businessList.businesses : businessList.businesses.concat(response.content.result),
-                error: response.content.error ? response.content.result : null
-              });
               if (!response.content.error) {
-                setPagination({
-                  currentPage: response.content.pagination.current_page,
-                  pageSize: response.content.pagination.page_size === 0 ? pagination.pageSize : response.content.pagination.page_size,
-                  totalPages: response.content.pagination.total_pages,
-                  total: response.content.pagination.total,
-                  from: response.content.pagination.from,
-                  to: response.content.pagination.to
-                });
+                setInActiveBusinesses(response === null || response === void 0 ? void 0 : (_response$content = response.content) === null || _response$content === void 0 ? void 0 : _response$content.result);
               }
               _context4.next = 12;
               break;
             case 9:
               _context4.prev = 9;
-              _context4.t0 = _context4["catch"](1);
-              if (_context4.t0.constructor.name !== 'Cancel') {
-                setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
-                  loading: false,
-                  error: [_context4.t0.message]
-                }));
-              }
+              _context4.t0 = _context4["catch"](2);
+              console.log(_context4.t0);
             case 12:
             case "end":
               return _context4.stop();
           }
         }
-      }, _callee4, null, [[1, 9]]);
+      }, _callee4, null, [[2, 9]]);
     }));
-    return function loadMoreBusinesses() {
+    return function getInActiveBusinesses() {
       return _ref4.apply(this, arguments);
     };
   }();
 
   /**
-   * Method to get businesses for page and pageSize
+   * Method to get businesses more
    */
-  var getPageBusinesses = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(pageSize, page) {
+  var loadMoreBusinesses = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
       var response;
       return _regeneratorRuntime().wrap(function _callee5$(_context5) {
         while (1) {
@@ -390,12 +446,12 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
               }));
               _context5.prev = 1;
               _context5.next = 4;
-              return getBusinesses(pageSize, page);
+              return getBusinesses(loadMorePageSize, Math.ceil((pagination === null || pagination === void 0 ? void 0 : pagination.to) / loadMorePageSize) + 1);
             case 4:
               response = _context5.sent;
               setBusinessList({
                 loading: false,
-                businesses: response.content.error ? businessList.businesses : response.content.result,
+                businesses: response.content.error ? businessList.businesses : businessList.businesses.concat(response.content.result),
                 error: response.content.error ? response.content.result : null
               });
               if (!response.content.error) {
@@ -426,8 +482,64 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
         }
       }, _callee5, null, [[1, 9]]);
     }));
-    return function getPageBusinesses(_x3, _x4) {
+    return function loadMoreBusinesses() {
       return _ref5.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Method to get businesses for page and pageSize
+   */
+  var getPageBusinesses = /*#__PURE__*/function () {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(pageSize, page) {
+      var response;
+      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
+                loading: true
+              }));
+              _context6.prev = 1;
+              _context6.next = 4;
+              return getBusinesses(pageSize, page);
+            case 4:
+              response = _context6.sent;
+              setBusinessList({
+                loading: false,
+                businesses: response.content.error ? businessList.businesses : response.content.result,
+                error: response.content.error ? response.content.result : null
+              });
+              if (!response.content.error) {
+                setPagination({
+                  currentPage: response.content.pagination.current_page,
+                  pageSize: response.content.pagination.page_size === 0 ? pagination.pageSize : response.content.pagination.page_size,
+                  totalPages: response.content.pagination.total_pages,
+                  total: response.content.pagination.total,
+                  from: response.content.pagination.from,
+                  to: response.content.pagination.to
+                });
+              }
+              _context6.next = 12;
+              break;
+            case 9:
+              _context6.prev = 9;
+              _context6.t0 = _context6["catch"](1);
+              if (_context6.t0.constructor.name !== 'Cancel') {
+                setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
+                  loading: false,
+                  error: [_context6.t0.message]
+                }));
+              }
+            case 12:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6, null, [[1, 9]]);
+    }));
+    return function getPageBusinesses(_x4, _x5) {
+      return _ref6.apply(this, arguments);
     };
   }();
 
@@ -437,20 +549,20 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
    * @param {Boolean} isFeatured flag to check if featured or enabled
    */
   var handleEnableAllBusiness = /*#__PURE__*/function () {
-    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(enabled) {
+    var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(enabled) {
       var isFeatured,
         changes,
         requestOptions,
         response,
         content,
         updatedBusinessList,
-        _args6 = arguments;
-      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        _args7 = arguments;
+      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
         while (1) {
-          switch (_context6.prev = _context6.next) {
+          switch (_context7.prev = _context7.next) {
             case 0:
-              isFeatured = _args6.length > 1 && _args6[1] !== undefined ? _args6[1] : false;
-              _context6.prev = 1;
+              isFeatured = _args7.length > 1 && _args7[1] !== undefined ? _args7[1] : false;
+              _context7.prev = 1;
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               changes = _objectSpread({
                 businesses_id: businessIds
@@ -467,14 +579,14 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
                 },
                 body: JSON.stringify(changes)
               };
-              _context6.next = 7;
+              _context7.next = 7;
               return fetch("".concat(ordering.root, "/business"), requestOptions);
             case 7:
-              response = _context6.sent;
-              _context6.next = 10;
+              response = _context7.sent;
+              _context7.next = 10;
               return response.json();
             case 10:
-              content = _context6.sent;
+              content = _context7.sent;
               if (!(content !== null && content !== void 0 && content.error)) {
                 updatedBusinessList = isFeatured ? businessList === null || businessList === void 0 ? void 0 : businessList.businesses.map(function (business) {
                   return businessIds.includes(business === null || business === void 0 ? void 0 : business.id) ? _objectSpread(_objectSpread({}, business), {}, {
@@ -491,21 +603,21 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
               } else {
                 showToast(_ToastContext.ToastType.Error, content === null || content === void 0 ? void 0 : content.result);
               }
-              _context6.next = 17;
+              _context7.next = 17;
               break;
             case 14:
-              _context6.prev = 14;
-              _context6.t0 = _context6["catch"](1);
-              showToast(_ToastContext.ToastType.Error, _context6.t0.message);
+              _context7.prev = 14;
+              _context7.t0 = _context7["catch"](1);
+              showToast(_ToastContext.ToastType.Error, _context7.t0.message);
             case 17:
             case "end":
-              return _context6.stop();
+              return _context7.stop();
           }
         }
-      }, _callee6, null, [[1, 14]]);
+      }, _callee7, null, [[1, 14]]);
     }));
-    return function handleEnableAllBusiness(_x5) {
-      return _ref6.apply(this, arguments);
+    return function handleEnableAllBusiness(_x6) {
+      return _ref7.apply(this, arguments);
     };
   }();
 
@@ -513,13 +625,13 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
    * Method to delete business list
    */
   var handleDeleteMultiBusinesses = /*#__PURE__*/function () {
-    var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+    var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
       var requestOptions, response, content, updatedBusinessList;
-      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+      return _regeneratorRuntime().wrap(function _callee8$(_context8) {
         while (1) {
-          switch (_context7.prev = _context7.next) {
+          switch (_context8.prev = _context8.next) {
             case 0:
-              _context7.prev = 0;
+              _context8.prev = 0;
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               requestOptions = {
                 method: 'DELETE',
@@ -531,14 +643,14 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
                   businesses_id: businessIds
                 })
               };
-              _context7.next = 5;
+              _context8.next = 5;
               return fetch("".concat(ordering.root, "/business"), requestOptions);
             case 5:
-              response = _context7.sent;
-              _context7.next = 8;
+              response = _context8.sent;
+              _context8.next = 8;
               return response.json();
             case 8:
-              content = _context7.sent;
+              content = _context8.sent;
               if (!(content !== null && content !== void 0 && content.error)) {
                 updatedBusinessList = businessList === null || businessList === void 0 ? void 0 : businessList.businesses.filter(function (business) {
                   return !businessIds.includes(business === null || business === void 0 ? void 0 : business.id);
@@ -551,21 +663,21 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
               } else {
                 showToast(_ToastContext.ToastType.Error, content === null || content === void 0 ? void 0 : content.result);
               }
-              _context7.next = 15;
+              _context8.next = 15;
               break;
             case 12:
-              _context7.prev = 12;
-              _context7.t0 = _context7["catch"](0);
-              showToast(_ToastContext.ToastType.Error, _context7.t0.message);
+              _context8.prev = 12;
+              _context8.t0 = _context8["catch"](0);
+              showToast(_ToastContext.ToastType.Error, _context8.t0.message);
             case 15:
             case "end":
-              return _context7.stop();
+              return _context8.stop();
           }
         }
-      }, _callee7, null, [[0, 12]]);
+      }, _callee8, null, [[0, 12]]);
     }));
     return function handleDeleteMultiBusinesses() {
-      return _ref7.apply(this, arguments);
+      return _ref8.apply(this, arguments);
     };
   }();
 
@@ -685,10 +797,13 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
     } else {
       loadBusinesses();
     }
-  }, [session, searchValue, selectedBusinessActiveState, businessTypeSelected]);
+  }, [session, searchValue, selectedBusinessActiveState, businessTypeSelected, filterValues]);
   (0, _react.useEffect)(function () {
     getCountries();
   }, []);
+  (0, _react.useEffect)(function () {
+    getInActiveBusinesses();
+  }, [businessList === null || businessList === void 0 ? void 0 : (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.length]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     pagination: pagination,
     searchValue: searchValue,
@@ -708,7 +823,11 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
     handleSucessUpdateBusiness: handleSucessUpdateBusiness,
     handleDeleteMultiBusinesses: handleDeleteMultiBusinesses,
     handleChangeBusinessActiveState: handleChangeBusinessActiveState,
-    countriesState: countriesState
+    countriesState: countriesState,
+    filterValues: filterValues,
+    handleChangeFilterValues: handleChangeFilterValues,
+    businessTypeSelected: businessTypeSelected,
+    inActiveBusinesses: inActiveBusinesses
   })));
 };
 exports.DashboardBusinessList = DashboardBusinessList;

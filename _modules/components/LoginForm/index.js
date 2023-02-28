@@ -32,13 +32,15 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  * Component to manage login behavior without UI component
  */
 var LoginForm = function LoginForm(props) {
-  var _configs$opt_email_en, _configs$email_passwo;
+  var _configs$opt_email_en, _configs$otp_cellphon, _configs$email_passwo, _configs$phone_passwo;
   var UIComponent = props.UIComponent,
     handleButtonLoginClick = props.handleButtonLoginClick,
     handleSuccessLogin = props.handleSuccessLogin,
     useDefualtSessionManager = props.useDefualtSessionManager,
     urlToRedirect = props.urlToRedirect,
-    allowedLevels = props.allowedLevels;
+    allowedLevels = props.allowedLevels,
+    billingUrl = props.billingUrl,
+    handleRedirect = props.handleRedirect;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -99,10 +101,12 @@ var LoginForm = function LoginForm(props) {
     isReCaptchaEnable = _useState12[0],
     setIsReCaptchaEnable = _useState12[1];
   var useLoginOtpEmail = (configs === null || configs === void 0 ? void 0 : (_configs$opt_email_en = configs.opt_email_enabled) === null || _configs$opt_email_en === void 0 ? void 0 : _configs$opt_email_en.value) === '1';
-  var useLoginByEmail = useLoginOtpEmail ? (configs === null || configs === void 0 ? void 0 : (_configs$email_passwo = configs.email_password_login_enabled) === null || _configs$email_passwo === void 0 ? void 0 : _configs$email_passwo.value) === '1' : true;
+  var useLoginOptCellphone = (configs === null || configs === void 0 ? void 0 : (_configs$otp_cellphon = configs.otp_cellphone_enabled) === null || _configs$otp_cellphon === void 0 ? void 0 : _configs$otp_cellphon.value) === '1';
+  var useLoginByEmail = (configs === null || configs === void 0 ? void 0 : (_configs$email_passwo = configs.email_password_login_enabled) === null || _configs$email_passwo === void 0 ? void 0 : _configs$email_passwo.value) === '1';
+  var useLoginByCellphone = (configs === null || configs === void 0 ? void 0 : (_configs$phone_passwo = configs.phone_password_login_enabled) === null || _configs$phone_passwo === void 0 ? void 0 : _configs$phone_passwo.value) === '1';
   var useLoginOtp = useLoginOtpEmail;
-  defaultLoginTab = useLoginByEmail ? 'email' : 'otp';
-  var _useState13 = (0, _react.useState)(defaultLoginTab),
+  defaultLoginTab = useLoginByEmail ? 'email' : useLoginByCellphone ? 'cellphone' : useLoginOtpEmail || useLoginOptCellphone ? 'otp' : 'email';
+  var _useState13 = (0, _react.useState)(),
     _useState14 = _slicedToArray(_useState13, 2),
     loginTab = _useState14[0],
     setLoginTab = _useState14[1];
@@ -126,16 +130,18 @@ var LoginForm = function LoginForm(props) {
    */
   var handleLoginClick = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(values) {
-      var _credentials, _credentials2, _credentials3, _yield$ordering$users, _yield$ordering$users2, error, result, level, access_token, _yield$ordering$setAc, logoutResp;
+      var _credentials, _objectSpread2, _credentials2, _yield$ordering$users, _yield$ordering$users2, error, result, level, access_token, _yield$ordering$setAc, logoutResp;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
               if (loginTab === 'otp') {
-                _credentials = (_credentials2 = {}, _defineProperty(_credentials2, otpType, values && values[otpType] || credentials[otpType]), _defineProperty(_credentials2, "one_time_password", values && (values === null || values === void 0 ? void 0 : values.code) || otpState), _credentials2);
+                _credentials = _objectSpread((_objectSpread2 = {}, _defineProperty(_objectSpread2, otpType, values && values[otpType] || credentials[otpType]), _defineProperty(_objectSpread2, "one_time_password", values && (values === null || values === void 0 ? void 0 : values.code) || otpState), _objectSpread2), otpType === 'cellphone' && {
+                  country_phone_code: (values === null || values === void 0 ? void 0 : values.country_phone_code) || (credentials === null || credentials === void 0 ? void 0 : credentials.country_phone_code)
+                });
               } else {
-                _credentials = (_credentials3 = {}, _defineProperty(_credentials3, loginTab, values && values[loginTab] || credentials[loginTab]), _defineProperty(_credentials3, "password", values && (values === null || values === void 0 ? void 0 : values.password) || credentials.password), _credentials3);
+                _credentials = (_credentials2 = {}, _defineProperty(_credentials2, loginTab, values && values[loginTab] || credentials[loginTab]), _defineProperty(_credentials2, "password", values && (values === null || values === void 0 ? void 0 : values.password) || credentials.password), _credentials2);
               }
               if (!isReCaptchaEnable) {
                 _context.next = 10;
@@ -233,7 +239,7 @@ var LoginForm = function LoginForm(props) {
                 handleSuccessLogin(result);
               }
               if (urlToRedirect) {
-                window.location.href = "".concat(window.location.origin).concat(urlToRedirect);
+                handleRedirect ? handleRedirect(urlToRedirect) : window.location.href = "".concat(window.location.origin).concat(urlToRedirect);
               }
             case 40:
               setFormState({
@@ -273,6 +279,13 @@ var LoginForm = function LoginForm(props) {
    */
   var handleChangeInput = function handleChangeInput(e) {
     setCredentials(_objectSpread(_objectSpread({}, credentials), {}, _defineProperty({}, e.target.name, e.target.value)));
+  };
+
+  /**
+   * Update credential data
+   */
+  var handleChangeCredentials = function handleChangeCredentials(changes) {
+    setCredentials(_objectSpread(_objectSpread({}, credentials), changes));
   };
 
   /**
@@ -503,6 +516,12 @@ var LoginForm = function LoginForm(props) {
     var _configs$security_rec;
     setIsReCaptchaEnable((ordering === null || ordering === void 0 ? void 0 : ordering.project) && configs && Object.keys(configs).length > 0 && (configs === null || configs === void 0 ? void 0 : (_configs$security_rec = configs.security_recaptcha_auth) === null || _configs$security_rec === void 0 ? void 0 : _configs$security_rec.value) === '1');
   }, [configs, ordering === null || ordering === void 0 ? void 0 : ordering.project]);
+  (0, _react.useEffect)(function () {
+    setLoginTab(defaultLoginTab);
+  }, [defaultLoginTab]);
+  (0, _react.useEffect)(function () {
+    setOtpType(useLoginOtpEmail ? 'email' : 'cellphone');
+  }, [useLoginOtpEmail, useLoginOptCellphone]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     formState: formState,
     loginTab: loginTab,
@@ -524,7 +543,10 @@ var LoginForm = function LoginForm(props) {
     otpState: otpState,
     useLoginByEmail: useLoginByEmail,
     useLoginOtpEmail: useLoginOtpEmail,
-    generateOtpCode: generateOtpCode
+    generateOtpCode: generateOtpCode,
+    useLoginByCellphone: useLoginByCellphone,
+    useLoginOptCellphone: useLoginOptCellphone,
+    handleChangeCredentials: handleChangeCredentials
   })));
 };
 exports.LoginForm = LoginForm;

@@ -482,14 +482,8 @@ var OrderDetails = function OrderDetails(props) {
         order: Object.assign(orderState.order, order)
       }));
     };
-    if (!asDashboard) {
-      socket.join("orders_".concat(user.id));
-    }
     socket.on('update_order', handleUpdateOrder);
     return function () {
-      if (!asDashboard) {
-        socket.leave("orders_".concat(user.id));
-      }
       socket.off('update_order', handleUpdateOrder);
     };
   }, [orderState.order, socket, loading, drivers]);

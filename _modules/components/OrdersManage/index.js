@@ -711,6 +711,15 @@ var OrdersManage = function OrdersManage(props) {
                     value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.deliveryTypes
                   });
                 }
+                if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.cityIds.length) !== 0) {
+                  filterConditons.push({
+                    attribute: 'business',
+                    conditions: [{
+                      attribute: "city_id",
+                      value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.cityIds
+                    }]
+                  });
+                }
                 if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.driverGroupIds.length) !== 0) {
                   filterConditons.push({
                     attribute: 'driver_id',
@@ -877,13 +886,23 @@ var OrdersManage = function OrdersManage(props) {
       return _ref5.apply(this, arguments);
     };
   }();
+  var handleNewOrder = function handleNewOrder() {
+    if (!numberOfOrdersByStatus.result) return;
+    var _orderStatusNumbers = numberOfOrdersByStatus.result;
+    _orderStatusNumbers['pending'] += 1;
+    setNumberOfOrdersByStatus(_objectSpread(_objectSpread({}, numberOfOrdersByStatus), {}, {
+      loading: false,
+      error: false,
+      result: _orderStatusNumbers
+    }));
+  };
   var handleChangeOrder = function handleChangeOrder(order) {
     var _order$changes;
     var statusChange = order === null || order === void 0 ? void 0 : (_order$changes = order.changes) === null || _order$changes === void 0 ? void 0 : _order$changes.find(function (_ref7) {
       var attribute = _ref7.attribute;
       return attribute === 'status';
     });
-    if (statusChange && !numberOfOrdersByStatus.loading) {
+    if (statusChange && numberOfOrdersByStatus.result) {
       var from = statusChange.old;
       var to = statusChange.new;
       var _orderStatusNumbers = numberOfOrdersByStatus.result;
@@ -892,7 +911,9 @@ var OrdersManage = function OrdersManage(props) {
       Object.values(orderStatuesList).map(function (statusTabs, key) {
         if (statusTabs.includes(from)) {
           fromTab = Object.keys(orderStatuesList)[key];
-          _orderStatusNumbers[fromTab] -= 1;
+          if (_orderStatusNumbers[fromTab] > 0) {
+            _orderStatusNumbers[fromTab] -= 1;
+          }
         }
         if (statusTabs.includes(to)) {
           toTab = Object.keys(orderStatuesList)[key];
@@ -908,38 +929,12 @@ var OrdersManage = function OrdersManage(props) {
   };
   (0, _react.useEffect)(function () {
     socket.on('order_change', handleChangeOrder);
+    socket.on('orders_register', handleNewOrder);
     return function () {
       socket.off('order_change', handleChangeOrder);
+      socket.off('orders_register', handleNewOrder);
     };
-  }, [socket, filterValues, searchValue, numberOfOrdersByStatus]);
-  (0, _react.useEffect)(function () {
-    if (!user) return;
-    socket.join('drivers');
-    if (user.level === 0) {
-      socket.join('messages_orders');
-    } else {
-      socket.join("messages_orders_".concat(user === null || user === void 0 ? void 0 : user.id));
-    }
-    socket.join({
-      room: 'orders',
-      user_id: user === null || user === void 0 ? void 0 : user.id,
-      role: 'manager'
-    });
-    return function () {
-      if (!user) return;
-      socket.leave('drivers');
-      if (user.level === 0) {
-        socket.leave('messages_orders');
-      } else {
-        socket.leave("messages_orders_".concat(user === null || user === void 0 ? void 0 : user.id));
-      }
-      socket.leave({
-        room: 'orders',
-        user_id: user === null || user === void 0 ? void 0 : user.id,
-        role: 'manager'
-      });
-    };
-  }, [socket, loading, user]);
+  }, [socket, filterValues, searchValue, JSON.stringify(numberOfOrdersByStatus)]);
 
   /**
    * Listening multi orders action start to change status

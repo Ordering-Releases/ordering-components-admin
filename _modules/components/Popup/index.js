@@ -25,7 +25,8 @@ var Popup = function Popup(props) {
     open = props.open,
     backdropClassName = props.backdropClassName,
     closeOnBackdrop = props.closeOnBackdrop,
-    onClose = props.onClose;
+    onClose = props.onClose,
+    isTopPosition = props.isTopPosition;
   var modalRef = (0, _react.useRef)(null);
   var _useState = (0, _react.useState)(),
     _useState2 = _slicedToArray(_useState, 2),
@@ -45,7 +46,10 @@ var Popup = function Popup(props) {
    * @param {Event} e Event when keydown
    */
   var handleKeyDown = function handleKeyDown(e) {
-    e.keyCode === 27 && e.target.classList.contains('popup-component') && onClose && onClose();
+    if (e.keyCode === 27 && e.target.classList.contains('popup-component') && onClose) {
+      var length = document.getElementById('app-modals').children.length;
+      if (!length || length >= 2 && !isTopPosition || length === 1) onClose();
+    }
   };
 
   /**
@@ -53,7 +57,10 @@ var Popup = function Popup(props) {
    * @param {Event} e Event when click in backdrop
    */
   var handleClick = function handleClick(e) {
-    closeOnBackdrop && e.target.classList.contains('popup-component') && onClose && onClose();
+    if (closeOnBackdrop && e.target.classList.contains('popup-component') && onClose) {
+      var length = document.getElementById('app-modals').children.length;
+      if (!length || length >= 2 && !isTopPosition || length === 1) onClose();
+    }
   };
 
   /**

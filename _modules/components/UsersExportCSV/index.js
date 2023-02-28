@@ -58,7 +58,7 @@ var UsersExportCSV = function UsersExportCSV(props) {
    */
   var getCSV = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(filterApply) {
-      var requestOptions, defaultConditions, filterConditons, searchConditions, functionFetch, response, fileSuffix;
+      var requestOptions, defaultConditions, filterConditons, searchConditions, functionFetch, response, content;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -152,24 +152,20 @@ var UsersExportCSV = function UsersExportCSV(props) {
                   });
                 }
               }
-              functionFetch = filterApply ? "".concat(ordering.root, "/users.csv?mode=dashboard&orderBy=id&where=").concat(JSON.stringify(filterConditons)) : defaultConditions.length > 0 ? "".concat(ordering.root, "/users.csv?mode=dashboard&orderBy=id&where=").concat(JSON.stringify(defaultConditions)) : "".concat(ordering.root, "/users.csv?mode=dashboard&orderBy=id");
+              functionFetch = filterApply ? "".concat(ordering.root, "/users_new.csv?mode=dashboard&orderBy=id&where=").concat(JSON.stringify(filterConditons)) : defaultConditions.length > 0 ? "".concat(ordering.root, "/users_new.csv?mode=dashboard&orderBy=id&where=").concat(JSON.stringify(defaultConditions)) : "".concat(ordering.root, "/users_new.csv?mode=dashboard&orderBy=id");
               _context.next = 12;
               return fetch(functionFetch, requestOptions);
             case 12:
               response = _context.sent;
-              fileSuffix = new Date().getTime();
-              _context.next = 16;
-              return response.blob().then(function (blob) {
-                var url = window.URL.createObjectURL(blob);
-                var a = document.createElement('a');
-                a.href = url;
-                a.download = "users_".concat(fileSuffix, ".csv");
-                a.click();
+              _context.next = 15;
+              return response.json();
+            case 15:
+              content = _context.sent;
+              setActionStatus({
+                loading: false,
+                result: content.result,
+                error: null
               });
-            case 16:
-              setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
-                loading: false
-              }));
               _context.next = 22;
               break;
             case 19:

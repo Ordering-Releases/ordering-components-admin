@@ -455,7 +455,7 @@ var PointsWalletBusinessList = function PointsWalletBusinessList(props) {
     var controller = new AbortController();
     getBusinessTypes();
     return controller.abort();
-  }, []);
+  }, [pointWallet === null || pointWallet === void 0 ? void 0 : pointWallet.id]);
   (0, _react.useEffect)(function () {
     setSelectedBusinessList(_toConsumableArray(businessList === null || businessList === void 0 ? void 0 : businessList.businesses));
   }, [businessList === null || businessList === void 0 ? void 0 : businessList.businesses]);

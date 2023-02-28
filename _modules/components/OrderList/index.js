@@ -639,25 +639,6 @@ var OrderList = function OrderList(props) {
       socket.off('message', handleNewMessage);
     };
   }, [orderList.orders, pagination, orderBy, socket]);
-  (0, _react.useEffect)(function () {
-    if (!session.user) return;
-    if (asDashboard) {
-      socket.join('messages_orders');
-      socket.join('orders');
-    } else {
-      var _session$user;
-      socket.join("orders_".concat(session === null || session === void 0 ? void 0 : (_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.id));
-    }
-    return function () {
-      if (asDashboard) {
-        socket.leave('messages_orders');
-        socket.leave('orders');
-      } else {
-        var _session$user2;
-        socket.leave("orders_".concat(session === null || session === void 0 ? void 0 : (_session$user2 = session.user) === null || _session$user2 === void 0 ? void 0 : _session$user2.id));
-      }
-    };
-  }, [socket, session]);
   var loadMoreOrders = /*#__PURE__*/function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
       var response;

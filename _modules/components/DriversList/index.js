@@ -470,14 +470,6 @@ var DriversList = function DriversList(props) {
     };
   }, [socket, session === null || session === void 0 ? void 0 : session.loading, driversList.drivers]);
   (0, _react.useEffect)(function () {
-    if (!(session !== null && session !== void 0 && session.user) || drivers) return;
-    socket.join('drivers');
-    return function () {
-      if (!(session !== null && session !== void 0 && session.user) || drivers) return;
-      socket.leave('drivers');
-    };
-  }, [socket, session === null || session === void 0 ? void 0 : session.user, asDashboard]);
-  (0, _react.useEffect)(function () {
     getOnlineOfflineDrivers(driversList.drivers);
   }, [driversList.drivers]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
