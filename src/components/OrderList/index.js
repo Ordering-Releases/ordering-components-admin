@@ -527,25 +527,6 @@ export const OrderList = (props) => {
     }
   }, [orderList.orders, pagination, orderBy, socket])
 
-  useEffect(() => {
-    if (!session.user) return
-
-    if (asDashboard) {
-      socket.join('messages_orders')
-      socket.join('orders')
-    } else {
-      socket.join(`orders_${session?.user?.id}`)
-    }
-    return () => {
-      if (asDashboard) {
-        socket.leave('messages_orders')
-        socket.leave('orders')
-      } else {
-        socket.leave(`orders_${session?.user?.id}`)
-      }
-    }
-  }, [socket, session])
-
   const loadMoreOrders = async () => {
     setOrderList({ ...orderList, loading: true })
     try {

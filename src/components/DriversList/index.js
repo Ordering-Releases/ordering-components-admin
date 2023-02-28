@@ -328,16 +328,6 @@ export const DriversList = (props) => {
   }, [socket, session?.loading, driversList.drivers])
 
   useEffect(() => {
-    if (!session?.user || drivers) return
-    socket.join('drivers')
-
-    return () => {
-      if (!session?.user || drivers) return
-      socket.leave('drivers')
-    }
-  }, [socket, session?.user, asDashboard])
-
-  useEffect(() => {
     getOnlineOfflineDrivers(driversList.drivers)
   }, [driversList.drivers])
 

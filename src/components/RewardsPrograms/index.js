@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useApi } from '../../contexts/ApiContext'
 import { useSession } from '../../contexts/SessionContext'
+import { useLanguage } from '../../contexts/LanguageContext'
 
 export const RewardsPrograms = (props) => {
   const {
-    UIComponent
+    UIComponent,
+    type
   } = props
 
   const [ordering] = useApi()
   const [{ token, loading }] = useSession()
+  const [, t] = useLanguage()
   const [loyaltyPlanList, setLoyaltyPlanList] = useState({ loading: true, error: null, loyaltyPlans: [], pagination: null })
   const [pointWallet, setPointWallet] = useState(null)
 
@@ -81,12 +84,100 @@ export const RewardsPrograms = (props) => {
       const response = await fetch(functionFetch, requestOptions)
       const { error, result, pagination } = await response.json()
       if (!error) {
+        const loyalty = result.find(plan => plan.type === type)
         setLoyaltyPlanList({
           ...loyaltyPlanList,
-          loading: false,
+          ...(loyalty && { loading: false }),
           loyaltyPlans: result,
           pagination
         })
+        if (loyalty) setPointWallet(JSON.parse(JSON.stringify(loyalty)))
+        else await getBusinessTypes()
+      } else {
+        setLoyaltyPlanList({
+          ...loyaltyPlanList,
+          loading: false,
+          error: result
+        })
+      }
+    } catch (err) {
+      setLoyaltyPlanList({
+        ...loyaltyPlanList,
+        loading: false,
+        error: err
+      })
+    }
+  }
+
+  const createWallet = async (businessId) => {
+    try {
+      const payload = {
+        name: `Loyalty ${type === 'cashback' ? 'Cash' : 'Point'} Plan`,
+        type,
+        redemption_rate: 1,
+        accumulation_rate: 1,
+        businesses: JSON.stringify([
+          {
+            id: businessId,
+            accumulates: true,
+            redeems: true
+          }
+        ])
+      }
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      }
+
+      const response = await fetch(`${ordering.root}/loyalty_plans`, requestOptions)
+      const content = await response.json()
+
+      if (!content.error) {
+        setPointWallet(content.result)
+        const loyaltyPlans = JSON.parse(JSON.stringify(loyaltyPlanList.loyaltyPlans))
+        loyaltyPlans.push(content.result)
+        setLoyaltyPlanList({
+          ...loyaltyPlanList,
+          loading: false,
+          loyaltyPlans
+        })
+      } else {
+        setLoyaltyPlanList({
+          ...loyaltyPlanList,
+          loading: false,
+          error: content.result
+        })
+      }
+    } catch (err) {
+      setLoyaltyPlanList({
+        ...loyaltyPlanList,
+        loading: false,
+        error: err
+      })
+    }
+  }
+
+  /**
+   * Method to get business types from API
+   */
+  const getBusinessTypes = async () => {
+    try {
+      const fetchEndpoint = ordering.businesses().asDashboard().select(['id'])
+      const { content: { error, result } } = await fetchEndpoint.get()
+      if (!error) {
+        if (result?.length > 0) {
+          await createWallet(result[0]?.id)
+        } else {
+          setLoyaltyPlanList({
+            ...loyaltyPlanList,
+            loading: false,
+            error: t('MOBILE_HAVE_NO_BUSINESS', 'You have no businesses available.')
+          })
+        }
       } else {
         setLoyaltyPlanList({
           ...loyaltyPlanList,
@@ -105,13 +196,7 @@ export const RewardsPrograms = (props) => {
 
   useEffect(() => {
     getLoyaltyPlans()
-  }, [])
-
-  useEffect(() => {
-    if (loyaltyPlanList?.loyaltyPlans?.length === 0) return
-    const loyalty = loyaltyPlanList?.loyaltyPlans.find(plan => plan.type === 'credit_point')
-    if (loyalty) setPointWallet({ ...loyalty })
-  }, [loyaltyPlanList?.loyaltyPlans])
+  }, [type])
 
   return (
     <>

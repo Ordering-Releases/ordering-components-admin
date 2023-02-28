@@ -46,6 +46,16 @@ export const UsersList = (props) => {
   const [deleteUsersActionState, setDeleteUsersActionState] = useState({ loading: false, error: null })
   const [occupationsState, setOccupationsState] = useState({ occupations: [], loading: false, error: null })
   const [selectedOccupation, setSelectedOccupation] = useState(null)
+  const [orderFilterValue, setOrderFilterValue] = useState(null)
+  const [multiFilterValues, setMultiFilterValues] = useState({})
+
+  /**
+   * Save filter type values
+   * @param {object} types
+   */
+  const handleChangeMultiFilterValues = (types) => {
+    setMultiFilterValues(types)
+  }
 
   /**
    * Get users by params, order options and filters
@@ -63,6 +73,14 @@ export const UsersList = (props) => {
 
       if (!isBusinessOwners) {
         parameters = { ...paginationParams }
+      }
+
+      if (orderFilterValue !== null) {
+        parameters = {
+          ...parameters,
+          orders_count_condition: orderFilterValue === 0 ? 'eq' : 'gt',
+          orders_count_value: orderFilterValue
+        }
       }
 
       let where = null
@@ -238,6 +256,150 @@ export const UsersList = (props) => {
           conditions.push({
             conector: 'AND',
             conditions: filterConditions
+          })
+        }
+      }
+
+      if (Object.keys(multiFilterValues).length > 0) {
+        const filterConditons = []
+
+        if (multiFilterValues?.name && multiFilterValues?.name !== null) {
+          filterConditons.push(
+            {
+              attribute: 'name',
+              value: {
+                condition: 'ilike',
+                value: encodeURI(`%${multiFilterValues?.name}%`)
+              }
+            }
+          )
+        }
+        if (multiFilterValues?.lastname && multiFilterValues?.lastname !== null) {
+          filterConditons.push(
+            {
+              attribute: 'lastname',
+              value: {
+                condition: 'ilike',
+                value: encodeURI(`%${multiFilterValues?.lastname}%`)
+              }
+            }
+          )
+        }
+        if (multiFilterValues?.email && multiFilterValues?.email !== null) {
+          filterConditons.push(
+            {
+              attribute: 'email',
+              value: {
+                condition: 'ilike',
+                value: encodeURI(`%${multiFilterValues?.email}%`)
+              }
+            }
+          )
+        }
+        if (multiFilterValues?.cellphone && multiFilterValues?.cellphone !== null) {
+          filterConditons.push(
+            {
+              attribute: 'cellphone',
+              value: {
+                condition: 'ilike',
+                value: encodeURI(`%${multiFilterValues?.cellphone}%`)
+              }
+            }
+          )
+        }
+        if (multiFilterValues?.countryPhoneCode !== null) {
+          filterConditons.push(
+            {
+              attribute: 'country_phone_code',
+              value: {
+                condition: 'ilike',
+                value: encodeURI(`%${multiFilterValues?.countryPhoneCode}%`)
+              }
+            }
+          )
+        }
+        if (multiFilterValues?.cityIds.length !== 0) {
+          filterConditons.push(
+            {
+              attribute: 'city_id',
+              value: multiFilterValues?.cityIds
+            }
+          )
+        }
+        if (multiFilterValues?.phoneVerified !== null) {
+          filterConditons.push(
+            {
+              attribute: 'phone_verified',
+              value: multiFilterValues?.phoneVerified
+            }
+          )
+        }
+        if (multiFilterValues?.ordersCount?.value !== '') {
+          parameters = {
+            ...parameters,
+            orders_count_condition: multiFilterValues?.ordersCount?.condition,
+            orders_count_value: multiFilterValues?.ordersCount?.value
+          }
+        }
+        if (multiFilterValues?.emailVerified !== null) {
+          filterConditons.push(
+            {
+              attribute: 'email_verified',
+              value: multiFilterValues?.emailVerified
+            }
+          )
+        }
+        if (multiFilterValues?.userType !== null) {
+          filterConditons.push(
+            {
+              attribute: 'level',
+              value: multiFilterValues?.userType
+            }
+          )
+        }
+        if (multiFilterValues?.loyaltyLevel !== null) {
+          filterConditons.push(
+            {
+              attribute: 'loyalty_level_id',
+              value: multiFilterValues?.loyaltyLevel
+            }
+          )
+        }
+        if (multiFilterValues?.enabled !== null) {
+          filterConditons.push(
+            {
+              attribute: 'enabled',
+              value: multiFilterValues?.enabled
+            }
+          )
+        }
+        if (multiFilterValues?.deliveryFromDatetime !== null) {
+          filterConditons.push(
+            {
+              attribute: 'created_at',
+              value: {
+                condition: '>=',
+                value: multiFilterValues?.deliveryFromDatetime
+              }
+            }
+          )
+        }
+        if (multiFilterValues?.deliveryEndDatetime !== null) {
+          filterConditons.push(
+            {
+              attribute: 'created_at',
+              value: {
+                condition: '<=',
+                value: multiFilterValues?.deliveryEndDatetime
+              }
+            }
+          )
+        }
+
+        if (filterConditons.length) {
+          conditions.push({
+            conector: 'AND',
+            conditions: filterConditons
           })
         }
       }
@@ -585,6 +747,14 @@ export const UsersList = (props) => {
   }, [filterValues])
 
   useEffect(() => {
+    getUsers(1, null)
+  }, [multiFilterValues])
+
+  useEffect(() => {
+    if (orderFilterValue !== null && !usersList.loading) getUsers(1, null)
+  }, [orderFilterValue])
+
+  useEffect(() => {
     if (isProfessional) {
       getOccupations()
     }
@@ -638,6 +808,10 @@ export const UsersList = (props) => {
             selectedOccupation={selectedOccupation}
             handleSelectOccupation={setSelectedOccupation}
             setSelectedUsers={setSelectedUsers}
+            orderFilterValue={orderFilterValue}
+            handleChangeOrderFilterValue={setOrderFilterValue}
+            multiFilterValues={multiFilterValues}
+            handleChangeMultiFilterValues={handleChangeMultiFilterValues}
           />
         )
       }
@@ -676,7 +850,7 @@ UsersList.defaultProps = {
     'name', 'lastname', 'email', 'phone', 'photo', 'cellphone', 'schedule',
     'country_phone_code', 'city_id', 'city', 'address', 'addresses', 'max_days_in_future',
     'address_notes', 'driver_zone_restriction', 'dropdown_option_id', 'dropdown_option', 'location',
-    'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups'
+    'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups', 'created_at'
   ],
   paginationSettings: { initialPage: 1, pageSize: 10, controlType: 'infinity' },
   defaultUserTypesSelected: [0, 1, 2, 3]

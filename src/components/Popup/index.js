@@ -11,7 +11,8 @@ export const Popup = (props) => {
     open,
     backdropClassName,
     closeOnBackdrop,
-    onClose
+    onClose,
+    isTopPosition
   } = props
 
   const modalRef = useRef(null)
@@ -25,7 +26,10 @@ export const Popup = (props) => {
    * @param {Event} e Event when keydown
    */
   const handleKeyDown = (e) => {
-    e.keyCode === 27 && e.target.classList.contains('popup-component') && onClose && onClose()
+    if (e.keyCode === 27 && e.target.classList.contains('popup-component') && onClose) {
+      const length = document.getElementById('app-modals').children.length
+      if (!length || (length >= 2 && !isTopPosition) || length === 1) onClose()
+    }
   }
 
   /**
@@ -33,7 +37,10 @@ export const Popup = (props) => {
    * @param {Event} e Event when click in backdrop
    */
   const handleClick = (e) => {
-    closeOnBackdrop && e.target.classList.contains('popup-component') && onClose && onClose()
+    if (closeOnBackdrop && e.target.classList.contains('popup-component') && onClose) {
+      const length = document.getElementById('app-modals').children.length
+      if (!length || (length >= 2 && !isTopPosition) || length === 1) onClose()
+    }
   }
 
   /**

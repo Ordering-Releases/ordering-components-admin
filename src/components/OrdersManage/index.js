@@ -409,6 +409,19 @@ export const OrdersManage = (props) => {
           }
         )
       }
+      if (filterValues?.cityIds.length !== 0) {
+        filterConditons.push(
+          {
+            attribute: 'business',
+            conditions: [
+              {
+                attribute: "city_id",
+                value: filterValues?.cityIds
+              }
+            ],
+          }
+        )
+      }
       if (filterValues?.driverGroupIds.length !== 0) {
         filterConditons.push(
           {
@@ -576,21 +589,35 @@ export const OrdersManage = (props) => {
     }
   }
 
+  const handleNewOrder = () => {
+    if (!numberOfOrdersByStatus.result) return
+    let _orderStatusNumbers = numberOfOrdersByStatus.result
+    _orderStatusNumbers['pending'] += 1
+    setNumberOfOrdersByStatus({
+      ...numberOfOrdersByStatus,
+      loading: false,
+      error: false,
+      result: _orderStatusNumbers
+    })
+  }
+
   const handleChangeOrder = (order) => {
-    const statusChange = order?.changes?.find(({attribute}) => (attribute === 'status'))
-    if (statusChange && !numberOfOrdersByStatus.loading) {
+    const statusChange = order?.changes?.find(({ attribute }) => (attribute === 'status'))
+    if (statusChange && numberOfOrdersByStatus.result) {
       const from = statusChange.old
       const to = statusChange.new
-      let _orderStatusNumbers = numberOfOrdersByStatus.result
+      const _orderStatusNumbers = numberOfOrdersByStatus.result
       let fromTab = null
       let toTab = null
 
       Object.values(orderStatuesList).map((statusTabs, key) => {
-        if(statusTabs.includes(from)) {
-            fromTab = Object.keys(orderStatuesList)[key]
+        if (statusTabs.includes(from)) {
+          fromTab = Object.keys(orderStatuesList)[key]
+          if (_orderStatusNumbers[fromTab] > 0) {
             _orderStatusNumbers[fromTab] -= 1
+          }
         }
-        if(statusTabs.includes(to)) {
+        if (statusTabs.includes(to)) {
           toTab = Object.keys(orderStatuesList)[key]
           _orderStatusNumbers[toTab] += 1
         }
@@ -603,42 +630,15 @@ export const OrdersManage = (props) => {
       })
     }
   }
+
   useEffect(() => {
     socket.on('order_change', handleChangeOrder)
+    socket.on('orders_register', handleNewOrder)
     return () => {
       socket.off('order_change', handleChangeOrder)
+      socket.off('orders_register', handleNewOrder)
     }
-  }, [socket, filterValues, searchValue, numberOfOrdersByStatus])
-
-  useEffect(() => {
-    if (!user) return
-    socket.join('drivers')
-    if (user.level === 0) {
-      socket.join('messages_orders')
-    } else {
-      socket.join(`messages_orders_${user?.id}`)
-    }
-    socket.join({
-      room: 'orders',
-      user_id: user?.id,
-      role: 'manager'
-    })
-
-    return () => {
-      if (!user) return
-      socket.leave('drivers')
-      if (user.level === 0) {
-        socket.leave('messages_orders')
-      } else {
-        socket.leave(`messages_orders_${user?.id}`)
-      }
-      socket.leave({
-        room: 'orders',
-        user_id: user?.id,
-        role: 'manager'
-      })
-    }
-  }, [socket, loading, user])
+  }, [socket, filterValues, searchValue, JSON.stringify(numberOfOrdersByStatus)])
 
   /**
    * Listening multi orders action start to change status

@@ -18,19 +18,9 @@ export const OrderNotification = (props) => {
     const handleRegisterOrder = (order) => {
       events.emit('order_added', order)
     }
-    if (user.level === 0) {
-      socket.join('orders')
-    } else {
-      socket.join(`orders_${user?.id}`)
-    }
     socket.on('orders_register', handleRegisterOrder)
     return () => {
       socket.off('orders_register', handleRegisterOrder)
-      if (user.level === 0) {
-        socket.leave('orders')
-      } else {
-        socket.leave(`orders_${user?.id}`)
-      }
     }
   }, [socket, loading, user])
 

@@ -38,12 +38,22 @@ export const DashboardBusinessList = (props) => {
   const [selectedBusinessActiveState, setSelectedBusinessActiveState] = useState(true)
   const [businessTypeSelected, setBusinessTypeSelected] = useState(null)
   const [businessIds, setBusinessIds] = useState([])
+  const [filterValues, setFilterValues] = useState({})
+  const [inActiveBusinesses, setInActiveBusinesses] = useState([])
+
+  /**
+   * Save filter type values
+   * @param {object} types
+   */
+  const handleChangeFilterValues = (types) => {
+    setFilterValues(types)
+  }
 
   /**
    * Method to get businesses from API
    * @param {number, number} pageSize page
    */
-  const getBusinesses = async (pageSize, page) => {
+  const getBusinesses = async (pageSize, page, isInactive) => {
     let where = []
     const conditions = []
     const options = {
@@ -53,8 +63,11 @@ export const DashboardBusinessList = (props) => {
       }
     }
 
-    if (!noActiveStatusCondition) {
-      conditions.push({ attribute: 'enabled', value: selectedBusinessActiveState })
+    if (!noActiveStatusCondition || isInactive) {
+      conditions.push({
+        attribute: 'enabled',
+        value: isInactive ? false : selectedBusinessActiveState
+      })
     }
 
     if (businessTypeSelected) {
@@ -122,6 +135,75 @@ export const DashboardBusinessList = (props) => {
       })
     }
 
+    if (Object.keys(filterValues).length > 0) {
+      const filterConditons = []
+
+      if (filterValues?.name && filterValues?.name !== null) {
+        filterConditons.push(
+          {
+            attribute: 'name',
+            value: {
+              condition: 'ilike',
+              value: encodeURI(`%${filterValues?.name}%`)
+            }
+          }
+        )
+      }
+      if (filterValues?.availableMenus?.value !== '') {
+        filterConditons.push(
+          {
+            attribute: 'available_menus_count',
+            value: {
+              condition: filterValues?.availableMenus?.condition,
+              value: filterValues?.availableMenus?.value
+            }
+          }
+        )
+      }
+      if (filterValues?.menus?.value !== '') {
+        filterConditons.push(
+          {
+            attribute: 'menus_count',
+            value: {
+              condition: filterValues?.menus?.condition,
+              value: filterValues?.menus?.value
+            }
+          }
+        )
+      }
+      if (filterValues?.cityIds.length !== 0) {
+        filterConditons.push(
+          {
+            attribute: 'city_id',
+            value: filterValues?.cityIds
+          }
+        )
+      }
+      if (filterValues?.enabled !== null) {
+        filterConditons.push(
+          {
+            attribute: 'enabled',
+            value: filterValues?.enabled
+          }
+        )
+      }
+      if (filterValues?.featured !== null) {
+        filterConditons.push(
+          {
+            attribute: 'featured',
+            value: filterValues?.featured
+          }
+        )
+      }
+
+      if (filterConditons.length) {
+        conditions.push({
+          conector: 'AND',
+          conditions: filterConditons
+        })
+      }
+    }
+
     if (conditions.length) {
       where = {
         conditions,
@@ -183,6 +265,22 @@ export const DashboardBusinessList = (props) => {
       if (err?.constructor?.name !== 'Cancel') {
         setBusinessList({ ...businessList, loading: false, error: [err.message] })
       }
+    }
+  }
+
+  /**
+   * Method to get businesses
+   */
+  const getInActiveBusinesses = async () => {
+    if (!session.token) return
+    try {
+      const response = await getBusinesses(10, 1, true)
+
+      if (!response.content.error) {
+        setInActiveBusinesses(response?.content?.result)
+      }
+    } catch (err) {
+      console.log(err)
     }
   }
 
@@ -427,11 +525,15 @@ export const DashboardBusinessList = (props) => {
     } else {
       loadBusinesses()
     }
-  }, [session, searchValue, selectedBusinessActiveState, businessTypeSelected])
+  }, [session, searchValue, selectedBusinessActiveState, businessTypeSelected, filterValues])
 
   useEffect(() => {
     getCountries()
   }, [])
+
+  useEffect(() => {
+    getInActiveBusinesses()
+  }, [businessList?.businesses?.length])
 
   return (
     <>
@@ -458,6 +560,10 @@ export const DashboardBusinessList = (props) => {
             handleDeleteMultiBusinesses={handleDeleteMultiBusinesses}
             handleChangeBusinessActiveState={handleChangeBusinessActiveState}
             countriesState={countriesState}
+            filterValues={filterValues}
+            handleChangeFilterValues={handleChangeFilterValues}
+            businessTypeSelected={businessTypeSelected}
+            inActiveBusinesses={inActiveBusinesses}
           />
         )
       }

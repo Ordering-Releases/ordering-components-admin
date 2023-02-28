@@ -155,11 +155,9 @@ export const OrdersOverview = (props) => {
       _overview.pending += 1
       setOrdersOverviewStatus({ ...ordersOverviewStatus, overview: _overview })
     }
-    socket.join('orders')
     socket.on('update_order', handleUpdateOrder)
     socket.on('orders_register', handleRegisterOrder)
     return () => {
-      socket.leave('orders')
       socket.off('update_order', handleUpdateOrder)
       socket.off('orders_register', handleRegisterOrder)
     }

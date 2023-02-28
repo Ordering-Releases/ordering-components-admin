@@ -18,6 +18,44 @@ export const OccupationSelector = (props) => {
   const [occupations, setOccupations] = useState(props.occupations)
   const [actionState, setActionState] = useState({ loading: false, error: null })
 
+  /**
+   * Get the occupations from API
+   */
+  const getOccupations = async () => {
+    try {
+      setActionState({
+        ...actionState,
+        loading: true
+      })
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${ordering.root}/occupations`, requestOptions)
+      const content = await response.json()
+      if (!content.error) {
+        setOccupations(content.result)
+        setActionState({
+          loading: false,
+          error: null
+        })
+      } else {
+        setActionState({
+          loading: false,
+          error: content.result
+        })
+      }
+    } catch (error) {
+      setActionState({
+        loading: false,
+        error: [error.message]
+      })
+    }
+  }
+
   const handleAddOccupation = async (payload) => {
     try {
       setActionState({
@@ -61,6 +99,14 @@ export const OccupationSelector = (props) => {
   useEffect(() => {
     setOccupationId(props.occupationId)
   }, [props.occupationId])
+
+  useEffect(() => {
+    if (props.occupations) {
+      setOccupations(props.occupations)
+    } else {
+      getOccupations()
+    }
+  }, [props.occupations])
 
   return (
     <>

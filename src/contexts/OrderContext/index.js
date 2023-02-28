@@ -671,9 +671,36 @@ export const OrderProvider = ({ Alert, children, strategy }) => {
     if (!session.auth || session.loading) return
     socket.join(`carts_${session?.user?.id}`)
     socket.join(`orderoptions_${session?.user?.id}`)
+    socket.join('drivers')
+    socket.join({
+      room: 'orders',
+      user_id: session?.user?.id,
+      role: 'manager'
+    })
+    if (session?.user?.level === 0) {
+      socket.join('orders')
+      socket.join('messages_orders')
+    } else {
+      socket.join(`orders_${session?.user?.id}`)
+      socket.join(`messages_orders_${session?.user?.id}`)
+    }
+
     return () => {
       socket.leave(`carts_${session?.user?.id}`)
       socket.leave(`orderoptions_${session?.user?.id}`)
+      socket.leave('drivers')
+      socket.leave({
+        room: 'orders',
+        user_id: session?.user?.id,
+        role: 'manager'
+      })
+      if (session?.user?.level === 0) {
+        socket.leave('orders')
+        socket.leave('messages_orders')
+      } else {
+        socket.leave(`orders_${session?.user?.id}`)
+        socket.leave(`messages_orders_${session?.user?.id}`)
+      }
     }
   }, [socket, session])
 

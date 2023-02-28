@@ -113,21 +113,18 @@ export const UsersExportCSV = (props) => {
         }
       }
       const functionFetch = filterApply
-        ? `${ordering.root}/users.csv?mode=dashboard&orderBy=id&where=${JSON.stringify(filterConditons)}`
+        ? `${ordering.root}/users_new.csv?mode=dashboard&orderBy=id&where=${JSON.stringify(filterConditons)}`
         : defaultConditions.length > 0
-          ? `${ordering.root}/users.csv?mode=dashboard&orderBy=id&where=${JSON.stringify(defaultConditions)}`
-          : `${ordering.root}/users.csv?mode=dashboard&orderBy=id`
+          ? `${ordering.root}/users_new.csv?mode=dashboard&orderBy=id&where=${JSON.stringify(defaultConditions)}`
+          : `${ordering.root}/users_new.csv?mode=dashboard&orderBy=id`
 
       const response = await fetch(functionFetch, requestOptions)
-      const fileSuffix = new Date().getTime()
-      await response.blob().then(blob => {
-        const url = window.URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `users_${fileSuffix}.csv`
-        a.click()
+      const content = await response.json()
+      setActionStatus({
+        loading: false,
+        result: content.result,
+        error: null
       })
-      setActionStatus({ ...actionStatus, loading: false })
     } catch (err) {
       setActionStatus({
         ...actionStatus,

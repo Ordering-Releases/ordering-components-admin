@@ -341,6 +341,19 @@ export const DashboardOrdersList = (props) => {
           }
         )
       }
+      if (filterValues?.cityIds.length !== 0) {
+        filterConditons.push(
+          {
+            attribute: 'business',
+            conditions: [
+              {
+                attribute: "city_id",
+                value: filterValues?.cityIds
+              }
+            ],
+          }
+        )
+      }
 
       if (filterConditons.length) {
         conditions.push({

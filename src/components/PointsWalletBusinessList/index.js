@@ -274,7 +274,7 @@ export const PointsWalletBusinessList = (props) => {
     const controller = new AbortController()
     getBusinessTypes()
     return controller.abort()
-  }, [])
+  }, [pointWallet?.id])
 
   useEffect(() => {
     setSelectedBusinessList([...businessList?.businesses])

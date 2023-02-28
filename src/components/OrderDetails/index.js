@@ -263,14 +263,8 @@ export const OrderDetails = (props) => {
         order: Object.assign(orderState.order, order)
       })
     }
-    if (!asDashboard) {
-      socket.join(`orders_${user.id}`)
-    }
     socket.on('update_order', handleUpdateOrder)
     return () => {
-      if (!asDashboard) {
-        socket.leave(`orders_${user.id}`)
-      }
       socket.off('update_order', handleUpdateOrder)
     }
   }, [orderState.order, socket, loading, drivers])
