@@ -18,10 +18,7 @@ export const LanguageTransSpread = (props) => {
   const [, t] = useLanguage()
   const [, { showToast }] = useToast()
   const [formState, setFormState] = useState({ loading: false, changes: {}, result: { error: null } })
-  const [curCell, setCurCell] = useState({
-    row: -1,
-    col: -1
-  })
+  const curCell = { row: -1, col: -1 }
   const [removing, setRemoving] = useState(false)
 
   /**
@@ -34,19 +31,15 @@ export const LanguageTransSpread = (props) => {
    */
   const handleAfterSectionEnd = (row, col, row1, col1, hotTableObj) => {
     if ((curCell.row === row && curCell.col === col) || (row !== row1 || col !== col1)) return
-    setCurCell({
-      row: row,
-      col: col
-    })
+    curCell.row = row
+    curCell.col = col
     hotTableObj.deselectCell()
     hotTableObj.selectCell(row, col)
   }
 
   const handleoutsideClickDeselects = () => {
-    setCurCell({
-      row: -1,
-      col: -1
-    })
+    curCell.row = -1
+    curCell.col = -1
     return false
   }
 
