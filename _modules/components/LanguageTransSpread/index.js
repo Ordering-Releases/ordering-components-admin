@@ -57,17 +57,14 @@ var LanguageTransSpread = function LanguageTransSpread(props) {
     _useState2 = _slicedToArray(_useState, 2),
     formState = _useState2[0],
     setFormState = _useState2[1];
-  var _useState3 = (0, _react.useState)({
-      row: -1,
-      col: -1
-    }),
+  var curCell = {
+    row: -1,
+    col: -1
+  };
+  var _useState3 = (0, _react.useState)(false),
     _useState4 = _slicedToArray(_useState3, 2),
-    curCell = _useState4[0],
-    setCurCell = _useState4[1];
-  var _useState5 = (0, _react.useState)(false),
-    _useState6 = _slicedToArray(_useState5, 2),
-    removing = _useState6[0],
-    setRemoving = _useState6[1];
+    removing = _useState4[0],
+    setRemoving = _useState4[1];
 
   /**
    * Method to select and deselect a row from spreadSheet table
@@ -79,18 +76,14 @@ var LanguageTransSpread = function LanguageTransSpread(props) {
    */
   var handleAfterSectionEnd = function handleAfterSectionEnd(row, col, row1, col1, hotTableObj) {
     if (curCell.row === row && curCell.col === col || row !== row1 || col !== col1) return;
-    setCurCell({
-      row: row,
-      col: col
-    });
+    curCell.row = row;
+    curCell.col = col;
     hotTableObj.deselectCell();
     hotTableObj.selectCell(row, col);
   };
   var handleoutsideClickDeselects = function handleoutsideClickDeselects() {
-    setCurCell({
-      row: -1,
-      col: -1
-    });
+    curCell.row = -1;
+    curCell.col = -1;
     return false;
   };
 
