@@ -11,6 +11,7 @@ export const DriversGroupDetails = (props) => {
     driversGroupsState,
     setDriversGroupsState,
     curDriversGroup,
+    driversGroupId,
     driversManagers,
     businesses,
     paymethods,
@@ -23,13 +24,64 @@ export const DriversGroupDetails = (props) => {
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
 
-  const [driversGroupState, setDriversGroupState] = useState({ driversGroup: props.curDriversGroup, loading: false })
+  const [driversGroupState, setDriversGroupState] = useState({ driversGroup: props.curDriversGroup, loading: !props.curDriversGroup, error: null })
   const [actionState, setActionState] = useState({ loading: false, error: null })
   const [changesState, setChangesState] = useState({})
   const [selectedBusinessIds, setSelectedBusinessIds] = useState([])
   const [selectedPaymethodIds, setSelectedPaymethodIds] = useState([])
   const [selectedDriverIds, setSelectedDriverIds] = useState([])
   const [selectedDriversCompanyIds, setSelectedDriversCompanyIds] = useState([])
+
+  const initSet = (driversGroup) => {
+    const businessIds = driversGroup?.business?.reduce((ids, business) => [...ids, business.id], [])
+    setSelectedBusinessIds(businessIds)
+    setSelectedPaymethodIds(driversGroup?.allowed_paymethods || [])
+    const drivers = driversGroup?.drivers?.reduce((ids, driver) => [...ids, driver.id], [])
+    setSelectedDriverIds(drivers)
+    const companyIds = driversGroup?.driver_companies?.reduce((ids, company) => [...ids, company.id], [])
+    setSelectedDriversCompanyIds(companyIds)
+  }
+
+  /**
+   * Method to get the drives group from API
+   */
+  const getDriversGroup = async () => {
+    try {
+      setDriversGroupState({
+        ...driversGroupState,
+        loading: true
+      })
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${ordering.root}/drivergroups/${driversGroupId}`, requestOptions)
+      const { result, error } = await response.json()
+      if (!error) {
+        setDriversGroupState({
+          loading: false,
+          driversGroup: result,
+          error: null
+        })
+        initSet(result)
+      } else {
+        setDriversGroupState({
+          ...driversGroupState,
+          loading: false,
+          error: result
+        })
+      }
+    } catch (error) {
+      setDriversGroupState({
+        ...driversGroupState,
+        loading: false,
+        error: [error.message]
+      })
+    }
+  }
 
   /**
    * Method to update selected drivers group from API
@@ -293,28 +345,27 @@ export const DriversGroupDetails = (props) => {
   }
 
   useEffect(() => {
-    setDriversGroupState({
-      ...driversGroupState,
-      driversGroup: curDriversGroup
-    })
     if (curDriversGroup) {
-      const businessIds = curDriversGroup?.business?.reduce((ids, business) => [...ids, business.id], [])
-      setSelectedBusinessIds(businessIds)
-      setSelectedPaymethodIds(curDriversGroup?.allowed_paymethods || [])
-      const drivers = curDriversGroup?.drivers?.reduce((ids, driver) => [...ids, driver.id], [])
-      setSelectedDriverIds(drivers)
-      const companyIds = curDriversGroup?.driver_companies?.reduce((ids, company) => [...ids, company.id], [])
-      setSelectedDriversCompanyIds(companyIds)
-    } else {
-      setChangesState({
-        type: 0
+      setDriversGroupState({
+        ...driversGroupState,
+        loading: false,
+        driversGroup: curDriversGroup
       })
-      setSelectedBusinessIds([])
-      setSelectedPaymethodIds([])
-      setSelectedDriverIds([])
-      setSelectedDriversCompanyIds([])
+      initSet(curDriversGroup)
+    } else {
+      if (driversGroupId) {
+        getDriversGroup()
+      } else {
+        setChangesState({
+          type: 0
+        })
+        setSelectedBusinessIds([])
+        setSelectedPaymethodIds([])
+        setSelectedDriverIds([])
+        setSelectedDriversCompanyIds([])
+      }
     }
-  }, [curDriversGroup])
+  }, [curDriversGroup, driversGroupId])
 
   return (
     <>

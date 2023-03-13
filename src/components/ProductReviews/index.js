@@ -7,12 +7,14 @@ export const ProductReviews = (props) => {
   const {
     UIComponent,
     businessId,
+    categoryId,
     productId
   } = props
 
   const [ordering] = useApi()
   const [{ token }] = useSession()
 
+  const [productState, setProductState] = useState({ product: props.product, loading: !props.product, error: null })
   const [productReviewList, setProductReviewList] = useState({ reviews: [], loading: false, error: null })
 
   /**
@@ -52,6 +54,54 @@ export const ProductReviews = (props) => {
     }
   }
 
+  /**
+   * Method to get the product from API
+   */
+  const getProduct = async () => {
+    try {
+      setProductState({
+        ...productState,
+        loading: true
+      })
+      const { content: { error, result } } = await ordering
+        .businesses(businessId)
+        .categories(categoryId)
+        .products(productId)
+        .get()
+      if (!error) {
+        setProductState({
+          loading: false,
+          product: result,
+          error: null
+        })
+      } else {
+        setProductState({
+          ...productState,
+          loading: false,
+          error: result
+        })
+      }
+    } catch (err) {
+      setProductState({
+        ...productState,
+        loading: false,
+        error: [err.message]
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (!props.product) {
+      getProduct()
+    } else {
+      setProductState({
+        ...productState,
+        loading: false,
+        product: props.product
+      })
+    }
+  }, [props.product])
+
   useEffect(() => {
     getProductReviews()
   }, [productId])
@@ -61,6 +111,7 @@ export const ProductReviews = (props) => {
       {UIComponent && (
         <UIComponent
           {...props}
+          productState={productState}
           productReviewList={productReviewList}
         />
       )}

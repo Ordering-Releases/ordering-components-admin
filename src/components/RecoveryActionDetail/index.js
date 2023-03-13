@@ -8,6 +8,7 @@ import { useToast, ToastType } from '../../contexts/ToastContext'
 export const RecoveryActionDetail = (props) => {
   const {
     action,
+    actionId,
     recoveryActionList,
     UIComponent,
     handleSuccessUpdateRecoveryAction,
@@ -20,7 +21,7 @@ export const RecoveryActionDetail = (props) => {
   const [{ token }] = useSession()
   const [, { showToast }] = useToast()
 
-  const [recoveryActionState, setRecoveryActionState] = useState({ action: action, loading: false, error: null })
+  const [recoveryActionState, setRecoveryActionState] = useState({ action: action, loading: !action, error: null })
   const [formState, setFormState] = useState({ loading: false, changes: {} })
   const [actionState, setActionState] = useState({ loading: false, error: null })
   const [isAddMode, setIsAddMode] = useState(false)
@@ -188,24 +189,70 @@ export const RecoveryActionDetail = (props) => {
     }
   }
 
+  /**
+   * Method to get the recover action from API
+   */
+  const getRecoveryAction = async () => {
+    try {
+      setRecoveryActionState({
+        ...recoveryActionState,
+        loading: true
+      })
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${ordering.root}/event_rules/${actionId}`, requestOptions)
+      const content = await response.json()
+      if (!content.error) {
+        setRecoveryActionState({
+          loading: false,
+          action: content.result,
+          error: null
+        })
+      } else {
+        setRecoveryActionState({
+          ...recoveryActionState,
+          loading: false,
+          error: content.result
+        })
+      }
+    } catch (error) {
+      setRecoveryActionState({
+        ...recoveryActionState,
+        loading: true,
+        error: [error.message]
+      })
+    }
+  }
+
   useEffect(() => {
     if (Object.keys(action).length === 0) {
-      setIsAddMode(true)
-      setFormState({
-        ...formState,
-        changes: {
-          enabled: true,
-          launch_type: 'times',
-          name: '',
-          type: 'abandoned_cart'
-        }
-      })
+      if (actionId) {
+        setIsAddMode(false)
+        cleanFormState()
+        getRecoveryAction()
+      } else {
+        setIsAddMode(true)
+        setFormState({
+          ...formState,
+          changes: {
+            enabled: true,
+            launch_type: 'times',
+            name: '',
+            type: 'abandoned_cart'
+          }
+        })
+      }
     } else {
       setIsAddMode(false)
       cleanFormState()
     }
     setRecoveryActionState({ ...recoveryActionState, action: action })
-  }, [action])
+  }, [action, actionId])
 
   return (
     <>

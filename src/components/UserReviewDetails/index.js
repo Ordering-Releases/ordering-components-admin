@@ -6,12 +6,14 @@ import { useApi } from '../../contexts/ApiContext'
 export const UserReviewDetails = (props) => {
   const {
     userId,
-    UIComponent
+    UIComponent,
+    propsToFetch
   } = props
 
   const [ordering] = useApi()
-  const [{ token }] = useSession()
+  const [session] = useSession()
 
+  const [userState, setUserState] = useState({ user: props.user, loading: !props.user, error: null })
   const [userReviewState, setUserReviewState] = useState({ reviews: [], loading: false, error: null })
 
   /**
@@ -24,7 +26,7 @@ export const UserReviewDetails = (props) => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${session.token}`
         }
       }
 
@@ -42,6 +44,44 @@ export const UserReviewDetails = (props) => {
     }
   }
 
+  /**
+   * Method to get user from API
+   */
+  const getUser = async () => {
+    try {
+      setUserState({
+        ...userState,
+        loading: true
+      })
+      const fetchEndpoint = ordering.setAccessToken(session.token).users(userId).select(propsToFetch)
+      const { content: { result } } = await fetchEndpoint.get()
+      const user = Array.isArray(result) ? null : result
+      setUserState({
+        ...userState,
+        loading: false,
+        user
+      })
+    } catch (err) {
+      setUserState({
+        ...userState,
+        loading: false,
+        error: [err.message]
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (!props.user) {
+      getUser()
+    } else {
+      setUserState({
+        ...userState,
+        loading: false,
+        user: props.user
+      })
+    }
+  }, [props.user])
+
   useEffect(() => {
     if (!userId) return
     getUserReviews()
@@ -53,6 +93,7 @@ export const UserReviewDetails = (props) => {
         UIComponent && (
           <UIComponent
             {...props}
+            userState={userState}
             userReviewState={userReviewState}
           />
         )
@@ -92,5 +133,8 @@ UserReviewDetails.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: []
+  afterElements: [],
+  propsToFetch: [
+    'name', 'lastname', 'photo'
+  ]
 }

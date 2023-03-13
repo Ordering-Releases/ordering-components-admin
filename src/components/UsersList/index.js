@@ -9,6 +9,7 @@ import { useEvent } from '../../contexts/EventContext'
 export const UsersList = (props) => {
   const {
     UIComponent,
+    defaultUserActiveState,
     paginationSettings,
     propsToFetch,
     isSearchByUserId,
@@ -40,7 +41,7 @@ export const UsersList = (props) => {
     totalPages: null
   })
   const [paginationDetail, setPaginationDetail] = useState({})
-  const [selectedUserActiveState, setSelectedUserActiveState] = useState(true)
+  const [selectedUserActiveState, setSelectedUserActiveState] = useState(defaultUserActiveState)
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
   const [selectedUsers, setSelectedUsers] = useState([])
   const [deleteUsersActionState, setDeleteUsersActionState] = useState({ loading: false, error: null })
@@ -853,5 +854,6 @@ UsersList.defaultProps = {
     'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups', 'created_at'
   ],
   paginationSettings: { initialPage: 1, pageSize: 10, controlType: 'infinity' },
-  defaultUserTypesSelected: [0, 1, 2, 3]
+  defaultUserTypesSelected: [0, 1, 2, 3],
+  defaultUserActiveState: true
 }

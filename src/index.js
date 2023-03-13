@@ -147,6 +147,8 @@ import { PaymentOptionSquare } from './components/PaymentOptionSquare'
 import { PagesList } from './components/PagesList'
 import { PageForm } from './components/PageForm'
 import { PlaceList } from './components/PlaceList'
+import { PlatformProductDetail } from './components/PlatformProductDetail'
+import { PlatformProductsList } from './components/PlatformProductsList'
 import { PluginList } from './components/PluginList'
 import { Popup } from './components/Popup'
 import { PointsWalletLevels } from './components/PointsWalletLevels'
@@ -399,6 +401,8 @@ export {
   PagesList,
   PageForm,
   PlaceList,
+  PlatformProductDetail,
+  PlatformProductsList,
   PluginList,
   Popup,
   PointsWalletLevels,

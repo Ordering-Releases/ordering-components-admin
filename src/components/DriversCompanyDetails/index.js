@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useApi } from '../../contexts/ApiContext'
 import { useSession } from '../../contexts/SessionContext'
@@ -10,7 +10,8 @@ export const DriversCompanyDetails = (props) => {
     UIComponent,
     driversCompaniesState,
     setDriversCompaniesState,
-    driversCompany
+    driversCompany,
+    driversCompanyId
   } = props
 
   const [ordering] = useApi()
@@ -18,6 +19,7 @@ export const DriversCompanyDetails = (props) => {
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
 
+  const [companyState, setCompanyState] = useState({ company: null, loading: !driversCompany, error: null })
   const [changesState, setChangesState] = useState({})
   const [actionState, setActionState] = useState({ loading: false, error: null })
 
@@ -169,12 +171,63 @@ export const DriversCompanyDetails = (props) => {
     })
   }
 
+  const getDriversCompany = async () => {
+    try {
+      setCompanyState({
+        ...companyState,
+        loading: true
+      })
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'X-App-X': ordering.appId,
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${ordering.root}/driver_companies/${driversCompanyId}`, requestOptions)
+      const { result, error } = await response.json()
+      if (!error) {
+        setCompanyState({
+          loading: false,
+          company: result,
+          error: null
+        })
+      } else {
+        setCompanyState({
+          ...companyState,
+          loading: false,
+          error: result
+        })
+      }
+    } catch (error) {
+      setCompanyState({
+        ...companyState,
+        loading: false,
+        error: [error.message]
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (driversCompany) {
+      setCompanyState({
+        ...companyState,
+        loading: false,
+        company: driversCompany
+      })
+    } else {
+      getDriversCompany()
+    }
+  }, [driversCompany, driversCompanyId])
+
   return (
     <>
       {
         UIComponent && (
           <UIComponent
             {...props}
+            companyState={companyState}
             cleanChagesState={() => setChangesState({})}
             changesState={changesState}
             actionState={actionState}

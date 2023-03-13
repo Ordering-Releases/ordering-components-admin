@@ -193,7 +193,8 @@ export const InvoiceDriverManager = (props) => {
       let valid = true
       let date = order.delivery_datetime.split(' ')
       date = new Date(date[0].split('-')[0], date[0].split('-')[1] - 1, date[0].split('-')[2], 0, 0, 0, 0)
-      if (paymethods.indexOf(order.paymethod_id) === -1 ||
+      const orderPaymethodIds = order.payment_events.reduce((ids, event) => [...ids, event?.paymethod?.id], [])
+      if (!orderPaymethodIds.some(id => paymethods.includes(id)) ||
         [1, 2, 5, 6, 10, 11, 12].indexOf(order.status) === -1 ||
         ([2, 5, 6, 10, 12].indexOf(order.status) > -1 && !driverInvocing.cancelled)) {
         valid = false

@@ -8,6 +8,7 @@ import { useToast, ToastType } from '../../contexts/ToastContext'
 export const EnterprisePromotionDetails = (props) => {
   const {
     promotion,
+    promotionId,
     promotionsList,
     businessesList,
     sitesState,
@@ -22,7 +23,7 @@ export const EnterprisePromotionDetails = (props) => {
   const [{ token }] = useSession()
   const [, { showToast }] = useToast()
 
-  const [promotionState, setPromotionState] = useState({ promotion: promotion, loading: false, error: null })
+  const [promotionState, setPromotionState] = useState({ promotion: promotion, loading: !promotion, error: null })
   const [formState, setFormState] = useState({ loading: false, changes: {} })
   const [actionState, setActionState] = useState({ loading: false, error: null })
   const [isAddMode, setIsAddMode] = useState(false)
@@ -370,47 +371,96 @@ export const EnterprisePromotionDetails = (props) => {
     }
   }
 
-  useEffect(() => {
-    if (Object.keys(promotion).length === 0) {
-      setIsAddMode(true)
-      setFormState({
-        ...formState,
-        changes: {
-          enabled: true,
-          auto: false,
-          public: true,
-          condition_type: 1,
-          type: 1,
-          target: 1,
-          rate_type: 1,
-          stackable: false,
-          rate: 5
-        }
+  const initSetting = (promotion) => {
+    cleanFormState()
+    const businessIds = promotion?.businesses?.reduce((ids, business) => [...ids, business.id], [])
+    setSelectedBusinessIds(businessIds || [])
+    const sitesIds = promotion?.sites?.reduce((ids, site) => [...ids, site.id], [])
+    setSelectedSitesIds(sitesIds || [])
+    const _selectedProductsIds = promotion?.products?.reduce((ids, product) => [...ids, product.id], [])
+    setSelectedProductsIds(_selectedProductsIds)
+    const _selectedCategoryIds = promotion?.categories?.reduce((ids, category) => [...ids, category.id], [])
+    setSelectedCategoryIds(_selectedCategoryIds)
+    const userIds = promotion?.users?.reduce((ids, user) => [...ids, user.id], [])
+    setSelectedUserIds(userIds || [])
+    const LoyaltyLevelIds = promotion?.loyalty_levels?.reduce((ids, level) => [...ids, level.id], [])
+    setSelectedLoyaltyLevelIds(LoyaltyLevelIds || [])
+  }
+
+  /**
+   * Method to get the offer from API
+   */
+  const getPromotion = async () => {
+    try {
+      setPromotionState({
+        ...promotionState,
+        loading: true
       })
-      setSelectedBusinessIds([])
-      setSelectedSitesIds([])
-      setSelectedProductsIds({})
-      setSelectedCategoryIds({})
-      setSelectedUserIds([])
-      setSelectedLoyaltyLevelIds([])
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${ordering.root}/offers/${promotionId}`, requestOptions)
+      const { result, error } = await response.json()
+      if (!error) {
+        setPromotionState({
+          loading: false,
+          promotion: result,
+          error: null
+        })
+      } else {
+        setPromotionState({
+          ...promotionState,
+          loading: false,
+          error: result
+        })
+      }
+    } catch (error) {
+      setPromotionState({
+        ...promotionState,
+        loading: false,
+        error: [error.message]
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (!promotion) {
+      if (promotionId) {
+        setIsAddMode(false)
+        getPromotion()
+      } else {
+        setIsAddMode(true)
+        setFormState({
+          ...formState,
+          changes: {
+            enabled: true,
+            auto: false,
+            public: true,
+            condition_type: 1,
+            type: 1,
+            target: 1,
+            rate_type: 1,
+            stackable: false,
+            rate: 5
+          }
+        })
+        setSelectedBusinessIds([])
+        setSelectedSitesIds([])
+        setSelectedProductsIds({})
+        setSelectedCategoryIds({})
+        setSelectedUserIds([])
+        setSelectedLoyaltyLevelIds([])
+      }
     } else {
       setIsAddMode(false)
-      cleanFormState()
-      const businessIds = promotion?.businesses?.reduce((ids, business) => [...ids, business.id], [])
-      setSelectedBusinessIds(businessIds || [])
-      const sitesIds = promotion?.sites?.reduce((ids, site) => [...ids, site.id], [])
-      setSelectedSitesIds(sitesIds || [])
-      const _selectedProductsIds = promotion?.products?.reduce((ids, product) => [...ids, product.id], [])
-      setSelectedProductsIds(_selectedProductsIds)
-      const _selectedCategoryIds = promotion?.categories?.reduce((ids, category) => [...ids, category.id], [])
-      setSelectedCategoryIds(_selectedCategoryIds)
-      const userIds = promotion?.users?.reduce((ids, user) => [...ids, user.id], [])
-      setSelectedUserIds(userIds || [])
-      const LoyaltyLevelIds = promotion?.loyalty_levels?.reduce((ids, level) => [...ids, level.id], [])
-      setSelectedLoyaltyLevelIds(LoyaltyLevelIds || [])
+      initSetting(promotion)
     }
     setPromotionState({ ...promotionState, promotion: promotion })
-  }, [promotion])
+  }, [promotion, promotionId])
 
   return (
     <>

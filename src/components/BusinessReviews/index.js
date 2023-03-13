@@ -18,32 +18,13 @@ export const BusinessReviews = (props) => {
   const [, t] = useLanguage()
   const requestsState = {}
 
+  const [businessState, setBusinessState] = useState({ business: props.business, loading: !props.business, error: null })
   /**
    * businessReviewsList, this must be contain a reviews, loading and error to send UIComponent
    */
   const [businessReviewsList, setBusinessReviewsList] = useState({ reviews: [], loading: true, error: null })
 
-  /**
-   * ReviewsList, this must be contain an original array of business reviews
-   */
-  const [reviewsList, setReviewsList] = useState(reviews)
-
   const [actionState, setActionState] = useState({ loading: false, error: null })
-
-  /**
-   * Method to change filter value for business reviews
-   * @param {Number} val
-   */
-  const onChangeOption = (val = null) => {
-    const reviews = val !== 'all'
-      ? reviewsList.filter(review => review.total >= val && review.total < val + 1)
-      : reviewsList
-    setBusinessReviewsList({
-      ...businessReviewsList,
-      loading: false,
-      reviews
-    })
-  }
 
   /**
    * Method to get business from SDK
@@ -57,11 +38,15 @@ export const BusinessReviews = (props) => {
         .select(['reviews'])
         .get({ cancelToken: source })
 
+      setBusinessState({
+        loading: false,
+        business: result,
+        error: null
+      })
       const list = result?.reviews?.reviews
       list.sort((a, b) => {
         return new Date(b.created_at) - new Date(a.created_at)
       })
-      setReviewsList(list)
       setBusinessReviewsList({
         ...businessReviewsList,
         loading: false,
@@ -137,9 +122,9 @@ export const BusinessReviews = (props) => {
       {UIComponent && (
         <UIComponent
           {...props}
+          businessState={businessState}
           reviewsList={businessReviewsList}
           actionState={actionState}
-          handleClickOption={onChangeOption}
           handleChangeReviewEnabled={handleChangeReviewEnabled}
         />
       )}
@@ -183,7 +168,6 @@ BusinessReviews.propTypes = {
 }
 
 BusinessReviews.defaultProps = {
-  reviews: [],
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],

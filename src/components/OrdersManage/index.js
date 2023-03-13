@@ -347,6 +347,31 @@ export const OrdersManage = (props) => {
           }
         )
       }
+      if (filterValues?.metafield?.length > 0) {
+        const metafieldConditions = filterValues?.metafield.map(item => (
+          {
+            attribute: 'metafields',
+            conditions: [
+              {
+                attribute: 'key',
+                value: item?.key
+              },
+              {
+                attribute: 'value',
+                value: {
+                  condition: 'ilike',
+                  value: encodeURI(`%${item?.value}%`)
+                }
+              }
+            ],
+            conector: 'AND'
+          }
+        ))
+        filterConditons.push({
+          conector: 'OR',
+          conditions: metafieldConditions
+        })
+      }
       if (filterValues?.deliveryFromDatetime !== null) {
         filterConditons.push(
           {

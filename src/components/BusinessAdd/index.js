@@ -416,7 +416,7 @@ export const BusinessAdd = (props) => {
     for (let i = 0; i < 7; i++) {
       const period = periods.find(item => item?.open?.day === i)
       if (!period) {
-        !extraHours
+        (!extraHours || (extraHours?.close?.hour === 0 && extraHours?.close?.minute === 0))
           ? schedule.push({ enabled: true, lapses: [{ open: { hour: 0, minute: 0 }, close: { hour: 23, minute: 59 } }] })
           : schedule.push({ enabled: true, lapses: extraHours })
       }
@@ -441,8 +441,8 @@ export const BusinessAdd = (props) => {
       }
     }
 
-    if (extraHours && schedule[0]?.enabled) schedule[0].lapses.unshift(extraHours)
-    if (extraHours && !schedule[0]?.enabled) schedule[0] = { enabled: true, lapses: extraHours }
+    if (extraHours && schedule[0]?.enabled && !(extraHours?.close?.hour === 0 && extraHours?.close?.minute === 0)) schedule[0].lapses.unshift(extraHours)
+    if (extraHours && !schedule[0]?.enabled && !(extraHours?.close?.hour === 0 && extraHours?.close?.minute === 0)) schedule[0] = { enabled: true, lapses: extraHours }
 
     return schedule
   }
@@ -458,7 +458,6 @@ export const BusinessAdd = (props) => {
           slug: stringToSlug(details?.name),
           cellphone: details?.international_phone_number,
           price_level: details?.price_level?.toString(),
-          logo: details?.icon,
           address: details?.formatted_address,
           ...(details?.opening_hours?.periods && { schedule: getSchedule(details?.opening_hours?.periods) }),
           location: {

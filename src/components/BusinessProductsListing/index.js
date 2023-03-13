@@ -466,8 +466,6 @@ export const BusinessProductsListing = (props) => {
     if (businessState.loading) return
     if (!businessState.loading && (categorySelected || isAllCategoryProducts)) {
       getProducts(true)
-    } else if (businessState?.business?.categories) {
-      setCategorySelected(businessState?.business?.categories[0])
     }
   }, [businessState])
 
