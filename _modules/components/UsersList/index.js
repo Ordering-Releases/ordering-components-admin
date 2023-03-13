@@ -34,6 +34,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var UsersList = function UsersList(props) {
   var _paginationSettings$p;
   var UIComponent = props.UIComponent,
+    defaultUserActiveState = props.defaultUserActiveState,
     paginationSettings = props.paginationSettings,
     propsToFetch = props.propsToFetch,
     isSearchByUserId = props.isSearchByUserId,
@@ -100,7 +101,7 @@ var UsersList = function UsersList(props) {
     _useState14 = _slicedToArray(_useState13, 2),
     paginationDetail = _useState14[0],
     setPaginationDetail = _useState14[1];
-  var _useState15 = (0, _react.useState)(true),
+  var _useState15 = (0, _react.useState)(defaultUserActiveState),
     _useState16 = _slicedToArray(_useState15, 2),
     selectedUserActiveState = _useState16[0],
     setSelectedUserActiveState = _useState16[1];
@@ -1012,5 +1013,6 @@ UsersList.defaultProps = {
     pageSize: 10,
     controlType: 'infinity'
   },
-  defaultUserTypesSelected: [0, 1, 2, 3]
+  defaultUserTypesSelected: [0, 1, 2, 3],
+  defaultUserActiveState: true
 };

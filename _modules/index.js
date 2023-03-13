@@ -1065,6 +1065,18 @@ Object.defineProperty(exports, "PlaceList", {
     return _PlaceList.PlaceList;
   }
 });
+Object.defineProperty(exports, "PlatformProductDetail", {
+  enumerable: true,
+  get: function get() {
+    return _PlatformProductDetail.PlatformProductDetail;
+  }
+});
+Object.defineProperty(exports, "PlatformProductsList", {
+  enumerable: true,
+  get: function get() {
+    return _PlatformProductsList.PlatformProductsList;
+  }
+});
 Object.defineProperty(exports, "PluginList", {
   enumerable: true,
   get: function get() {
@@ -1814,6 +1826,8 @@ var _PaymentOptionSquare = require("./components/PaymentOptionSquare");
 var _PagesList = require("./components/PagesList");
 var _PageForm = require("./components/PageForm");
 var _PlaceList = require("./components/PlaceList");
+var _PlatformProductDetail = require("./components/PlatformProductDetail");
+var _PlatformProductsList = require("./components/PlatformProductsList");
 var _PluginList = require("./components/PluginList");
 var _Popup = require("./components/Popup");
 var _PointsWalletLevels = require("./components/PointsWalletLevels");

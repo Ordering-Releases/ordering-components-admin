@@ -639,7 +639,7 @@ var OrdersManage = function OrdersManage(props) {
   }, [socket, loading, driversList.drivers]);
   var getOrderNumbersByStatus = /*#__PURE__*/function () {
     var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-      var where, conditions, filterConditons, additionalConditions, searchConditions, requestOptions, response, content, _orderStatusNumbers;
+      var where, conditions, _filterValues$metafie, filterConditons, metafieldConditions, additionalConditions, searchConditions, requestOptions, response, content, _orderStatusNumbers;
       return _regeneratorRuntime().wrap(function _callee5$(_context5) {
         while (1) {
           switch (_context5.prev = _context5.next) {
@@ -661,6 +661,28 @@ var OrdersManage = function OrdersManage(props) {
                       condition: 'ilike',
                       value: encodeURI("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.orderId, "%"))
                     }
+                  });
+                }
+                if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$metafie = filterValues.metafield) === null || _filterValues$metafie === void 0 ? void 0 : _filterValues$metafie.length) > 0) {
+                  metafieldConditions = filterValues === null || filterValues === void 0 ? void 0 : filterValues.metafield.map(function (item) {
+                    return {
+                      attribute: 'metafields',
+                      conditions: [{
+                        attribute: 'key',
+                        value: item === null || item === void 0 ? void 0 : item.key
+                      }, {
+                        attribute: 'value',
+                        value: {
+                          condition: 'ilike',
+                          value: encodeURI("%".concat(item === null || item === void 0 ? void 0 : item.value, "%"))
+                        }
+                      }],
+                      conector: 'AND'
+                    };
+                  });
+                  filterConditons.push({
+                    conector: 'OR',
+                    conditions: metafieldConditions
                   });
                 }
                 if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.deliveryFromDatetime) !== null) {

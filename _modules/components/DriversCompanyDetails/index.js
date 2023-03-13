@@ -35,7 +35,8 @@ var DriversCompanyDetails = function DriversCompanyDetails(props) {
   var UIComponent = props.UIComponent,
     driversCompaniesState = props.driversCompaniesState,
     setDriversCompaniesState = props.setDriversCompaniesState,
-    driversCompany = props.driversCompany;
+    driversCompany = props.driversCompany,
+    driversCompanyId = props.driversCompanyId;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -48,17 +49,25 @@ var DriversCompanyDetails = function DriversCompanyDetails(props) {
   var _useLanguage = (0, _LanguageContext.useLanguage)(),
     _useLanguage2 = _slicedToArray(_useLanguage, 2),
     t = _useLanguage2[1];
-  var _useState = (0, _react.useState)({}),
+  var _useState = (0, _react.useState)({
+      company: null,
+      loading: !driversCompany,
+      error: null
+    }),
     _useState2 = _slicedToArray(_useState, 2),
-    changesState = _useState2[0],
-    setChangesState = _useState2[1];
-  var _useState3 = (0, _react.useState)({
+    companyState = _useState2[0],
+    setCompanyState = _useState2[1];
+  var _useState3 = (0, _react.useState)({}),
+    _useState4 = _slicedToArray(_useState3, 2),
+    changesState = _useState4[0],
+    setChangesState = _useState4[1];
+  var _useState5 = (0, _react.useState)({
       loading: false,
       error: null
     }),
-    _useState4 = _slicedToArray(_useState3, 2),
-    actionState = _useState4[0],
-    setActionState = _useState4[1];
+    _useState6 = _slicedToArray(_useState5, 2),
+    actionState = _useState6[0],
+    setActionState = _useState6[1];
 
   /**
    * Method to update the selected drivers company from API
@@ -309,7 +318,79 @@ var DriversCompanyDetails = function DriversCompanyDetails(props) {
       schedule: scheduleChanges
     }));
   };
+  var getDriversCompany = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      var requestOptions, response, _yield$response$json, result, error;
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.prev = 0;
+              setCompanyState(_objectSpread(_objectSpread({}, companyState), {}, {
+                loading: true
+              }));
+              requestOptions = {
+                method: 'GET',
+                headers: {
+                  'X-App-X': ordering.appId,
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                }
+              };
+              _context4.next = 5;
+              return fetch("".concat(ordering.root, "/driver_companies/").concat(driversCompanyId), requestOptions);
+            case 5:
+              response = _context4.sent;
+              _context4.next = 8;
+              return response.json();
+            case 8:
+              _yield$response$json = _context4.sent;
+              result = _yield$response$json.result;
+              error = _yield$response$json.error;
+              if (!error) {
+                setCompanyState({
+                  loading: false,
+                  company: result,
+                  error: null
+                });
+              } else {
+                setCompanyState(_objectSpread(_objectSpread({}, companyState), {}, {
+                  loading: false,
+                  error: result
+                }));
+              }
+              _context4.next = 17;
+              break;
+            case 14:
+              _context4.prev = 14;
+              _context4.t0 = _context4["catch"](0);
+              setCompanyState(_objectSpread(_objectSpread({}, companyState), {}, {
+                loading: false,
+                error: [_context4.t0.message]
+              }));
+            case 17:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4, null, [[0, 14]]);
+    }));
+    return function getDriversCompany() {
+      return _ref4.apply(this, arguments);
+    };
+  }();
+  (0, _react.useEffect)(function () {
+    if (driversCompany) {
+      setCompanyState(_objectSpread(_objectSpread({}, companyState), {}, {
+        loading: false,
+        company: driversCompany
+      }));
+    } else {
+      getDriversCompany();
+    }
+  }, [driversCompany, driversCompanyId]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
+    companyState: companyState,
     cleanChagesState: function cleanChagesState() {
       return setChangesState({});
     },

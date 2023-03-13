@@ -830,7 +830,7 @@ var BusinessAdd = function BusinessAdd(props) {
     }
   };
   var getSchedule = function getSchedule(periods) {
-    var _schedule$, _schedule$2;
+    var _schedule$, _extraHours, _extraHours$close, _extraHours2, _extraHours2$close, _schedule$2, _extraHours3, _extraHours3$close, _extraHours4, _extraHours4$close;
     var extraHours = null;
     var schedule = [];
     var _loop = function _loop(i) {
@@ -840,7 +840,8 @@ var BusinessAdd = function BusinessAdd(props) {
         return (item === null || item === void 0 ? void 0 : (_item$open = item.open) === null || _item$open === void 0 ? void 0 : _item$open.day) === i;
       });
       if (!period) {
-        !extraHours ? schedule.push({
+        var _extraHours5, _extraHours5$close, _extraHours6, _extraHours6$close;
+        !extraHours || ((_extraHours5 = extraHours) === null || _extraHours5 === void 0 ? void 0 : (_extraHours5$close = _extraHours5.close) === null || _extraHours5$close === void 0 ? void 0 : _extraHours5$close.hour) === 0 && ((_extraHours6 = extraHours) === null || _extraHours6 === void 0 ? void 0 : (_extraHours6$close = _extraHours6.close) === null || _extraHours6$close === void 0 ? void 0 : _extraHours6$close.minute) === 0 ? schedule.push({
           enabled: true,
           lapses: [{
             open: {
@@ -929,8 +930,8 @@ var BusinessAdd = function BusinessAdd(props) {
     for (var i = 0; i < 7; i++) {
       _loop(i);
     }
-    if (extraHours && (_schedule$ = schedule[0]) !== null && _schedule$ !== void 0 && _schedule$.enabled) schedule[0].lapses.unshift(extraHours);
-    if (extraHours && !((_schedule$2 = schedule[0]) !== null && _schedule$2 !== void 0 && _schedule$2.enabled)) schedule[0] = {
+    if (extraHours && (_schedule$ = schedule[0]) !== null && _schedule$ !== void 0 && _schedule$.enabled && !(((_extraHours = extraHours) === null || _extraHours === void 0 ? void 0 : (_extraHours$close = _extraHours.close) === null || _extraHours$close === void 0 ? void 0 : _extraHours$close.hour) === 0 && ((_extraHours2 = extraHours) === null || _extraHours2 === void 0 ? void 0 : (_extraHours2$close = _extraHours2.close) === null || _extraHours2$close === void 0 ? void 0 : _extraHours2$close.minute) === 0)) schedule[0].lapses.unshift(extraHours);
+    if (extraHours && !((_schedule$2 = schedule[0]) !== null && _schedule$2 !== void 0 && _schedule$2.enabled) && !(((_extraHours3 = extraHours) === null || _extraHours3 === void 0 ? void 0 : (_extraHours3$close = _extraHours3.close) === null || _extraHours3$close === void 0 ? void 0 : _extraHours3$close.hour) === 0 && ((_extraHours4 = extraHours) === null || _extraHours4 === void 0 ? void 0 : (_extraHours4$close = _extraHours4.close) === null || _extraHours4$close === void 0 ? void 0 : _extraHours4$close.minute) === 0)) schedule[0] = {
       enabled: true,
       lapses: extraHours
     };
@@ -962,7 +963,6 @@ var BusinessAdd = function BusinessAdd(props) {
                     slug: (0, _utils.stringToSlug)(details === null || details === void 0 ? void 0 : details.name),
                     cellphone: details === null || details === void 0 ? void 0 : details.international_phone_number,
                     price_level: details === null || details === void 0 ? void 0 : (_details$price_level = details.price_level) === null || _details$price_level === void 0 ? void 0 : _details$price_level.toString(),
-                    logo: details === null || details === void 0 ? void 0 : details.icon,
                     address: details === null || details === void 0 ? void 0 : details.formatted_address
                   }, (details === null || details === void 0 ? void 0 : (_details$opening_hour = details.opening_hours) === null || _details$opening_hour === void 0 ? void 0 : _details$opening_hour.periods) && {
                     schedule: getSchedule(details === null || details === void 0 ? void 0 : (_details$opening_hour2 = details.opening_hours) === null || _details$opening_hour2 === void 0 ? void 0 : _details$opening_hour2.periods)

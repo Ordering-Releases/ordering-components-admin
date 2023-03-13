@@ -29,6 +29,7 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var RecoveryActionDetail = function RecoveryActionDetail(props) {
   var action = props.action,
+    actionId = props.actionId,
     recoveryActionList = props.recoveryActionList,
     UIComponent = props.UIComponent,
     handleSuccessUpdateRecoveryAction = props.handleSuccessUpdateRecoveryAction,
@@ -48,7 +49,7 @@ var RecoveryActionDetail = function RecoveryActionDetail(props) {
     showToast = _useToast2[1].showToast;
   var _useState = (0, _react.useState)({
       action: action,
-      loading: false,
+      loading: !action,
       error: null
     }),
     _useState2 = _slicedToArray(_useState, 2),
@@ -322,17 +323,85 @@ var RecoveryActionDetail = function RecoveryActionDetail(props) {
       return _ref3.apply(this, arguments);
     };
   }();
+
+  /**
+   * Method to get the recover action from API
+   */
+  var getRecoveryAction = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      var requestOptions, response, content;
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.prev = 0;
+              setRecoveryActionState(_objectSpread(_objectSpread({}, recoveryActionState), {}, {
+                loading: true
+              }));
+              requestOptions = {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                }
+              };
+              _context4.next = 5;
+              return fetch("".concat(ordering.root, "/event_rules/").concat(actionId), requestOptions);
+            case 5:
+              response = _context4.sent;
+              _context4.next = 8;
+              return response.json();
+            case 8:
+              content = _context4.sent;
+              if (!content.error) {
+                setRecoveryActionState({
+                  loading: false,
+                  action: content.result,
+                  error: null
+                });
+              } else {
+                setRecoveryActionState(_objectSpread(_objectSpread({}, recoveryActionState), {}, {
+                  loading: false,
+                  error: content.result
+                }));
+              }
+              _context4.next = 15;
+              break;
+            case 12:
+              _context4.prev = 12;
+              _context4.t0 = _context4["catch"](0);
+              setRecoveryActionState(_objectSpread(_objectSpread({}, recoveryActionState), {}, {
+                loading: true,
+                error: [_context4.t0.message]
+              }));
+            case 15:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4, null, [[0, 12]]);
+    }));
+    return function getRecoveryAction() {
+      return _ref4.apply(this, arguments);
+    };
+  }();
   (0, _react.useEffect)(function () {
     if (Object.keys(action).length === 0) {
-      setIsAddMode(true);
-      setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-        changes: {
-          enabled: true,
-          launch_type: 'times',
-          name: '',
-          type: 'abandoned_cart'
-        }
-      }));
+      if (actionId) {
+        setIsAddMode(false);
+        cleanFormState();
+        getRecoveryAction();
+      } else {
+        setIsAddMode(true);
+        setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+          changes: {
+            enabled: true,
+            launch_type: 'times',
+            name: '',
+            type: 'abandoned_cart'
+          }
+        }));
+      }
     } else {
       setIsAddMode(false);
       cleanFormState();
@@ -340,7 +409,7 @@ var RecoveryActionDetail = function RecoveryActionDetail(props) {
     setRecoveryActionState(_objectSpread(_objectSpread({}, recoveryActionState), {}, {
       action: action
     }));
-  }, [action]);
+  }, [action, actionId]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     isAddMode: isAddMode,
     recoveryActionState: recoveryActionState,

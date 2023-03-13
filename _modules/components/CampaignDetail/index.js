@@ -31,9 +31,12 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+var categoryHideList = ['cloudinary', 'tookan', 'order_messages', 'others'];
+var configHideList = ['search_by_address', 'distance_unit_km', 'pickup', 'orders_metafields_strategy', 'order_validate', 'time_format', 'driver_close_distance', 'lazy_load_products_when_necessary', 'advanced_business_search_enabled'];
 var CampaignDetail = function CampaignDetail(props) {
   var _campaignState$campai4, _formState$changes9;
   var campaign = props.campaign,
+    campaignId = props.campaignId,
     campaignList = props.campaignList,
     UIComponent = props.UIComponent,
     handleSuccessUpdateCampaign = props.handleSuccessUpdateCampaign,
@@ -53,7 +56,7 @@ var CampaignDetail = function CampaignDetail(props) {
     showToast = _useToast2[1].showToast;
   var _useState = (0, _react.useState)({
       campaign: campaign,
-      loading: false,
+      loading: !campaign,
       error: null
     }),
     _useState2 = _slicedToArray(_useState, 2),
@@ -79,6 +82,14 @@ var CampaignDetail = function CampaignDetail(props) {
     _useState8 = _slicedToArray(_useState7, 2),
     audienceState = _useState8[0],
     setAudienceState = _useState8[1];
+  var _useState9 = (0, _react.useState)({
+      loading: false,
+      categories: [],
+      error: null
+    }),
+    _useState10 = _slicedToArray(_useState9, 2),
+    categoryList = _useState10[0],
+    setCategoryList = _useState10[1];
 
   /**
    * Clean formState
@@ -550,24 +561,249 @@ var CampaignDetail = function CampaignDetail(props) {
       return _ref7.apply(this, arguments);
     };
   }();
+
+  /**
+   * Method to get parent categoryid
+   */
+  var getParentCategory = /*#__PURE__*/function () {
+    var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+      var requestOptions, filterConditons, functionFetch, response, _yield$response$json, error, result;
+      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              _context6.prev = 0;
+              setCategoryList(_objectSpread(_objectSpread({}, categoryList), {}, {
+                loading: true
+              }));
+              requestOptions = {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                }
+              };
+              filterConditons = [];
+              filterConditons.push({
+                attribute: 'key',
+                value: 'key_operation'
+              });
+              functionFetch = "".concat(ordering.root, "/config_categories?where=").concat(JSON.stringify(filterConditons));
+              _context6.next = 8;
+              return fetch(functionFetch, requestOptions);
+            case 8:
+              response = _context6.sent;
+              _context6.next = 11;
+              return response.json();
+            case 11:
+              _yield$response$json = _context6.sent;
+              error = _yield$response$json.error;
+              result = _yield$response$json.result;
+              if (!error && result.length > 0) {
+                getConfigList(result[0].id);
+              } else {
+                setCategoryList(_objectSpread(_objectSpread({}, categoryList), {}, {
+                  loading: false,
+                  error: result
+                }));
+              }
+              _context6.next = 20;
+              break;
+            case 17:
+              _context6.prev = 17;
+              _context6.t0 = _context6["catch"](0);
+              setCategoryList(_objectSpread(_objectSpread({}, categoryList), {}, {
+                loading: false,
+                error: _context6.t0
+              }));
+            case 20:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6, null, [[0, 17]]);
+    }));
+    return function getParentCategory() {
+      return _ref8.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Method to get Configration List
+   */
+  var getConfigList = /*#__PURE__*/function () {
+    var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(id) {
+      var requestOptions, filterConditons, functionFetch, response, _yield$response$json2, error, result, _result;
+      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+        while (1) {
+          switch (_context7.prev = _context7.next) {
+            case 0:
+              _context7.prev = 0;
+              setCategoryList(_objectSpread(_objectSpread({}, categoryList), {}, {
+                loading: true
+              }));
+              requestOptions = {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                }
+              };
+              filterConditons = [];
+              filterConditons.push({
+                attribute: 'parent_category_id',
+                value: parseInt(id)
+              });
+              functionFetch = "".concat(ordering.root, "/config_categories?orderBy=rank&where=").concat(JSON.stringify(filterConditons));
+              _context7.next = 8;
+              return fetch(functionFetch, requestOptions);
+            case 8:
+              response = _context7.sent;
+              _context7.next = 11;
+              return response.json();
+            case 11:
+              _yield$response$json2 = _context7.sent;
+              error = _yield$response$json2.error;
+              result = _yield$response$json2.result;
+              if (!error) {
+                _result = result.filter(function (setting) {
+                  return !categoryHideList.includes(setting.key);
+                }).map(function (setting) {
+                  var _setting$configs;
+                  var configs = (_setting$configs = setting.configs) === null || _setting$configs === void 0 ? void 0 : _setting$configs.filter(function (config) {
+                    return !configHideList.includes(config.key);
+                  }).sort(function (a, b) {
+                    return a.rank * 1 > b.rank * 1 ? 1 : -1;
+                  });
+                  return _objectSpread(_objectSpread({}, setting), {}, {
+                    configs: _toConsumableArray(configs)
+                  });
+                });
+                setCategoryList(_objectSpread(_objectSpread({}, categoryList), {}, {
+                  loading: false,
+                  categories: _result
+                }));
+              } else {
+                setCategoryList(_objectSpread(_objectSpread({}, categoryList), {}, {
+                  loading: true,
+                  error: result
+                }));
+              }
+              _context7.next = 20;
+              break;
+            case 17:
+              _context7.prev = 17;
+              _context7.t0 = _context7["catch"](0);
+              setCategoryList(_objectSpread(_objectSpread({}, categoryList), {}, {
+                loading: false,
+                error: _context7.t0
+              }));
+            case 20:
+            case "end":
+              return _context7.stop();
+          }
+        }
+      }, _callee7, null, [[0, 17]]);
+    }));
+    return function getConfigList(_x4) {
+      return _ref9.apply(this, arguments);
+    };
+  }();
+  var handleUpdateCategoryList = function handleUpdateCategoryList(categories) {
+    setCategoryList(_objectSpread(_objectSpread({}, categoryList), {}, {
+      categories: categories
+    }));
+  };
+  var getCampaign = /*#__PURE__*/function () {
+    var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
+      var requestOptions, functionFetch, response, _yield$response$json3, result, error;
+      return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+        while (1) {
+          switch (_context8.prev = _context8.next) {
+            case 0:
+              _context8.prev = 0;
+              setCampaignState(_objectSpread(_objectSpread({}, campaignState), {}, {
+                loading: true
+              }));
+              requestOptions = {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                }
+              };
+              functionFetch = "".concat(ordering.root, "/marketing_campaigns/").concat(campaignId);
+              _context8.next = 6;
+              return fetch(functionFetch, requestOptions);
+            case 6:
+              response = _context8.sent;
+              _context8.next = 9;
+              return response.json();
+            case 9:
+              _yield$response$json3 = _context8.sent;
+              result = _yield$response$json3.result;
+              error = _yield$response$json3.error;
+              if (!error) {
+                setCampaignState({
+                  loading: false,
+                  campaign: result,
+                  error: null
+                });
+              } else {
+                setCampaignState(_objectSpread(_objectSpread({}, campaignState), {}, {
+                  loading: false,
+                  error: result
+                }));
+              }
+              _context8.next = 18;
+              break;
+            case 15:
+              _context8.prev = 15;
+              _context8.t0 = _context8["catch"](0);
+              setCampaignState(_objectSpread(_objectSpread({}, campaignState), {}, {
+                loading: false,
+                error: [_context8.t0.message]
+              }));
+            case 18:
+            case "end":
+              return _context8.stop();
+          }
+        }
+      }, _callee8, null, [[0, 15]]);
+    }));
+    return function getCampaign() {
+      return _ref10.apply(this, arguments);
+    };
+  }();
   (0, _react.useEffect)(function () {
     if (Object.keys(campaign).length === 0) {
-      setIsAddMode(true);
-      setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-        changes: {
-          enabled: true,
-          conditions: [],
-          status: 'pending'
-        }
-      }));
+      if (campaignId) {
+        setIsAddMode(false);
+        cleanFormState();
+        getCampaign();
+      } else {
+        setIsAddMode(true);
+        setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+          changes: {
+            enabled: true,
+            conditions: [],
+            status: 'pending'
+          }
+        }));
+        setCampaignState({
+          loading: false,
+          campaign: {},
+          error: null
+        });
+      }
     } else {
       setIsAddMode(false);
       cleanFormState();
+      setCampaignState(_objectSpread(_objectSpread({}, campaignState), {}, {
+        campaign: campaign
+      }));
     }
-    setCampaignState(_objectSpread(_objectSpread({}, campaignState), {}, {
-      campaign: campaign
-    }));
-  }, [campaign]);
+  }, [campaign, campaignId]);
   (0, _react.useEffect)(function () {
     var _campaignState$campai2, _campaignState$campai3;
     getAudience(campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai2 = campaignState.campaign) === null || _campaignState$campai2 === void 0 ? void 0 : _campaignState$campai2.conditions, campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai3 = campaignState.campaign) === null || _campaignState$campai3 === void 0 ? void 0 : _campaignState$campai3.contact_type);
@@ -578,6 +814,9 @@ var CampaignDetail = function CampaignDetail(props) {
     var contactType = (formState === null || formState === void 0 ? void 0 : (_formState$changes6 = formState.changes) === null || _formState$changes6 === void 0 ? void 0 : _formState$changes6.contact_type) || (campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai5 = campaignState.campaign) === null || _campaignState$campai5 === void 0 ? void 0 : _campaignState$campai5.contact_type);
     if ((formState === null || formState === void 0 ? void 0 : (_formState$changes7 = formState.changes) === null || _formState$changes7 === void 0 ? void 0 : (_formState$changes7$c = _formState$changes7.conditions) === null || _formState$changes7$c === void 0 ? void 0 : _formState$changes7$c.length) > 0 && contactType) getAudience(formState === null || formState === void 0 ? void 0 : (_formState$changes8 = formState.changes) === null || _formState$changes8 === void 0 ? void 0 : _formState$changes8.conditions, contactType);
   }, [JSON.stringify(formState === null || formState === void 0 ? void 0 : (_formState$changes9 = formState.changes) === null || _formState$changes9 === void 0 ? void 0 : _formState$changes9.conditions)]);
+  (0, _react.useEffect)(function () {
+    getParentCategory();
+  }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     isAddMode: isAddMode,
     audienceState: audienceState,
@@ -592,7 +831,9 @@ var CampaignDetail = function CampaignDetail(props) {
     handleChangeContactData: handleChangeContactData,
     handleChangeParentContact: handleChangeParentContact,
     setCampaignState: setCampaignState,
-    handleDeleteCondition: handleDeleteCondition
+    handleDeleteCondition: handleDeleteCondition,
+    categoryList: categoryList,
+    handleUpdateCategoryList: handleUpdateCategoryList
   })));
 };
 exports.CampaignDetail = CampaignDetail;

@@ -33,6 +33,7 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
   var promotion = props.promotion,
+    promotionId = props.promotionId,
     promotionsList = props.promotionsList,
     businessesList = props.businessesList,
     sitesState = props.sitesState,
@@ -54,7 +55,7 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
     showToast = _useToast2[1].showToast;
   var _useState = (0, _react.useState)({
       promotion: promotion,
-      loading: false,
+      loading: !promotion,
       error: null
     }),
     _useState2 = _slicedToArray(_useState, 2),
@@ -532,61 +533,133 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
       return _ref3.apply(this, arguments);
     };
   }();
-  (0, _react.useEffect)(function () {
-    if (Object.keys(promotion).length === 0) {
-      setIsAddMode(true);
-      setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-        changes: {
-          enabled: true,
-          auto: false,
-          public: true,
-          condition_type: 1,
-          type: 1,
-          target: 1,
-          rate_type: 1,
-          stackable: false,
-          rate: 5
+  var initSetting = function initSetting(promotion) {
+    var _promotion$businesses, _promotion$sites2, _promotion$products, _promotion$categories, _promotion$users2, _promotion$loyalty_le2;
+    cleanFormState();
+    var businessIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$businesses = promotion.businesses) === null || _promotion$businesses === void 0 ? void 0 : _promotion$businesses.reduce(function (ids, business) {
+      return [].concat(_toConsumableArray(ids), [business.id]);
+    }, []);
+    setSelectedBusinessIds(businessIds || []);
+    var sitesIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$sites2 = promotion.sites) === null || _promotion$sites2 === void 0 ? void 0 : _promotion$sites2.reduce(function (ids, site) {
+      return [].concat(_toConsumableArray(ids), [site.id]);
+    }, []);
+    setSelectedSitesIds(sitesIds || []);
+    var _selectedProductsIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$products = promotion.products) === null || _promotion$products === void 0 ? void 0 : _promotion$products.reduce(function (ids, product) {
+      return [].concat(_toConsumableArray(ids), [product.id]);
+    }, []);
+    setSelectedProductsIds(_selectedProductsIds);
+    var _selectedCategoryIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$categories = promotion.categories) === null || _promotion$categories === void 0 ? void 0 : _promotion$categories.reduce(function (ids, category) {
+      return [].concat(_toConsumableArray(ids), [category.id]);
+    }, []);
+    setSelectedCategoryIds(_selectedCategoryIds);
+    var userIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$users2 = promotion.users) === null || _promotion$users2 === void 0 ? void 0 : _promotion$users2.reduce(function (ids, user) {
+      return [].concat(_toConsumableArray(ids), [user.id]);
+    }, []);
+    setSelectedUserIds(userIds || []);
+    var LoyaltyLevelIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$loyalty_le2 = promotion.loyalty_levels) === null || _promotion$loyalty_le2 === void 0 ? void 0 : _promotion$loyalty_le2.reduce(function (ids, level) {
+      return [].concat(_toConsumableArray(ids), [level.id]);
+    }, []);
+    setSelectedLoyaltyLevelIds(LoyaltyLevelIds || []);
+  };
+
+  /**
+   * Method to get the offer from API
+   */
+  var getPromotion = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      var requestOptions, response, _yield$response$json, result, error;
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.prev = 0;
+              setPromotionState(_objectSpread(_objectSpread({}, promotionState), {}, {
+                loading: true
+              }));
+              requestOptions = {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                }
+              };
+              _context4.next = 5;
+              return fetch("".concat(ordering.root, "/offers/").concat(promotionId), requestOptions);
+            case 5:
+              response = _context4.sent;
+              _context4.next = 8;
+              return response.json();
+            case 8:
+              _yield$response$json = _context4.sent;
+              result = _yield$response$json.result;
+              error = _yield$response$json.error;
+              if (!error) {
+                setPromotionState({
+                  loading: false,
+                  promotion: result,
+                  error: null
+                });
+              } else {
+                setPromotionState(_objectSpread(_objectSpread({}, promotionState), {}, {
+                  loading: false,
+                  error: result
+                }));
+              }
+              _context4.next = 17;
+              break;
+            case 14:
+              _context4.prev = 14;
+              _context4.t0 = _context4["catch"](0);
+              setPromotionState(_objectSpread(_objectSpread({}, promotionState), {}, {
+                loading: false,
+                error: [_context4.t0.message]
+              }));
+            case 17:
+            case "end":
+              return _context4.stop();
+          }
         }
-      }));
-      setSelectedBusinessIds([]);
-      setSelectedSitesIds([]);
-      setSelectedProductsIds({});
-      setSelectedCategoryIds({});
-      setSelectedUserIds([]);
-      setSelectedLoyaltyLevelIds([]);
+      }, _callee4, null, [[0, 14]]);
+    }));
+    return function getPromotion() {
+      return _ref4.apply(this, arguments);
+    };
+  }();
+  (0, _react.useEffect)(function () {
+    if (!promotion) {
+      if (promotionId) {
+        setIsAddMode(false);
+        getPromotion();
+      } else {
+        setIsAddMode(true);
+        setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+          changes: {
+            enabled: true,
+            auto: false,
+            public: true,
+            condition_type: 1,
+            type: 1,
+            target: 1,
+            rate_type: 1,
+            stackable: false,
+            rate: 5
+          }
+        }));
+        setSelectedBusinessIds([]);
+        setSelectedSitesIds([]);
+        setSelectedProductsIds({});
+        setSelectedCategoryIds({});
+        setSelectedUserIds([]);
+        setSelectedLoyaltyLevelIds([]);
+      }
     } else {
-      var _promotion$businesses, _promotion$sites2, _promotion$products, _promotion$categories, _promotion$users2, _promotion$loyalty_le2;
       setIsAddMode(false);
-      cleanFormState();
-      var businessIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$businesses = promotion.businesses) === null || _promotion$businesses === void 0 ? void 0 : _promotion$businesses.reduce(function (ids, business) {
-        return [].concat(_toConsumableArray(ids), [business.id]);
-      }, []);
-      setSelectedBusinessIds(businessIds || []);
-      var sitesIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$sites2 = promotion.sites) === null || _promotion$sites2 === void 0 ? void 0 : _promotion$sites2.reduce(function (ids, site) {
-        return [].concat(_toConsumableArray(ids), [site.id]);
-      }, []);
-      setSelectedSitesIds(sitesIds || []);
-      var _selectedProductsIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$products = promotion.products) === null || _promotion$products === void 0 ? void 0 : _promotion$products.reduce(function (ids, product) {
-        return [].concat(_toConsumableArray(ids), [product.id]);
-      }, []);
-      setSelectedProductsIds(_selectedProductsIds);
-      var _selectedCategoryIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$categories = promotion.categories) === null || _promotion$categories === void 0 ? void 0 : _promotion$categories.reduce(function (ids, category) {
-        return [].concat(_toConsumableArray(ids), [category.id]);
-      }, []);
-      setSelectedCategoryIds(_selectedCategoryIds);
-      var userIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$users2 = promotion.users) === null || _promotion$users2 === void 0 ? void 0 : _promotion$users2.reduce(function (ids, user) {
-        return [].concat(_toConsumableArray(ids), [user.id]);
-      }, []);
-      setSelectedUserIds(userIds || []);
-      var LoyaltyLevelIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$loyalty_le2 = promotion.loyalty_levels) === null || _promotion$loyalty_le2 === void 0 ? void 0 : _promotion$loyalty_le2.reduce(function (ids, level) {
-        return [].concat(_toConsumableArray(ids), [level.id]);
-      }, []);
-      setSelectedLoyaltyLevelIds(LoyaltyLevelIds || []);
+      initSetting(promotion);
     }
     setPromotionState(_objectSpread(_objectSpread({}, promotionState), {}, {
       promotion: promotion
     }));
-  }, [promotion]);
+  }, [promotion, promotionId]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     isAddMode: isAddMode,
     promotionState: promotionState,

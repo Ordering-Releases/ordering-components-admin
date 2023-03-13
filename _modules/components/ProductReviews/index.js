@@ -28,6 +28,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var ProductReviews = function ProductReviews(props) {
   var UIComponent = props.UIComponent,
     businessId = props.businessId,
+    categoryId = props.categoryId,
     productId = props.productId;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
@@ -36,13 +37,21 @@ var ProductReviews = function ProductReviews(props) {
     _useSession2 = _slicedToArray(_useSession, 1),
     token = _useSession2[0].token;
   var _useState = (0, _react.useState)({
+      product: props.product,
+      loading: !props.product,
+      error: null
+    }),
+    _useState2 = _slicedToArray(_useState, 2),
+    productState = _useState2[0],
+    setProductState = _useState2[1];
+  var _useState3 = (0, _react.useState)({
       reviews: [],
       loading: false,
       error: null
     }),
-    _useState2 = _slicedToArray(_useState, 2),
-    productReviewList = _useState2[0],
-    setProductReviewList = _useState2[1];
+    _useState4 = _slicedToArray(_useState3, 2),
+    productReviewList = _useState4[0],
+    setProductReviewList = _useState4[1];
 
   /**
    * Method to get the product reviews from API
@@ -104,10 +113,75 @@ var ProductReviews = function ProductReviews(props) {
       return _ref.apply(this, arguments);
     };
   }();
+
+  /**
+   * Method to get the product from API
+   */
+  var getProduct = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+      var _yield$ordering$busin, _yield$ordering$busin2, error, result;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+              setProductState(_objectSpread(_objectSpread({}, productState), {}, {
+                loading: true
+              }));
+              _context2.next = 4;
+              return ordering.businesses(businessId).categories(categoryId).products(productId).get();
+            case 4:
+              _yield$ordering$busin = _context2.sent;
+              _yield$ordering$busin2 = _yield$ordering$busin.content;
+              error = _yield$ordering$busin2.error;
+              result = _yield$ordering$busin2.result;
+              if (!error) {
+                setProductState({
+                  loading: false,
+                  product: result,
+                  error: null
+                });
+              } else {
+                setProductState(_objectSpread(_objectSpread({}, productState), {}, {
+                  loading: false,
+                  error: result
+                }));
+              }
+              _context2.next = 14;
+              break;
+            case 11:
+              _context2.prev = 11;
+              _context2.t0 = _context2["catch"](0);
+              setProductState(_objectSpread(_objectSpread({}, productState), {}, {
+                loading: false,
+                error: [_context2.t0.message]
+              }));
+            case 14:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, null, [[0, 11]]);
+    }));
+    return function getProduct() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+  (0, _react.useEffect)(function () {
+    if (!props.product) {
+      getProduct();
+    } else {
+      setProductState(_objectSpread(_objectSpread({}, productState), {}, {
+        loading: false,
+        product: props.product
+      }));
+    }
+  }, [props.product]);
   (0, _react.useEffect)(function () {
     getProductReviews();
   }, [productId]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
+    productState: productState,
     productReviewList: productReviewList
   })));
 };

@@ -694,13 +694,9 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
     }));
   };
   (0, _react.useEffect)(function () {
-    var _businessState$busine12;
     if (businessState.loading) return;
     if (!businessState.loading && (categorySelected || isAllCategoryProducts)) {
       getProducts(true);
-    } else if (businessState !== null && businessState !== void 0 && (_businessState$busine12 = businessState.business) !== null && _businessState$busine12 !== void 0 && _businessState$busine12.categories) {
-      var _businessState$busine13;
-      setCategorySelected(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine13 = businessState.business) === null || _businessState$busine13 === void 0 ? void 0 : _businessState$busine13.categories[0]);
     }
   }, [businessState]);
   (0, _react.useEffect)(function () {
