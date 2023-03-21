@@ -49,6 +49,8 @@ export const UsersList = (props) => {
   const [selectedOccupation, setSelectedOccupation] = useState(null)
   const [orderFilterValue, setOrderFilterValue] = useState(null)
   const [multiFilterValues, setMultiFilterValues] = useState({})
+  const [actionDisabled, setActionDisabled] = useState(true)
+  const [driversGroupsState, setDriversGroupsState] = useState({ groups: [], loading: false, error: null })
 
   /**
    * Save filter type values
@@ -731,6 +733,41 @@ export const UsersList = (props) => {
   }
 
   /**
+   * Method to get the drivers groups from API
+   */
+  const getDriversGroups = async () => {
+    try {
+      setDriversGroupsState({ ...driversGroupsState, loading: true })
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.token}`
+        }
+      }
+      const response = await fetch(`${ordering.root}/drivergroups`, requestOptions)
+      const content = await response.json()
+      if (!content.error) {
+        const found = content.result.find(group => group?.administrator_id === session?.user?.id)
+        if (found) setActionDisabled(false)
+        else setActionDisabled(true)
+        const driverManagerGroups = content.result?.filter(group => group.administrator_id === session?.user?.id)
+        setDriversGroupsState({ ...driversGroupsState, groups: driverManagerGroups, loading: false })
+      }
+    } catch (err) {
+      setDriversGroupsState({ ...driversGroupsState, loading: false, error: [err.message] })
+    }
+  }
+
+  useEffect(() => {
+    if (session?.user?.level === 5) {
+      getDriversGroups()
+    } else {
+      setActionDisabled(false)
+    }
+  }, [session])
+
+  /**
    * Listening action start to delete several users
    */
   useEffect(() => {
@@ -813,6 +850,8 @@ export const UsersList = (props) => {
             handleChangeOrderFilterValue={setOrderFilterValue}
             multiFilterValues={multiFilterValues}
             handleChangeMultiFilterValues={handleChangeMultiFilterValues}
+            actionDisabled={actionDisabled}
+            driversGroupsState={driversGroupsState}
           />
         )
       }

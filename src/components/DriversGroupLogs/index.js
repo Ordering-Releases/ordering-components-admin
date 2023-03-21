@@ -38,16 +38,20 @@ export const DriversGroupLogs = (props) => {
         }
       }
       const response = await fetch(`${ordering.root}/drivergroups/${driversGroupId}/logs?orderBy=-id&page=${page}&page_size=${pageSize}`, requestOptions)
-      const { pagination, result } = await response.json()
-      setLogsList({ ...logsList, loading: false, logs: result })
-      setPaginationProps({
-        ...paginationProps,
-        currentPage: pagination.current_page,
-        totalPages: pagination.total_pages,
-        totalItems: pagination.total,
-        from: pagination.from,
-        to: pagination.to
-      })
+      const { error, pagination, result } = await response.json()
+      if (!error) {
+        setLogsList({ ...logsList, loading: false, logs: result })
+        setPaginationProps({
+          ...paginationProps,
+          currentPage: pagination.current_page,
+          totalPages: pagination.total_pages,
+          totalItems: pagination.total,
+          from: pagination.from,
+          to: pagination.to
+        })
+      } else {
+        setLogsList({ ...logsList, loading: false, error: error })
+      }
     } catch (err) {
       setLogsList({ ...logsList, loading: false, error: err.message })
     }

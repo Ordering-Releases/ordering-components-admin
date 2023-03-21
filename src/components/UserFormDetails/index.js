@@ -28,6 +28,7 @@ export const UserFormDetails = (props) => {
   const [isEdit, setIsEdit] = useState(false)
   const [userState, setUserState] = useState({ loading: false, result: { error: false } })
   const [formState, setFormState] = useState({ loading: false, changes: {}, result: { error: false } })
+  const [selectedDriverGroupIds, setSelectedDriverGroupIds] = useState([])
   const requestsState = {}
 
   const accessToken = useDefualtSessionManager ? session.token : props.accessToken
@@ -328,6 +329,23 @@ export const UserFormDetails = (props) => {
       validationFields.fields?.checkout[fieldName].required
   }
 
+  const handleDriverGroupClick = (groupId) => {
+    let updatedDriverGroupIds = []
+    if (selectedDriverGroupIds.includes(groupId)) {
+      updatedDriverGroupIds = selectedDriverGroupIds.filter(id => id !== groupId)
+    } else {
+      updatedDriverGroupIds = [...selectedDriverGroupIds, groupId]
+    }
+    setSelectedDriverGroupIds(updatedDriverGroupIds)
+    setFormState({
+      ...formState,
+      changes: {
+        ...formState.changes,
+        driver_groups_ids: updatedDriverGroupIds
+      }
+    })
+  }
+
   return (
     <>
       {UIComponent && (
@@ -349,6 +367,8 @@ export const UserFormDetails = (props) => {
           toggleIsEdit={() => setIsEdit(!isEdit)}
           handleChangeUserType={handleChangeUserType}
           handleChangeOccupation={handleChangeOccupation}
+          selectedDriverGroupIds={selectedDriverGroupIds}
+          handleDriverGroupClick={handleDriverGroupClick}
         />
       )}
     </>

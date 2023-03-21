@@ -12,7 +12,7 @@ export const DriversGroupsList = (props) => {
   } = props
 
   const [ordering] = useApi()
-  const [{ token }] = useSession()
+  const [{ user, token }] = useSession()
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
 
@@ -26,6 +26,7 @@ export const DriversGroupsList = (props) => {
   const [startSeveralDeleteStart, setStartSeveralDeleteStart] = useState(false)
   const [actionState, setActionState] = useState({ loading: false, error: null })
   const [selectedGroupList, setSelectedGroupList] = useState([])
+  const [actionDisabled, setActionDisabled] = useState(true)
 
   /**
    * Method to get the drivers groups from API
@@ -44,6 +45,13 @@ export const DriversGroupsList = (props) => {
       const content = await response.json()
       if (!content.error) {
         setDriversGroupsState({ ...driversGroupsState, groups: content.result, loading: false })
+        if (user?.level === 5) {
+          const found = content.result.find(group => group?.administrator_id === user?.id)
+          if (found) setActionDisabled(false)
+          else setActionDisabled(true)
+        } else {
+          setActionDisabled(false)
+        }
       }
     } catch (err) {
       setDriversGroupsState({ ...driversGroupsState, loading: false, error: [err.message] })
@@ -285,6 +293,7 @@ export const DriversGroupsList = (props) => {
             selectedGroupList={selectedGroupList}
             handleSelectGroup={handleSelectGroup}
             handleAllSelectGroup={handleAllSelectGroup}
+            actionDisabled={actionDisabled}
           />
         )
       }
