@@ -39,7 +39,9 @@ var DriversGroupsList = function DriversGroupsList(props) {
     ordering = _useApi2[0];
   var _useSession = (0, _SessionContext.useSession)(),
     _useSession2 = _slicedToArray(_useSession, 1),
-    token = _useSession2[0].token;
+    _useSession2$ = _useSession2[0],
+    user = _useSession2$.user,
+    token = _useSession2$.token;
   var _useToast = (0, _ToastContext.useToast)(),
     _useToast2 = _slicedToArray(_useToast, 2),
     showToast = _useToast2[1].showToast;
@@ -109,13 +111,17 @@ var DriversGroupsList = function DriversGroupsList(props) {
     _useState18 = _slicedToArray(_useState17, 2),
     selectedGroupList = _useState18[0],
     setSelectedGroupList = _useState18[1];
+  var _useState19 = (0, _react.useState)(true),
+    _useState20 = _slicedToArray(_useState19, 2),
+    actionDisabled = _useState20[0],
+    setActionDisabled = _useState20[1];
 
   /**
    * Method to get the drivers groups from API
    */
   var getDriversGroups = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var requestOptions, response, content;
+      var requestOptions, response, content, found;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -144,6 +150,14 @@ var DriversGroupsList = function DriversGroupsList(props) {
                   groups: content.result,
                   loading: false
                 }));
+                if ((user === null || user === void 0 ? void 0 : user.level) === 5) {
+                  found = content.result.find(function (group) {
+                    return (group === null || group === void 0 ? void 0 : group.administrator_id) === (user === null || user === void 0 ? void 0 : user.id);
+                  });
+                  if (found) setActionDisabled(false);else setActionDisabled(true);
+                } else {
+                  setActionDisabled(false);
+                }
               }
               _context.next = 15;
               break;
@@ -634,7 +648,8 @@ var DriversGroupsList = function DriversGroupsList(props) {
     },
     selectedGroupList: selectedGroupList,
     handleSelectGroup: handleSelectGroup,
-    handleAllSelectGroup: handleAllSelectGroup
+    handleAllSelectGroup: handleAllSelectGroup,
+    actionDisabled: actionDisabled
   })));
 };
 exports.DriversGroupsList = DriversGroupsList;

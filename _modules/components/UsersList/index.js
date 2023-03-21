@@ -143,6 +143,18 @@ var UsersList = function UsersList(props) {
     _useState30 = _slicedToArray(_useState29, 2),
     multiFilterValues = _useState30[0],
     setMultiFilterValues = _useState30[1];
+  var _useState31 = (0, _react.useState)(true),
+    _useState32 = _slicedToArray(_useState31, 2),
+    actionDisabled = _useState32[0],
+    setActionDisabled = _useState32[1];
+  var _useState33 = (0, _react.useState)({
+      groups: [],
+      loading: false,
+      error: null
+    }),
+    _useState34 = _slicedToArray(_useState33, 2),
+    driversGroupsState = _useState34[0],
+    setDriversGroupsState = _useState34[1];
 
   /**
    * Save filter type values
@@ -909,6 +921,79 @@ var UsersList = function UsersList(props) {
   };
 
   /**
+   * Method to get the drivers groups from API
+   */
+  var getDriversGroups = /*#__PURE__*/function () {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+      var requestOptions, response, content, _content$result, found, driverManagerGroups;
+      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              _context6.prev = 0;
+              setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
+                loading: true
+              }));
+              requestOptions = {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(session.token)
+                }
+              };
+              _context6.next = 5;
+              return fetch("".concat(ordering.root, "/drivergroups"), requestOptions);
+            case 5:
+              response = _context6.sent;
+              _context6.next = 8;
+              return response.json();
+            case 8:
+              content = _context6.sent;
+              if (!content.error) {
+                found = content.result.find(function (group) {
+                  var _session$user2;
+                  return (group === null || group === void 0 ? void 0 : group.administrator_id) === (session === null || session === void 0 ? void 0 : (_session$user2 = session.user) === null || _session$user2 === void 0 ? void 0 : _session$user2.id);
+                });
+                if (found) setActionDisabled(false);else setActionDisabled(true);
+                driverManagerGroups = (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.filter(function (group) {
+                  var _session$user3;
+                  return group.administrator_id === (session === null || session === void 0 ? void 0 : (_session$user3 = session.user) === null || _session$user3 === void 0 ? void 0 : _session$user3.id);
+                });
+                setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
+                  groups: driverManagerGroups,
+                  loading: false
+                }));
+              }
+              _context6.next = 15;
+              break;
+            case 12:
+              _context6.prev = 12;
+              _context6.t0 = _context6["catch"](0);
+              setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
+                loading: false,
+                error: [_context6.t0.message]
+              }));
+            case 15:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6, null, [[0, 12]]);
+    }));
+    return function getDriversGroups() {
+      return _ref6.apply(this, arguments);
+    };
+  }();
+  (0, _react.useEffect)(function () {
+    var _session$user4;
+    if ((session === null || session === void 0 ? void 0 : (_session$user4 = session.user) === null || _session$user4 === void 0 ? void 0 : _session$user4.level) === 5) {
+      getDriversGroups();
+    } else {
+      setActionDisabled(false);
+    }
+  }, [session]);
+
+  /**
    * Listening action start to delete several users
    */
   (0, _react.useEffect)(function () {
@@ -977,7 +1062,9 @@ var UsersList = function UsersList(props) {
     orderFilterValue: orderFilterValue,
     handleChangeOrderFilterValue: setOrderFilterValue,
     multiFilterValues: multiFilterValues,
-    handleChangeMultiFilterValues: handleChangeMultiFilterValues
+    handleChangeMultiFilterValues: handleChangeMultiFilterValues,
+    actionDisabled: actionDisabled,
+    driversGroupsState: driversGroupsState
   })));
 };
 exports.UsersList = UsersList;

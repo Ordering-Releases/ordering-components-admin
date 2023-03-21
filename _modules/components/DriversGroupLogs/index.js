@@ -62,7 +62,7 @@ var DriversGroupLogs = function DriversGroupLogs(props) {
    */
   var getDriversGroupLogs = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(page, pageSize) {
-      var requestOptions, response, _yield$response$json, pagination, result;
+      var requestOptions, response, _yield$response$json, error, pagination, result;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -86,19 +86,27 @@ var DriversGroupLogs = function DriversGroupLogs(props) {
               return response.json();
             case 8:
               _yield$response$json = _context.sent;
+              error = _yield$response$json.error;
               pagination = _yield$response$json.pagination;
               result = _yield$response$json.result;
-              setLogsList(_objectSpread(_objectSpread({}, logsList), {}, {
-                loading: false,
-                logs: result
-              }));
-              setPaginationProps(_objectSpread(_objectSpread({}, paginationProps), {}, {
-                currentPage: pagination.current_page,
-                totalPages: pagination.total_pages,
-                totalItems: pagination.total,
-                from: pagination.from,
-                to: pagination.to
-              }));
+              if (!error) {
+                setLogsList(_objectSpread(_objectSpread({}, logsList), {}, {
+                  loading: false,
+                  logs: result
+                }));
+                setPaginationProps(_objectSpread(_objectSpread({}, paginationProps), {}, {
+                  currentPage: pagination.current_page,
+                  totalPages: pagination.total_pages,
+                  totalItems: pagination.total,
+                  from: pagination.from,
+                  to: pagination.to
+                }));
+              } else {
+                setLogsList(_objectSpread(_objectSpread({}, logsList), {}, {
+                  loading: false,
+                  error: error
+                }));
+              }
               _context.next = 18;
               break;
             case 15:
