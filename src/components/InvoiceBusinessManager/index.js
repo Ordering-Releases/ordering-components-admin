@@ -211,7 +211,8 @@ export const InvoiceBusinessManager = (props) => {
       let date = order.delivery_datetime.split(' ')
       date = new Date(date[0].split('-')[0], date[0].split('-')[1] - 1, date[0].split('-')[2], 0, 0, 0, 0)
       const orderPaymethodIds = order.payment_events.reduce((ids, event) => [...ids, event?.paymethod?.id], [])
-      if (!orderPaymethodIds.some(id => paymethods.includes(id)) ||
+      const walletIds = order.payment_events.reduce((ids, event) => [...ids, event?.wallet_event?.wallet_id], [])
+      if ((!orderPaymethodIds.some(id => paymethods.includes(id)) && !walletIds?.length) ||
         _orderTypes.indexOf(order.delivery_type) === -1 ||
         ([0, 1, 7, 8, 9, 11, 15].indexOf(order.status) === -1 && !businessInvocing.cancelled)) {
         valid = false

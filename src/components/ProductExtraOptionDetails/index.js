@@ -365,6 +365,11 @@ export const ProductExtraOptionDetails = (props) => {
    */
   const handleOptionSetting = async (name, checked) => {
     const change = { [name]: checked }
+    if (name === 'conditioned' && !checked) {
+      setConditionalSubOptionId(null)
+      setConditionalOptionId(null)
+      change.respect_to = 0
+    }
     setSettingChangeState({
       ...settingChangeState,
       changes: change

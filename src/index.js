@@ -101,6 +101,7 @@ import { ExamineClick } from './components/ExamineClick'
 import { ExportCSV } from './components/ExportCSV'
 import { FacebookLoginButton } from './components/FacebookLoginButton'
 import { ForgotPasswordForm } from './components/ForgotPasswordForm'
+import { GiftCardsList } from './components/GiftCardsList'
 import { GoogleAutocompleteInput } from './components/GoogleAutocompleteInput'
 import { GoogleMaps, GoogleMapsMap } from './components/GoogleMaps'
 import { GoogleMapsApiKeySetting } from './components/GoogleMapsApiKeySetting'
@@ -354,6 +355,7 @@ export {
   ExportCSV,
   FacebookLoginButton,
   ForgotPasswordForm,
+  GiftCardsList,
   GoogleAutocompleteInput,
   GoogleMaps,
   GoogleMapsMap,

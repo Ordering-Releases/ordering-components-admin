@@ -221,7 +221,7 @@ export const PointsWalletBusinessList = (props) => {
         ...businessList,
         loading: true
       })
-      const fetchEndpoint = ordering.businesses().asDashboard().select(propsToFetch)
+      const fetchEndpoint = ordering.setAccessToken(token).businesses().asDashboard().select(propsToFetch)
       const { content: { error, result, pagination } } = await fetchEndpoint.get()
       if (!error) {
         let _businessList = []

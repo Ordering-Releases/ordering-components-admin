@@ -269,6 +269,9 @@ export const UserWallet = (props) => {
           break
       }
     }
+    if (event.event_type === 'redeem_gift_card') {
+      eventLog = t('REDEEMED_GIFT_CARD', 'Redeemed from the <strong>Gift card</strong>')
+    }
     if (event.event_type === 'refund') {
       eventLog = t('REFUND_MONEY', 'Refund money')
     }

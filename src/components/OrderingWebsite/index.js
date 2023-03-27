@@ -17,6 +17,7 @@ export const OrderingWebsite = (props) => {
   const [, t] = useLanguage()
 
   const [themeValues, setThemeValues] = useState({})
+  const [advancedValues, setAdvancedValues] = useState({})
   const [orderingTheme, setOrderingTheme] = useState({ loading: true, themes: [], error: null, siteId: null })
   const [themesList, setThemesList] = useState({ loading: true, themes: [], error: null })
 
@@ -189,18 +190,19 @@ export const OrderingWebsite = (props) => {
   /**
  * Method to update the site theme from API
  */
-  const handleUpdateSiteTheme = async () => {
+  const handleUpdateSiteTheme = async (isAdvanced) => {
     try {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
       const themeId = orderingTheme.themes[0]?.theme_id
       const siteId = orderingTheme.themes[0]?.site_id
-      const values = {
+      const myProductvalues = {
         ...orderingTheme.themes[0].values,
         my_products: {
           ...orderingTheme.themes[0].values?.my_products,
           components: { ...themeValues }
         }
       }
+      const values = isAdvanced ? JSON.parse(JSON.stringify(advancedValues)) : JSON.parse(JSON.stringify(myProductvalues))
       const requestOptions = {
         method: 'POST',
         headers: {
@@ -240,6 +242,8 @@ export const OrderingWebsite = (props) => {
   }, [JSON.stringify(themesList.themes), orderingTheme?.siteId])
 
   useEffect(() => {
+    if (!orderingTheme.themes[0]?.values) return
+    setAdvancedValues(JSON.parse(JSON.stringify(orderingTheme.themes[0]?.values)))
     const _themeValues = orderingTheme.themes[0]?.values?.my_products?.components
     if (!_themeValues) return
     setThemeValues(JSON.parse(JSON.stringify(_themeValues)))
@@ -251,9 +255,12 @@ export const OrderingWebsite = (props) => {
         <UIComponent
           {...props}
           themeValues={themeValues}
+          advancedValues={advancedValues}
+          setAdvancedValues={setAdvancedValues}
           orderingTheme={orderingTheme}
           setThemeValues={setThemeValues}
           handleUpdateSiteTheme={handleUpdateSiteTheme}
+          themesList={themesList}
         />
       )}
     </>
