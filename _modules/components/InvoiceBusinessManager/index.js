@@ -375,9 +375,13 @@ var InvoiceBusinessManager = function InvoiceBusinessManager(props) {
         var _event$paymethod;
         return [].concat(_toConsumableArray(ids), [event === null || event === void 0 ? void 0 : (_event$paymethod = event.paymethod) === null || _event$paymethod === void 0 ? void 0 : _event$paymethod.id]);
       }, []);
+      var walletIds = order.payment_events.reduce(function (ids, event) {
+        var _event$wallet_event;
+        return [].concat(_toConsumableArray(ids), [event === null || event === void 0 ? void 0 : (_event$wallet_event = event.wallet_event) === null || _event$wallet_event === void 0 ? void 0 : _event$wallet_event.wallet_id]);
+      }, []);
       if (!orderPaymethodIds.some(function (id) {
         return paymethods.includes(id);
-      }) || _orderTypes.indexOf(order.delivery_type) === -1 || [0, 1, 7, 8, 9, 11, 15].indexOf(order.status) === -1 && !businessInvocing.cancelled) {
+      }) && !(walletIds !== null && walletIds !== void 0 && walletIds.length) || _orderTypes.indexOf(order.delivery_type) === -1 || [0, 1, 7, 8, 9, 11, 15].indexOf(order.status) === -1 && !businessInvocing.cancelled) {
         valid = false;
       }
       if (from && from > date || to && to < date) valid = false;

@@ -387,7 +387,7 @@ var PointsWalletBusinessList = function PointsWalletBusinessList(props) {
               setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
                 loading: true
               }));
-              fetchEndpoint = ordering.businesses().asDashboard().select(propsToFetch);
+              fetchEndpoint = ordering.setAccessToken(token).businesses().asDashboard().select(propsToFetch);
               _context4.next = 5;
               return fetchEndpoint.get();
             case 5:

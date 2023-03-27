@@ -46,23 +46,27 @@ var OrderingWebsite = function OrderingWebsite(props) {
     _useState2 = _slicedToArray(_useState, 2),
     themeValues = _useState2[0],
     setThemeValues = _useState2[1];
-  var _useState3 = (0, _react.useState)({
+  var _useState3 = (0, _react.useState)({}),
+    _useState4 = _slicedToArray(_useState3, 2),
+    advancedValues = _useState4[0],
+    setAdvancedValues = _useState4[1];
+  var _useState5 = (0, _react.useState)({
       loading: true,
       themes: [],
       error: null,
       siteId: null
     }),
-    _useState4 = _slicedToArray(_useState3, 2),
-    orderingTheme = _useState4[0],
-    setOrderingTheme = _useState4[1];
-  var _useState5 = (0, _react.useState)({
+    _useState6 = _slicedToArray(_useState5, 2),
+    orderingTheme = _useState6[0],
+    setOrderingTheme = _useState6[1];
+  var _useState7 = (0, _react.useState)({
       loading: true,
       themes: [],
       error: null
     }),
-    _useState6 = _slicedToArray(_useState5, 2),
-    themesList = _useState6[0],
-    setThemesList = _useState6[1];
+    _useState8 = _slicedToArray(_useState7, 2),
+    themesList = _useState8[0],
+    setThemesList = _useState8[1];
 
   /**
   * Method to get the themes from API
@@ -380,8 +384,8 @@ var OrderingWebsite = function OrderingWebsite(props) {
   * Method to update the site theme from API
   */
   var handleUpdateSiteTheme = /*#__PURE__*/function () {
-    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
-      var _orderingTheme$themes, _orderingTheme$themes2, _orderingTheme$themes3, themeId, siteId, values, requestOptions, response, _yield$response$json6, error, result;
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(isAdvanced) {
+      var _orderingTheme$themes, _orderingTheme$themes2, _orderingTheme$themes3, themeId, siteId, myProductvalues, values, requestOptions, response, _yield$response$json6, error, result;
       return _regeneratorRuntime().wrap(function _callee6$(_context6) {
         while (1) {
           switch (_context6.prev = _context6.next) {
@@ -390,11 +394,12 @@ var OrderingWebsite = function OrderingWebsite(props) {
               showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               themeId = (_orderingTheme$themes = orderingTheme.themes[0]) === null || _orderingTheme$themes === void 0 ? void 0 : _orderingTheme$themes.theme_id;
               siteId = (_orderingTheme$themes2 = orderingTheme.themes[0]) === null || _orderingTheme$themes2 === void 0 ? void 0 : _orderingTheme$themes2.site_id;
-              values = _objectSpread(_objectSpread({}, orderingTheme.themes[0].values), {}, {
+              myProductvalues = _objectSpread(_objectSpread({}, orderingTheme.themes[0].values), {}, {
                 my_products: _objectSpread(_objectSpread({}, (_orderingTheme$themes3 = orderingTheme.themes[0].values) === null || _orderingTheme$themes3 === void 0 ? void 0 : _orderingTheme$themes3.my_products), {}, {
                   components: _objectSpread({}, themeValues)
                 })
               });
+              values = isAdvanced ? JSON.parse(JSON.stringify(advancedValues)) : JSON.parse(JSON.stringify(myProductvalues));
               requestOptions = {
                 method: 'POST',
                 headers: {
@@ -405,13 +410,13 @@ var OrderingWebsite = function OrderingWebsite(props) {
                   values: JSON.stringify(values)
                 })
               };
-              _context6.next = 8;
+              _context6.next = 9;
               return fetch("".concat(ordering.root, "/sites/").concat(siteId, "/themes/").concat(themeId), requestOptions);
-            case 8:
+            case 9:
               response = _context6.sent;
-              _context6.next = 11;
+              _context6.next = 12;
               return response.json();
-            case 11:
+            case 12:
               _yield$response$json6 = _context6.sent;
               error = _yield$response$json6.error;
               result = _yield$response$json6.result;
@@ -420,20 +425,20 @@ var OrderingWebsite = function OrderingWebsite(props) {
               } else {
                 showToast(_ToastContext.ToastType.Error, result);
               }
-              _context6.next = 20;
+              _context6.next = 21;
               break;
-            case 17:
-              _context6.prev = 17;
+            case 18:
+              _context6.prev = 18;
               _context6.t0 = _context6["catch"](0);
               showToast(_ToastContext.ToastType.Error, _context6.t0.message);
-            case 20:
+            case 21:
             case "end":
               return _context6.stop();
           }
         }
-      }, _callee6, null, [[0, 17]]);
+      }, _callee6, null, [[0, 18]]);
     }));
-    return function handleUpdateSiteTheme() {
+    return function handleUpdateSiteTheme(_x5) {
       return _ref6.apply(this, arguments);
     };
   }();
@@ -454,16 +459,21 @@ var OrderingWebsite = function OrderingWebsite(props) {
     }
   }, [JSON.stringify(themesList.themes), orderingTheme === null || orderingTheme === void 0 ? void 0 : orderingTheme.siteId]);
   (0, _react.useEffect)(function () {
-    var _orderingTheme$themes5, _orderingTheme$themes6, _orderingTheme$themes7;
-    var _themeValues = (_orderingTheme$themes5 = orderingTheme.themes[0]) === null || _orderingTheme$themes5 === void 0 ? void 0 : (_orderingTheme$themes6 = _orderingTheme$themes5.values) === null || _orderingTheme$themes6 === void 0 ? void 0 : (_orderingTheme$themes7 = _orderingTheme$themes6.my_products) === null || _orderingTheme$themes7 === void 0 ? void 0 : _orderingTheme$themes7.components;
+    var _orderingTheme$themes5, _orderingTheme$themes6, _orderingTheme$themes7, _orderingTheme$themes8, _orderingTheme$themes9;
+    if (!((_orderingTheme$themes5 = orderingTheme.themes[0]) !== null && _orderingTheme$themes5 !== void 0 && _orderingTheme$themes5.values)) return;
+    setAdvancedValues(JSON.parse(JSON.stringify((_orderingTheme$themes6 = orderingTheme.themes[0]) === null || _orderingTheme$themes6 === void 0 ? void 0 : _orderingTheme$themes6.values)));
+    var _themeValues = (_orderingTheme$themes7 = orderingTheme.themes[0]) === null || _orderingTheme$themes7 === void 0 ? void 0 : (_orderingTheme$themes8 = _orderingTheme$themes7.values) === null || _orderingTheme$themes8 === void 0 ? void 0 : (_orderingTheme$themes9 = _orderingTheme$themes8.my_products) === null || _orderingTheme$themes9 === void 0 ? void 0 : _orderingTheme$themes9.components;
     if (!_themeValues) return;
     setThemeValues(JSON.parse(JSON.stringify(_themeValues)));
   }, [orderingTheme === null || orderingTheme === void 0 ? void 0 : orderingTheme.themes]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     themeValues: themeValues,
+    advancedValues: advancedValues,
+    setAdvancedValues: setAdvancedValues,
     orderingTheme: orderingTheme,
     setThemeValues: setThemeValues,
-    handleUpdateSiteTheme: handleUpdateSiteTheme
+    handleUpdateSiteTheme: handleUpdateSiteTheme,
+    themesList: themesList
   })));
 };
 exports.OrderingWebsite = OrderingWebsite;

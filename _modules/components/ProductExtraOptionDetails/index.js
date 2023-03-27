@@ -624,11 +624,16 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
           switch (_context4.prev = _context4.next) {
             case 0:
               change = _defineProperty({}, name, checked);
+              if (name === 'conditioned' && !checked) {
+                setConditionalSubOptionId(null);
+                setConditionalOptionId(null);
+                change.respect_to = 0;
+              }
               setSettingChangeState(_objectSpread(_objectSpread({}, settingChangeState), {}, {
                 changes: change
               }));
               handleUpdateOption(change);
-            case 3:
+            case 4:
             case "end":
               return _context4.stop();
           }
