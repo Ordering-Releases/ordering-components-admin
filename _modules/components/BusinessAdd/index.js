@@ -855,7 +855,7 @@ var BusinessAdd = function BusinessAdd(props) {
           }]
         }) : schedule.push({
           enabled: true,
-          lapses: extraHours
+          lapses: [extraHours]
         });
       }
       if ((period === null || period === void 0 ? void 0 : (_period$open = period.open) === null || _period$open === void 0 ? void 0 : _period$open.day) === i && (period === null || period === void 0 ? void 0 : (_period$close = period.close) === null || _period$close === void 0 ? void 0 : _period$close.day) === i) {
@@ -933,7 +933,7 @@ var BusinessAdd = function BusinessAdd(props) {
     if (extraHours && (_schedule$ = schedule[0]) !== null && _schedule$ !== void 0 && _schedule$.enabled && !(((_extraHours = extraHours) === null || _extraHours === void 0 ? void 0 : (_extraHours$close = _extraHours.close) === null || _extraHours$close === void 0 ? void 0 : _extraHours$close.hour) === 0 && ((_extraHours2 = extraHours) === null || _extraHours2 === void 0 ? void 0 : (_extraHours2$close = _extraHours2.close) === null || _extraHours2$close === void 0 ? void 0 : _extraHours2$close.minute) === 0)) schedule[0].lapses.unshift(extraHours);
     if (extraHours && !((_schedule$2 = schedule[0]) !== null && _schedule$2 !== void 0 && _schedule$2.enabled) && !(((_extraHours3 = extraHours) === null || _extraHours3 === void 0 ? void 0 : (_extraHours3$close = _extraHours3.close) === null || _extraHours3$close === void 0 ? void 0 : _extraHours3$close.hour) === 0 && ((_extraHours4 = extraHours) === null || _extraHours4 === void 0 ? void 0 : (_extraHours4$close = _extraHours4.close) === null || _extraHours4$close === void 0 ? void 0 : _extraHours4$close.minute) === 0)) schedule[0] = {
       enabled: true,
-      lapses: extraHours
+      lapses: [extraHours]
     };
     return schedule;
   };

@@ -199,7 +199,7 @@ var OrdersFilter = function OrdersFilter(props) {
     if (endDate !== null) {
       endDatetime = (0, _dayjs.default)(endDate).format('YYYY-MM-DD HH:mm:ss');
     } else {
-      endDate = null;
+      endDatetime = null;
     }
     setFilterValues(_objectSpread(_objectSpread({}, filterValues), {}, {
       deliveryEndDatetime: endDatetime

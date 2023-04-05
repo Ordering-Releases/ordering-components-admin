@@ -170,7 +170,7 @@ var UsersList = function UsersList(props) {
    */
   var getUsers = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(page, pageSize) {
-      var _session$user, parameters, paginationParams, where, conditions, verifiedConditions, searchConditions, _filterValues$changes, _filterValues$changes2, filterConditions, _filterValues$changes3, _multiFilterValues$or, filterConditons, _multiFilterValues$or2, _multiFilterValues$or3, fetchEndpoint, content, response, requestOptions, _fetchEndpoint, _response, _content, result, pagination, nextPageItems, remainingItems;
+      var _session$user, parameters, paginationParams, where, conditions, verifiedConditions, searchConditions, _filterValues$changes, _filterValues$changes2, filterConditions, _filterValues$changes3, _multiFilterValues$or, filterConditons, _multiFilterValues$or2, _multiFilterValues$or3, fetchEndpoint, content, response, requestOptions, _fetchEndpoint, _response, _content, result, pagination, error, nextPageItems, remainingItems;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -493,30 +493,37 @@ var UsersList = function UsersList(props) {
             case 33:
               content = _context.sent;
             case 34:
-              _content = content, result = _content.result, pagination = _content.pagination;
-              usersList.users = result;
-              setUsersList(_objectSpread(_objectSpread({}, usersList), {}, {
-                loading: false
-              }));
-              nextPageItems = 0;
-              if (pagination.current_page !== pagination.total_pages) {
-                remainingItems = pagination.total - usersList.users.length;
-                nextPageItems = remainingItems < pagination.page_size ? remainingItems : pagination.page_size;
+              _content = content, result = _content.result, pagination = _content.pagination, error = _content.error;
+              if (error) {
+                setUsersList(_objectSpread(_objectSpread({}, usersList), {}, {
+                  loading: false,
+                  error: result
+                }));
+              } else {
+                usersList.users = result;
+                setUsersList(_objectSpread(_objectSpread({}, usersList), {}, {
+                  loading: false
+                }));
+                nextPageItems = 0;
+                if (pagination.current_page !== pagination.total_pages) {
+                  remainingItems = pagination.total - usersList.users.length;
+                  nextPageItems = remainingItems < pagination.page_size ? remainingItems : pagination.page_size;
+                }
+                setPaginationProps(_objectSpread(_objectSpread({}, paginationProps), {}, {
+                  currentPage: pagination.current_page,
+                  pageSize: pagination.page_size === 0 ? paginationProps.pageSize : pagination.page_size,
+                  totalPages: pagination.total_pages,
+                  totalItems: pagination.total,
+                  from: pagination.from,
+                  to: pagination.to,
+                  nextPageItems: nextPageItems
+                }));
+                setPaginationDetail(_objectSpread({}, pagination));
               }
-              setPaginationProps(_objectSpread(_objectSpread({}, paginationProps), {}, {
-                currentPage: pagination.current_page,
-                pageSize: pagination.page_size === 0 ? paginationProps.pageSize : pagination.page_size,
-                totalPages: pagination.total_pages,
-                totalItems: pagination.total,
-                from: pagination.from,
-                to: pagination.to,
-                nextPageItems: nextPageItems
-              }));
-              setPaginationDetail(_objectSpread({}, pagination));
-              _context.next = 46;
+              _context.next = 41;
               break;
-            case 43:
-              _context.prev = 43;
+            case 38:
+              _context.prev = 38;
               _context.t0 = _context["catch"](0);
               if (_context.t0.constructor.name !== 'Cancel') {
                 setUsersList(_objectSpread(_objectSpread({}, usersList), {}, {
@@ -524,12 +531,12 @@ var UsersList = function UsersList(props) {
                   error: [_context.t0.message]
                 }));
               }
-            case 46:
+            case 41:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 43]]);
+      }, _callee, null, [[0, 38]]);
     }));
     return function getUsers(_x, _x2) {
       return _ref.apply(this, arguments);
