@@ -69,6 +69,7 @@ import { CampaignDetail } from './components/CampaignDetail'
 import { CampaignDetailContent } from './components/CampaignDetailContent'
 import { CampaignSignUpOption } from './components/CampaignSignUpOption'
 import { CampaignAmountOption } from './components/CampaignAmountOption'
+import { CardFieldsSetting } from './components/CardFieldsSettings'
 import { Cart } from './components/Cart'
 import { Checkout } from './components/Checkout'
 import { CheckoutFieldsSetting } from './components/CheckoutFieldsSetting'
@@ -323,6 +324,7 @@ export {
   CampaignDetailContent,
   CampaignSignUpOption,
   CampaignAmountOption,
+  CardFieldsSetting,
   Cart,
   Checkout,
   CheckoutFieldsSetting,

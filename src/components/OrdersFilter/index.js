@@ -142,7 +142,7 @@ export const OrdersFilter = (props) => {
     if (endDate !== null) {
       endDatetime = dayjs(endDate).format('YYYY-MM-DD HH:mm:ss')
     } else {
-      endDate = null
+      endDatetime = null
     }
     setFilterValues({ ...filterValues, deliveryEndDatetime: endDatetime })
   }

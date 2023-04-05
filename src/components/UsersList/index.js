@@ -439,28 +439,36 @@ export const UsersList = (props) => {
         content = await response.json()
       }
 
-      const { result, pagination } = content
-      usersList.users = result
-      setUsersList({
-        ...usersList,
-        loading: false
-      })
-      let nextPageItems = 0
-      if (pagination.current_page !== pagination.total_pages) {
-        const remainingItems = pagination.total - usersList.users.length
-        nextPageItems = remainingItems < pagination.page_size ? remainingItems : pagination.page_size
+      const { result, pagination, error } = content
+      if (error) {
+        setUsersList({
+          ...usersList,
+          loading: false,
+          error: result
+        })
+      } else {
+        usersList.users = result
+        setUsersList({
+          ...usersList,
+          loading: false
+        })
+        let nextPageItems = 0
+        if (pagination.current_page !== pagination.total_pages) {
+          const remainingItems = pagination.total - usersList.users.length
+          nextPageItems = remainingItems < pagination.page_size ? remainingItems : pagination.page_size
+        }
+        setPaginationProps({
+          ...paginationProps,
+          currentPage: pagination.current_page,
+          pageSize: pagination.page_size === 0 ? paginationProps.pageSize : pagination.page_size,
+          totalPages: pagination.total_pages,
+          totalItems: pagination.total,
+          from: pagination.from,
+          to: pagination.to,
+          nextPageItems
+        })
+        setPaginationDetail({ ...pagination })
       }
-      setPaginationProps({
-        ...paginationProps,
-        currentPage: pagination.current_page,
-        pageSize: pagination.page_size === 0 ? paginationProps.pageSize : pagination.page_size,
-        totalPages: pagination.total_pages,
-        totalItems: pagination.total,
-        from: pagination.from,
-        to: pagination.to,
-        nextPageItems
-      })
-      setPaginationDetail({ ...pagination })
     } catch (err) {
       if (err.constructor.name !== 'Cancel') {
         setUsersList({

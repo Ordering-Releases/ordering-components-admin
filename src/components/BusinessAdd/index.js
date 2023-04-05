@@ -418,7 +418,7 @@ export const BusinessAdd = (props) => {
       if (!period) {
         (!extraHours || (extraHours?.close?.hour === 0 && extraHours?.close?.minute === 0))
           ? schedule.push({ enabled: true, lapses: [{ open: { hour: 0, minute: 0 }, close: { hour: 23, minute: 59 } }] })
-          : schedule.push({ enabled: true, lapses: extraHours })
+          : schedule.push({ enabled: true, lapses: [extraHours] })
       }
       if (period?.open?.day === i && period?.close?.day === i) {
         const lapses = [{ open: { hour: period?.open?.hours, minute: period?.open?.minutes }, close: { hour: period?.close?.hours, minute: period?.close?.minutes } }]
@@ -442,7 +442,7 @@ export const BusinessAdd = (props) => {
     }
 
     if (extraHours && schedule[0]?.enabled && !(extraHours?.close?.hour === 0 && extraHours?.close?.minute === 0)) schedule[0].lapses.unshift(extraHours)
-    if (extraHours && !schedule[0]?.enabled && !(extraHours?.close?.hour === 0 && extraHours?.close?.minute === 0)) schedule[0] = { enabled: true, lapses: extraHours }
+    if (extraHours && !schedule[0]?.enabled && !(extraHours?.close?.hour === 0 && extraHours?.close?.minute === 0)) schedule[0] = { enabled: true, lapses: [extraHours] }
 
     return schedule
   }
