@@ -35,7 +35,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  * Component to manage InvoiceBusunessManager behavior without UI component
  */
 var InvoiceBusinessManager = function InvoiceBusinessManager(props) {
-  var _configs$order_types_;
+  var _configs$order_types_, _configs$order_types_3;
   var UIComponent = props.UIComponent,
     propsToFetch = props.propsToFetch;
   var _useApi = (0, _ApiContext.useApi)(),
@@ -375,6 +375,7 @@ var InvoiceBusinessManager = function InvoiceBusinessManager(props) {
         var _event$paymethod;
         return [].concat(_toConsumableArray(ids), [event === null || event === void 0 ? void 0 : (_event$paymethod = event.paymethod) === null || _event$paymethod === void 0 ? void 0 : _event$paymethod.id]);
       }, []);
+      orderPaymethodIds.push(order.paymethod_id);
       var walletIds = order.payment_events.reduce(function (ids, event) {
         var _event$wallet_event;
         return [].concat(_toConsumableArray(ids), [event === null || event === void 0 ? void 0 : (_event$wallet_event = event.wallet_event) === null || _event$wallet_event === void 0 ? void 0 : _event$wallet_event.wallet_id]);
@@ -554,6 +555,15 @@ var InvoiceBusinessManager = function InvoiceBusinessManager(props) {
       return order.summary.driver_tip;
     }
   };
+  (0, _react.useEffect)(function () {
+    var _configs$order_types_2;
+    var configTypes = (configs === null || configs === void 0 ? void 0 : (_configs$order_types_2 = configs.order_types_allowed) === null || _configs$order_types_2 === void 0 ? void 0 : _configs$order_types_2.value.split('|').map(function (value) {
+      return Number(value);
+    })) || [];
+    setOrderTypes(defaultOrderTypes.filter(function (type) {
+      return configTypes === null || configTypes === void 0 ? void 0 : configTypes.includes(type.value);
+    }));
+  }, [configs === null || configs === void 0 ? void 0 : (_configs$order_types_3 = configs.order_types_allowed) === null || _configs$order_types_3 === void 0 ? void 0 : _configs$order_types_3.value]);
   (0, _react.useEffect)(function () {
     getBusiness();
     getPaymentMethod();

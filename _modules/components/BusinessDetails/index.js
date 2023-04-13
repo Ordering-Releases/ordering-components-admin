@@ -76,6 +76,16 @@ var BusinessDetails = function BusinessDetails(props) {
     _useState6 = _slicedToArray(_useState5, 2),
     formState = _useState6[0],
     setFormState = _useState6[1];
+  var _useState7 = (0, _react.useState)({
+      loading: false,
+      key: '',
+      result: {
+        error: false
+      }
+    }),
+    _useState8 = _slicedToArray(_useState7, 2),
+    spoonityKeyState = _useState8[0],
+    setSpoonityKeyState = _useState8[1];
 
   /**
    * Clean formState
@@ -494,6 +504,72 @@ var BusinessDetails = function BusinessDetails(props) {
   }();
 
   /**
+   * Method to set Spoonity key
+   */
+  var handleUpdateSpoonityKey = /*#__PURE__*/function () {
+    var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(key, config) {
+      var requestOptions, response, content;
+      return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+        while (1) {
+          switch (_context8.prev = _context8.next) {
+            case 0:
+              _context8.prev = 0;
+              setSpoonityKeyState(_objectSpread(_objectSpread({}, spoonityKeyState), {}, {
+                loading: true
+              }));
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+              requestOptions = {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(session.token)
+                },
+                body: JSON.stringify({
+                  value: key
+                })
+              };
+              _context8.next = 6;
+              return fetch("".concat(ordering.root, "/business/").concat(businessId, "/configs/").concat(config), requestOptions);
+            case 6:
+              response = _context8.sent;
+              _context8.next = 9;
+              return response.json();
+            case 9:
+              content = _context8.sent;
+              if (content) {
+                showToast(_ToastContext.ToastType.Success, t('SPOONITY_KEY_UPDATED', 'Spoonity key updated'));
+                setSpoonityKeyState(_objectSpread(_objectSpread({}, spoonityKeyState), {}, {
+                  key: content.result.value,
+                  result: content.result,
+                  loading: false
+                }));
+              }
+              _context8.next = 17;
+              break;
+            case 13:
+              _context8.prev = 13;
+              _context8.t0 = _context8["catch"](0);
+              showToast(_ToastContext.ToastType.Error, t('SPOONITY_KEY_ERROR', 'Spoonity key error'));
+              setSpoonityKeyState(_objectSpread(_objectSpread({}, spoonityKeyState), {}, {
+                result: {
+                  error: true,
+                  result: _context8.t0.message
+                },
+                loading: false
+              }));
+            case 17:
+            case "end":
+              return _context8.stop();
+          }
+        }
+      }, _callee8, null, [[0, 13]]);
+    }));
+    return function handleUpdateSpoonityKey(_x5, _x6) {
+      return _ref8.apply(this, arguments);
+    };
+  }();
+
+  /**
    * Method to add the business fields when new busines item is added
    */
   var handleSuccessAddBusinessItem = function handleSuccessAddBusinessItem(name, result) {
@@ -525,13 +601,13 @@ var BusinessDetails = function BusinessDetails(props) {
     }));
   };
   var handleUpdatePreorderConfigs = /*#__PURE__*/function () {
-    var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(params, configId) {
+    var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(params, configId) {
       var requestOptions, response, content;
-      return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+      return _regeneratorRuntime().wrap(function _callee9$(_context9) {
         while (1) {
-          switch (_context8.prev = _context8.next) {
+          switch (_context9.prev = _context9.next) {
             case 0:
-              _context8.prev = 0;
+              _context9.prev = 0;
               setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
                 loading: true
               }));
@@ -546,14 +622,14 @@ var BusinessDetails = function BusinessDetails(props) {
                   value: params
                 })
               };
-              _context8.next = 6;
+              _context9.next = 6;
               return fetch("".concat(ordering.root, "/business/").concat((business === null || business === void 0 ? void 0 : business.id) || businessId, "/configs/").concat(configId), requestOptions);
             case 6:
-              response = _context8.sent;
-              _context8.next = 9;
+              response = _context9.sent;
+              _context9.next = 9;
               return response.json();
             case 9:
-              content = _context8.sent;
+              content = _context9.sent;
               if (!content.error) {
                 setActionStatus({
                   loading: false,
@@ -573,24 +649,24 @@ var BusinessDetails = function BusinessDetails(props) {
                   error: content.result
                 });
               }
-              _context8.next = 16;
+              _context9.next = 16;
               break;
             case 13:
-              _context8.prev = 13;
-              _context8.t0 = _context8["catch"](0);
+              _context9.prev = 13;
+              _context9.t0 = _context9["catch"](0);
               setActionStatus({
                 loading: false,
-                error: [_context8.t0.message]
+                error: [_context9.t0.message]
               });
             case 16:
             case "end":
-              return _context8.stop();
+              return _context9.stop();
           }
         }
-      }, _callee8, null, [[0, 13]]);
+      }, _callee9, null, [[0, 13]]);
     }));
-    return function handleUpdatePreorderConfigs(_x5, _x6) {
-      return _ref8.apply(this, arguments);
+    return function handleUpdatePreorderConfigs(_x7, _x8) {
+      return _ref9.apply(this, arguments);
     };
   }();
   (0, _react.useEffect)(function () {
@@ -622,7 +698,9 @@ var BusinessDetails = function BusinessDetails(props) {
     handleUpdateBusinessState: handleUpdateBusinessState,
     handleSuccessAddBusinessItem: handleSuccessAddBusinessItem,
     handleSuccessDeleteBusinessItem: handleSuccessDeleteBusinessItem,
-    handleUpdatePreorderConfigs: handleUpdatePreorderConfigs
+    handleUpdatePreorderConfigs: handleUpdatePreorderConfigs,
+    handleUpdateSpoonityKey: handleUpdateSpoonityKey,
+    spoonityKeyState: spoonityKeyState
   })));
 };
 exports.BusinessDetails = BusinessDetails;

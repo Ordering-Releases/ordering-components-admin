@@ -908,7 +908,8 @@ var OrdersManage = function OrdersManage(props) {
       return _ref5.apply(this, arguments);
     };
   }();
-  var handleNewOrder = function handleNewOrder() {
+  var handleNewOrder = function handleNewOrder(order) {
+    if (customerId && (order === null || order === void 0 ? void 0 : order.customer_id) !== customerId) return;
     if (!numberOfOrdersByStatus.result) return;
     var _orderStatusNumbers = numberOfOrdersByStatus.result;
     _orderStatusNumbers['pending'] += 1;
@@ -918,9 +919,12 @@ var OrdersManage = function OrdersManage(props) {
       result: _orderStatusNumbers
     }));
   };
-  var handleChangeOrder = function handleChangeOrder(order) {
-    var _order$changes;
-    var statusChange = order === null || order === void 0 ? void 0 : (_order$changes = order.changes) === null || _order$changes === void 0 ? void 0 : _order$changes.find(function (_ref7) {
+  var handleUpdateOrder = function handleUpdateOrder(order) {
+    if (!(order !== null && order !== void 0 && order.history)) return;
+    if (customerId && (order === null || order === void 0 ? void 0 : order.customer_id) !== customerId) return;
+    var length = order.history.length;
+    var lastHistoryData = order === null || order === void 0 ? void 0 : order.history[length - 1].data;
+    var statusChange = lastHistoryData === null || lastHistoryData === void 0 ? void 0 : lastHistoryData.find(function (_ref7) {
       var attribute = _ref7.attribute;
       return attribute === 'status';
     });
@@ -950,10 +954,10 @@ var OrdersManage = function OrdersManage(props) {
     }
   };
   (0, _react.useEffect)(function () {
-    socket.on('order_change', handleChangeOrder);
+    socket.on('update_order', handleUpdateOrder);
     socket.on('orders_register', handleNewOrder);
     return function () {
-      socket.off('order_change', handleChangeOrder);
+      socket.off('update_order', handleUpdateOrder);
       socket.off('orders_register', handleNewOrder);
     };
   }, [socket, filterValues, searchValue, JSON.stringify(numberOfOrdersByStatus)]);
