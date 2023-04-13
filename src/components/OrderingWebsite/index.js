@@ -190,7 +190,7 @@ export const OrderingWebsite = (props) => {
   /**
  * Method to update the site theme from API
  */
-  const handleUpdateSiteTheme = async (isAdvanced) => {
+  const handleUpdateSiteTheme = async (advancedTheme) => {
     try {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
       const themeId = orderingTheme.themes[0]?.theme_id
@@ -202,7 +202,7 @@ export const OrderingWebsite = (props) => {
           components: { ...themeValues }
         }
       }
-      const values = isAdvanced ? JSON.parse(JSON.stringify(advancedValues)) : JSON.parse(JSON.stringify(myProductvalues))
+      const values = advancedTheme ? JSON.parse(JSON.stringify(advancedTheme)) : JSON.parse(JSON.stringify(myProductvalues))
       const requestOptions = {
         method: 'POST',
         headers: {

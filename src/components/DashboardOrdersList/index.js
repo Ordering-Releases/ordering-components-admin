@@ -628,6 +628,7 @@ export const DashboardOrdersList = (props) => {
   useEffect(() => {
     if (orderList.loading) return
     const handleUpdateOrder = (order) => {
+      if (customerId && order?.customer_id !== customerId) return
       if (isOnlyDelivery && order?.delivery_type !== 1) return
       if (!order?.driver && order?.driver_id) {
         const updatedDriver = driversList?.drivers.find(driver => driver.id === order.driver_id)
@@ -678,6 +679,7 @@ export const DashboardOrdersList = (props) => {
       }
     }
     const handleRegisterOrder = (order) => {
+      if (customerId && order?.customer_id !== customerId) return
       if (isOnlyDelivery && order?.delivery_type !== 1) return
       const found = orderList.orders.find(_order => _order?.id === order?.id)
       if (found) return
@@ -746,7 +748,7 @@ export const DashboardOrdersList = (props) => {
       socket.off('orders_register', handleRegisterOrder)
       socket.off('message', handleNewMessage)
     }
-  }, [orderList.orders, pagination, orderBy, socket, driversList])
+  }, [orderList.orders, pagination, orderBy, socket, driversList, customerId])
 
   // Listening for customer rating
   useEffect(() => {

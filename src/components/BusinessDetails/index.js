@@ -24,6 +24,7 @@ export const BusinessDetails = (props) => {
   const [businessState, setBusinessState] = useState({ business: null, loading: true, error: null })
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
   const [formState, setFormState] = useState({ loading: false, changes: {}, result: { error: false } })
+  const [spoonityKeyState, setSpoonityKeyState] = useState({ loading: false, key: '', result: { error: false } })
 
   /**
    * Clean formState
@@ -255,6 +256,49 @@ export const BusinessDetails = (props) => {
   }
 
   /**
+   * Method to set Spoonity key
+   */
+  const handleUpdateSpoonityKey = async (key, config) => {
+    try {
+      setSpoonityKeyState({ ...spoonityKeyState, loading: true })
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.token}`
+        },
+        body: JSON.stringify({
+          value: key
+        })
+      }
+      const response = await fetch(`${ordering.root}/business/${businessId}/configs/${config}`, requestOptions)
+      const content = await response.json()
+
+      if (content) {
+        showToast(ToastType.Success, t('SPOONITY_KEY_UPDATED', 'Spoonity key updated'))
+        setSpoonityKeyState({
+          ...spoonityKeyState,
+          key: content.result.value,
+          result: content.result,
+          loading: false
+        })
+      }
+    } catch (err) {
+      showToast(ToastType.Error, t('SPOONITY_KEY_ERROR', 'Spoonity key error'))
+      setSpoonityKeyState({
+        ...spoonityKeyState,
+        result: {
+          error: true,
+          result: err.message
+        },
+        loading: false
+      })
+    }
+  }
+
+  /**
    * Method to add the business fields when new busines item is added
    */
   const handleSuccessAddBusinessItem = (name, result) => {
@@ -366,6 +410,8 @@ export const BusinessDetails = (props) => {
             handleSuccessAddBusinessItem={handleSuccessAddBusinessItem}
             handleSuccessDeleteBusinessItem={handleSuccessDeleteBusinessItem}
             handleUpdatePreorderConfigs={handleUpdatePreorderConfigs}
+            handleUpdateSpoonityKey={handleUpdateSpoonityKey}
+            spoonityKeyState={spoonityKeyState}
           />
         )
       }

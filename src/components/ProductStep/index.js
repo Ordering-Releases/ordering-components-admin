@@ -17,7 +17,7 @@ export const ProductStep = (props) => {
   const [session] = useSession()
 
   const [countriesState, setCountriesState] = useState({ countries: [], loading: true, error: null, enabled: false })
-  const [actionState, setActionState] = useState({ loading: false, error: null })
+  const [actionState, setActionState] = useState({ loading: false, error: null, content: null })
   const [businessList, setBusinessList] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [business, setBusiness] = useState()
@@ -74,7 +74,13 @@ export const ProductStep = (props) => {
       const functionFetch = `https://integrations.ordering.co/network/sync_store.php?project=${ordering.project}`
       const response = await fetch(functionFetch, requestOptions)
       const content = await response.json()
-      setActionState({ ...actionState, loading: false, error: content?.error ? content?.result : null })
+
+      setActionState({
+        ...actionState,
+        loading: false,
+        content: content?.result,
+        error: content?.error ? content?.result : null
+      })
     } catch (err) {
       setActionState({ ...actionState, loading: false, error: [err.message] })
     }

@@ -44,6 +44,9 @@ import { BusinessMenuOptions } from './components/BusinessMenuOptions'
 import { BusinessMenuShare } from './components/BusinessMenuShare'
 import { BusinessMetaFields } from './components/BusinessMetaFields'
 import { BusinessPaymethods } from './components/BusinessPaymethods'
+import { BusinessPlace } from './components/BusinessPlace'
+import { BusinessPlaceGroupList } from './components/BusinessPlaceGroupList'
+import { BusinessPlaceGroup } from './components/BusinessPlaceGroup'
 import { BusinessPickupDetails } from './components/BusinessPickupDetails'
 import { BusinessProductsCategoyDetails } from './components/BusinessProductsCategoyDetails'
 import { BusinessProductsCategories } from './components/BusinessProductsCategories'
@@ -302,6 +305,9 @@ export {
   BusinessMenuOptions,
   BusinessMenuShare,
   BusinessPaymethods,
+  BusinessPlace,
+  BusinessPlaceGroup,
+  BusinessPlaceGroupList,
   BusinessPickupDetails,
   BusinessProductsCategoyDetails,
   BusinessProductsCategories,

@@ -211,6 +211,7 @@ export const InvoiceBusinessManager = (props) => {
       let date = order.delivery_datetime.split(' ')
       date = new Date(date[0].split('-')[0], date[0].split('-')[1] - 1, date[0].split('-')[2], 0, 0, 0, 0)
       const orderPaymethodIds = order.payment_events.reduce((ids, event) => [...ids, event?.paymethod?.id], [])
+      orderPaymethodIds.push(order.paymethod_id)
       const walletIds = order.payment_events.reduce((ids, event) => [...ids, event?.wallet_event?.wallet_id], [])
       if ((!orderPaymethodIds.some(id => paymethods.includes(id)) && !walletIds?.length) ||
         _orderTypes.indexOf(order.delivery_type) === -1 ||
@@ -391,6 +392,11 @@ export const InvoiceBusinessManager = (props) => {
       return order.summary.driver_tip
     }
   }
+
+  useEffect(() => {
+    const configTypes = configs?.order_types_allowed?.value.split('|').map(value => Number(value)) || []
+    setOrderTypes(defaultOrderTypes.filter(type => configTypes?.includes(type.value)))
+  }, [configs?.order_types_allowed?.value])
 
   useEffect(() => {
     getBusiness()

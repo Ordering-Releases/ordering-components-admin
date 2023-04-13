@@ -614,7 +614,8 @@ export const OrdersManage = (props) => {
     }
   }
 
-  const handleNewOrder = () => {
+  const handleNewOrder = (order) => {
+    if (customerId && order?.customer_id !== customerId) return
     if (!numberOfOrdersByStatus.result) return
     let _orderStatusNumbers = numberOfOrdersByStatus.result
     _orderStatusNumbers['pending'] += 1
@@ -626,8 +627,12 @@ export const OrdersManage = (props) => {
     })
   }
 
-  const handleChangeOrder = (order) => {
-    const statusChange = order?.changes?.find(({ attribute }) => (attribute === 'status'))
+  const handleUpdateOrder = (order) => {
+    if (!order?.history) return
+    if (customerId && order?.customer_id !== customerId) return
+    const length = order.history.length
+    const lastHistoryData = order?.history[length - 1].data
+    const statusChange = lastHistoryData?.find(({ attribute }) => (attribute === 'status'))
     if (statusChange && numberOfOrdersByStatus.result) {
       const from = statusChange.old
       const to = statusChange.new
@@ -657,10 +662,10 @@ export const OrdersManage = (props) => {
   }
 
   useEffect(() => {
-    socket.on('order_change', handleChangeOrder)
+    socket.on('update_order', handleUpdateOrder)
     socket.on('orders_register', handleNewOrder)
     return () => {
-      socket.off('order_change', handleChangeOrder)
+      socket.off('update_order', handleUpdateOrder)
       socket.off('orders_register', handleNewOrder)
     }
   }, [socket, filterValues, searchValue, JSON.stringify(numberOfOrdersByStatus)])
