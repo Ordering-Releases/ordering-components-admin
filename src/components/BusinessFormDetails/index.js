@@ -234,7 +234,8 @@ export const BusinessFormDetails = (props) => {
   const getTimeZone = async (lat, lng) => {
     const date = new Date()
     const timestamp = Math.floor(date.getTime() / 1000)
-    const url = `https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${timestamp}&key=${googleMapsApiKey}`
+    const timezoneApiKey = googleMapsApiKey === 'AIzaSyBvsSkMYPSDSkdk7YFrSf5FoGonIzr6fJ0' ? 'AIzaSyCYPCOfiTo9jxuxLWnWTup6mmICPxfLegI' : googleMapsApiKey
+    const url = `https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${timestamp}&key=${timezoneApiKey}`
     const response = await fetch(url, {
       method: 'GET'
     })

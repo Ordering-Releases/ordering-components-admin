@@ -428,7 +428,7 @@ export const EnterprisePromotionDetails = (props) => {
   }
 
   useEffect(() => {
-    if (!promotion) {
+    if (!Object.keys(promotion || {}).length) {
       if (promotionId) {
         setIsAddMode(false)
         getPromotion()
@@ -437,6 +437,7 @@ export const EnterprisePromotionDetails = (props) => {
         setFormState({
           ...formState,
           changes: {
+            ...formState?.changes,
             enabled: true,
             auto: false,
             public: true,
@@ -448,12 +449,12 @@ export const EnterprisePromotionDetails = (props) => {
             rate: 5
           }
         })
-        setSelectedBusinessIds([])
-        setSelectedSitesIds([])
-        setSelectedProductsIds({})
-        setSelectedCategoryIds({})
-        setSelectedUserIds([])
-        setSelectedLoyaltyLevelIds([])
+        setSelectedBusinessIds([...selectedBusinessIds])
+        setSelectedSitesIds([...selectedSitesIds])
+        setSelectedProductsIds({ ...selectedProductsIds })
+        setSelectedCategoryIds({ ...selectedCategoryIds })
+        setSelectedUserIds([...selectedUserIds])
+        setSelectedLoyaltyLevelIds([...selectedLoyaltyLevelIds])
       }
     } else {
       setIsAddMode(false)

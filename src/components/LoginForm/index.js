@@ -18,7 +18,9 @@ export const LoginForm = (props) => {
     urlToRedirect,
     allowedLevels,
     billingUrl,
-    handleRedirect
+    handleRedirect,
+    configFile,
+    setConfigFile
   } = props
 
   const [ordering] = useApi()
@@ -91,7 +93,22 @@ export const LoginForm = (props) => {
       }
 
       setFormState({ ...formState, loading: true })
-      const { content: { error, result } } = await ordering.users().auth(_credentials)
+      const language = JSON.parse(window.localStorage.getItem('language'))?.code || 'en'
+      if (ordering.language !== language) {
+        setConfigFile({
+          ...configFile,
+          api: {
+            ...configFile.api,
+            language: language
+          }
+        })
+        return
+      }
+      const { content: { error, result, action } } = await ordering.users().auth(_credentials)
+
+      if (action && action?.type === 'billing_autologin') {
+        window.open(`${billingUrl}?token=${action?.data?.access_token}&projectId=${action?.data?.project_id}&userId=${action?.data?.user_id}`, '_blank').focus()
+      }
 
       if (isReCaptchaEnable && window.grecaptcha) {
         _credentials.recaptcha_type === 'v2' && window.grecaptcha.reset()
