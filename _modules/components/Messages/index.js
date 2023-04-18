@@ -10,6 +10,9 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 var _SessionContext = require("../../contexts/SessionContext");
 var _ApiContext = require("../../contexts/ApiContext");
 var _WebsocketContext = require("../../contexts/WebsocketContext");
+var _ConfigContext = require("../../contexts/ConfigContext");
+var _LanguageContext = require("../../contexts/LanguageContext");
+var _UtilsContext = require("../../contexts/UtilsContext");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -31,6 +34,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var Messages = function Messages(props) {
+  var _configState$configs, _configState$configs$;
   var UIComponent = props.UIComponent,
     orderId = props.orderId,
     customHandleSend = props.customHandleSend,
@@ -39,9 +43,18 @@ var Messages = function Messages(props) {
     asDashboard = props.asDashboard,
     order = props.order,
     handleUpdateOrderForUnreadCount = props.handleUpdateOrderForUnreadCount;
+  var _useLanguage = (0, _LanguageContext.useLanguage)(),
+    _useLanguage2 = _slicedToArray(_useLanguage, 2),
+    t = _useLanguage2[1];
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
+  var _useConfig = (0, _ConfigContext.useConfig)(),
+    _useConfig2 = _slicedToArray(_useConfig, 1),
+    configState = _useConfig2[0];
+  var _useUtils = (0, _UtilsContext.useUtils)(),
+    _useUtils2 = _slicedToArray(_useUtils, 1),
+    getOrderState = _useUtils2[0].getOrderState;
   var _useSession = (0, _SessionContext.useSession)(),
     _useSession2 = _slicedToArray(_useSession, 1),
     _useSession2$ = _useSession2[0],
@@ -89,6 +102,86 @@ var Messages = function Messages(props) {
     image = _useState12[0],
     setImage = _useState12[1];
   var socket = (0, _WebsocketContext.useWebsocket)();
+  var googleMapsApiKey = configState === null || configState === void 0 ? void 0 : (_configState$configs = configState.configs) === null || _configState$configs === void 0 ? void 0 : (_configState$configs$ = _configState$configs.google_maps_api_key) === null || _configState$configs$ === void 0 ? void 0 : _configState$configs$.value;
+  var getStaticMapByLocation = function getStaticMapByLocation(location, size) {
+    if (!size) {
+      size = '250x100';
+    }
+    var url = 'https://maps.googleapis.com/maps/api/staticmap?center=' + location.lat + ',' + location.lng + '&zoom=14&size=' + size + '&markers=color:red%7C' + location.lat + ',' + location.lng + '&key=' + googleMapsApiKey;
+    return url;
+  };
+  var getLogisticTagStatus = function getLogisticTagStatus(status) {
+    switch (status) {
+      case 0:
+        return t('PENDING', 'Pending');
+      case 1:
+        return t('IN_PROGRESS', 'In Progress');
+      case 2:
+        return t('IN_QUEUE', 'In Queue');
+      case 3:
+        return t('EXPIRED', 'Logistic expired');
+      case 4:
+        return t('RESOLVED', 'Resolved');
+      default:
+        return status;
+    }
+  };
+  var getVehicleSmmary = function getVehicleSmmary(vehicle) {
+    return (vehicle === null || vehicle === void 0 ? void 0 : vehicle.type) + ' ' + (vehicle === null || vehicle === void 0 ? void 0 : vehicle.model) + ' ' + (vehicle === null || vehicle === void 0 ? void 0 : vehicle.car_registration) + ' ' + (vehicle === null || vehicle === void 0 ? void 0 : vehicle.color);
+  };
+  var getHistoryComment = function getHistoryComment(message) {
+    var _message$change;
+    var comment = '';
+    var changeAttribute = message === null || message === void 0 ? void 0 : (_message$change = message.change) === null || _message$change === void 0 ? void 0 : _message$change.attribute;
+    if (changeAttribute === 'distance') {
+      comment = t('THE_DRIVER_IS_CLOSE') + ' <b>(' + message.driver.name + (message.driver.lastname ? ' ' + message.driver.lastname : '') + ')</b>';
+    } else if (changeAttribute === 'status') {
+      var _message$change2;
+      if (message.change.new === 8 && message.change.estimated) {
+        var estimatedDelivery = message.change.estimated;
+        comment = t('ORDER_ATTRIBUTE_CHANGED_FROM_TO').replace('_attribute_', '<b>' + t(changeAttribute.toUpperCase()).toLowerCase() + '</b>').replace('_from_', '<b>' + getOrderState(message.change.old * 1) + '</b>').replace('_to_', '<b>' + getOrderState(message.change.new * 1) + '</b>') + '<br>' + t('ESTIMATED_DELIVERY_TIME').replace('_min_', estimatedDelivery);
+      } else if (message.change.new === 7 && message.change.estimated) {
+        var estimatedPreparation = message.change.estimated;
+        comment = t('ORDER_ATTRIBUTE_CHANGED_FROM_TO').replace('_attribute_', '<b>' + t(changeAttribute.toUpperCase()).toLowerCase() + '</b>').replace('_from_', '<b>' + getOrderState(message.change.old * 1) + '</b>').replace('_to_', '<b>' + getOrderState(message.change.new * 1) + '</b>') + '<br>' + t('ESTIMATED_PREPARATION_TIME').replace('_min_', estimatedPreparation);
+      } else {
+        comment = t('ORDER_ATTRIBUTE_CHANGED_FROM_TO').replace('_attribute_', '<b>' + t(changeAttribute.toUpperCase()).toLowerCase() + '</b>').replace('_from_', '<b>' + getOrderState(message.change.old * 1) + '</b>').replace('_to_', '<b>' + getOrderState(message.change.new * 1) + '</b>');
+      }
+      if (message !== null && message !== void 0 && (_message$change2 = message.change) !== null && _message$change2 !== void 0 && _message$change2.comment) {
+        comment += '<br>' + '<b>' + t('COMMENT', '') + '</b>: ' + message.change.comment + '.';
+      }
+    } else if (changeAttribute === 'driver_id') {
+      if (message.driver) {
+        comment = t('DRIVER_ASSIGNED_AS_DRIVER').replace('_driver_', '<b>' + message.driver.name + ' ' + (message.driver.lastname ? message.driver.lastname : '') + '</b>');
+      } else {
+        comment = t('DRIVER_UNASSIGNED');
+      }
+    } else if (['prepared_in', 'delivered_in', 'delivery_datetime'].includes(changeAttribute)) {
+      comment = t('ORDER_ATTRIBUTE_CHANGED_FROM_TO').replace('_attribute_', '<b>' + t(changeAttribute.toUpperCase()).toLowerCase() + '</b>').replace('_from_', '<b>' + (message.change.old || 0) + '</b>').replace('_to_', '<b>' + message.change.new + '</b>');
+    } else if (changeAttribute === 'logistic_status') {
+      comment = t('ORDER_ATTRIBUTE_CHANGED_FROM_TO').replace('_attribute_', '<b>' + t('LOGISTIC_STATUS', 'logistic status') + '</b>').replace('_from_', '<b>' + getLogisticTagStatus(parseInt(message.change.old, 10)) + '</b>').replace('_to_', '<b>' + getLogisticTagStatus(parseInt(message.change.new, 10)) + '</b>');
+    } else if (changeAttribute === 'vehicle') {
+      comment = t('ORDER_ATTRIBUTE_CHANGED_FROM_TO').replace('_attribute_', '<b>' + t(changeAttribute.toUpperCase()).toLowerCase() + '</b>').replace('_from_', '<b>' + getVehicleSmmary(message.change.old) + '</b>').replace('_to_', '<b>' + getVehicleSmmary(message.change.new) + '</b>');
+    } else if (changeAttribute === 'reject_reason') {
+      comment = t('ORDER_REJECT_REASON_IS', 'Order <b>reject reason</b> is _reject_reason_.').replace('_reject_reason_', '<b>' + t("REJECT_REASON_".concat(message.change.new.toUpperCase())) + '</b>');
+    } else if (changeAttribute !== 'comment') {
+      if (message.change.old) {
+        comment = t('ORDER_ATTRIBUTE_CHANGED_FROM_TO').replace('_attribute_', '<b>' + t(changeAttribute.toUpperCase()).toLowerCase() + '</b>').replace('_from_', '<b>' + message.change.old + '</b>').replace('_to_', '<b>' + message.change.new + '</b>');
+      } else {
+        comment = t('ORDER_ATTRIBUTE_CHANGED_TO').replace('_attribute_', '<b>' + t(changeAttribute.toUpperCase()).toLowerCase() + '</b>').replace('_to_', '<b>' + message.change.new + '</b>');
+      }
+    }
+    if (['status', 'reject_reason'].includes(changeAttribute)) {
+      if (user.level === 0 || user.level === 2) {
+        comment += '<br>-';
+        if (message.app_id) comment += '<br><strong>' + t('APP_ID') + ':</strong> ' + message.app_id;
+        comment += '<br><strong>' + t('AUTHOR') + ':</strong> ' + (message.author ? message.author.name + (message.author.lastname ? ' ' + message.author.lastname : '') : t('GUEST_USER'));
+        if (message.user_agent) comment += '<br><strong>' + t('USER_AGENT') + ':</strong> ' + message.user_agent;
+        if (message.location) comment += '<br><strong>' + t('LOCATION') + ':</strong> <img src="' + getStaticMapByLocation(message.location, '250x100') + '" />';
+        comment += '<br><strong>' + t('IP') + ':</strong> ' + message.ip;
+      }
+    }
+    return comment;
+  };
 
   /**
    * Method to send message
@@ -346,9 +439,11 @@ var Messages = function Messages(props) {
           return _message.id === message.id;
         });
         if (!found) {
-          setMessages(_objectSpread(_objectSpread({}, messages), {}, {
-            messages: [].concat(_toConsumableArray(messages.messages), [message])
-          }));
+          setMessages(function (prevState) {
+            return _objectSpread(_objectSpread({}, prevState), {}, {
+              messages: [].concat(_toConsumableArray(prevState.messages), [message])
+            });
+          });
         }
       }
     };
@@ -381,7 +476,8 @@ var Messages = function Messages(props) {
     setMessage: setMessage,
     setCanRead: setCanRead,
     sendMessage: sendMessage,
-    setImage: setImage
+    setImage: setImage,
+    getHistoryComment: getHistoryComment
   })));
 };
 exports.Messages = Messages;

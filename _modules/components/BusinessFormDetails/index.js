@@ -394,26 +394,27 @@ var BusinessFormDetails = function BusinessFormDetails(props) {
   };
   var getTimeZone = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(lat, lng) {
-      var date, timestamp, url, response, result;
+      var date, timestamp, timezoneApiKey, url, response, result;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
               date = new Date();
               timestamp = Math.floor(date.getTime() / 1000);
-              url = "https://maps.googleapis.com/maps/api/timezone/json?location=".concat(lat, ",").concat(lng, "&timestamp=").concat(timestamp, "&key=").concat(googleMapsApiKey);
-              _context3.next = 5;
+              timezoneApiKey = googleMapsApiKey === 'AIzaSyBvsSkMYPSDSkdk7YFrSf5FoGonIzr6fJ0' ? 'AIzaSyCYPCOfiTo9jxuxLWnWTup6mmICPxfLegI' : googleMapsApiKey;
+              url = "https://maps.googleapis.com/maps/api/timezone/json?location=".concat(lat, ",").concat(lng, "&timestamp=").concat(timestamp, "&key=").concat(timezoneApiKey);
+              _context3.next = 6;
               return fetch(url, {
                 method: 'GET'
               });
-            case 5:
+            case 6:
               response = _context3.sent;
-              _context3.next = 8;
+              _context3.next = 9;
               return response.json();
-            case 8:
+            case 9:
               result = _context3.sent;
               return _context3.abrupt("return", result === null || result === void 0 ? void 0 : result.timeZoneId);
-            case 10:
+            case 11:
             case "end":
               return _context3.stop();
           }

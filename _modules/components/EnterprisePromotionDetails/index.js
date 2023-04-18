@@ -626,14 +626,14 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
     };
   }();
   (0, _react.useEffect)(function () {
-    if (!promotion) {
+    if (!Object.keys(promotion || {}).length) {
       if (promotionId) {
         setIsAddMode(false);
         getPromotion();
       } else {
         setIsAddMode(true);
         setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-          changes: {
+          changes: _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), {}, {
             enabled: true,
             auto: false,
             public: true,
@@ -643,14 +643,14 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
             rate_type: 1,
             stackable: false,
             rate: 5
-          }
+          })
         }));
-        setSelectedBusinessIds([]);
-        setSelectedSitesIds([]);
-        setSelectedProductsIds({});
-        setSelectedCategoryIds({});
-        setSelectedUserIds([]);
-        setSelectedLoyaltyLevelIds([]);
+        setSelectedBusinessIds(_toConsumableArray(selectedBusinessIds));
+        setSelectedSitesIds(_toConsumableArray(selectedSitesIds));
+        setSelectedProductsIds(_objectSpread({}, selectedProductsIds));
+        setSelectedCategoryIds(_objectSpread({}, selectedCategoryIds));
+        setSelectedUserIds(_toConsumableArray(selectedUserIds));
+        setSelectedLoyaltyLevelIds(_toConsumableArray(selectedLoyaltyLevelIds));
       }
     } else {
       setIsAddMode(false);
