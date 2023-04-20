@@ -74,25 +74,30 @@ var ProductStep = function ProductStep(props) {
    */
   var handleChangeAddress = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(ad) {
-      var _ad$location, _ad$location2;
-      var lat, lng, url, response, res, sortedBusinessList;
+      var _ad$location, _ad$location2, requestOptions, lat, lng, url, response, res, sortedBusinessList;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
+              _context.prev = 0;
+              setIsLoading(true);
+              requestOptions = {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(session.token)
+                }
+              };
               lat = ad === null || ad === void 0 ? void 0 : (_ad$location = ad.location) === null || _ad$location === void 0 ? void 0 : _ad$location.lat;
               lng = ad === null || ad === void 0 ? void 0 : (_ad$location2 = ad.location) === null || _ad$location2 === void 0 ? void 0 : _ad$location2.lng;
-              url = "https://integrations.ordering.co/network/search.php?latitude=".concat(lat, "&longitude=").concat(lng);
-              setIsLoading(true);
-              _context.next = 6;
-              return fetch(url, {
-                method: 'GET'
-              });
-            case 6:
+              url = "https://integrations.ordering.co/network/search.php?latitude=".concat(lat, "&longitude=").concat(lng, "&project=").concat(ordering.project);
+              _context.next = 8;
+              return fetch(url, requestOptions);
+            case 8:
               response = _context.sent;
-              _context.next = 9;
+              _context.next = 11;
               return response.json();
-            case 9:
+            case 11:
               res = _context.sent;
               sortedBusinessList = res === null || res === void 0 ? void 0 : res.result.sort(function (a, b) {
                 var _a$address, _b$address;
@@ -100,12 +105,19 @@ var ProductStep = function ProductStep(props) {
               });
               setBusinessList(sortedBusinessList);
               setIsLoading(false);
-            case 13:
+              _context.next = 21;
+              break;
+            case 17:
+              _context.prev = 17;
+              _context.t0 = _context["catch"](0);
+              setIsLoading(false);
+              console.log(_context.t0.message);
+            case 21:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee);
+      }, _callee, null, [[0, 17]]);
     }));
     return function handleChangeAddress(_x) {
       return _ref.apply(this, arguments);
