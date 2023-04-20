@@ -28,17 +28,30 @@ export const ProductStep = (props) => {
    * Method to get business from location
    */
   const handleChangeAddress = async (ad) => {
-    const lat = ad?.location?.lat
-    const lng = ad?.location?.lng
-    const url = `https://integrations.ordering.co/network/search.php?latitude=${lat}&longitude=${lng}`
-    setIsLoading(true)
-    const response = await fetch(url, {
-      method: 'GET'
-    })
-    const res = await response.json()
-    const sortedBusinessList = res?.result.sort((a, b) => getDistance(a?.address?.lat, a?.address.lon, lat, lng) - getDistance(b?.address?.lat, b?.address.lon, lat, lng))
-    setBusinessList(sortedBusinessList)
-    setIsLoading(false)
+    try {
+      setIsLoading(true)
+
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.token}`
+        }
+      }
+      const lat = ad?.location?.lat
+      const lng = ad?.location?.lng
+      const url = `https://integrations.ordering.co/network/search.php?latitude=${lat}&longitude=${lng}&project=${ordering.project}`
+
+      const response = await fetch(url, requestOptions)
+      const res = await response.json()
+      const sortedBusinessList = res?.result.sort((a, b) => getDistance(a?.address?.lat, a?.address.lon, lat, lng) - getDistance(b?.address?.lat, b?.address.lon, lat, lng))
+
+      setBusinessList(sortedBusinessList)
+      setIsLoading(false)
+    } catch (err) {
+      setIsLoading(false)
+      console.log(err.message)
+    }
   }
 
   /**
