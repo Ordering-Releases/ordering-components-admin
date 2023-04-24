@@ -654,8 +654,54 @@ export const UsersList = (props) => {
   /**
    * Method to delete several users from API
    */
-  const handleDeleteSeveralUsers = () => {
-    setDeleteUsersActionState({ ...deleteUsersActionState, loading: true })
+  const handleDeleteSeveralUsers = async (code) => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setDeleteUsersActionState({
+        ...deleteUsersActionState,
+        loading: true
+      })
+      const payload = {
+        users_id: selectedUsers
+      }
+      if (code) {
+        payload.deleted_action_code = code
+      }
+      const requestOptions = {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.token}`
+        },
+        body: JSON.stringify(payload)
+      }
+      const response = await fetch(`${ordering.root}/users`, requestOptions)
+      const content = await response.json()
+      if (!content.error) {
+        const users = usersList.users.filter(user => !selectedUsers.includes(user.id))
+        setUsersList({ ...usersList, users })
+        setPaginationDetail({
+          ...paginationDetail,
+          total: paginationDetail?.total - selectedUsers.length
+        })
+        setSelectedUsers([])
+        setDeleteUsersActionState({
+          loading: false,
+          error: null
+        })
+        showToast(ToastType.Success, t('USER_DELETED', 'User deleted'))
+      } else {
+        setDeleteUsersActionState({
+          loading: false,
+          error: content.result
+        })
+      }
+    } catch (error) {
+      setDeleteUsersActionState({
+        loading: false,
+        error: [error.message]
+      })
+    }
   }
 
   /**
@@ -774,14 +820,6 @@ export const UsersList = (props) => {
       setActionDisabled(false)
     }
   }, [session])
-
-  /**
-   * Listening action start to delete several users
-   */
-  useEffect(() => {
-    if (!deleteUsersActionState.loading || selectedUsers.length === 0) return
-    handleDeleteUser(selectedUsers[0])
-  }, [selectedUsers, deleteUsersActionState])
 
   useEffect(() => {
     if (usersList.loading) return

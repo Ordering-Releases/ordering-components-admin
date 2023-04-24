@@ -129,7 +129,7 @@ export const DriversGroupsList = (props) => {
           Authorization: `Bearer ${token}`
         }
       }
-      const response = await fetch(`${ordering.root}/paymethods?params=name&where={%22enabled%22:true}`, requestOptions)
+      const response = await fetch(`${ordering.root}/paymethods?params=name,gateway&where={%22enabled%22:true}`, requestOptions)
       const content = await response.json()
       if (!content.error) {
         setPaymethodsList({ ...paymethodsList, paymethods: content.result, loading: false })

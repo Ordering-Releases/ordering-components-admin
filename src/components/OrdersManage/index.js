@@ -5,6 +5,7 @@ import { useApi } from '../../contexts/ApiContext'
 import { useWebsocket } from '../../contexts/WebsocketContext'
 import { useConfig } from '../../contexts/ConfigContext'
 import { useLanguage } from '../../contexts/LanguageContext'
+import { useToast, ToastType } from '../../contexts/ToastContext'
 
 export const OrdersManage = (props) => {
   const {
@@ -21,6 +22,7 @@ export const OrdersManage = (props) => {
   const [{ user, token, loading }] = useSession()
   const [configState] = useConfig()
   const [, t] = useLanguage()
+  const [, { showToast }] = useToast()
 
   const requestsState = {}
   const orderStatuesList = {
@@ -35,9 +37,8 @@ export const OrdersManage = (props) => {
   const [filterValues, setFilterValues] = useState({})
   const [updateStatus, setUpdateStatus] = useState(null)
   const [startMulitOrderStatusChange, setStartMulitOrderStatusChange] = useState(false)
-  const [startMulitOrderDelete, setStartMulitOrderDelete] = useState(false)
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
-  const [deletedOrderId, setDeletedOrderId] = useState(null)
+  const [deletedOrderIds, setDeletedOrderIds] = useState([])
   const [numberOfOrdersByStatus, setNumberOfOrdersByStatus] = useState({ result: null, loading: false, error: false })
   const allowColumnsModel = {
     slaBar: { visable: false, title: '', className: '', draggable: false, colSpan: 1, order: -2 },
@@ -51,7 +52,7 @@ export const OrdersManage = (props) => {
     advanced: { visable: true, title: t('ADVANCED_LOGISTICS', 'Advanced logistics'), className: 'advanced', draggable: true, colSpan: 3, order: 6 },
     timer: { visable: false, title: t('SLA_TIMER', 'SLA’s timer'), className: 'timer', draggable: true, colSpan: 1, order: 7 },
     eta: { visable: true, title: t('ETA', 'ETA'), className: 'eta', draggable: true, colSpan: 1, order: 8 },
-    total: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 10 },
+    total: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 10 }
   }
   const [allowColumns, setAllowColumns] = useState(allowColumnsModel)
 
@@ -161,7 +162,7 @@ export const OrdersManage = (props) => {
         body: JSON.stringify({ status: updateStatus })
       }
       const response = await fetch(`${ordering.root}/orders/${orderId}`, requestOptions)
-      const { result } = await response.json()
+      const { result, error } = await response.json()
 
       if (parseInt(result.status) === updateStatus) {
         const _ordersIds = [...selectedOrderIds]
@@ -171,7 +172,10 @@ export const OrdersManage = (props) => {
         }
         setSelectedOrderIds(_ordersIds)
       }
-      setActionStatus({ ...actionStatus, loading: false })
+      setActionStatus({
+        loading: false,
+        error: error ? result : null
+      })
     } catch (err) {
       setActionStatus({ loading: false, error: [err.message] })
       setStartMulitOrderStatusChange(false)
@@ -181,34 +185,39 @@ export const OrdersManage = (props) => {
   /**
    * Delete orders for orders selected
    */
-  const handleDeleteMultiOrders = () => {
-    setStartMulitOrderDelete(true)
-  }
-  /**
-   * Method to delete order from API
-   */
-  const deleteOrder = async (id) => {
+  const handleDeleteMultiOrders = async (code) => {
     try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
       setActionStatus({ ...actionStatus, loading: true })
-      const source = {}
-      requestsState.deleteOrder = source
-      const { content } = await ordering.setAccessToken(token).orders(id).delete({ cancelToken: source })
-      if (!content.error) {
-        setDeletedOrderId(id)
-        const _ordersIds = [...selectedOrderIds]
-        _ordersIds.shift()
-        if (_ordersIds.length === 0) {
-          setStartMulitOrderDelete(false)
-        }
-        setSelectedOrderIds(_ordersIds)
+
+      const payload = {
+        orders_id: selectedOrderIds
       }
-      setActionStatus({
-        loading: false,
-        error: content.error ? content.result : null
-      })
-    } catch (err) {
-      setActionStatus({ loading: false, error: [err.message] })
-      setStartMulitOrderDelete(false)
+      if (code) {
+        payload.deleted_action_code = code
+      }
+      const requestOptions = {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      }
+      const response = await fetch(`${ordering.root}/orders`, requestOptions)
+      const content = await response.json()
+      if (!content.error) {
+        setDeletedOrderIds(selectedOrderIds)
+        setSelectedOrderIds([])
+        showToast(ToastType.Success, t('ORDERS_DELETED', 'Orders deleted'))
+      } else {
+        setActionStatus({
+          loading: true,
+          error: content.result
+        })
+      }
+    } catch (error) {
+      setActionStatus({ loading: false, error: [error.message] })
     }
   }
 
@@ -440,10 +449,10 @@ export const OrdersManage = (props) => {
             attribute: 'business',
             conditions: [
               {
-                attribute: "city_id",
+                attribute: 'city_id',
                 value: filterValues?.cityIds
               }
-            ],
+            ]
           }
         )
       }
@@ -617,8 +626,8 @@ export const OrdersManage = (props) => {
   const handleNewOrder = (order) => {
     if (customerId && order?.customer_id !== customerId) return
     if (!numberOfOrdersByStatus.result) return
-    let _orderStatusNumbers = numberOfOrdersByStatus.result
-    _orderStatusNumbers['pending'] += 1
+    const _orderStatusNumbers = numberOfOrdersByStatus.result
+    _orderStatusNumbers.pending += 1
     setNumberOfOrdersByStatus({
       ...numberOfOrdersByStatus,
       loading: false,
@@ -677,14 +686,6 @@ export const OrdersManage = (props) => {
     if (!startMulitOrderStatusChange || selectedOrderIds.length === 0) return
     handleChangeMultiOrderStatus(selectedOrderIds[0])
   }, [selectedOrderIds, startMulitOrderStatusChange])
-
-  /**
-  * Listening mulit orders delete action start
-  */
-  useEffect(() => {
-    if (!startMulitOrderDelete || selectedOrderIds.length === 0) return
-    deleteOrder(selectedOrderIds[0])
-  }, [selectedOrderIds, startMulitOrderDelete])
 
   useEffect(() => {
     if (loading) return
@@ -746,9 +747,8 @@ export const OrdersManage = (props) => {
           filterValues={filterValues}
           multiOrderUpdateStatus={updateStatus}
           selectedOrderIds={selectedOrderIds}
-          deletedOrderId={deletedOrderId}
+          deletedOrderIds={deletedOrderIds}
           startMulitOrderStatusChange={startMulitOrderStatusChange}
-          startMulitOrderDelete={startMulitOrderDelete}
           selectedSubOrderStatus={selectedSubOrderStatus}
           handleSelectedSubOrderStatus={setSelectedSubOrderStatus}
           handleSelectedOrderIds={handleSelectedOrderIds}

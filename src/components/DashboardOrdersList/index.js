@@ -15,7 +15,7 @@ export const DashboardOrdersList = (props) => {
     customerId,
     businessId,
     orderIds,
-    deletedOrderId,
+    deletedOrderIds,
     orderStatus,
     orderBy,
     orderDirection,
@@ -581,15 +581,23 @@ export const DashboardOrdersList = (props) => {
    * Listening deleted order
    */
   useEffect(() => {
-    if (!deletedOrderId) return
+    if (!deletedOrderIds) return
+    let totalDeletedCount = 0
     const orders = orderList.orders.filter(_order => {
-      return _order?.id !== deletedOrderId
+      if (deletedOrderIds.includes(_order?.id)) {
+        totalDeletedCount = totalDeletedCount + 1
+        return false
+      } else {
+        return true
+      }
     })
 
-    loadOrders()
-
     setOrderList({ ...orderList, orders })
-  }, [deletedOrderId])
+    setPagination({
+      ...pagination,
+      total: pagination?.total - totalDeletedCount
+    })
+  }, [JSON.stringify(deletedOrderIds)])
 
   /**
    * Listening sesssion and filter values change
