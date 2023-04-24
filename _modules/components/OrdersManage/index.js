@@ -12,6 +12,7 @@ var _ApiContext = require("../../contexts/ApiContext");
 var _WebsocketContext = require("../../contexts/WebsocketContext");
 var _ConfigContext = require("../../contexts/ConfigContext");
 var _LanguageContext = require("../../contexts/LanguageContext");
+var _ToastContext = require("../../contexts/ToastContext");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -55,6 +56,9 @@ var OrdersManage = function OrdersManage(props) {
   var _useLanguage = (0, _LanguageContext.useLanguage)(),
     _useLanguage2 = _slicedToArray(_useLanguage, 2),
     t = _useLanguage2[1];
+  var _useToast = (0, _ToastContext.useToast)(),
+    _useToast2 = _slicedToArray(_useToast, 2),
+    showToast = _useToast2[1].showToast;
   var requestsState = {};
   var orderStatuesList = {
     pending: [0, 13],
@@ -82,29 +86,25 @@ var OrdersManage = function OrdersManage(props) {
     _useState10 = _slicedToArray(_useState9, 2),
     startMulitOrderStatusChange = _useState10[0],
     setStartMulitOrderStatusChange = _useState10[1];
-  var _useState11 = (0, _react.useState)(false),
-    _useState12 = _slicedToArray(_useState11, 2),
-    startMulitOrderDelete = _useState12[0],
-    setStartMulitOrderDelete = _useState12[1];
-  var _useState13 = (0, _react.useState)({
+  var _useState11 = (0, _react.useState)({
       loading: false,
       error: null
     }),
+    _useState12 = _slicedToArray(_useState11, 2),
+    actionStatus = _useState12[0],
+    setActionStatus = _useState12[1];
+  var _useState13 = (0, _react.useState)([]),
     _useState14 = _slicedToArray(_useState13, 2),
-    actionStatus = _useState14[0],
-    setActionStatus = _useState14[1];
-  var _useState15 = (0, _react.useState)(null),
-    _useState16 = _slicedToArray(_useState15, 2),
-    deletedOrderId = _useState16[0],
-    setDeletedOrderId = _useState16[1];
-  var _useState17 = (0, _react.useState)({
+    deletedOrderIds = _useState14[0],
+    setDeletedOrderIds = _useState14[1];
+  var _useState15 = (0, _react.useState)({
       result: null,
       loading: false,
       error: false
     }),
-    _useState18 = _slicedToArray(_useState17, 2),
-    numberOfOrdersByStatus = _useState18[0],
-    setNumberOfOrdersByStatus = _useState18[1];
+    _useState16 = _slicedToArray(_useState15, 2),
+    numberOfOrdersByStatus = _useState16[0],
+    setNumberOfOrdersByStatus = _useState16[1];
   var allowColumnsModel = {
     slaBar: {
       visable: false,
@@ -203,83 +203,83 @@ var OrdersManage = function OrdersManage(props) {
       order: 10
     }
   };
-  var _useState19 = (0, _react.useState)(allowColumnsModel),
-    _useState20 = _slicedToArray(_useState19, 2),
-    allowColumns = _useState20[0],
-    setAllowColumns = _useState20[1];
+  var _useState17 = (0, _react.useState)(allowColumnsModel),
+    _useState18 = _slicedToArray(_useState17, 2),
+    allowColumns = _useState18[0],
+    setAllowColumns = _useState18[1];
 
   /**
    * Object to save driver group list
    */
-  var _useState21 = (0, _react.useState)({
+  var _useState19 = (0, _react.useState)({
       groups: [],
       loading: false,
       error: null
     }),
-    _useState22 = _slicedToArray(_useState21, 2),
-    driverGroupList = _useState22[0],
-    setDriverGroupList = _useState22[1];
+    _useState20 = _slicedToArray(_useState19, 2),
+    driverGroupList = _useState20[0],
+    setDriverGroupList = _useState20[1];
   /**
    * Object to save drivers
    */
-  var _useState23 = (0, _react.useState)({
+  var _useState21 = (0, _react.useState)({
       drivers: [],
       loading: true,
       error: null
     }),
-    _useState24 = _slicedToArray(_useState23, 2),
-    driversList = _useState24[0],
-    setDriversList = _useState24[1];
+    _useState22 = _slicedToArray(_useState21, 2),
+    driversList = _useState22[0],
+    setDriversList = _useState22[1];
   /**
    * Object to save paymethods
    */
-  var _useState25 = (0, _react.useState)({
+  var _useState23 = (0, _react.useState)({
       paymethods: [],
       loading: true,
       error: null
     }),
-    _useState26 = _slicedToArray(_useState25, 2),
-    paymethodsList = _useState26[0],
-    setPaymethodsList = _useState26[1];
+    _useState24 = _slicedToArray(_useState23, 2),
+    paymethodsList = _useState24[0],
+    setPaymethodsList = _useState24[1];
   /**
    * Object to save businesses
    */
-  var _useState27 = (0, _react.useState)({
+  var _useState25 = (0, _react.useState)({
       businesses: [],
       loading: true,
       error: null
     }),
-    _useState28 = _slicedToArray(_useState27, 2),
-    businessesList = _useState28[0],
-    setBusinessesList = _useState28[1];
+    _useState26 = _slicedToArray(_useState25, 2),
+    businessesList = _useState26[0],
+    setBusinessesList = _useState26[1];
   /**
    * Array to save the cities
    */
-  var _useState29 = (0, _react.useState)([]),
-    _useState30 = _slicedToArray(_useState29, 2),
-    citiesList = _useState30[0],
-    setCitiesList = _useState30[1];
+  var _useState27 = (0, _react.useState)([]),
+    _useState28 = _slicedToArray(_useState27, 2),
+    citiesList = _useState28[0],
+    setCitiesList = _useState28[1];
 
   /**
    * Object to save selected order ids
    */
-  var _useState31 = (0, _react.useState)([]),
-    _useState32 = _slicedToArray(_useState31, 2),
-    selectedOrderIds = _useState32[0],
-    setSelectedOrderIds = _useState32[1];
+  var _useState29 = (0, _react.useState)([]),
+    _useState30 = _slicedToArray(_useState29, 2),
+    selectedOrderIds = _useState30[0],
+    setSelectedOrderIds = _useState30[1];
   /**
    * Object to save order substatuses
    */
-  var _useState33 = (0, _react.useState)({
+  var _useState31 = (0, _react.useState)({
       pending: orderStatuesList.pending,
       inProgress: orderStatuesList.inProgress,
       completed: orderStatuesList.completed,
       cancelled: orderStatuesList.cancelled,
       all: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
     }),
-    _useState34 = _slicedToArray(_useState33, 2),
-    selectedSubOrderStatus = _useState34[0],
-    setSelectedSubOrderStatus = _useState34[1];
+    _useState32 = _slicedToArray(_useState31, 2),
+    selectedSubOrderStatus = _useState32[0],
+    setSelectedSubOrderStatus = _useState32[1];
 
   /**
    * Save ids of orders selected
@@ -345,7 +345,7 @@ var OrdersManage = function OrdersManage(props) {
    */
   var handleChangeMultiOrderStatus = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(orderId) {
-      var requestOptions, response, _yield$response$json, result, _ordersIds;
+      var requestOptions, response, _yield$response$json, result, error, _ordersIds;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -373,6 +373,7 @@ var OrdersManage = function OrdersManage(props) {
             case 8:
               _yield$response$json = _context.sent;
               result = _yield$response$json.result;
+              error = _yield$response$json.error;
               if (parseInt(result.status) === updateStatus) {
                 _ordersIds = _toConsumableArray(selectedOrderIds);
                 _ordersIds.shift();
@@ -381,25 +382,26 @@ var OrdersManage = function OrdersManage(props) {
                 }
                 setSelectedOrderIds(_ordersIds);
               }
-              setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
-                loading: false
-              }));
-              _context.next = 18;
+              setActionStatus({
+                loading: false,
+                error: error ? result : null
+              });
+              _context.next = 19;
               break;
-            case 14:
-              _context.prev = 14;
+            case 15:
+              _context.prev = 15;
               _context.t0 = _context["catch"](0);
               setActionStatus({
                 loading: false,
                 error: [_context.t0.message]
               });
               setStartMulitOrderStatusChange(false);
-            case 18:
+            case 19:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 14]]);
+      }, _callee, null, [[0, 15]]);
     }));
     return function handleChangeMultiOrderStatus(_x) {
       return _ref.apply(this, arguments);
@@ -409,63 +411,67 @@ var OrdersManage = function OrdersManage(props) {
   /**
    * Delete orders for orders selected
    */
-  var handleDeleteMultiOrders = function handleDeleteMultiOrders() {
-    setStartMulitOrderDelete(true);
-  };
-  /**
-   * Method to delete order from API
-   */
-  var deleteOrder = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(id) {
-      var source, _yield$ordering$setAc, content, _ordersIds;
+  var handleDeleteMultiOrders = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(code) {
+      var payload, requestOptions, response, content;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.prev = 0;
+              showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
               setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
                 loading: true
               }));
-              source = {};
-              requestsState.deleteOrder = source;
-              _context2.next = 6;
-              return ordering.setAccessToken(token).orders(id).delete({
-                cancelToken: source
-              });
-            case 6:
-              _yield$ordering$setAc = _context2.sent;
-              content = _yield$ordering$setAc.content;
-              if (!content.error) {
-                setDeletedOrderId(id);
-                _ordersIds = _toConsumableArray(selectedOrderIds);
-                _ordersIds.shift();
-                if (_ordersIds.length === 0) {
-                  setStartMulitOrderDelete(false);
-                }
-                setSelectedOrderIds(_ordersIds);
+              payload = {
+                orders_id: selectedOrderIds
+              };
+              if (code) {
+                payload.deleted_action_code = code;
               }
-              setActionStatus({
-                loading: false,
-                error: content.error ? content.result : null
-              });
-              _context2.next = 16;
+              requestOptions = {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: "Bearer ".concat(token)
+                },
+                body: JSON.stringify(payload)
+              };
+              _context2.next = 8;
+              return fetch("".concat(ordering.root, "/orders"), requestOptions);
+            case 8:
+              response = _context2.sent;
+              _context2.next = 11;
+              return response.json();
+            case 11:
+              content = _context2.sent;
+              if (!content.error) {
+                setDeletedOrderIds(selectedOrderIds);
+                setSelectedOrderIds([]);
+                showToast(_ToastContext.ToastType.Success, t('ORDERS_DELETED', 'Orders deleted'));
+              } else {
+                setActionStatus({
+                  loading: true,
+                  error: content.result
+                });
+              }
+              _context2.next = 18;
               break;
-            case 12:
-              _context2.prev = 12;
+            case 15:
+              _context2.prev = 15;
               _context2.t0 = _context2["catch"](0);
               setActionStatus({
                 loading: false,
                 error: [_context2.t0.message]
               });
-              setStartMulitOrderDelete(false);
-            case 16:
+            case 18:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[0, 12]]);
+      }, _callee2, null, [[0, 15]]);
     }));
-    return function deleteOrder(_x2) {
+    return function handleDeleteMultiOrders(_x2) {
       return _ref2.apply(this, arguments);
     };
   }();
@@ -475,7 +481,7 @@ var OrdersManage = function OrdersManage(props) {
    */
   var getDrivers = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var source, _yield$ordering$setAc2, result;
+      var source, _yield$ordering$setAc, result;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
@@ -491,8 +497,8 @@ var OrdersManage = function OrdersManage(props) {
                 cancelToken: source
               });
             case 5:
-              _yield$ordering$setAc2 = _context3.sent;
-              result = _yield$ordering$setAc2.content.result;
+              _yield$ordering$setAc = _context3.sent;
+              result = _yield$ordering$setAc.content.result;
               setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
                 loading: false,
                 drivers: result
@@ -737,7 +743,7 @@ var OrdersManage = function OrdersManage(props) {
                   filterConditons.push({
                     attribute: 'business',
                     conditions: [{
-                      attribute: "city_id",
+                      attribute: 'city_id',
                       value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.cityIds
                     }]
                   });
@@ -912,7 +918,7 @@ var OrdersManage = function OrdersManage(props) {
     if (customerId && (order === null || order === void 0 ? void 0 : order.customer_id) !== customerId) return;
     if (!numberOfOrdersByStatus.result) return;
     var _orderStatusNumbers = numberOfOrdersByStatus.result;
-    _orderStatusNumbers['pending'] += 1;
+    _orderStatusNumbers.pending += 1;
     setNumberOfOrdersByStatus(_objectSpread(_objectSpread({}, numberOfOrdersByStatus), {}, {
       loading: false,
       error: false,
@@ -969,14 +975,6 @@ var OrdersManage = function OrdersManage(props) {
     if (!startMulitOrderStatusChange || selectedOrderIds.length === 0) return;
     handleChangeMultiOrderStatus(selectedOrderIds[0]);
   }, [selectedOrderIds, startMulitOrderStatusChange]);
-
-  /**
-  * Listening mulit orders delete action start
-  */
-  (0, _react.useEffect)(function () {
-    if (!startMulitOrderDelete || selectedOrderIds.length === 0) return;
-    deleteOrder(selectedOrderIds[0]);
-  }, [selectedOrderIds, startMulitOrderDelete]);
   (0, _react.useEffect)(function () {
     if (loading) return;
     if ((user === null || user === void 0 ? void 0 : user.level) === 0 || (user === null || user === void 0 ? void 0 : user.level) === 2 || (user === null || user === void 0 ? void 0 : user.level) === 5) {
@@ -1059,9 +1057,8 @@ var OrdersManage = function OrdersManage(props) {
     filterValues: filterValues,
     multiOrderUpdateStatus: updateStatus,
     selectedOrderIds: selectedOrderIds,
-    deletedOrderId: deletedOrderId,
+    deletedOrderIds: deletedOrderIds,
     startMulitOrderStatusChange: startMulitOrderStatusChange,
-    startMulitOrderDelete: startMulitOrderDelete,
     selectedSubOrderStatus: selectedSubOrderStatus,
     handleSelectedSubOrderStatus: setSelectedSubOrderStatus,
     handleSelectedOrderIds: handleSelectedOrderIds,

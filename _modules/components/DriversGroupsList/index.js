@@ -352,7 +352,7 @@ var DriversGroupsList = function DriversGroupsList(props) {
                 }
               };
               _context5.next = 5;
-              return fetch("".concat(ordering.root, "/paymethods?params=name&where={%22enabled%22:true}"), requestOptions);
+              return fetch("".concat(ordering.root, "/paymethods?params=name,gateway&where={%22enabled%22:true}"), requestOptions);
             case 5:
               response = _context5.sent;
               _context5.next = 8;

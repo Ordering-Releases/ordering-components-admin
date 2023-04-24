@@ -40,7 +40,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
     customerId = props.customerId,
     businessId = props.businessId,
     orderIds = props.orderIds,
-    deletedOrderId = props.deletedOrderId,
+    deletedOrderIds = props.deletedOrderIds,
     orderStatus = props.orderStatus,
     orderBy = props.orderBy,
     orderDirection = props.orderDirection,
@@ -750,15 +750,23 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
    * Listening deleted order
    */
   (0, _react.useEffect)(function () {
-    if (!deletedOrderId) return;
+    if (!deletedOrderIds) return;
+    var totalDeletedCount = 0;
     var orders = orderList.orders.filter(function (_order) {
-      return (_order === null || _order === void 0 ? void 0 : _order.id) !== deletedOrderId;
+      if (deletedOrderIds.includes(_order === null || _order === void 0 ? void 0 : _order.id)) {
+        totalDeletedCount = totalDeletedCount + 1;
+        return false;
+      } else {
+        return true;
+      }
     });
-    loadOrders();
     setOrderList(_objectSpread(_objectSpread({}, orderList), {}, {
       orders: orders
     }));
-  }, [deletedOrderId]);
+    setPagination(_objectSpread(_objectSpread({}, pagination), {}, {
+      total: (pagination === null || pagination === void 0 ? void 0 : pagination.total) - totalDeletedCount
+    }));
+  }, [JSON.stringify(deletedOrderIds)]);
 
   /**
    * Listening sesssion and filter values change
