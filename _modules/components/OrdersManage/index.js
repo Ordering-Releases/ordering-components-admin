@@ -130,13 +130,21 @@ var OrdersManage = function OrdersManage(props) {
       colSpan: 1,
       order: 0
     },
+    externalId: {
+      visable: false,
+      title: t('EXTERNAL_ID', 'External id'),
+      className: 'externalId',
+      draggable: true,
+      colSpan: 1,
+      order: 1
+    },
     status: {
       visable: true,
       title: t('STATUS', 'Status'),
       className: 'statusInfo',
       draggable: true,
       colSpan: 1,
-      order: 1
+      order: 2
     },
     cartGroupId: {
       visable: true,
@@ -144,7 +152,7 @@ var OrdersManage = function OrdersManage(props) {
       className: 'groupOrderId',
       draggable: true,
       colSpan: 1,
-      order: 2
+      order: 3
     },
     business: {
       visable: true,
@@ -152,7 +160,7 @@ var OrdersManage = function OrdersManage(props) {
       className: 'businessInfo',
       draggable: true,
       colSpan: 1,
-      order: 3
+      order: 4
     },
     customer: {
       visable: true,
@@ -160,7 +168,7 @@ var OrdersManage = function OrdersManage(props) {
       className: 'customerInfo',
       draggable: true,
       colSpan: 1,
-      order: 4
+      order: 5
     },
     driver: {
       visable: true,
@@ -168,7 +176,7 @@ var OrdersManage = function OrdersManage(props) {
       className: 'driverInfo',
       draggable: true,
       colSpan: 1,
-      order: 5
+      order: 6
     },
     advanced: {
       visable: true,
@@ -176,7 +184,7 @@ var OrdersManage = function OrdersManage(props) {
       className: 'advanced',
       draggable: true,
       colSpan: 3,
-      order: 6
+      order: 7
     },
     timer: {
       visable: false,
@@ -184,7 +192,7 @@ var OrdersManage = function OrdersManage(props) {
       className: 'timer',
       draggable: true,
       colSpan: 1,
-      order: 7
+      order: 8
     },
     eta: {
       visable: true,
@@ -192,7 +200,7 @@ var OrdersManage = function OrdersManage(props) {
       className: 'eta',
       draggable: true,
       colSpan: 1,
-      order: 8
+      order: 9
     },
     total: {
       visable: true,
@@ -666,6 +674,15 @@ var OrdersManage = function OrdersManage(props) {
                     value: {
                       condition: 'ilike',
                       value: encodeURI("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.orderId, "%"))
+                    }
+                  });
+                }
+                if (filterValues !== null && filterValues !== void 0 && filterValues.externalId) {
+                  filterConditons.push({
+                    attribute: 'external_id',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.externalId, "%"))
                     }
                   });
                 }

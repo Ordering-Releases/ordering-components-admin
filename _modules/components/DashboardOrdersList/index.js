@@ -327,6 +327,15 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
                     }
                   });
                 }
+                if (filterValues !== null && filterValues !== void 0 && filterValues.externalId) {
+                  filterConditons.push({
+                    attribute: 'external_id',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.externalId, "%"))
+                    }
+                  });
+                }
                 if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$metafie = filterValues.metafield) === null || _filterValues$metafie === void 0 ? void 0 : _filterValues$metafie.length) > 0) {
                   metafieldConditions = filterValues === null || filterValues === void 0 ? void 0 : filterValues.metafield.map(function (item) {
                     return {
