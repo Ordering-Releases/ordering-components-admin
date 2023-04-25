@@ -263,6 +263,17 @@ export const DashboardOrdersList = (props) => {
           }
         )
       }
+      if (filterValues?.externalId) {
+        filterConditons.push(
+          {
+            attribute: 'external_id',
+            value: {
+              condition: 'ilike',
+              value: encodeURI(`%${filterValues?.externalId}%`)
+            }
+          }
+        )
+      }
       if (filterValues?.metafield?.length > 0) {
         const metafieldConditions = filterValues?.metafield.map(item => (
           {

@@ -44,15 +44,16 @@ export const OrdersManage = (props) => {
     slaBar: { visable: false, title: '', className: '', draggable: false, colSpan: 1, order: -2 },
     orderNumber: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: -1 },
     dateTime: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 0 },
-    status: { visable: true, title: t('STATUS', 'Status'), className: 'statusInfo', draggable: true, colSpan: 1, order: 1 },
-    cartGroupId: { visable: true, title: t('GROUP_ORDER', 'Group Order'), className: 'groupOrderId', draggable: true, colSpan: 1, order: 2 },
-    business: { visable: true, title: t('BUSINESS', 'Business'), className: 'businessInfo', draggable: true, colSpan: 1, order: 3 },
-    customer: { visable: true, title: t('CUSTOMER', 'Customer'), className: 'customerInfo', draggable: true, colSpan: 1, order: 4 },
-    driver: { visable: true, title: t('DRIVER', 'Driver'), className: 'driverInfo', draggable: true, colSpan: 1, order: 5 },
-    advanced: { visable: true, title: t('ADVANCED_LOGISTICS', 'Advanced logistics'), className: 'advanced', draggable: true, colSpan: 3, order: 6 },
-    timer: { visable: false, title: t('SLA_TIMER', 'SLA’s timer'), className: 'timer', draggable: true, colSpan: 1, order: 7 },
-    eta: { visable: true, title: t('ETA', 'ETA'), className: 'eta', draggable: true, colSpan: 1, order: 8 },
-    total: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 10 }
+    externalId: { visable: false, title: t('EXTERNAL_ID', 'External id'), className: 'externalId', draggable: true, colSpan: 1, order: 1 },
+    status: { visable: true, title: t('STATUS', 'Status'), className: 'statusInfo', draggable: true, colSpan: 1, order: 2 },
+    cartGroupId: { visable: true, title: t('GROUP_ORDER', 'Group Order'), className: 'groupOrderId', draggable: true, colSpan: 1, order: 3 },
+    business: { visable: true, title: t('BUSINESS', 'Business'), className: 'businessInfo', draggable: true, colSpan: 1, order: 4 },
+    customer: { visable: true, title: t('CUSTOMER', 'Customer'), className: 'customerInfo', draggable: true, colSpan: 1, order: 5 },
+    driver: { visable: true, title: t('DRIVER', 'Driver'), className: 'driverInfo', draggable: true, colSpan: 1, order: 6 },
+    advanced: { visable: true, title: t('ADVANCED_LOGISTICS', 'Advanced logistics'), className: 'advanced', draggable: true, colSpan: 3, order: 7 },
+    timer: { visable: false, title: t('SLA_TIMER', 'SLA’s timer'), className: 'timer', draggable: true, colSpan: 1, order: 8 },
+    eta: { visable: true, title: t('ETA', 'ETA'), className: 'eta', draggable: true, colSpan: 1, order: 9 },
+    total: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 10 },
   }
   const [allowColumns, setAllowColumns] = useState(allowColumnsModel)
 
@@ -352,6 +353,17 @@ export const OrdersManage = (props) => {
             value: {
               condition: 'ilike',
               value: encodeURI(`%${filterValues?.orderId}%`)
+            }
+          }
+        )
+      }
+      if (filterValues?.externalId) {
+        filterConditons.push(
+          {
+            attribute: 'external_id',
+            value: {
+              condition: 'ilike',
+              value: encodeURI(`%${filterValues?.externalId}%`)
             }
           }
         )

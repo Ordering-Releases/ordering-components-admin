@@ -12,6 +12,7 @@ export const OrdersFilter = (props) => {
    */
   const [filterValues, setFilterValues] = useState({
     orderId: null,
+    externalId: null,
     groupTypes: [],
     dateType: null,
     deliveryFromDatetime: null,
@@ -35,6 +36,14 @@ export const OrdersFilter = (props) => {
   const handleChangeOrderId = (e) => {
     const orderId = e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')
     setFilterValues({ ...filterValues, orderId })
+  }
+
+  /**
+   * Changer external Id
+   * @param {EventTarget} e Related HTML event
+   */
+  const handleChangeExternalId = (e) => {
+    setFilterValues({ ...filterValues, externalId: e.target.value })
   }
 
   /**
@@ -258,6 +267,7 @@ export const OrdersFilter = (props) => {
   const handleResetFilterValues = () => {
     setFilterValues({
       orderId: null,
+      externalId: null,
       groupTypes: [],
       deliveryFromDatetime: null,
       deliveryEndDatetime: null,
@@ -311,6 +321,7 @@ export const OrdersFilter = (props) => {
           handleChangeMetaFieldValue={handleChangeMetaFieldValue}
           handleAddMetaField={handleAddMetaField}
           handleDeleteMetafield={handleDeleteMetafield}
+          handleChangeExternalId={handleChangeExternalId}
         />
       )}
     </>
