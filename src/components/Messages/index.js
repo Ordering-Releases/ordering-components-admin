@@ -206,7 +206,7 @@ export const Messages = (props) => {
    */
   const loadMessages = async () => {
     try {
-      setMessages({ ...messages, loading: true })
+      setMessages({ ...messages, messages: [], loading: true })
       const functionFetch = asDashboard
         ? `${ordering.root}/orders/${orderId}/messages?mode=dashboard`
         : `${ordering.root}/orders/${orderId}/messages`

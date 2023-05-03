@@ -39,7 +39,7 @@ export const CheckoutFieldsSetting = (props) => {
       const content = await response.json()
       if (!content.error) {
         const checkoutFields = content.result.filter(field => !hideSettingList.includes(field.code))
-        const orderValidationFields = ['name', 'middle_name', 'lastname', 'second_lastname', 'email', 'mobile_phone', 'city_dropdown_option', 'address', 'zipcode', 'address_notes', 'coupon', 'driver_tip']
+        const orderValidationFields = ['name', 'middle_name', 'lastname', 'second_lastname', 'email', 'mobile_phone', 'city_dropdown_option', 'address', 'zipcode', 'address_notes', 'coupon', 'driver_tip', 'comments']
         const validationF = []
         orderValidationFields.forEach(field => {
           const sort = checkoutFields.findIndex(validationfields => {
