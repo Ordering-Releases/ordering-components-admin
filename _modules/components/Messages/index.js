@@ -291,6 +291,7 @@ var Messages = function Messages(props) {
             case 0:
               _context2.prev = 0;
               setMessages(_objectSpread(_objectSpread({}, messages), {}, {
+                messages: [],
                 loading: true
               }));
               functionFetch = asDashboard ? "".concat(ordering.root, "/orders/").concat(orderId, "/messages?mode=dashboard") : "".concat(ordering.root, "/orders/").concat(orderId, "/messages");

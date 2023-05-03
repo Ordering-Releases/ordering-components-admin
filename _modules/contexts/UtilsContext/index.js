@@ -185,16 +185,10 @@ var UtilsProviders = function UtilsProviders(_ref) {
       unit = (_configState$configs$13 = configState.configs.distance_unit) === null || _configState$configs$13 === void 0 ? void 0 : _configState$configs$13.value;
     }
     if (unit.toUpperCase() === 'MI') {
-      var dist = distance * 1.621371;
-      if (dist >= 1000) {
-        return "".concat(parseShortenDistance(dist), " ").concat(t('MI', 'mi'));
-      }
+      var dist = distance * 0.621371 / 1000;
       return "".concat(parseNumber(dist, options), " ").concat(t('MI', 'mi'));
     } else {
-      if (distance >= 1000) {
-        return "".concat(parseShortenDistance(distance), " ").concat(t('KM', 'km'));
-      }
-      return "".concat(parseNumber(distance, options), " ").concat(t('KM', 'km'));
+      return "".concat(parseNumber(distance / 1000, options), " ").concat(t('KM', 'km'));
     }
   };
   var getTimeAgo = function getTimeAgo(dateTime, options) {

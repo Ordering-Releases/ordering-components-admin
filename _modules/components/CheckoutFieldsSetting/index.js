@@ -95,7 +95,7 @@ var CheckoutFieldsSetting = function CheckoutFieldsSetting(props) {
                 checkoutFields = content.result.filter(function (field) {
                   return !hideSettingList.includes(field.code);
                 });
-                orderValidationFields = ['name', 'middle_name', 'lastname', 'second_lastname', 'email', 'mobile_phone', 'city_dropdown_option', 'address', 'zipcode', 'address_notes', 'coupon', 'driver_tip'];
+                orderValidationFields = ['name', 'middle_name', 'lastname', 'second_lastname', 'email', 'mobile_phone', 'city_dropdown_option', 'address', 'zipcode', 'address_notes', 'coupon', 'driver_tip', 'comments'];
                 validationF = [];
                 orderValidationFields.forEach(function (field) {
                   var sort = checkoutFields.findIndex(function (validationfields) {
