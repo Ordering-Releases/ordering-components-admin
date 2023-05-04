@@ -803,6 +803,7 @@ export const DashboardOrdersList = (props) => {
           allowColumns={allowColumns}
           setAllowColumns={setAllowColumns}
           handleDrop={handleDrop}
+          saveUserSettings={saveUserSettings}
         />
       )}
     </>
