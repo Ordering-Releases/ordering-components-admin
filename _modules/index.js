@@ -351,6 +351,12 @@ Object.defineProperty(exports, "BusinessProvider", {
     return _BusinessContext.BusinessProvider;
   }
 });
+Object.defineProperty(exports, "BusinessQRCodeOptions", {
+  enumerable: true,
+  get: function get() {
+    return _BusinessQRCodeOptions.BusinessQRCodeOptions;
+  }
+});
 Object.defineProperty(exports, "BusinessReviews", {
   enumerable: true,
   get: function get() {
@@ -667,6 +673,12 @@ Object.defineProperty(exports, "DriversList", {
   enumerable: true,
   get: function get() {
     return _DriversList.DriversList;
+  }
+});
+Object.defineProperty(exports, "DriversLogs", {
+  enumerable: true,
+  get: function get() {
+    return _DriversLogs.DriversLogs;
   }
 });
 Object.defineProperty(exports, "EnterprisePromotionDetails", {
@@ -1776,6 +1788,7 @@ var _BusinessWebhooks = require("./components/BusinessWebhooks");
 var _BusinessZoneGoogleMaps = require("./components/BusinessZoneGoogleMaps");
 var _BusinessProductCreator = require("./components/BusinessProductCreator");
 var _BusinessWalletsList = require("./components/BusinessWalletsList");
+var _BusinessQRCodeOptions = require("./components/BusinessQRCodeOptions");
 var _CampaignListing = require("./components/CampaignListing");
 var _CampaignDetail = require("./components/CampaignDetail");
 var _CampaignDetailContent = require("./components/CampaignDetailContent");
@@ -1805,6 +1818,7 @@ var _DriverGroupDeliveryDetails = require("./components/DriverGroupDeliveryDetai
 var _DriversGroupOrders = require("./components/DriversGroupOrders");
 var _DriversGroupsList = require("./components/DriversGroupsList");
 var _DriversGroupLogs = require("./components/DriversGroupLogs");
+var _DriversLogs = require("./components/DriversLogs");
 var _DriverTips = require("./components/DriverTips");
 var _DriversList = require("./components/DriversList");
 var _DriverAnalytics = require("./components/DriverAnalytics");
