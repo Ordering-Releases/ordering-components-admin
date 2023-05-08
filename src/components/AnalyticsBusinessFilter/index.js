@@ -10,7 +10,8 @@ export const AnalyticsBusinessFilter = (props) => {
     propsToFetch,
     onClose,
     isFranchise,
-    isSearchByName
+    isSearchByName,
+    countryCode
   } = props
 
   const [ordering] = useApi()
@@ -106,7 +107,8 @@ export const AnalyticsBusinessFilter = (props) => {
       const fetchEndpoint = where
         ? ordering.businesses().asDashboard().select(propsToFetch).where(where)
         : ordering.businesses().asDashboard().select(propsToFetch)
-      const { content: { error, result, pagination } } = await fetchEndpoint.get()
+      const headerOptions = countryCode ? { headers: { 'X-Country-Code-X': countryCode } } : {}
+      const { content: { error, result, pagination } } = await fetchEndpoint.get(headerOptions)
       if (!error) {
         let _businessList = []
         if (isFranchise && filterList?.franchises_id?.length > 0) {

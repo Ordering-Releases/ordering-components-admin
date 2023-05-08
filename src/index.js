@@ -67,6 +67,7 @@ import { BusinessWebhooks } from './components/BusinessWebhooks'
 import { BusinessZoneGoogleMaps } from './components/BusinessZoneGoogleMaps'
 import { BusinessProductCreator } from './components/BusinessProductCreator'
 import { BusinessWalletsList } from './components/BusinessWalletsList'
+import { BusinessQRCodeOptions } from './components/BusinessQRCodeOptions'
 import { CampaignListing } from './components/CampaignListing'
 import { CampaignDetail } from './components/CampaignDetail'
 import { CampaignDetailContent } from './components/CampaignDetailContent'
@@ -96,6 +97,7 @@ import { DriverGroupDeliveryDetails } from './components/DriverGroupDeliveryDeta
 import { DriversGroupOrders } from './components/DriversGroupOrders'
 import { DriversGroupsList } from './components/DriversGroupsList'
 import { DriversGroupLogs } from './components/DriversGroupLogs'
+import { DriversLogs } from './components/DriversLogs'
 import { DriverTips } from './components/DriverTips'
 import { DriversList } from './components/DriversList'
 import { DriverAnalytics } from './components/DriverAnalytics'
@@ -325,6 +327,7 @@ export {
   BusinessZoneGoogleMaps,
   BusinessProductCreator,
   BusinessWalletsList,
+  BusinessQRCodeOptions,
   CampaignListing,
   CampaignDetail,
   CampaignDetailContent,
@@ -357,6 +360,7 @@ export {
   DriverGroupDeliveryZone,
   DriversGroupsList,
   DriversGroupLogs,
+  DriversLogs,
   EnterprisePromotionList,
   EnterprisePromotionDetails,
   ExamineClick,

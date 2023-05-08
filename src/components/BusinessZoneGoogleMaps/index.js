@@ -125,13 +125,13 @@ export const BusinessZoneGoogleMaps = (props) => {
   }, [circleZone])
 
   useEffect(() => {
-    if (distanceBased && !clearState) {
+    if (distanceBased && !clearState && data?.distance && data?.distance?.toString().slice(-1) !== '.') {
       handleData({
         ...data,
         distance: distanceBased.getRadius() / units[data?.unit]
       })
     }
-    if (distanceBased && clearState) {
+    if ((distanceBased && clearState) || (distanceBased && !clearState && data?.distance && data?.distance?.toString().slice(-1) === '.')) {
       handleData(data)
     }
   }, [distanceBased])
