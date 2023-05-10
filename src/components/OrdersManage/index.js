@@ -53,7 +53,7 @@ export const OrdersManage = (props) => {
     advanced: { visable: true, title: t('ADVANCED_LOGISTICS', 'Advanced logistics'), className: 'advanced', draggable: true, colSpan: 3, order: 7 },
     timer: { visable: false, title: t('SLA_TIMER', 'SLA’s timer'), className: 'timer', draggable: true, colSpan: 1, order: 8 },
     eta: { visable: true, title: t('ETA', 'ETA'), className: 'eta', draggable: true, colSpan: 1, order: 9 },
-    total: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 10 },
+    total: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 10 }
   }
   const [allowColumns, setAllowColumns] = useState(allowColumnsModel)
 
@@ -564,6 +564,21 @@ export const OrdersManage = (props) => {
       searchConditions.push(
         {
           attribute: 'business',
+          conditions: [
+            {
+              attribute: 'name',
+              value: {
+                condition: 'ilike',
+                value: encodeURI(`%${searchValue}%`)
+              }
+            }
+          ]
+        }
+      )
+
+      searchConditions.push(
+        {
+          attribute: 'driver',
           conditions: [
             {
               attribute: 'name',

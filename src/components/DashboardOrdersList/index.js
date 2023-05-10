@@ -27,6 +27,7 @@ export const DashboardOrdersList = (props) => {
     isSearchByCustomerEmail,
     isSearchByCustomerPhone,
     isSearchByBusinessName,
+    isSearchByDriverName,
     orderIdForUnreadCountUpdate,
     timeStatus,
     driversList,
@@ -231,6 +232,23 @@ export const DashboardOrdersList = (props) => {
         searchConditions.push(
           {
             attribute: 'business',
+            conditions: [
+              {
+                attribute: 'name',
+                value: {
+                  condition: 'ilike',
+                  value: encodeURI(`%${searchValue}%`)
+                }
+              }
+            ]
+          }
+        )
+      }
+
+      if (isSearchByDriverName) {
+        searchConditions.push(
+          {
+            attribute: 'driver',
             conditions: [
               {
                 attribute: 'name',
