@@ -841,6 +841,16 @@ var OrdersManage = function OrdersManage(props) {
                   }
                 }]
               });
+              searchConditions.push({
+                attribute: 'driver',
+                conditions: [{
+                  attribute: 'name',
+                  value: {
+                    condition: 'ilike',
+                    value: encodeURI("%".concat(searchValue, "%"))
+                  }
+                }]
+              });
               conditions.push({
                 conector: 'OR',
                 conditions: searchConditions

@@ -54,6 +54,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
     isSearchByCustomerEmail = props.isSearchByCustomerEmail,
     isSearchByCustomerPhone = props.isSearchByCustomerPhone,
     isSearchByBusinessName = props.isSearchByBusinessName,
+    isSearchByDriverName = props.isSearchByDriverName,
     orderIdForUnreadCountUpdate = props.orderIdForUnreadCountUpdate,
     timeStatus = props.timeStatus,
     driversList = props.driversList,
@@ -301,6 +302,18 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
               if (isSearchByBusinessName) {
                 searchConditions.push({
                   attribute: 'business',
+                  conditions: [{
+                    attribute: 'name',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI("%".concat(searchValue, "%"))
+                    }
+                  }]
+                });
+              }
+              if (isSearchByDriverName) {
+                searchConditions.push({
+                  attribute: 'driver',
                   conditions: [{
                     attribute: 'name',
                     value: {
