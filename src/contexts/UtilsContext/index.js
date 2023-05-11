@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect } from 'react'
 import { useConfig } from '../ConfigContext'
 import { useLanguage } from '../LanguageContext'
+import moment from 'moment'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -125,10 +126,10 @@ export const UtilsProviders = ({ children }) => {
       outputFormat: options?.outputFormat || (formatTime === '24' ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD hh:mm A'),
       utc: typeof options?.utc === 'boolean' ? options?.utc : true
     }
-    if (!dayjs(date, formatDate.inputFormat).isValid()) {
+    if (!moment(date, formatDate.inputFormat).isValid()) {
       return t('INVALID_FORMAT', 'invalid format')
     }
-    const _date = formatDate.utc ? dayjs.utc(date, formatDate.inputFormat).local() : dayjs(date, formatDate.inputFormat)
+    const _date = formatDate.utc ? moment.utc(date, formatDate.inputFormat).local() : moment(date, formatDate.inputFormat)
     return _date.format(formatDate.outputFormat)
   }
 
