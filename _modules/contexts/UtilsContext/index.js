@@ -8,6 +8,7 @@ exports.useUtils = exports.UtilsProviders = exports.UtilsContext = void 0;
 var _react = _interopRequireWildcard(require("react"));
 var _ConfigContext = require("../ConfigContext");
 var _LanguageContext = require("../LanguageContext");
+var _moment = _interopRequireDefault(require("moment"));
 var _dayjs = _interopRequireDefault(require("dayjs"));
 var _utc = _interopRequireDefault(require("dayjs/plugin/utc"));
 var _relativeTime = _interopRequireDefault(require("dayjs/plugin/relativeTime"));
@@ -138,10 +139,10 @@ var UtilsProviders = function UtilsProviders(_ref) {
       outputFormat: (options === null || options === void 0 ? void 0 : options.outputFormat) || (formatTime === '24' ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD hh:mm A'),
       utc: typeof (options === null || options === void 0 ? void 0 : options.utc) === 'boolean' ? options === null || options === void 0 ? void 0 : options.utc : true
     };
-    if (!(0, _dayjs.default)(date, formatDate.inputFormat).isValid()) {
+    if (!(0, _moment.default)(date, formatDate.inputFormat).isValid()) {
       return t('INVALID_FORMAT', 'invalid format');
     }
-    var _date = formatDate.utc ? _dayjs.default.utc(date, formatDate.inputFormat).local() : (0, _dayjs.default)(date, formatDate.inputFormat);
+    var _date = formatDate.utc ? _moment.default.utc(date, formatDate.inputFormat).local() : (0, _moment.default)(date, formatDate.inputFormat);
     return _date.format(formatDate.outputFormat);
   };
   var parseTime = function parseTime(time) {
