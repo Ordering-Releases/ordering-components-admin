@@ -29,6 +29,8 @@ import { BusinessDeliveryDetails } from './components/BusinessDeliveryDetails'
 import { BusinessDeliveryZone } from './components/BusinessDeliveryZone'
 import { BusinessDeliveryZoneShare } from './components/BusinessDeliveryZoneShare'
 import { BusinessDetails } from './components/BusinessDetails'
+import { BusinessDeviceListing } from './components/BusinessDeviceListing'
+import { BusinessDeviceDetail } from './components/BusinessDeviceDetail'
 import { BusinessEta } from './components/BusinessEta'
 import { BusinessFormDetails } from './components/BusinessFormDetails'
 import { BusinessFilter } from './components/BusinessFilter'
@@ -289,6 +291,8 @@ export {
   BusinessDeliveryZone,
   BusinessDeliveryZoneShare,
   BusinessDetails,
+  BusinessDeviceListing,
+  BusinessDeviceDetail,
   BusinessEta,
   BusinessFormDetails,
   BusinessFilter,

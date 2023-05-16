@@ -345,6 +345,7 @@ export const DriversGroupDetails = (props) => {
   }
 
   useEffect(() => {
+    setChangesState({})
     if (curDriversGroup) {
       setDriversGroupState({
         ...driversGroupState,
@@ -353,6 +354,9 @@ export const DriversGroupDetails = (props) => {
       })
       initSet(curDriversGroup)
     } else {
+      setDriversGroupState({
+        driversGroup: null, loading: !props.curDriversGroup, error: null
+      })
       if (driversGroupId) {
         getDriversGroup()
       } else {

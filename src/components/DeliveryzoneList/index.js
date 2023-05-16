@@ -31,8 +31,24 @@ export const DeliveryzoneList = (props) => {
       let where = null
       const conditions = []
 
+      conditions.push({
+        attribute: 'type',
+        value: {
+          condition: '!=',
+          value: 3
+        }
+      })
+
       if (businessIds) {
-        conditions.push({ attribute: 'business_id', value: businessIds })
+        conditions.push({
+          attribute: 'businesses',
+          conditions: [
+            {
+              attribute: 'business_id',
+              value: businessIds
+            }
+          ]
+        })
       }
 
       if (conditions.length) {
@@ -50,8 +66,8 @@ export const DeliveryzoneList = (props) => {
         }
       }
       const fetchEndpoint = where
-        ? `${ordering.root}/delivery_zones?page=${page}&page_size=${pageSize}8&params=${propsToFetch.toString()}&&where=${JSON.stringify(where)}`
-        : `${ordering.root}/delivery_zones?page=${page}&page_size=${pageSize}8&params=${propsToFetch.toString()}`
+        ? `${ordering.root}/delivery_zones?page=${page}&page_size=${pageSize}8&params=${propsToFetch.toString()}&filtered_by_business=[${businessIds}]&&where=${JSON.stringify(where)}`
+        : `${ordering.root}/delivery_zones?page=${page}&page_size=${pageSize}8&params=${propsToFetch.toString()}&filtered_by_business=[${businessIds}]`
 
       const response = await fetch(fetchEndpoint, requestOptions)
       const content = await response.json()

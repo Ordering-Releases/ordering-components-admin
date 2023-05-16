@@ -201,7 +201,7 @@ export const OrderDetails = (props) => {
     }
   }
 
-  const handleRefundOrder = async () => {
+  const handleRefundPaymentsStripe = async () => {
     try {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
       setActionStatus({ ...actionStatus, loading: true })
@@ -227,6 +227,49 @@ export const OrderDetails = (props) => {
         setOrderState({
           ...orderState,
           order: { ...orderState.order, refund_data: content.result }
+        })
+        showToast(ToastType.Success, t('ORDER_REFUNDED', 'Order refunded'))
+      }
+    } catch (err) {
+      setActionStatus({ ...actionStatus, loading: false, error: [err.message] })
+    }
+  }
+
+  const handleOrderRefund = async (data) => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setActionStatus({ ...actionStatus, loading: true })
+      const requestOption = {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      }
+      const response = await fetch(`${ordering.root}/orders/${orderState.order?.id}/refund`, requestOption)
+      const content = await response.json()
+      setActionStatus({
+        loading: false,
+        error: content.error ? content.result : null
+      })
+      if (!content.error) {
+        const refundData = [...content.result]
+        if (data?.order_payment_event_id) {
+          const stripeEvent = orderState?.order?.payment_events?.find(event => event?.id === data.order_payment_event_id)
+          if (stripeEvent) {
+            refundData.map(item => {
+              if (item?.order_payment_event_id === data?.order_payment_event_id) {
+                item.paymethod = stripeEvent?.paymethod
+              }
+              return item
+            })
+          }
+        }
+        const updatedPaymentEvents = [...orderState.order?.payment_events, ...refundData]
+        setOrderState({
+          ...orderState,
+          order: { ...orderState.order, payment_events: updatedPaymentEvents }
         })
         showToast(ToastType.Success, t('ORDER_REFUNDED', 'Order refunded'))
       }
@@ -303,7 +346,8 @@ export const OrderDetails = (props) => {
           setMessages={setMessages}
           messagesReadList={messagesReadList}
           readMessages={readMessages}
-          handleRefundOrder={handleRefundOrder}
+          handleRefundPaymentsStripe={handleRefundPaymentsStripe}
+          handleOrderRefund={handleOrderRefund}
         />
       )}
     </>
