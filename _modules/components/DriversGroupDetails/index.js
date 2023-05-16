@@ -547,6 +547,7 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
     }));
   };
   (0, _react.useEffect)(function () {
+    setChangesState({});
     if (curDriversGroup) {
       setDriversGroupState(_objectSpread(_objectSpread({}, driversGroupState), {}, {
         loading: false,
@@ -554,6 +555,11 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
       }));
       initSet(curDriversGroup);
     } else {
+      setDriversGroupState({
+        driversGroup: null,
+        loading: !props.curDriversGroup,
+        error: null
+      });
       if (driversGroupId) {
         getDriversGroup();
       } else {

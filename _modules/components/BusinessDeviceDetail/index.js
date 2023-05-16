@@ -4,15 +4,14 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.OrderDetails = void 0;
+exports.BusinessDeviceDetail = void 0;
 var _react = _interopRequireWildcard(require("react"));
-var _propTypes = _interopRequireWildcard(require("prop-types"));
+var _propTypes = _interopRequireDefault(require("prop-types"));
 var _SessionContext = require("../../contexts/SessionContext");
 var _ApiContext = require("../../contexts/ApiContext");
-var _WebsocketContext = require("../../contexts/WebsocketContext");
-var _EventContext = require("../../contexts/EventContext");
 var _LanguageContext = require("../../contexts/LanguageContext");
 var _ToastContext = require("../../contexts/ToastContext");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -34,306 +33,304 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-var OrderDetails = function OrderDetails(props) {
-  var orderId = props.orderId,
+/**
+ * Component to manage BusinessDeviceDetail behavior without UI component
+ */
+var BusinessDeviceDetail = function BusinessDeviceDetail(props) {
+  var UIComponent = props.UIComponent,
     propsToFetch = props.propsToFetch,
-    asDashboard = props.asDashboard,
-    hashKey = props.hashKey,
-    userCustomerId = props.userCustomerId,
-    isDisableLoadMessages = props.isDisableLoadMessages,
-    drivers = props.drivers,
-    UIComponent = props.UIComponent;
-  var _useSession = (0, _SessionContext.useSession)(),
-    _useSession2 = _slicedToArray(_useSession, 1),
-    _useSession2$ = _useSession2[0],
-    user = _useSession2$.user,
-    token = _useSession2$.token,
-    loading = _useSession2$.loading;
-  var _useApi = (0, _ApiContext.useApi)(),
-    _useApi2 = _slicedToArray(_useApi, 1),
-    ordering = _useApi2[0];
-  var _useEvent = (0, _EventContext.useEvent)(),
-    _useEvent2 = _slicedToArray(_useEvent, 1),
-    events = _useEvent2[0];
+    selectedDevice = props.selectedDevice,
+    devices = props.devices,
+    handleUpdateDeviceList = props.handleUpdateDeviceList,
+    onClose = props.onClose;
   var _useLanguage = (0, _LanguageContext.useLanguage)(),
     _useLanguage2 = _slicedToArray(_useLanguage, 2),
     t = _useLanguage2[1];
   var _useToast = (0, _ToastContext.useToast)(),
     _useToast2 = _slicedToArray(_useToast, 2),
     showToast = _useToast2[1].showToast;
+  var _useSession = (0, _SessionContext.useSession)(),
+    _useSession2 = _slicedToArray(_useSession, 1),
+    _useSession2$ = _useSession2[0],
+    token = _useSession2$.token,
+    user = _useSession2$.user;
+  var _useApi = (0, _ApiContext.useApi)(),
+    _useApi2 = _slicedToArray(_useApi, 1),
+    ordering = _useApi2[0];
   var _useState = (0, _react.useState)({
-      order: null,
-      loading: !props.order,
-      error: null
+      loading: false,
+      changes: {},
+      result: {
+        error: null
+      }
     }),
     _useState2 = _slicedToArray(_useState, 2),
-    orderState = _useState2[0],
-    setOrderState = _useState2[1];
+    formState = _useState2[0],
+    setFormState = _useState2[1];
   var _useState3 = (0, _react.useState)({
-      status: null,
       loading: false,
+      businesses: [],
       error: null
     }),
     _useState4 = _slicedToArray(_useState3, 2),
-    messageErrors = _useState4[0],
-    setMessageErrors = _useState4[1];
-  var _useState5 = (0, _react.useState)({
-      loading: false,
-      error: null
-    }),
-    _useState6 = _slicedToArray(_useState5, 2),
-    actionStatus = _useState6[0],
-    setActionStatus = _useState6[1];
-  var _useState7 = (0, _react.useState)({
-      loading: true,
-      error: null,
-      messages: []
-    }),
-    _useState8 = _slicedToArray(_useState7, 2),
-    messages = _useState8[0],
-    setMessages = _useState8[1];
-  var _useState9 = (0, _react.useState)(false),
-    _useState10 = _slicedToArray(_useState9, 2),
-    messagesReadList = _useState10[0],
-    setMessagesReadList = _useState10[1];
-  var socket = (0, _WebsocketContext.useWebsocket)();
-  var accessToken = props.accessToken || token;
+    businessList = _useState4[0],
+    setBusinessList = _useState4[1];
 
   /**
-   * Method to format a price number
-   * @param {Number} price
+   * Method to delete a device from API
    */
-  var formatPrice = function formatPrice(price) {
-    return price && "$ ".concat(price.toFixed(2));
-  };
-
-  /**
-   * Method to Load message for first time
-   */
-  var loadMessages = /*#__PURE__*/function () {
+  var deleteDevice = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var url, response, _yield$response$json, error, result;
+      var requestOptions, response, content, updatedDevices;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-            setMessages(_objectSpread(_objectSpread({}, messages), {}, {
+            setFormState(_objectSpread(_objectSpread({}, formState), {}, {
               loading: true
             }));
-            url = "".concat(ordering.root, "/orders/").concat(orderId, "/messages?mode=dashboard");
-            _context.next = 5;
-            return fetch(url, {
-              method: 'GET',
+            showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+            requestOptions = {
+              method: 'DELETE',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: "Bearer ".concat(accessToken)
+                Authorization: "Bearer ".concat(token)
               }
-            });
-          case 5:
+            };
+            _context.next = 6;
+            return fetch("".concat(ordering.root, "/devices/").concat(selectedDevice === null || selectedDevice === void 0 ? void 0 : selectedDevice.id), requestOptions);
+          case 6:
             response = _context.sent;
-            _context.next = 8;
+            _context.next = 9;
             return response.json();
-          case 8:
-            _yield$response$json = _context.sent;
-            error = _yield$response$json.error;
-            result = _yield$response$json.result;
-            if (!error) {
-              setMessages({
-                messages: result,
-                loading: false,
-                error: null
+          case 9:
+            content = _context.sent;
+            if (!(content !== null && content !== void 0 && content.error)) {
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                result: content,
+                loading: false
+              }));
+              updatedDevices = devices.filter(function (device) {
+                return (device === null || device === void 0 ? void 0 : device.id) !== (selectedDevice === null || selectedDevice === void 0 ? void 0 : selectedDevice.id);
               });
+              handleUpdateDeviceList && handleUpdateDeviceList(updatedDevices);
+              showToast(_ToastContext.ToastType.Success, t('DEVICE_DELETED', 'Device deleted'));
+              onClose && onClose();
             } else {
-              setMessages(_objectSpread(_objectSpread({}, messages), {}, {
-                loading: false,
-                error: result
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                result: content,
+                loading: false
               }));
             }
-            _context.next = 17;
+            _context.next = 16;
             break;
-          case 14:
-            _context.prev = 14;
+          case 13:
+            _context.prev = 13;
             _context.t0 = _context["catch"](0);
-            setMessages(_objectSpread(_objectSpread({}, messages), {}, {
-              loading: false,
-              error: [_context.t0.Messages]
+            setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+              result: {
+                error: true,
+                result: _context.t0.message
+              },
+              loading: false
             }));
-          case 17:
+          case 16:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 14]]);
+      }, _callee, null, [[0, 13]]);
     }));
-    return function loadMessages() {
+    return function deleteDevice() {
       return _ref.apply(this, arguments);
     };
   }();
 
   /**
-   * Method to send a message
-   * @param {string} spot
+   * Method to create a device from API
    */
-  var sendMessage = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(spot) {
-      var _yield$fetch, status;
+  var addDevice = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+      var changes, requestOptions, response, content, updatedDevices;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
             _context2.prev = 0;
-            setMessageErrors(_objectSpread(_objectSpread({}, messageErrors), {}, {
+            setFormState(_objectSpread(_objectSpread({}, formState), {}, {
               loading: true
             }));
-            _context2.next = 4;
-            return fetch("".concat(ordering.root, "/orders/").concat(orderId, "/messages"), {
-              method: 'post',
-              headers: {
-                Authorization: "Bearer ".concat(token),
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                can_see: '0,2,3',
-                comment: "I am on the parking number: ".concat(spot),
-                order_id: orderId,
-                type: 2
-              })
+            showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+            changes = _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), {}, {
+              user_id: user === null || user === void 0 ? void 0 : user.id
             });
-          case 4:
-            _yield$fetch = _context2.sent;
-            status = _yield$fetch.status;
-            setMessageErrors(_objectSpread(_objectSpread({}, messageErrors), {}, {
-              loading: false,
-              status: status
-            }));
-            _context2.next = 12;
+            requestOptions = {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token)
+              },
+              body: JSON.stringify(changes)
+            };
+            _context2.next = 7;
+            return fetch("".concat(ordering.root, "/devices"), requestOptions);
+          case 7:
+            response = _context2.sent;
+            _context2.next = 10;
+            return response.json();
+          case 10:
+            content = _context2.sent;
+            if (!(content !== null && content !== void 0 && content.error)) {
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                result: content.result,
+                loading: false
+              }));
+              updatedDevices = [].concat(_toConsumableArray(devices), [content === null || content === void 0 ? void 0 : content.result]);
+              handleUpdateDeviceList && handleUpdateDeviceList(updatedDevices);
+              showToast(_ToastContext.ToastType.Success, t('DEVICE_CREATED', 'Device created'));
+              onClose && onClose();
+            } else {
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                result: content,
+                loading: false
+              }));
+            }
+            _context2.next = 17;
             break;
-          case 9:
-            _context2.prev = 9;
+          case 14:
+            _context2.prev = 14;
             _context2.t0 = _context2["catch"](0);
-            setMessageErrors(_objectSpread(_objectSpread({}, messageErrors), {}, {
-              loading: false,
-              error: [_context2.t0.message]
+            setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+              result: {
+                error: true,
+                result: _context2.t0.message
+              },
+              loading: false
             }));
-          case 12:
+          case 17:
           case "end":
             return _context2.stop();
         }
-      }, _callee2, null, [[0, 9]]);
+      }, _callee2, null, [[0, 14]]);
     }));
-    return function sendMessage(_x2) {
+    return function addDevice() {
       return _ref2.apply(this, arguments);
     };
   }();
 
   /**
-   * handler send message with spot info
-   * @param {number} param0
+   * Method to update a device from API
    */
-  var handlerSubmitSpotNumber = function handlerSubmitSpotNumber(_ref3) {
-    var spot = _ref3.spot;
-    sendMessage(spot);
-  };
-
-  /**
-   * Method to get order from API
-   */
-  var getOrder = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var options, functionFetch, _yield$functionFetch$, result, order;
+  var updateDevice = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var changes, requestOptions, response, content, updatedDevices;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
-            options = {};
-            if (hashKey) {
-              options.headers = {
-                'X-uuid-access-X': hashKey
-              };
-            }
-            if (userCustomerId) {
-              options.query = {
-                mode: 'dashboard'
-              };
-            }
-            _context3.prev = 3;
-            setOrderState(_objectSpread(_objectSpread({}, orderState), {}, {
+            _context3.prev = 0;
+            setFormState(_objectSpread(_objectSpread({}, formState), {}, {
               loading: true
             }));
-            if (propsToFetch) {
-              functionFetch = asDashboard ? ordering.setAccessToken(token).orders(orderId).asDashboard().select(propsToFetch) : ordering.setAccessToken(token).orders(orderId).select(propsToFetch);
+            showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+            changes = _objectSpread({
+              business_id: selectedDevice === null || selectedDevice === void 0 ? void 0 : selectedDevice.business_id,
+              user_id: user.id
+            }, formState === null || formState === void 0 ? void 0 : formState.changes);
+            requestOptions = {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token)
+              },
+              body: JSON.stringify(changes)
+            };
+            _context3.next = 7;
+            return fetch("".concat(ordering.root, "/devices/").concat(selectedDevice === null || selectedDevice === void 0 ? void 0 : selectedDevice.id), requestOptions);
+          case 7:
+            response = _context3.sent;
+            _context3.next = 10;
+            return response.json();
+          case 10:
+            content = _context3.sent;
+            if (!(content !== null && content !== void 0 && content.error)) {
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                result: content,
+                loading: false
+              }));
+              updatedDevices = devices.map(function (device) {
+                if ((device === null || device === void 0 ? void 0 : device.id) === (selectedDevice === null || selectedDevice === void 0 ? void 0 : selectedDevice.id)) {
+                  return _objectSpread(_objectSpread({}, device), content.result);
+                }
+                return device;
+              });
+              handleUpdateDeviceList && handleUpdateDeviceList(updatedDevices);
+              showToast(_ToastContext.ToastType.Success, t('DEVICE_UPDATED', 'Device updated'));
             } else {
-              functionFetch = asDashboard ? ordering.setAccessToken(token).orders(orderId).asDashboard() : ordering.setAccessToken(token).orders(orderId);
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                result: content,
+                loading: false
+              }));
             }
-            _context3.next = 8;
-            return functionFetch.get();
-          case 8:
-            _yield$functionFetch$ = _context3.sent;
-            result = _yield$functionFetch$.content.result;
-            order = Array.isArray(result) ? null : result;
-            setOrderState(_objectSpread(_objectSpread({}, orderState), {}, {
-              loading: false,
-              order: order
-            }));
             _context3.next = 17;
             break;
           case 14:
             _context3.prev = 14;
-            _context3.t0 = _context3["catch"](3);
-            setOrderState(_objectSpread(_objectSpread({}, orderState), {}, {
-              loading: false,
-              error: [_context3.t0.message]
+            _context3.t0 = _context3["catch"](0);
+            setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+              result: {
+                error: true,
+                result: _context3.t0.message
+              },
+              loading: false
             }));
           case 17:
           case "end":
             return _context3.stop();
         }
-      }, _callee3, null, [[3, 14]]);
+      }, _callee3, null, [[0, 14]]);
     }));
-    return function getOrder() {
-      return _ref4.apply(this, arguments);
+    return function updateDevice() {
+      return _ref3.apply(this, arguments);
     };
   }();
+
   /**
-   * Method to change order status from API
-   * @param {object} order orders id and new status
+   * Method to get business list from API
    */
-  var handleUpdateOrderStatus = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(order) {
-      var response, content;
+  var getBusinessList = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      var _yield$ordering$busin, _yield$ordering$busin2, error, result;
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
-            setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
+            setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
               loading: true
             }));
             _context4.next = 4;
-            return fetch("".concat(ordering.root, "/orders/").concat(order === null || order === void 0 ? void 0 : order.id), {
-              method: 'PUT',
-              headers: {
-                Authorization: "Bearer ".concat(token),
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                status: order.newStatus
-              })
-            });
+            return ordering.businesses().asDashboard().select(propsToFetch).get();
           case 4:
-            response = _context4.sent;
-            _context4.next = 7;
-            return response.json();
-          case 7:
-            content = _context4.sent;
-            setActionStatus({
-              loading: false,
-              error: content.error ? content.result : null
-            });
+            _yield$ordering$busin = _context4.sent;
+            _yield$ordering$busin2 = _yield$ordering$busin.content;
+            error = _yield$ordering$busin2.error;
+            result = _yield$ordering$busin2.result;
+            if (!error) {
+              setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
+                loading: false,
+                businesses: result
+              }));
+            } else {
+              setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
+                loading: false,
+                error: result
+              }));
+            }
             _context4.next = 14;
             break;
           case 11:
             _context4.prev = 11;
             _context4.t0 = _context4["catch"](0);
-            setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
+            setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
               loading: false,
-              error: [_context4.t0.message]
+              error: [_context4.t0 || (_context4.t0 === null || _context4.t0 === void 0 ? void 0 : _context4.t0.toString()) || (_context4.t0 === null || _context4.t0 === void 0 ? void 0 : _context4.t0.message)]
             }));
           case 14:
           case "end":
@@ -341,292 +338,55 @@ var OrderDetails = function OrderDetails(props) {
         }
       }, _callee4, null, [[0, 11]]);
     }));
-    return function handleUpdateOrderStatus(_x3) {
-      return _ref5.apply(this, arguments);
+    return function getBusinessList() {
+      return _ref4.apply(this, arguments);
     };
   }();
-  var readMessages = /*#__PURE__*/function () {
-    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-      var _messages$messages, _messages$messages2;
-      var messageId, response, _yield$response$json2, result;
-      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-        while (1) switch (_context5.prev = _context5.next) {
-          case 0:
-            messageId = messages === null || messages === void 0 ? void 0 : (_messages$messages = messages.messages[(messages === null || messages === void 0 ? void 0 : (_messages$messages2 = messages.messages) === null || _messages$messages2 === void 0 ? void 0 : _messages$messages2.length) - 1]) === null || _messages$messages === void 0 ? void 0 : _messages$messages.id;
-            _context5.prev = 1;
-            _context5.next = 4;
-            return fetch("".concat(ordering.root, "/orders/").concat(orderId, "/messages/").concat(messageId, "/read"), {
-              method: 'GET',
-              headers: {
-                Authorization: "Bearer ".concat(token),
-                'Content-Type': 'application/json'
-              }
-            });
-          case 4:
-            response = _context5.sent;
-            _context5.next = 7;
-            return response.json();
-          case 7:
-            _yield$response$json2 = _context5.sent;
-            result = _yield$response$json2.result;
-            setMessagesReadList(result);
-            _context5.next = 15;
-            break;
-          case 12:
-            _context5.prev = 12;
-            _context5.t0 = _context5["catch"](1);
-            console.log(_context5.t0.message);
-          case 15:
-          case "end":
-            return _context5.stop();
-        }
-      }, _callee5, null, [[1, 12]]);
+  var handleChangeFormState = function handleChangeFormState(changes) {
+    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+      changes: _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), changes)
     }));
-    return function readMessages() {
-      return _ref6.apply(this, arguments);
-    };
-  }();
-  var handleRefundPaymentsStripe = /*#__PURE__*/function () {
-    var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
-      var _orderState$order, _orderState$order2, _orderState$order3, _orderState$order3$pa, requestOption, response, content;
-      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
-        while (1) switch (_context6.prev = _context6.next) {
-          case 0:
-            _context6.prev = 0;
-            showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-            setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
-              loading: true
-            }));
-            requestOption = {
-              method: 'POST',
-              headers: {
-                Authorization: "Bearer ".concat(token),
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                order_id: (_orderState$order = orderState.order) === null || _orderState$order === void 0 ? void 0 : _orderState$order.id,
-                business_id: (_orderState$order2 = orderState.order) === null || _orderState$order2 === void 0 ? void 0 : _orderState$order2.business_id,
-                gateway: (_orderState$order3 = orderState.order) === null || _orderState$order3 === void 0 ? void 0 : (_orderState$order3$pa = _orderState$order3.paymethod) === null || _orderState$order3$pa === void 0 ? void 0 : _orderState$order3$pa.gateway
-              })
-            };
-            _context6.next = 6;
-            return fetch("".concat(ordering.root, "/payments/stripe/refund"), requestOption);
-          case 6:
-            response = _context6.sent;
-            _context6.next = 9;
-            return response.json();
-          case 9:
-            content = _context6.sent;
-            setActionStatus({
-              loading: false,
-              error: content.error ? content.result : null
-            });
-            if (!content.error) {
-              setOrderState(_objectSpread(_objectSpread({}, orderState), {}, {
-                order: _objectSpread(_objectSpread({}, orderState.order), {}, {
-                  refund_data: content.result
-                })
-              }));
-              showToast(_ToastContext.ToastType.Success, t('ORDER_REFUNDED', 'Order refunded'));
-            }
-            _context6.next = 17;
-            break;
-          case 14:
-            _context6.prev = 14;
-            _context6.t0 = _context6["catch"](0);
-            setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
-              loading: false,
-              error: [_context6.t0.message]
-            }));
-          case 17:
-          case "end":
-            return _context6.stop();
-        }
-      }, _callee6, null, [[0, 14]]);
-    }));
-    return function handleRefundPaymentsStripe() {
-      return _ref7.apply(this, arguments);
-    };
-  }();
-  var handleOrderRefund = /*#__PURE__*/function () {
-    var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(data) {
-      var _orderState$order4, requestOption, response, content, _orderState$order6, refundData, _orderState$order5, _orderState$order5$pa, stripeEvent, updatedPaymentEvents;
-      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
-        while (1) switch (_context7.prev = _context7.next) {
-          case 0:
-            _context7.prev = 0;
-            showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-            setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
-              loading: true
-            }));
-            requestOption = {
-              method: 'POST',
-              headers: {
-                Authorization: "Bearer ".concat(token),
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(data)
-            };
-            _context7.next = 6;
-            return fetch("".concat(ordering.root, "/orders/").concat((_orderState$order4 = orderState.order) === null || _orderState$order4 === void 0 ? void 0 : _orderState$order4.id, "/refund"), requestOption);
-          case 6:
-            response = _context7.sent;
-            _context7.next = 9;
-            return response.json();
-          case 9:
-            content = _context7.sent;
-            setActionStatus({
-              loading: false,
-              error: content.error ? content.result : null
-            });
-            if (!content.error) {
-              refundData = _toConsumableArray(content.result);
-              if (data !== null && data !== void 0 && data.order_payment_event_id) {
-                stripeEvent = orderState === null || orderState === void 0 ? void 0 : (_orderState$order5 = orderState.order) === null || _orderState$order5 === void 0 ? void 0 : (_orderState$order5$pa = _orderState$order5.payment_events) === null || _orderState$order5$pa === void 0 ? void 0 : _orderState$order5$pa.find(function (event) {
-                  return (event === null || event === void 0 ? void 0 : event.id) === data.order_payment_event_id;
-                });
-                if (stripeEvent) {
-                  refundData.map(function (item) {
-                    if ((item === null || item === void 0 ? void 0 : item.order_payment_event_id) === (data === null || data === void 0 ? void 0 : data.order_payment_event_id)) {
-                      item.paymethod = stripeEvent === null || stripeEvent === void 0 ? void 0 : stripeEvent.paymethod;
-                    }
-                    return item;
-                  });
-                }
-              }
-              updatedPaymentEvents = [].concat(_toConsumableArray((_orderState$order6 = orderState.order) === null || _orderState$order6 === void 0 ? void 0 : _orderState$order6.payment_events), _toConsumableArray(refundData));
-              setOrderState(_objectSpread(_objectSpread({}, orderState), {}, {
-                order: _objectSpread(_objectSpread({}, orderState.order), {}, {
-                  payment_events: updatedPaymentEvents
-                })
-              }));
-              showToast(_ToastContext.ToastType.Success, t('ORDER_REFUNDED', 'Order refunded'));
-            }
-            _context7.next = 17;
-            break;
-          case 14:
-            _context7.prev = 14;
-            _context7.t0 = _context7["catch"](0);
-            setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
-              loading: false,
-              error: [_context7.t0.message]
-            }));
-          case 17:
-          case "end":
-            return _context7.stop();
-        }
-      }, _callee7, null, [[0, 14]]);
-    }));
-    return function handleOrderRefund(_x4) {
-      return _ref8.apply(this, arguments);
-    };
-  }();
+  };
   (0, _react.useEffect)(function () {
-    if (props.order) {
-      setOrderState(_objectSpread(_objectSpread({}, orderState), {}, {
-        order: props.order
-      }));
-    } else {
-      getOrder();
-    }
-  }, [orderId]);
-  (0, _react.useEffect)(function () {
-    if (orderState.loading || loading) return;
-    var handleUpdateOrder = function handleUpdateOrder(order) {
-      var _orderState$order7;
-      if ((order === null || order === void 0 ? void 0 : order.id) !== (orderState === null || orderState === void 0 ? void 0 : (_orderState$order7 = orderState.order) === null || _orderState$order7 === void 0 ? void 0 : _orderState$order7.id)) return;
-      delete order.total;
-      delete order.subtotal;
-      if (!(order !== null && order !== void 0 && order.driver) && order !== null && order !== void 0 && order.driver_id) {
-        var updatedDriver = drivers.find(function (driver) {
-          return driver.id === order.driver_id;
-        });
-        if (updatedDriver) {
-          order.driver = _objectSpread({}, updatedDriver);
-        }
-      }
-      setOrderState(_objectSpread(_objectSpread({}, orderState), {}, {
-        order: Object.assign(orderState.order, order)
-      }));
-    };
-    socket.on('update_order', handleUpdateOrder);
-    return function () {
-      socket.off('update_order', handleUpdateOrder);
-    };
-  }, [orderState.order, socket, loading, drivers]);
-  (0, _react.useEffect)(function () {
-    var handleCustomerReviewed = function handleCustomerReviewed(review) {
-      setOrderState(_objectSpread(_objectSpread({}, orderState), {}, {
-        order: _objectSpread(_objectSpread({}, orderState.order), {}, {
-          user_review: review
-        })
-      }));
-    };
-    events.on('customer_reviewed', handleCustomerReviewed);
-    return function () {
-      events.off('customer_reviewed', handleCustomerReviewed);
-    };
-  }, [orderState]);
-  (0, _react.useEffect)(function () {
-    if (!isDisableLoadMessages) {
-      loadMessages();
-    }
-  }, [orderId]);
+    getBusinessList();
+  }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
-    order: orderState,
-    messageErrors: messageErrors,
-    actionStatus: actionStatus,
-    formatPrice: formatPrice,
-    handlerSubmit: handlerSubmitSpotNumber,
-    handleUpdateOrderStatus: handleUpdateOrderStatus,
-    messages: messages,
-    setMessages: setMessages,
-    messagesReadList: messagesReadList,
-    readMessages: readMessages,
-    handleRefundPaymentsStripe: handleRefundPaymentsStripe,
-    handleOrderRefund: handleOrderRefund
+    updateDevice: updateDevice,
+    addDevice: addDevice,
+    deleteDevice: deleteDevice,
+    formState: formState,
+    handleChangeFormState: handleChangeFormState,
+    businessList: businessList
   })));
 };
-exports.OrderDetails = OrderDetails;
-OrderDetails.propTypes = {
+exports.BusinessDeviceDetail = BusinessDeviceDetail;
+BusinessDeviceDetail.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props
    */
   UIComponent: _propTypes.default.elementType,
   /**
-   * Array of drivers props to fetch
-   */
-  propsToFetch: _propTypes.default.arrayOf(_propTypes.string),
-  /**
-   * This must be contains orderId to fetch
-   */
-  orderId: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.string]),
-  /**
-   * Order, this must be contains an object with all order info
-   */
-  order: _propTypes.default.object,
-  /**
-   * Components types before order details
+   * Components types before Business Controller
    * Array of type components, the parent props will pass to these components
    */
   beforeComponents: _propTypes.default.arrayOf(_propTypes.default.elementType),
   /**
-   * Components types after order details
+   * Components types after Business Controller
    * Array of type components, the parent props will pass to these components
    */
   afterComponents: _propTypes.default.arrayOf(_propTypes.default.elementType),
   /**
-   * Elements before order details
+   * Elements before Business Controller
    * Array of HTML/Components elements, these components will not get the parent props
    */
   beforeElements: _propTypes.default.arrayOf(_propTypes.default.element),
   /**
-   * Elements after order details
+   * Elements after Business Controller
    * Array of HTML/Components elements, these components will not get the parent props
    */
   afterElements: _propTypes.default.arrayOf(_propTypes.default.element)
 };
-OrderDetails.defaultProps = {
+BusinessDeviceDetail.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
