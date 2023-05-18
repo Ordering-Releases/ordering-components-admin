@@ -69,6 +69,26 @@ var OrderingWebsite = function OrderingWebsite(props) {
     _useState8 = _slicedToArray(_useState7, 2),
     themesList = _useState8[0],
     setThemesList = _useState8[1];
+  var _useState9 = (0, _react.useState)(null),
+    _useState10 = _slicedToArray(_useState9, 2),
+    site = _useState10[0],
+    setSite = _useState10[1];
+  var _useState11 = (0, _react.useState)({
+      businesses: [],
+      loading: false,
+      error: null
+    }),
+    _useState12 = _slicedToArray(_useState11, 2),
+    businessesList = _useState12[0],
+    setBusinessesList = _useState12[1];
+  var _useState13 = (0, _react.useState)({
+      loading: false,
+      franchises: [],
+      error: null
+    }),
+    _useState14 = _slicedToArray(_useState13, 2),
+    franchisesList = _useState14[0],
+    setFranchisesList = _useState14[1];
 
   /**
   * Method to get the themes from API
@@ -101,39 +121,40 @@ var OrderingWebsite = function OrderingWebsite(props) {
             error = _yield$response$json.error;
             result = _yield$response$json.result;
             if (error) {
-              _context.next = 20;
+              _context.next = 21;
               break;
             }
             found = result.find(function (site) {
               return site.code === appId;
             });
             if (!found) {
-              _context.next = 18;
+              _context.next = 19;
               break;
             }
             _context.next = 16;
             return getSiteTheme(found.id);
           case 16:
-            _context.next = 20;
+            setSite(found);
+            _context.next = 21;
             break;
-          case 18:
-            _context.next = 20;
+          case 19:
+            _context.next = 21;
             return handleAddSite();
-          case 20:
-            _context.next = 25;
+          case 21:
+            _context.next = 26;
             break;
-          case 22:
-            _context.prev = 22;
+          case 23:
+            _context.prev = 23;
             _context.t0 = _context["catch"](0);
             setOrderingTheme(_objectSpread(_objectSpread({}, orderingTheme), {}, {
               loading: false,
               error: [_context.t0.message]
             }));
-          case 25:
+          case 26:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 22]]);
+      }, _callee, null, [[0, 23]]);
     }));
     return function getSites() {
       return _ref.apply(this, arguments);
@@ -141,15 +162,147 @@ var OrderingWebsite = function OrderingWebsite(props) {
   }();
 
   /**
-  * Function to add new site from API
-  */
-  var handleAddSite = /*#__PURE__*/function () {
+   * Method to get businesses from API
+   */
+  var getBusinesses = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var initialData, requestOptions, response, _yield$response$json2, error, result;
+      var where, conditions, _yield$ordering$setAc, _yield$ordering$setAc2, error, result;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
             _context2.prev = 0;
+            setBusinessesList(_objectSpread(_objectSpread({}, businessesList), {}, {
+              loading: false
+            }));
+            where = null;
+            conditions = [];
+            conditions.push({
+              attribute: 'enabled',
+              value: true
+            });
+            if (conditions.length) {
+              where = {
+                conditions: conditions,
+                conector: 'AND'
+              };
+            }
+            _context2.next = 8;
+            return ordering.setAccessToken(token).businesses().select(['name', 'logo', 'slug']).where(where).asDashboard().get();
+          case 8:
+            _yield$ordering$setAc = _context2.sent;
+            _yield$ordering$setAc2 = _yield$ordering$setAc.content;
+            error = _yield$ordering$setAc2.error;
+            result = _yield$ordering$setAc2.result;
+            if (!error) {
+              setBusinessesList(_objectSpread(_objectSpread({}, businessesList), {}, {
+                loading: false,
+                businesses: result
+              }));
+            }
+            _context2.next = 18;
+            break;
+          case 15:
+            _context2.prev = 15;
+            _context2.t0 = _context2["catch"](0);
+            setBusinessesList(_objectSpread(_objectSpread({}, businessesList), {}, {
+              loading: false,
+              error: [_context2.t0.message]
+            }));
+          case 18:
+          case "end":
+            return _context2.stop();
+        }
+      }, _callee2, null, [[0, 15]]);
+    }));
+    return function getBusinesses() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Method to get brand list
+   */
+  var getFranchises = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var where, conditions, requestOptions, functionFetch, response, _yield$response$json2, error, result;
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.prev = 0;
+            setFranchisesList(_objectSpread(_objectSpread({}, franchisesList), {}, {
+              loading: true
+            }));
+            where = null;
+            conditions = [];
+            conditions.push({
+              attribute: 'enabled',
+              value: true
+            });
+            if (conditions.length) {
+              where = {
+                conditions: conditions,
+                conector: 'AND'
+              };
+            }
+            requestOptions = {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token)
+              }
+            };
+            functionFetch = "".concat(ordering.root, "/franchises?where=").concat(JSON.stringify(where));
+            _context3.next = 10;
+            return fetch(functionFetch, requestOptions);
+          case 10:
+            response = _context3.sent;
+            _context3.next = 13;
+            return response.json();
+          case 13:
+            _yield$response$json2 = _context3.sent;
+            error = _yield$response$json2.error;
+            result = _yield$response$json2.result;
+            if (!error) {
+              setFranchisesList(_objectSpread(_objectSpread({}, franchisesList), {}, {
+                loading: false,
+                franchises: result
+              }));
+            } else {
+              setFranchisesList(_objectSpread(_objectSpread({}, franchisesList), {}, {
+                loading: false,
+                error: result
+              }));
+            }
+            _context3.next = 22;
+            break;
+          case 19:
+            _context3.prev = 19;
+            _context3.t0 = _context3["catch"](0);
+            setFranchisesList(_objectSpread(_objectSpread({}, franchisesList), {}, {
+              loading: false,
+              error: _context3.t0
+            }));
+          case 22:
+          case "end":
+            return _context3.stop();
+        }
+      }, _callee3, null, [[0, 19]]);
+    }));
+    return function getFranchises() {
+      return _ref3.apply(this, arguments);
+    };
+  }();
+
+  /**
+  * Function to add new site from API
+  */
+  var handleAddSite = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      var initialData, requestOptions, response, _yield$response$json3, error, result;
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.prev = 0;
             initialData = {
               code: appId,
               name: 'Ordering.co'
@@ -162,49 +315,50 @@ var OrderingWebsite = function OrderingWebsite(props) {
               },
               body: JSON.stringify(initialData)
             };
-            _context2.next = 5;
+            _context4.next = 5;
             return fetch("".concat(ordering.root, "/sites"), requestOptions);
           case 5:
-            response = _context2.sent;
-            _context2.next = 8;
+            response = _context4.sent;
+            _context4.next = 8;
             return response.json();
           case 8:
-            _yield$response$json2 = _context2.sent;
-            error = _yield$response$json2.error;
-            result = _yield$response$json2.result;
+            _yield$response$json3 = _context4.sent;
+            error = _yield$response$json3.error;
+            result = _yield$response$json3.result;
             if (error) {
-              _context2.next = 16;
+              _context4.next = 17;
               break;
             }
-            _context2.next = 14;
+            _context4.next = 14;
             return getSiteTheme(result.id);
           case 14:
-            _context2.next = 17;
+            setSite(result);
+            _context4.next = 18;
             break;
-          case 16:
+          case 17:
             setOrderingTheme(_objectSpread(_objectSpread({}, orderingTheme), {}, {
               loading: false,
               themes: [],
               error: result
             }));
-          case 17:
-            _context2.next = 22;
+          case 18:
+            _context4.next = 23;
             break;
-          case 19:
-            _context2.prev = 19;
-            _context2.t0 = _context2["catch"](0);
+          case 20:
+            _context4.prev = 20;
+            _context4.t0 = _context4["catch"](0);
             setOrderingTheme(_objectSpread(_objectSpread({}, orderingTheme), {}, {
               loading: false,
-              result: [_context2.t0.message]
+              result: [_context4.t0.message]
             }));
-          case 22:
+          case 23:
           case "end":
-            return _context2.stop();
+            return _context4.stop();
         }
-      }, _callee2, null, [[0, 19]]);
+      }, _callee4, null, [[0, 20]]);
     }));
     return function handleAddSite() {
-      return _ref2.apply(this, arguments);
+      return _ref4.apply(this, arguments);
     };
   }();
 
@@ -212,12 +366,12 @@ var OrderingWebsite = function OrderingWebsite(props) {
    * Method to get the site theme from API
    */
   var getSiteTheme = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(siteId) {
-      var requestOptions, response, _yield$response$json3, error, result;
-      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-        while (1) switch (_context3.prev = _context3.next) {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(siteId) {
+      var requestOptions, response, _yield$response$json4, error, result;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) switch (_context5.prev = _context5.next) {
           case 0:
-            _context3.prev = 0;
+            _context5.prev = 0;
             requestOptions = {
               method: 'GET',
               headers: {
@@ -225,39 +379,39 @@ var OrderingWebsite = function OrderingWebsite(props) {
                 Authorization: "Bearer ".concat(token)
               }
             };
-            _context3.next = 4;
+            _context5.next = 4;
             return fetch("".concat(ordering.root, "/sites/").concat(siteId, "/themes"), requestOptions);
           case 4:
-            response = _context3.sent;
-            _context3.next = 7;
+            response = _context5.sent;
+            _context5.next = 7;
             return response.json();
           case 7:
-            _yield$response$json3 = _context3.sent;
-            error = _yield$response$json3.error;
-            result = _yield$response$json3.result;
+            _yield$response$json4 = _context5.sent;
+            error = _yield$response$json4.error;
+            result = _yield$response$json4.result;
             setOrderingTheme({
               loading: false,
               themes: error ? [] : result,
               error: error ? result : null,
               siteId: siteId
             });
-            _context3.next = 16;
+            _context5.next = 16;
             break;
           case 13:
-            _context3.prev = 13;
-            _context3.t0 = _context3["catch"](0);
+            _context5.prev = 13;
+            _context5.t0 = _context5["catch"](0);
             setOrderingTheme(_objectSpread(_objectSpread({}, orderingTheme), {}, {
               loading: false,
-              error: [_context3.t0.message]
+              error: [_context5.t0.message]
             }));
           case 16:
           case "end":
-            return _context3.stop();
+            return _context5.stop();
         }
-      }, _callee3, null, [[0, 13]]);
+      }, _callee5, null, [[0, 13]]);
     }));
     return function getSiteTheme(_x2) {
-      return _ref3.apply(this, arguments);
+      return _ref5.apply(this, arguments);
     };
   }();
 
@@ -265,12 +419,12 @@ var OrderingWebsite = function OrderingWebsite(props) {
   * Method to assign the theme to site
   */
   var handleAssignTheme = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(value, themeId, siteId) {
-      var requestOptions, response, _yield$response$json4, error, result;
-      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-        while (1) switch (_context4.prev = _context4.next) {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(value, themeId, siteId) {
+      var requestOptions, response, _yield$response$json5, error, result;
+      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        while (1) switch (_context6.prev = _context6.next) {
           case 0:
-            _context4.prev = 0;
+            _context6.prev = 0;
             requestOptions = {
               method: 'POST',
               headers: {
@@ -282,16 +436,16 @@ var OrderingWebsite = function OrderingWebsite(props) {
                 values: JSON.stringify(value)
               })
             };
-            _context4.next = 4;
+            _context6.next = 4;
             return fetch("".concat(ordering.root, "/sites/").concat(siteId, "/themes"), requestOptions);
           case 4:
-            response = _context4.sent;
-            _context4.next = 7;
+            response = _context6.sent;
+            _context6.next = 7;
             return response.json();
           case 7:
-            _yield$response$json4 = _context4.sent;
-            error = _yield$response$json4.error;
-            result = _yield$response$json4.result;
+            _yield$response$json5 = _context6.sent;
+            error = _yield$response$json5.error;
+            result = _yield$response$json5.result;
             if (!error) {
               showToast(_ToastContext.ToastType.Success, t('THEME_ADDED', 'Theme added'));
               setOrderingTheme(_objectSpread(_objectSpread({}, orderingTheme), {}, {
@@ -300,20 +454,20 @@ var OrderingWebsite = function OrderingWebsite(props) {
             } else {
               showToast(_ToastContext.ToastType.Error, result);
             }
-            _context4.next = 16;
+            _context6.next = 16;
             break;
           case 13:
-            _context4.prev = 13;
-            _context4.t0 = _context4["catch"](0);
-            showToast(_ToastContext.ToastType.Error, _context4.t0.message);
+            _context6.prev = 13;
+            _context6.t0 = _context6["catch"](0);
+            showToast(_ToastContext.ToastType.Error, _context6.t0.message);
           case 16:
           case "end":
-            return _context4.stop();
+            return _context6.stop();
         }
-      }, _callee4, null, [[0, 13]]);
+      }, _callee6, null, [[0, 13]]);
     }));
     return function handleAssignTheme(_x3, _x4, _x5) {
-      return _ref4.apply(this, arguments);
+      return _ref6.apply(this, arguments);
     };
   }();
 
@@ -321,12 +475,12 @@ var OrderingWebsite = function OrderingWebsite(props) {
   * Method to get the themes from API
   */
   var getThemes = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-      var requestOptions, response, _yield$response$json5, error, result;
-      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-        while (1) switch (_context5.prev = _context5.next) {
+    var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+      var requestOptions, response, _yield$response$json6, error, result;
+      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+        while (1) switch (_context7.prev = _context7.next) {
           case 0:
-            _context5.prev = 0;
+            _context7.prev = 0;
             setThemesList(_objectSpread(_objectSpread({}, themesList), {}, {
               loading: true
             }));
@@ -337,38 +491,38 @@ var OrderingWebsite = function OrderingWebsite(props) {
                 Authorization: "Bearer ".concat(token)
               }
             };
-            _context5.next = 5;
+            _context7.next = 5;
             return fetch("".concat(ordering.root, "/themes"), requestOptions);
           case 5:
-            response = _context5.sent;
-            _context5.next = 8;
+            response = _context7.sent;
+            _context7.next = 8;
             return response.json();
           case 8:
-            _yield$response$json5 = _context5.sent;
-            error = _yield$response$json5.error;
-            result = _yield$response$json5.result;
+            _yield$response$json6 = _context7.sent;
+            error = _yield$response$json6.error;
+            result = _yield$response$json6.result;
             setThemesList({
               loading: false,
               themes: error ? [] : result,
               error: error ? result : null
             });
-            _context5.next = 17;
+            _context7.next = 17;
             break;
           case 14:
-            _context5.prev = 14;
-            _context5.t0 = _context5["catch"](0);
+            _context7.prev = 14;
+            _context7.t0 = _context7["catch"](0);
             setThemesList(_objectSpread(_objectSpread({}, themesList), {}, {
               loading: false,
-              error: [_context5.t0.message]
+              error: [_context7.t0.message]
             }));
           case 17:
           case "end":
-            return _context5.stop();
+            return _context7.stop();
         }
-      }, _callee5, null, [[0, 14]]);
+      }, _callee7, null, [[0, 14]]);
     }));
     return function getThemes() {
-      return _ref5.apply(this, arguments);
+      return _ref7.apply(this, arguments);
     };
   }();
 
@@ -376,12 +530,12 @@ var OrderingWebsite = function OrderingWebsite(props) {
   * Method to update the site theme from API
   */
   var handleUpdateSiteTheme = /*#__PURE__*/function () {
-    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(advancedTheme) {
-      var _orderingTheme$themes, _orderingTheme$themes2, _orderingTheme$themes3, themeId, siteId, myProductvalues, values, requestOptions, response, _yield$response$json6, error, result;
-      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
-        while (1) switch (_context6.prev = _context6.next) {
+    var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(advancedTheme) {
+      var _orderingTheme$themes, _orderingTheme$themes2, _orderingTheme$themes3, themeId, siteId, myProductvalues, values, requestOptions, response, _yield$response$json7, error, result;
+      return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+        while (1) switch (_context8.prev = _context8.next) {
           case 0:
-            _context6.prev = 0;
+            _context8.prev = 0;
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
             themeId = (_orderingTheme$themes = orderingTheme.themes[0]) === null || _orderingTheme$themes === void 0 ? void 0 : _orderingTheme$themes.theme_id;
             siteId = (_orderingTheme$themes2 = orderingTheme.themes[0]) === null || _orderingTheme$themes2 === void 0 ? void 0 : _orderingTheme$themes2.site_id;
@@ -401,41 +555,43 @@ var OrderingWebsite = function OrderingWebsite(props) {
                 values: JSON.stringify(values)
               })
             };
-            _context6.next = 9;
+            _context8.next = 9;
             return fetch("".concat(ordering.root, "/sites/").concat(siteId, "/themes/").concat(themeId), requestOptions);
           case 9:
-            response = _context6.sent;
-            _context6.next = 12;
+            response = _context8.sent;
+            _context8.next = 12;
             return response.json();
           case 12:
-            _yield$response$json6 = _context6.sent;
-            error = _yield$response$json6.error;
-            result = _yield$response$json6.result;
+            _yield$response$json7 = _context8.sent;
+            error = _yield$response$json7.error;
+            result = _yield$response$json7.result;
             if (!error) {
               showToast(_ToastContext.ToastType.Success, t('THEME_UPDATED', 'Theme updated'));
             } else {
               showToast(_ToastContext.ToastType.Error, result);
             }
-            _context6.next = 21;
+            _context8.next = 21;
             break;
           case 18:
-            _context6.prev = 18;
-            _context6.t0 = _context6["catch"](0);
-            showToast(_ToastContext.ToastType.Error, _context6.t0.message);
+            _context8.prev = 18;
+            _context8.t0 = _context8["catch"](0);
+            showToast(_ToastContext.ToastType.Error, _context8.t0.message);
           case 21:
           case "end":
-            return _context6.stop();
+            return _context8.stop();
         }
-      }, _callee6, null, [[0, 18]]);
+      }, _callee8, null, [[0, 18]]);
     }));
     return function handleUpdateSiteTheme(_x6) {
-      return _ref6.apply(this, arguments);
+      return _ref8.apply(this, arguments);
     };
   }();
   (0, _react.useEffect)(function () {
     if (!appId) return;
     getThemes();
     getSites();
+    getBusinesses();
+    getFranchises();
   }, [appId]);
   (0, _react.useEffect)(function () {
     var _themesList$themes, _orderingTheme$themes4;
@@ -463,7 +619,11 @@ var OrderingWebsite = function OrderingWebsite(props) {
     orderingTheme: orderingTheme,
     setThemeValues: setThemeValues,
     handleUpdateSiteTheme: handleUpdateSiteTheme,
-    themesList: themesList
+    themesList: themesList,
+    site: site,
+    setSite: setSite,
+    businessesList: businessesList,
+    franchisesList: franchisesList
   })));
 };
 exports.OrderingWebsite = OrderingWebsite;

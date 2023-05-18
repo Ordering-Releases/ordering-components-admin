@@ -88,6 +88,14 @@ var BusinessDetails = function BusinessDetails(props) {
     _useState8 = _slicedToArray(_useState7, 2),
     spoonityKeyState = _useState8[0],
     setSpoonityKeyState = _useState8[1];
+  var _useState9 = (0, _react.useState)({
+      site: null,
+      loading: false,
+      error: null
+    }),
+    _useState10 = _slicedToArray(_useState9, 2),
+    siteState = _useState10[0],
+    setSiteState = _useState10[1];
 
   /**
    * Clean formState
@@ -653,6 +661,70 @@ var BusinessDetails = function BusinessDetails(props) {
       return _ref9.apply(this, arguments);
     };
   }();
+
+  /**
+   * Method to get the themes from API
+   */
+  var getSites = /*#__PURE__*/function () {
+    var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
+      var requestOptions, response, _yield$response$json, error, result, site;
+      return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+        while (1) switch (_context10.prev = _context10.next) {
+          case 0:
+            _context10.prev = 0;
+            setSiteState(_objectSpread(_objectSpread({}, siteState), {}, {
+              loading: true
+            }));
+            requestOptions = {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(session.token)
+              }
+            };
+            _context10.next = 5;
+            return fetch("".concat(ordering.root, "/sites"), requestOptions);
+          case 5:
+            response = _context10.sent;
+            _context10.next = 8;
+            return response.json();
+          case 8:
+            _yield$response$json = _context10.sent;
+            error = _yield$response$json.error;
+            result = _yield$response$json.result;
+            if (!error) {
+              site = result.find(function (site) {
+                return site.code === 'website';
+              });
+              setSiteState(_objectSpread(_objectSpread({}, siteState), {}, {
+                loading: false,
+                site: site
+              }));
+            } else {
+              setSiteState(_objectSpread(_objectSpread({}, siteState), {}, {
+                loading: false,
+                error: result
+              }));
+            }
+            _context10.next = 17;
+            break;
+          case 14:
+            _context10.prev = 14;
+            _context10.t0 = _context10["catch"](0);
+            setSiteState(_objectSpread(_objectSpread({}, siteState), {}, {
+              loading: false,
+              error: [_context10.t0.message]
+            }));
+          case 17:
+          case "end":
+            return _context10.stop();
+        }
+      }, _callee10, null, [[0, 14]]);
+    }));
+    return function getSites() {
+      return _ref10.apply(this, arguments);
+    };
+  }();
   (0, _react.useEffect)(function () {
     if (!(businessState !== null && businessState !== void 0 && businessState.business)) return;
     handleSucessUpdateBusiness && handleSucessUpdateBusiness(businessState === null || businessState === void 0 ? void 0 : businessState.business);
@@ -667,6 +739,9 @@ var BusinessDetails = function BusinessDetails(props) {
       getBusinesses();
     }
   }, [businessId, business]);
+  (0, _react.useEffect)(function () {
+    getSites();
+  }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     businessState: businessState,
     actionStatus: actionStatus,
@@ -684,7 +759,8 @@ var BusinessDetails = function BusinessDetails(props) {
     handleSuccessDeleteBusinessItem: handleSuccessDeleteBusinessItem,
     handleUpdatePreorderConfigs: handleUpdatePreorderConfigs,
     handleUpdateSpoonityKey: handleUpdateSpoonityKey,
-    spoonityKeyState: spoonityKeyState
+    spoonityKeyState: spoonityKeyState,
+    siteState: siteState
   })));
 };
 exports.BusinessDetails = BusinessDetails;
