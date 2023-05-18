@@ -25,6 +25,7 @@ export const BusinessDetails = (props) => {
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
   const [formState, setFormState] = useState({ loading: false, changes: {}, result: { error: false } })
   const [spoonityKeyState, setSpoonityKeyState] = useState({ loading: false, key: '', result: { error: false } })
+  const [siteState, setSiteState] = useState({ site: null, loading: false, error: null })
 
   /**
    * Clean formState
@@ -372,6 +373,32 @@ export const BusinessDetails = (props) => {
     }
   }
 
+  /**
+   * Method to get the themes from API
+   */
+  const getSites = async () => {
+    try {
+      setSiteState({ ...siteState, loading: true })
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.token}`
+        }
+      }
+      const response = await fetch(`${ordering.root}/sites`, requestOptions)
+      const { error, result } = await response.json()
+      if (!error) {
+        const site = result.find(site => site.code === 'website')
+        setSiteState({ ...siteState, loading: false, site: site })
+      } else {
+        setSiteState({ ...siteState, loading: false, error: result })
+      }
+    } catch (err) {
+      setSiteState({ ...siteState, loading: false, error: [err.message] })
+    }
+  }
+
   useEffect(() => {
     if (!businessState?.business) return
     handleSucessUpdateBusiness && handleSucessUpdateBusiness(businessState?.business)
@@ -388,6 +415,10 @@ export const BusinessDetails = (props) => {
       getBusinesses()
     }
   }, [businessId, business])
+
+  useEffect(() => {
+    getSites()
+  }, [])
 
   return (
     <>
@@ -412,6 +443,7 @@ export const BusinessDetails = (props) => {
             handleUpdatePreorderConfigs={handleUpdatePreorderConfigs}
             handleUpdateSpoonityKey={handleUpdateSpoonityKey}
             spoonityKeyState={spoonityKeyState}
+            siteState={siteState}
           />
         )
       }

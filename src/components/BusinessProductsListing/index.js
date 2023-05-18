@@ -32,6 +32,7 @@ export const BusinessProductsListing = (props) => {
   const [formTaxState, setFormTaxState] = useState({ loading: false, changes: {}, result: { error: false } })
   const [formFeeState, setFormFeeState] = useState({ loading: false, changes: {}, result: { error: false } })
   const [businessTypes, setBusinessTypes] = useState([])
+  const [siteState, setSiteState] = useState({ site: null, loading: false, error: null })
   const categoryStateDefault = {
     loading: true,
     pagination: { currentPage: 0, pageSize: 10, totalItems: null, totalPages: 0, nextPageItems: 10 },
@@ -322,6 +323,32 @@ export const BusinessProductsListing = (props) => {
     })
   }
 
+  /**
+   * Method to get the themes from API
+   */
+  const getSites = async () => {
+    try {
+      setSiteState({ ...siteState, loading: true })
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${ordering.root}/sites`, requestOptions)
+      const { error, result } = await response.json()
+      if (!error) {
+        const site = result.find(site => site.code === 'website')
+        setSiteState({ ...siteState, loading: false, site: site })
+      } else {
+        setSiteState({ ...siteState, loading: false, error: result })
+      }
+    } catch (err) {
+      setSiteState({ ...siteState, loading: false, error: [err.message] })
+    }
+  }
+
   const getBusinessTypes = async () => {
     try {
       const response = await fetch(`${ordering.root}/business_types?where=[{"attribute":"enabled","value":true}]`, {
@@ -528,6 +555,7 @@ export const BusinessProductsListing = (props) => {
     getTaxes()
     getFees()
     getBusinessTypes()
+    getSites()
   }, [])
 
   return (
@@ -562,6 +590,7 @@ export const BusinessProductsListing = (props) => {
           setFees={setFees}
           businessTypes={businessTypes}
           setBusinessTypes={setBusinessTypes}
+          siteState={siteState}
         />
       )}
     </>
