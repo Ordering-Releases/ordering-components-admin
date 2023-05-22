@@ -4,12 +4,12 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.SelectPOS = void 0;
+exports.UploadAudio = void 0;
 var _react = _interopRequireWildcard(require("react"));
 var _propTypes = _interopRequireDefault(require("prop-types"));
 var _SessionContext = require("../../contexts/SessionContext");
-var _ApiContext = require("../../contexts/ApiContext");
 var _ToastContext = require("../../contexts/ToastContext");
+var _ApiContext = require("../../contexts/ApiContext");
 var _LanguageContext = require("../../contexts/LanguageContext");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -29,20 +29,16 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-/**
- * Component to manage SelectPOS behavior without UI component
- */
-var SelectPOS = function SelectPOS(props) {
-  var UIComponent = props.UIComponent,
-    handleSuccess = props.handleSuccess;
+var UploadAudio = function UploadAudio(props) {
+  var UIComponent = props.UIComponent;
+  var _useApi = (0, _ApiContext.useApi)(),
+    _useApi2 = _slicedToArray(_useApi, 1),
+    ordering = _useApi2[0];
   var _useSession = (0, _SessionContext.useSession)(),
     _useSession2 = _slicedToArray(_useSession, 1),
     _useSession2$ = _useSession2[0],
     token = _useSession2$.token,
     user = _useSession2$.user;
-  var _useApi = (0, _ApiContext.useApi)(),
-    _useApi2 = _slicedToArray(_useApi, 1),
-    ordering = _useApi2[0];
   var _useToast = (0, _ToastContext.useToast)(),
     _useToast2 = _slicedToArray(_useToast, 2),
     showToast = _useToast2[1].showToast;
@@ -50,8 +46,8 @@ var SelectPOS = function SelectPOS(props) {
     _useLanguage2 = _slicedToArray(_useLanguage, 2),
     t = _useLanguage2[1];
   var _useState = (0, _react.useState)({
+      loading: true,
       changes: {},
-      loading: false,
       error: null
     }),
     _useState2 = _slicedToArray(_useState, 2),
@@ -59,57 +55,136 @@ var SelectPOS = function SelectPOS(props) {
     setFormState = _useState2[1];
 
   /**
-   * Method to send message with POS
+   * Function to add custom sounds from API
    */
-  var handleSendMessage = /*#__PURE__*/function () {
+  var handleUploadAudio = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var _formState$changes, requestOptions, response, content;
+      var _formState$changes$fi, _formState$changes, _formState$changes2, payload, requestOptions, response, _yield$response$json, error, result;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+            payload = {
+              type: 2,
+              source: (_formState$changes$fi = formState === null || formState === void 0 ? void 0 : (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.file) !== null && _formState$changes$fi !== void 0 ? _formState$changes$fi : formState === null || formState === void 0 ? void 0 : (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.url
+            };
             requestOptions = {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: "Bearer ".concat(token)
-              }
+              },
+              body: JSON.stringify(payload)
             };
-            _context.next = 5;
-            return fetch("https://integrations.ordering.co/network/request_integration.php?admin_name=".concat(user === null || user === void 0 ? void 0 : user.name, "&email=").concat(user === null || user === void 0 ? void 0 : user.email, "&project=").concat(ordering === null || ordering === void 0 ? void 0 : ordering.project, "&Selected_POS=").concat(formState === null || formState === void 0 ? void 0 : (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.pos), requestOptions);
-          case 5:
+            _context.next = 6;
+            return fetch("".concat(ordering.root, "/files"), requestOptions);
+          case 6:
             response = _context.sent;
-            _context.next = 8;
+            _context.next = 9;
             return response.json();
-          case 8:
-            content = _context.sent;
-            if (!content.error) {
-              showToast(_ToastContext.ToastType.Success, content.result);
-              handleSuccess && handleSuccess();
+          case 9:
+            _yield$response$json = _context.sent;
+            error = _yield$response$json.error;
+            result = _yield$response$json.result;
+            if (!error) {
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                loading: false,
+                error: null
+              }));
+              showToast(_ToastContext.ToastType.Success, t('YOUR_AUDIO_FILE_UPLOADED', 'Your audio file has been uploaded successfully'));
             } else {
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: false,
-                error: content.result
+                error: result
               }));
+              showToast(_ToastContext.ToastType.Error, result);
             }
-            _context.next = 15;
+            _context.next = 19;
             break;
-          case 12:
-            _context.prev = 12;
+          case 15:
+            _context.prev = 15;
             _context.t0 = _context["catch"](0);
             setFormState(_objectSpread(_objectSpread({}, formState), {}, {
               loading: false,
               error: [_context.t0.message]
             }));
-          case 15:
+            showToast(_ToastContext.ToastType.Error, _context.t0.message);
+          case 19:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 12]]);
+      }, _callee, null, [[0, 15]]);
     }));
-    return function handleSendMessage() {
+    return function handleUploadAudio() {
       return _ref.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Function to get custom sounds from API
+   */
+  var getAudioFiles = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+      var requestOptions, response, _yield$response$json2, error, result, file, changes;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.prev = 0;
+            requestOptions = {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token)
+              }
+            };
+            _context2.next = 4;
+            return fetch("".concat(ordering.root, "/files"), requestOptions);
+          case 4:
+            response = _context2.sent;
+            _context2.next = 7;
+            return response.json();
+          case 7:
+            _yield$response$json2 = _context2.sent;
+            error = _yield$response$json2.error;
+            result = _yield$response$json2.result;
+            if (!error) {
+              file = result === null || result === void 0 ? void 0 : result.find(function (item) {
+                return (item === null || item === void 0 ? void 0 : item.type) === 2 && (item === null || item === void 0 ? void 0 : item.owner_id) === user.id;
+              });
+              changes = {};
+              if (file) {
+                if (file.source.includes('http')) changes.url = file.source;else changes.file = file.source;
+              }
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                loading: false,
+                error: null,
+                changes: changes
+              }));
+            } else {
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                loading: false,
+                error: result
+              }));
+              showToast(_ToastContext.ToastType.Error, result);
+            }
+            _context2.next = 16;
+            break;
+          case 13:
+            _context2.prev = 13;
+            _context2.t0 = _context2["catch"](0);
+            setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+              loading: false,
+              error: [_context2.t0.message]
+            }));
+          case 16:
+          case "end":
+            return _context2.stop();
+        }
+      }, _callee2, null, [[0, 13]]);
+    }));
+    return function getAudioFiles() {
+      return _ref2.apply(this, arguments);
     };
   }();
   var changeFormState = function changeFormState(changes) {
@@ -117,17 +192,45 @@ var SelectPOS = function SelectPOS(props) {
       changes: _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), changes)
     }));
   };
+  (0, _react.useEffect)(function () {
+    getAudioFiles();
+  }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
+    handleUploadAudio: handleUploadAudio,
     formState: formState,
-    handleSendMessage: handleSendMessage,
     changeFormState: changeFormState
   })));
 };
-exports.SelectPOS = SelectPOS;
-SelectPOS.propTypes = {
+exports.UploadAudio = UploadAudio;
+UploadAudio.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props
    */
-  UIComponent: _propTypes.default.elementType
+  UIComponent: _propTypes.default.elementType,
+  /**
+   * Components types before sites list
+   * Array of type components, the parent props will pass to these components
+   */
+  beforeComponents: _propTypes.default.arrayOf(_propTypes.default.elementType),
+  /**
+   * Components types after sites list
+   * Array of type components, the parent props will pass to these components
+   */
+  afterComponents: _propTypes.default.arrayOf(_propTypes.default.elementType),
+  /**
+   * Elements before sites list
+   * Array of HTML/Components elements, these components will not get the parent props
+   */
+  beforeElements: _propTypes.default.arrayOf(_propTypes.default.element),
+  /**
+   * Elements after sites list
+   * Array of HTML/Components elements, these components will not get the parent props
+   */
+  afterElements: _propTypes.default.arrayOf(_propTypes.default.element)
 };
-SelectPOS.defaultProps = {};
+UploadAudio.defaultProps = {
+  beforeComponents: [],
+  afterComponents: [],
+  beforeElements: [],
+  afterElements: []
+};

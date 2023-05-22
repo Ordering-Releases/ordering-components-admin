@@ -83,7 +83,7 @@ var UploadMenu = function UploadMenu(props) {
               body: JSON.stringify(changes)
             };
             _context.next = 6;
-            return fetch("https://integrations.ordering.co/network/request_import.php?admin_name=".concat(user === null || user === void 0 ? void 0 : user.name, "&project=").concat(ordering === null || ordering === void 0 ? void 0 : ordering.project), requestOptions);
+            return fetch("https://integrations.ordering.co/network/request_import.php?admin_name=".concat(user === null || user === void 0 ? void 0 : user.name, "&project=").concat(ordering === null || ordering === void 0 ? void 0 : ordering.project, "&email=").concat(user === null || user === void 0 ? void 0 : user.email), requestOptions);
           case 6:
             response = _context.sent;
             _context.next = 9;

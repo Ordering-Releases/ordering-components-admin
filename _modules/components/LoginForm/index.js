@@ -44,7 +44,8 @@ var LoginForm = function LoginForm(props) {
     billingUrl = props.billingUrl,
     handleRedirect = props.handleRedirect,
     configFile = props.configFile,
-    setConfigFile = props.setConfigFile;
+    setConfigFile = props.setConfigFile,
+    notificationState = props.notificationState;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -181,9 +182,13 @@ var LoginForm = function LoginForm(props) {
             }));
             return _context.abrupt("return");
           case 15:
-            _context.next = 17;
+            if (notificationState !== null && notificationState !== void 0 && notificationState.notification_token) {
+              _credentials.notification_app = notificationState.notification_app;
+              _credentials.notification_token = notificationState.notification_token;
+            }
+            _context.next = 18;
             return ordering.users().auth(_credentials);
-          case 17:
+          case 18:
             _yield$ordering$users = _context.sent;
             _yield$ordering$users2 = _yield$ordering$users.content;
             error = _yield$ordering$users2.error;
@@ -200,26 +205,26 @@ var LoginForm = function LoginForm(props) {
               });
             }
             if (error) {
-              _context.next = 46;
+              _context.next = 47;
               break;
             }
             if (!useDefualtSessionManager) {
-              _context.next = 43;
+              _context.next = 44;
               break;
             }
             if (!(allowedLevels && (allowedLevels === null || allowedLevels === void 0 ? void 0 : allowedLevels.length) > 0)) {
-              _context.next = 42;
+              _context.next = 43;
               break;
             }
             level = result.level, access_token = result.session.access_token;
             if (allowedLevels.includes(level)) {
-              _context.next = 42;
+              _context.next = 43;
               break;
             }
-            _context.prev = 29;
-            _context.next = 32;
+            _context.prev = 30;
+            _context.next = 33;
             return ordering.setAccessToken(access_token).users().logout();
-          case 32:
+          case 33:
             _yield$ordering$setAc = _context.sent;
             logoutResp = _yield$ordering$setAc.content;
             if (!logoutResp.error) {
@@ -232,11 +237,11 @@ var LoginForm = function LoginForm(props) {
               },
               loading: false
             });
-            _context.next = 41;
+            _context.next = 42;
             break;
-          case 38:
-            _context.prev = 38;
-            _context.t0 = _context["catch"](29);
+          case 39:
+            _context.prev = 39;
+            _context.t0 = _context["catch"](30);
             setFormState({
               result: {
                 error: true,
@@ -244,15 +249,15 @@ var LoginForm = function LoginForm(props) {
               },
               loading: false
             });
-          case 41:
-            return _context.abrupt("return");
           case 42:
+            return _context.abrupt("return");
+          case 43:
             login({
               user: result,
               token: result.session.access_token,
               project: ordering === null || ordering === void 0 ? void 0 : ordering.project
             });
-          case 43:
+          case 44:
             events.emit('userLogin', result);
             if (handleSuccessLogin) {
               handleSuccessLogin(result);
@@ -260,7 +265,7 @@ var LoginForm = function LoginForm(props) {
             if (urlToRedirect) {
               handleRedirect ? handleRedirect(urlToRedirect) : window.location.href = "".concat(window.location.origin).concat(urlToRedirect);
             }
-          case 46:
+          case 47:
             setFormState({
               result: {
                 error: error,
@@ -268,10 +273,10 @@ var LoginForm = function LoginForm(props) {
               },
               loading: false
             });
-            _context.next = 52;
+            _context.next = 53;
             break;
-          case 49:
-            _context.prev = 49;
+          case 50:
+            _context.prev = 50;
             _context.t1 = _context["catch"](0);
             setFormState({
               result: {
@@ -280,11 +285,11 @@ var LoginForm = function LoginForm(props) {
               },
               loading: false
             });
-          case 52:
+          case 53:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 49], [29, 38]]);
+      }, _callee, null, [[0, 50], [30, 39]]);
     }));
     return function handleLoginClick(_x2) {
       return _ref.apply(this, arguments);
@@ -320,7 +325,7 @@ var LoginForm = function LoginForm(props) {
    */
   var sendVerifyPhoneCode = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(values) {
-      var response, res;
+      var body, response, res;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -328,31 +333,36 @@ var LoginForm = function LoginForm(props) {
             setVerifyPhoneState(_objectSpread(_objectSpread({}, verifyPhoneState), {}, {
               loading: true
             }));
-            _context2.next = 4;
+            body = {
+              cellphone: values.cellphone,
+              country_phone_code: "+".concat(values.country_phone_code)
+            };
+            if (notificationState !== null && notificationState !== void 0 && notificationState.notification_token) {
+              body.notification_token = notificationState.notification_token;
+              body.notification_app = notificationState.notification_app;
+            }
+            _context2.next = 6;
             return fetch("".concat(ordering.root, "/auth/sms/twilio/verify"), {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
               },
-              body: JSON.stringify({
-                cellphone: values.cellphone,
-                country_phone_code: "+".concat(values.country_phone_code)
-              })
+              body: JSON.stringify(body)
             });
-          case 4:
+          case 6:
             response = _context2.sent;
-            _context2.next = 7;
+            _context2.next = 9;
             return response.json();
-          case 7:
+          case 9:
             res = _context2.sent;
             setVerifyPhoneState(_objectSpread(_objectSpread({}, verifyPhoneState), {}, {
               loading: false,
               result: res
             }));
-            _context2.next = 14;
+            _context2.next = 16;
             break;
-          case 11:
-            _context2.prev = 11;
+          case 13:
+            _context2.prev = 13;
             _context2.t0 = _context2["catch"](0);
             setVerifyPhoneState(_objectSpread(_objectSpread({}, verifyPhoneState), {}, {
               loading: false,
@@ -360,11 +370,11 @@ var LoginForm = function LoginForm(props) {
                 error: _context2.t0.message
               }
             }));
-          case 14:
+          case 16:
           case "end":
             return _context2.stop();
         }
-      }, _callee2, null, [[0, 11]]);
+      }, _callee2, null, [[0, 13]]);
     }));
     return function sendVerifyPhoneCode(_x3) {
       return _ref2.apply(this, arguments);

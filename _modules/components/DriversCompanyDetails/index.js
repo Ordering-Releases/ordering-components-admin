@@ -380,7 +380,9 @@ var DriversCompanyDetails = function DriversCompanyDetails(props) {
         company: driversCompany
       }));
     } else {
-      getDriversCompany();
+      if (driversCompanyId) {
+        getDriversCompany();
+      }
     }
   }, [driversCompany, driversCompanyId]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {

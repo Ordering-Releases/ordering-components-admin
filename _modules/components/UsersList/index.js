@@ -1069,7 +1069,7 @@ var UsersList = function UsersList(props) {
     getUsers(1, null);
   }, [multiFilterValues]);
   (0, _react.useEffect)(function () {
-    if (orderFilterValue !== null && !usersList.loading) getUsers(1, null);
+    if (!usersList.loading) getUsers(1, null);
   }, [orderFilterValue]);
   (0, _react.useEffect)(function () {
     if (isProfessional) {

@@ -51,9 +51,7 @@ var BusinessDeviceDetail = function BusinessDeviceDetail(props) {
     showToast = _useToast2[1].showToast;
   var _useSession = (0, _SessionContext.useSession)(),
     _useSession2 = _slicedToArray(_useSession, 1),
-    _useSession2$ = _useSession2[0],
-    token = _useSession2$.token,
-    user = _useSession2$.user;
+    token = _useSession2[0].token;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -150,7 +148,7 @@ var BusinessDeviceDetail = function BusinessDeviceDetail(props) {
    */
   var addDevice = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var changes, requestOptions, response, content, updatedDevices;
+      var requestOptions, response, content, updatedDevices;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -159,24 +157,21 @@ var BusinessDeviceDetail = function BusinessDeviceDetail(props) {
               loading: true
             }));
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-            changes = _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), {}, {
-              user_id: user === null || user === void 0 ? void 0 : user.id
-            });
             requestOptions = {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: "Bearer ".concat(token)
               },
-              body: JSON.stringify(changes)
+              body: JSON.stringify(formState === null || formState === void 0 ? void 0 : formState.changes)
             };
-            _context2.next = 7;
+            _context2.next = 6;
             return fetch("".concat(ordering.root, "/devices"), requestOptions);
-          case 7:
+          case 6:
             response = _context2.sent;
-            _context2.next = 10;
+            _context2.next = 9;
             return response.json();
-          case 10:
+          case 9:
             content = _context2.sent;
             if (!(content !== null && content !== void 0 && content.error)) {
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
@@ -193,10 +188,10 @@ var BusinessDeviceDetail = function BusinessDeviceDetail(props) {
                 loading: false
               }));
             }
-            _context2.next = 17;
+            _context2.next = 16;
             break;
-          case 14:
-            _context2.prev = 14;
+          case 13:
+            _context2.prev = 13;
             _context2.t0 = _context2["catch"](0);
             setFormState(_objectSpread(_objectSpread({}, formState), {}, {
               result: {
@@ -205,11 +200,11 @@ var BusinessDeviceDetail = function BusinessDeviceDetail(props) {
               },
               loading: false
             }));
-          case 17:
+          case 16:
           case "end":
             return _context2.stop();
         }
-      }, _callee2, null, [[0, 14]]);
+      }, _callee2, null, [[0, 13]]);
     }));
     return function addDevice() {
       return _ref2.apply(this, arguments);
@@ -231,8 +226,7 @@ var BusinessDeviceDetail = function BusinessDeviceDetail(props) {
             }));
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
             changes = _objectSpread({
-              business_id: selectedDevice === null || selectedDevice === void 0 ? void 0 : selectedDevice.business_id,
-              user_id: user.id
+              business_id: selectedDevice === null || selectedDevice === void 0 ? void 0 : selectedDevice.business_id
             }, formState === null || formState === void 0 ? void 0 : formState.changes);
             requestOptions = {
               method: 'PUT',
@@ -350,6 +344,11 @@ var BusinessDeviceDetail = function BusinessDeviceDetail(props) {
   (0, _react.useEffect)(function () {
     getBusinessList();
   }, []);
+  (0, _react.useEffect)(function () {
+    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+      changes: {}
+    }));
+  }, [selectedDevice === null || selectedDevice === void 0 ? void 0 : selectedDevice.id]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     updateDevice: updateDevice,
     addDevice: addDevice,

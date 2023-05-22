@@ -1557,6 +1557,12 @@ Object.defineProperty(exports, "ToastType", {
     return _ToastContext.ToastType;
   }
 });
+Object.defineProperty(exports, "UploadAudio", {
+  enumerable: true,
+  get: function get() {
+    return _UploadAudio.UploadAudio;
+  }
+});
 Object.defineProperty(exports, "UploadMenu", {
   enumerable: true,
   get: function get() {
@@ -1998,6 +2004,7 @@ var _ReportsDriverGroupFilter = require("./components/ReportsDriverGroupFilter")
 var _SiteDetails = require("./components/SiteDetails");
 var _SitesList = require("./components/SitesList");
 var _Analitycs = require("./components/Analitycs");
+var _UploadAudio = require("./components/UploadAudio");
 var _UsersList = require("./components/UsersList");
 var _UserMetaFields = require("./components/UserMetaFields");
 var _UserTypeFilter = require("./components/UserTypeFilter");
