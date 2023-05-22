@@ -20,7 +20,7 @@ export const BusinessDeviceDetail = (props) => {
 
   const [, t] = useLanguage()
   const [, { showToast }] = useToast()
-  const [{ token, user }] = useSession()
+  const [{ token }] = useSession()
   const [ordering] = useApi()
 
   const [formState, setFormState] = useState({ loading: false, changes: {}, result: { error: null } })
@@ -78,14 +78,13 @@ export const BusinessDeviceDetail = (props) => {
     try {
       setFormState({ ...formState, loading: true })
       showToast(ToastType.Info, t('LOADING', 'Loading'))
-      const changes = { ...formState?.changes, user_id: user?.id }
       const requestOptions = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(changes)
+        body: JSON.stringify(formState?.changes)
       }
       const response = await fetch(`${ordering.root}/devices`, requestOptions)
       const content = await response.json()
@@ -127,7 +126,6 @@ export const BusinessDeviceDetail = (props) => {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
       const changes = {
         business_id: selectedDevice?.business_id,
-        user_id: user.id,
         ...formState?.changes
       }
       const requestOptions = {
@@ -221,6 +219,10 @@ export const BusinessDeviceDetail = (props) => {
   useEffect(() => {
     getBusinessList()
   }, [])
+
+  useEffect(() => {
+    setFormState({ ...formState, changes: {} })
+  }, [selectedDevice?.id])
 
   return (
     <>

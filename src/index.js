@@ -253,6 +253,7 @@ import { ReportsDriverGroupFilter } from './components/ReportsDriverGroupFilter'
 import { SiteDetails } from './components/SiteDetails'
 import { SitesList } from './components/SitesList'
 import { Analytics } from './components/Analitycs'
+import { UploadAudio } from './components/UploadAudio'
 import { UsersList } from './components/UsersList'
 import { UserMetaFields } from './components/UserMetaFields'
 import { UserTypeFilter } from './components/UserTypeFilter'
@@ -506,6 +507,7 @@ export {
   Sessions,
   SiteTheme,
   Analytics,
+  UploadAudio,
   UsersList,
   UserTypeFilter,
   UsersFilter,

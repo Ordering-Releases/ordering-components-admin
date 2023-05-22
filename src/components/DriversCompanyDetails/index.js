@@ -217,7 +217,9 @@ export const DriversCompanyDetails = (props) => {
         company: driversCompany
       })
     } else {
-      getDriversCompany()
+      if (driversCompanyId) {
+        getDriversCompany()
+      }
     }
   }, [driversCompany, driversCompanyId])
 

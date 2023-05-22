@@ -34,7 +34,7 @@ export const SelectPOS = (props) => {
           Authorization: `Bearer ${token}`
         }
       }
-      const response = await fetch(`https://integrations.ordering.co/network/request_integration.php?admin_name=${user?.name}&project=${ordering?.project}&Selected_POS=${formState?.changes?.pos}`, requestOptions)
+      const response = await fetch(`https://integrations.ordering.co/network/request_integration.php?admin_name=${user?.name}&email=${user?.email}&project=${ordering?.project}&Selected_POS=${formState?.changes?.pos}`, requestOptions)
       const content = await response.json()
       if (!content.error) {
         showToast(ToastType.Success, content.result)

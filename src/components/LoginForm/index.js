@@ -20,7 +20,8 @@ export const LoginForm = (props) => {
     billingUrl,
     handleRedirect,
     configFile,
-    setConfigFile
+    setConfigFile,
+    notificationState
   } = props
 
   const [ordering] = useApi()
@@ -103,6 +104,11 @@ export const LoginForm = (props) => {
           }
         })
         return
+      }
+
+      if (notificationState?.notification_token) {
+        _credentials.notification_app = notificationState.notification_app
+        _credentials.notification_token = notificationState.notification_token
       }
       const { content: { error, result, action } } = await ordering.users().auth(_credentials)
 
@@ -215,13 +221,18 @@ export const LoginForm = (props) => {
   const sendVerifyPhoneCode = async (values) => {
     try {
       setVerifyPhoneState({ ...verifyPhoneState, loading: true })
+      const body = {
+        cellphone: values.cellphone,
+        country_phone_code: `+${values.country_phone_code}`
+      }
+      if (notificationState?.notification_token) {
+        body.notification_token = notificationState.notification_token
+        body.notification_app = notificationState.notification_app
+      }
       const response = await fetch(`${ordering.root}/auth/sms/twilio/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          cellphone: values.cellphone,
-          country_phone_code: `+${values.country_phone_code}`
-        })
+        body: JSON.stringify(body)
       })
       const res = await response.json()
       setVerifyPhoneState({

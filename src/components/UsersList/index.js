@@ -835,7 +835,7 @@ export const UsersList = (props) => {
   }, [multiFilterValues])
 
   useEffect(() => {
-    if (orderFilterValue !== null && !usersList.loading) getUsers(1, null)
+    if (!usersList.loading) getUsers(1, null)
   }, [orderFilterValue])
 
   useEffect(() => {

@@ -38,7 +38,7 @@ export const UploadMenu = (props) => {
         },
         body: JSON.stringify(changes)
       }
-      const response = await fetch(`https://integrations.ordering.co/network/request_import.php?admin_name=${user?.name}&project=${ordering?.project}`, requestOptions)
+      const response = await fetch(`https://integrations.ordering.co/network/request_import.php?admin_name=${user?.name}&project=${ordering?.project}&email=${user?.email}`, requestOptions)
       const content = await response.json()
       if (!content.error) {
         showToast(ToastType.Success, content.result)
