@@ -18,8 +18,7 @@ export const ProductStep = (props) => {
 
   const [countriesState, setCountriesState] = useState({ countries: [], loading: true, error: null, enabled: false })
   const [actionState, setActionState] = useState({ loading: false, error: null, content: null })
-  const [businessList, setBusinessList] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [businessListState, setBusinessListState] = useState({ loading: false, businesses: [], error: null })
   const [business, setBusiness] = useState()
 
   const allowCodes = ['us', 'usa', 'united states', 'united states of american', 'ca', 'canada']
@@ -29,7 +28,10 @@ export const ProductStep = (props) => {
    */
   const handleChangeAddress = async (ad) => {
     try {
-      setIsLoading(true)
+      setBusinessListState({
+        ...businessListState,
+        loading: true
+      })
 
       const requestOptions = {
         method: 'GET',
@@ -43,14 +45,27 @@ export const ProductStep = (props) => {
       const url = `https://integrations.ordering.co/network/search.php?latitude=${lat}&longitude=${lng}&project=${ordering.project}`
 
       const response = await fetch(url, requestOptions)
-      const res = await response.json()
-      const sortedBusinessList = res?.result.sort((a, b) => getDistance(a?.address?.lat, a?.address.lon, lat, lng) - getDistance(b?.address?.lat, b?.address.lon, lat, lng))
-
-      setBusinessList(sortedBusinessList)
-      setIsLoading(false)
+      const { error, result } = await response.json()
+      if (!error) {
+        const sortedBusinessList = result.sort((a, b) => getDistance(a?.address?.lat, a?.address.lon, lat, lng) - getDistance(b?.address?.lat, b?.address.lon, lat, lng))
+        setBusinessListState({
+          loading: false,
+          businesses: sortedBusinessList,
+          error: null
+        })
+      } else {
+        setBusinessListState({
+          ...businessListState,
+          loading: false,
+          error: result
+        })
+      }
     } catch (err) {
-      setIsLoading(false)
-      console.log(err.message)
+      setBusinessListState({
+        ...businessListState,
+        loading: false,
+        error: [err.message]
+      })
     }
   }
 
@@ -130,13 +145,12 @@ export const ProductStep = (props) => {
       {UIComponent && (
         <UIComponent
           {...props}
-          businessList={businessList}
+          businessListState={businessListState}
           setBusiness={setBusiness}
           handleImport={handleImport}
           actionState={actionState}
           business={business}
           handleChangeAddress={handleChangeAddress}
-          isLoading={isLoading}
           countriesState={countriesState}
         />
       )}

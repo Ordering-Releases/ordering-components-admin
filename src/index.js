@@ -117,6 +117,7 @@ import { GoogleMapsApiKeySetting } from './components/GoogleMapsApiKeySetting'
 import { GpsButton, GoogleGpsButton } from './components/GpsButton'
 import { GoogleTagManager } from './components/GoogleTagManager'
 import { Home } from './components/Home'
+import { HtmlEditor } from './components/HtmlEditor'
 import { ImporterForm } from './components/ImporterForm'
 import { ImporterJobForm } from './components/ImporterJobForm'
 import { ImporterListing } from './components/ImporterListing'
@@ -385,6 +386,7 @@ export {
   GoogleGpsButton,
   GoogleTagManager,
   Home,
+  HtmlEditor,
   ImporterForm,
   ImporterJobForm,
   ImporterListing,

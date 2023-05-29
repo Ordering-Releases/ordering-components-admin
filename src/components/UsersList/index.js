@@ -81,7 +81,7 @@ export const UsersList = (props) => {
       if (orderFilterValue !== null) {
         parameters = {
           ...parameters,
-          orders_count_condition: orderFilterValue === 0 ? 'eq' : 'gt',
+          orders_count_condition: orderFilterValue === 0 ? 'eq' : 'ge',
           orders_count_value: orderFilterValue
         }
       }

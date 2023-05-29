@@ -133,7 +133,16 @@ export const RecoveryActionDetail = (props) => {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
       setActionState({ loading: true, error: null })
       const changes = { ...formState?.changes }
-      const requestOptions = {
+      const channelBody = {
+        enabled: true,
+        channel: formState?.changes?.channel,
+        body: formState?.changes?.body,
+        title: formState?.changes?.title
+      }
+      delete changes?.channel
+      delete changes?.body
+      delete changes?.title
+      const eventRuleRequestOptions = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -142,17 +151,36 @@ export const RecoveryActionDetail = (props) => {
         body: JSON.stringify(changes)
       }
 
-      const response = await fetch(`${ordering.root}/event_rules`, requestOptions)
-      const content = await response.json()
-      if (!content.error) {
-        setActionState({ error: null, loading: false })
-        handleSuccessAddRecoveryAction && handleSuccessAddRecoveryAction(content.result)
-        showToast(ToastType.Success, t('RECOVERY_ACTION_ADDED', 'Recovery action added'))
-        props.onClose && props.onClose()
+      const eventRuleResponse = await fetch(`${ordering.root}/event_rules`, eventRuleRequestOptions)
+      const eventContent = await eventRuleResponse.json()
+
+      if (!eventContent.error) {
+        handleSuccessAddRecoveryAction && handleSuccessAddRecoveryAction(eventContent.result)
+        const channelRequestOptions = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(channelBody)
+        }
+        const response = await fetch(`${ordering.root}/event_rules/${eventContent?.result?.id}/channels`, channelRequestOptions)
+        const content = await response.json()
+        if (!content.error) {
+          setFormState({ ...formState, changes: {} })
+          setActionState({ loading: false, error: null })
+          showToast(ToastType.Success, t('RECOVERY_ACTION_ADDED', 'Recovery action added'))
+          props.onClose && props.onClose()
+        } else {
+          setActionState({
+            loading: false,
+            error: content.result
+          })
+        }
       } else {
         setActionState({
           loading: false,
-          error: content.result
+          error: eventContent.result
         })
       }
     } catch (err) {
@@ -230,7 +258,7 @@ export const RecoveryActionDetail = (props) => {
   }
 
   useEffect(() => {
-    if (Object.keys(action).length === 0) {
+    if (Object.keys(action || {}).length === 0) {
       if (actionId) {
         setIsAddMode(false)
         cleanFormState()

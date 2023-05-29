@@ -29,6 +29,7 @@ export const DashboardBusinessList = (props) => {
 
   const [businessList, setBusinessList] = useState({ loading: false, error: null, businesses: [] })
   const [countriesState, setCountriesState] = useState({ countries: [], loading: true, error: null, enabled: false })
+  const [citiesList, setCitiesList] = useState([])
   const [pagination, setPagination] = useState({
     currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage - 1 : 0,
     pageSize: paginationSettings.pageSize ?? 10
@@ -228,6 +229,13 @@ export const DashboardBusinessList = (props) => {
       if (!error) {
         const enabled = result.filter(country => country?.enabled).some(country => (allowCodes.includes(country?.code?.toLowerCase()) || allowCodes.includes(country?.name?.toLowerCase())))
         setCountriesState({ ...countriesState, loading: false, countries: result, enabled })
+        let cities = []
+        for (const country of result) {
+          if (country?.enabled) {
+            cities = [...cities, ...country?.cities]
+          }
+        }
+        setCitiesList(cities)
       } else {
         setCountriesState({ ...countriesState, loading: false, error: result })
       }
@@ -564,6 +572,7 @@ export const DashboardBusinessList = (props) => {
             handleChangeFilterValues={handleChangeFilterValues}
             businessTypeSelected={businessTypeSelected}
             inActiveBusinesses={inActiveBusinesses}
+            citiesList={citiesList}
           />
         )
       }

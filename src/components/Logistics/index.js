@@ -128,6 +128,7 @@ export const Logistics = (props) => {
           {...props}
           logisticList={logisticList}
           parseLog={parseLog}
+          getLogistics={getLogistics}
         />
       )}
     </>

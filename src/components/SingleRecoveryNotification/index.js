@@ -43,6 +43,20 @@ export const SingleRecoveryNotification = (props) => {
   }
 
   /**
+   * Update parameter data
+   * @param {changes} changes parameters to change
+   */
+  const handleChangeItems = (changes) => {
+    setFormState({
+      ...formState,
+      changes: {
+        ...formState.changes,
+        ...changes
+      }
+    })
+  }
+
+  /**
    * Method to update channel field
    * @param {String} name params key of channel
    * @param {String} val params key of channel
@@ -207,6 +221,7 @@ export const SingleRecoveryNotification = (props) => {
             handleUpdateClick={handleUpdateClick}
             handleDeleteClick={handleDeleteClick}
             handleClickAddBtn={handleClickAddBtn}
+            handleChangeItems={handleChangeItems}
           />
         )
       }
