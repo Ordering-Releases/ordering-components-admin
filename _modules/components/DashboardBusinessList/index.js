@@ -18,6 +18,7 @@ function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableTo
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -75,37 +76,41 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
     _useState4 = _slicedToArray(_useState3, 2),
     countriesState = _useState4[0],
     setCountriesState = _useState4[1];
-  var _useState5 = (0, _react.useState)({
+  var _useState5 = (0, _react.useState)([]),
+    _useState6 = _slicedToArray(_useState5, 2),
+    citiesList = _useState6[0],
+    setCitiesList = _useState6[1];
+  var _useState7 = (0, _react.useState)({
       currentPage: paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1 ? paginationSettings.initialPage - 1 : 0,
       pageSize: (_paginationSettings$p = paginationSettings.pageSize) !== null && _paginationSettings$p !== void 0 ? _paginationSettings$p : 10
     }),
-    _useState6 = _slicedToArray(_useState5, 2),
-    pagination = _useState6[0],
-    setPagination = _useState6[1];
-  var _useState7 = (0, _react.useState)(null),
     _useState8 = _slicedToArray(_useState7, 2),
-    searchValue = _useState8[0],
-    setSearchValue = _useState8[1];
-  var _useState9 = (0, _react.useState)(true),
+    pagination = _useState8[0],
+    setPagination = _useState8[1];
+  var _useState9 = (0, _react.useState)(null),
     _useState10 = _slicedToArray(_useState9, 2),
-    selectedBusinessActiveState = _useState10[0],
-    setSelectedBusinessActiveState = _useState10[1];
-  var _useState11 = (0, _react.useState)(null),
+    searchValue = _useState10[0],
+    setSearchValue = _useState10[1];
+  var _useState11 = (0, _react.useState)(true),
     _useState12 = _slicedToArray(_useState11, 2),
-    businessTypeSelected = _useState12[0],
-    setBusinessTypeSelected = _useState12[1];
-  var _useState13 = (0, _react.useState)([]),
+    selectedBusinessActiveState = _useState12[0],
+    setSelectedBusinessActiveState = _useState12[1];
+  var _useState13 = (0, _react.useState)(null),
     _useState14 = _slicedToArray(_useState13, 2),
-    businessIds = _useState14[0],
-    setBusinessIds = _useState14[1];
-  var _useState15 = (0, _react.useState)({}),
+    businessTypeSelected = _useState14[0],
+    setBusinessTypeSelected = _useState14[1];
+  var _useState15 = (0, _react.useState)([]),
     _useState16 = _slicedToArray(_useState15, 2),
-    filterValues = _useState16[0],
-    setFilterValues = _useState16[1];
-  var _useState17 = (0, _react.useState)([]),
+    businessIds = _useState16[0],
+    setBusinessIds = _useState16[1];
+  var _useState17 = (0, _react.useState)({}),
     _useState18 = _slicedToArray(_useState17, 2),
-    inActiveBusinesses = _useState18[0],
-    setInActiveBusinesses = _useState18[1];
+    filterValues = _useState18[0],
+    setFilterValues = _useState18[1];
+  var _useState19 = (0, _react.useState)([]),
+    _useState20 = _slicedToArray(_useState19, 2),
+    inActiveBusinesses = _useState20[0],
+    setInActiveBusinesses = _useState20[1];
 
   /**
    * Save filter type values
@@ -272,7 +277,7 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
    */
   var getCountries = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var _yield$ordering$count, _yield$ordering$count2, error, result, enabled;
+      var _yield$ordering$count, _yield$ordering$count2, error, result, enabled, cities, _iterator, _step, country;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -299,6 +304,21 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
                 countries: result,
                 enabled: enabled
               }));
+              cities = [];
+              _iterator = _createForOfIteratorHelper(result);
+              try {
+                for (_iterator.s(); !(_step = _iterator.n()).done;) {
+                  country = _step.value;
+                  if (country !== null && country !== void 0 && country.enabled) {
+                    cities = [].concat(_toConsumableArray(cities), _toConsumableArray(country === null || country === void 0 ? void 0 : country.cities));
+                  }
+                }
+              } catch (err) {
+                _iterator.e(err);
+              } finally {
+                _iterator.f();
+              }
+              setCitiesList(cities);
             } else {
               setCountriesState(_objectSpread(_objectSpread({}, countriesState), {}, {
                 loading: false,
@@ -813,7 +833,8 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
     filterValues: filterValues,
     handleChangeFilterValues: handleChangeFilterValues,
     businessTypeSelected: businessTypeSelected,
-    inActiveBusinesses: inActiveBusinesses
+    inActiveBusinesses: inActiveBusinesses,
+    citiesList: citiesList
   })));
 };
 exports.DashboardBusinessList = DashboardBusinessList;

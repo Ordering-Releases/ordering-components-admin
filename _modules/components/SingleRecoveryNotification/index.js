@@ -77,6 +77,16 @@ var SingleRecoveryNotification = function SingleRecoveryNotification(props) {
   };
 
   /**
+   * Update parameter data
+   * @param {changes} changes parameters to change
+   */
+  var handleChangeItems = function handleChangeItems(changes) {
+    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+      changes: _objectSpread(_objectSpread({}, formState.changes), changes)
+    }));
+  };
+
+  /**
    * Method to update channel field
    * @param {String} name params key of channel
    * @param {String} val params key of channel
@@ -292,7 +302,8 @@ var SingleRecoveryNotification = function SingleRecoveryNotification(props) {
     handleChangeSelect: handleChangeSelect,
     handleUpdateClick: handleUpdateClick,
     handleDeleteClick: handleDeleteClick,
-    handleClickAddBtn: handleClickAddBtn
+    handleClickAddBtn: handleClickAddBtn,
+    handleChangeItems: handleChangeItems
   })));
 };
 exports.SingleRecoveryNotification = SingleRecoveryNotification;

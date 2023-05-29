@@ -153,7 +153,8 @@ var Logistics = function Logistics(props) {
   }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     logisticList: logisticList,
-    parseLog: parseLog
+    parseLog: parseLog,
+    getLogistics: getLogistics
   })));
 };
 exports.Logistics = Logistics;

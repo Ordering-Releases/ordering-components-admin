@@ -205,7 +205,7 @@ var RecoveryActionDetail = function RecoveryActionDetail(props) {
    */
   var handleAddRecoveryAction = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var changes, requestOptions, response, content;
+      var _formState$changes, _formState$changes2, _formState$changes3, changes, channelBody, eventRuleRequestOptions, eventRuleResponse, eventContent, _eventContent$result, channelRequestOptions, response, content;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -216,7 +216,16 @@ var RecoveryActionDetail = function RecoveryActionDetail(props) {
               error: null
             });
             changes = _objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes);
-            requestOptions = {
+            channelBody = {
+              enabled: true,
+              channel: formState === null || formState === void 0 ? void 0 : (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.channel,
+              body: formState === null || formState === void 0 ? void 0 : (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.body,
+              title: formState === null || formState === void 0 ? void 0 : (_formState$changes3 = formState.changes) === null || _formState$changes3 === void 0 ? void 0 : _formState$changes3.title
+            };
+            changes === null || changes === void 0 ? true : delete changes.channel;
+            changes === null || changes === void 0 ? true : delete changes.body;
+            changes === null || changes === void 0 ? true : delete changes.title;
+            eventRuleRequestOptions = {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -224,20 +233,43 @@ var RecoveryActionDetail = function RecoveryActionDetail(props) {
               },
               body: JSON.stringify(changes)
             };
-            _context2.next = 7;
-            return fetch("".concat(ordering.root, "/event_rules"), requestOptions);
-          case 7:
+            _context2.next = 11;
+            return fetch("".concat(ordering.root, "/event_rules"), eventRuleRequestOptions);
+          case 11:
+            eventRuleResponse = _context2.sent;
+            _context2.next = 14;
+            return eventRuleResponse.json();
+          case 14:
+            eventContent = _context2.sent;
+            if (eventContent.error) {
+              _context2.next = 27;
+              break;
+            }
+            handleSuccessAddRecoveryAction && handleSuccessAddRecoveryAction(eventContent.result);
+            channelRequestOptions = {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token)
+              },
+              body: JSON.stringify(channelBody)
+            };
+            _context2.next = 20;
+            return fetch("".concat(ordering.root, "/event_rules/").concat(eventContent === null || eventContent === void 0 ? void 0 : (_eventContent$result = eventContent.result) === null || _eventContent$result === void 0 ? void 0 : _eventContent$result.id, "/channels"), channelRequestOptions);
+          case 20:
             response = _context2.sent;
-            _context2.next = 10;
+            _context2.next = 23;
             return response.json();
-          case 10:
+          case 23:
             content = _context2.sent;
             if (!content.error) {
+              setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+                changes: {}
+              }));
               setActionState({
-                error: null,
-                loading: false
+                loading: false,
+                error: null
               });
-              handleSuccessAddRecoveryAction && handleSuccessAddRecoveryAction(content.result);
               showToast(_ToastContext.ToastType.Success, t('RECOVERY_ACTION_ADDED', 'Recovery action added'));
               props.onClose && props.onClose();
             } else {
@@ -246,20 +278,28 @@ var RecoveryActionDetail = function RecoveryActionDetail(props) {
                 error: content.result
               });
             }
-            _context2.next = 17;
+            _context2.next = 28;
             break;
-          case 14:
-            _context2.prev = 14;
+          case 27:
+            setActionState({
+              loading: false,
+              error: eventContent.result
+            });
+          case 28:
+            _context2.next = 33;
+            break;
+          case 30:
+            _context2.prev = 30;
             _context2.t0 = _context2["catch"](0);
             setActionState({
               loading: false,
               error: _context2.t0.message
             });
-          case 17:
+          case 33:
           case "end":
             return _context2.stop();
         }
-      }, _callee2, null, [[0, 14]]);
+      }, _callee2, null, [[0, 30]]);
     }));
     return function handleAddRecoveryAction() {
       return _ref2.apply(this, arguments);
@@ -380,7 +420,7 @@ var RecoveryActionDetail = function RecoveryActionDetail(props) {
     };
   }();
   (0, _react.useEffect)(function () {
-    if (Object.keys(action).length === 0) {
+    if (Object.keys(action || {}).length === 0) {
       if (actionId) {
         setIsAddMode(false);
         cleanFormState();
