@@ -60,16 +60,28 @@ var WebsocketProvider = function WebsocketProvider(_ref) {
   (0, _react.useEffect)(function () {
     if (socket) {
       socket.connect();
-      // Get client socket ID
-      // socket.socket.on('connect', () => {
-      //   // console.log('SOCKET CONECCTED', socket.socket.id)
-      // })
     }
-
     return function () {
       socket && socket.close();
     };
   }, [socket]);
+  (0, _react.useEffect)(function () {
+    if (socket !== null && socket !== void 0 && socket.socket) {
+      socket.socket.on('connect', function () {
+        window.localStorage.setItem('websocket-connected-date', new Date());
+      });
+      socket.socket.on('disconnect', function (reason) {
+        if (reason === 'io server disconnect' && session.auth) {
+          window.setTimeout(socket.socket.connect(), 1000);
+        }
+      });
+      socket.socket.on('connect_error', function () {
+        if (session.auth) {
+          window.setTimeout(socket.socket.connect(), 1000);
+        }
+      });
+    }
+  }, [socket === null || socket === void 0 ? void 0 : socket.socket, session]);
   return /*#__PURE__*/_react.default.createElement(WebsocketContext.Provider, {
     value: socket
   }, children);

@@ -1266,13 +1266,8 @@ var OrderProvider = function OrderProvider(_ref) {
       socket.off('order_options_update', handleOrderOptionUpdate);
     };
   }, [state, socket]);
-
-  /**
-   * Join to carts room
-   */
-  (0, _react.useEffect)(function () {
+  var handleJoinRooms = function handleJoinRooms() {
     var _session$user3, _session$user4, _session$user5, _session$user6;
-    if (!session.auth || session.loading) return;
     socket.join("carts_".concat(session === null || session === void 0 ? void 0 : (_session$user3 = session.user) === null || _session$user3 === void 0 ? void 0 : _session$user3.id));
     socket.join("orderoptions_".concat(session === null || session === void 0 ? void 0 : (_session$user4 = session.user) === null || _session$user4 === void 0 ? void 0 : _session$user4.id));
     socket.join('drivers');
@@ -1289,6 +1284,17 @@ var OrderProvider = function OrderProvider(_ref) {
       socket.join("orders_".concat(session === null || session === void 0 ? void 0 : (_session$user7 = session.user) === null || _session$user7 === void 0 ? void 0 : _session$user7.id));
       socket.join("messages_orders_".concat(session === null || session === void 0 ? void 0 : (_session$user8 = session.user) === null || _session$user8 === void 0 ? void 0 : _session$user8.id));
     }
+  };
+
+  /**
+   * Join to carts room
+   */
+  (0, _react.useEffect)(function () {
+    if (!session.auth || session.loading || !(socket !== null && socket !== void 0 && socket.socket)) return;
+    handleJoinRooms();
+    socket.socket.on('connect', function () {
+      handleJoinRooms();
+    });
     return function () {
       var _session$user9, _session$user10, _session$user11, _session$user12;
       socket.leave("carts_".concat(session === null || session === void 0 ? void 0 : (_session$user9 = session.user) === null || _session$user9 === void 0 ? void 0 : _session$user9.id));
@@ -1308,7 +1314,7 @@ var OrderProvider = function OrderProvider(_ref) {
         socket.leave("messages_orders_".concat(session === null || session === void 0 ? void 0 : (_session$user14 = session.user) === null || _session$user14 === void 0 ? void 0 : _session$user14.id));
       }
     };
-  }, [socket, session]);
+  }, [socket === null || socket === void 0 ? void 0 : socket.socket, session]);
   var functions = {
     refreshOrderOptions: refreshOrderOptions,
     changeAddress: changeAddress,

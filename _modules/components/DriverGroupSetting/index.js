@@ -73,7 +73,7 @@ var DriverGroupSetting = function DriverGroupSetting(props) {
    */
   var getDriversGroups = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var requestOptions, response, content;
+      var requestOptions, where, conditions, response, content;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -88,13 +88,28 @@ var DriverGroupSetting = function DriverGroupSetting(props) {
                 Authorization: "Bearer ".concat(token)
               }
             };
-            _context.next = 5;
-            return fetch("".concat(ordering.root, "/drivergroups?params=name,drivers"), requestOptions);
-          case 5:
+            where = [];
+            conditions = [];
+            conditions.push({
+              attribute: 'type',
+              value: {
+                condition: '!=',
+                value: 1
+              }
+            });
+            if (conditions.length) {
+              where = {
+                conditions: conditions,
+                conector: 'AND'
+              };
+            }
+            _context.next = 9;
+            return fetch("".concat(ordering.root, "/drivergroups?params=name,drivers,type&where=").concat(JSON.stringify(where)), requestOptions);
+          case 9:
             response = _context.sent;
-            _context.next = 8;
+            _context.next = 12;
             return response.json();
-          case 8:
+          case 12:
             content = _context.sent;
             if (!content.error) {
               setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
@@ -102,20 +117,20 @@ var DriverGroupSetting = function DriverGroupSetting(props) {
                 loading: false
               }));
             }
-            _context.next = 15;
+            _context.next = 19;
             break;
-          case 12:
-            _context.prev = 12;
+          case 16:
+            _context.prev = 16;
             _context.t0 = _context["catch"](0);
             setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
               loading: false,
               error: [_context.t0.message]
             }));
-          case 15:
+          case 19:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 12]]);
+      }, _callee, null, [[0, 16]]);
     }));
     return function getDriversGroups() {
       return _ref.apply(this, arguments);
@@ -205,15 +220,12 @@ var DriverGroupSetting = function DriverGroupSetting(props) {
     }, []);
     var changedDriverIds = [];
     if (driverIds.includes(userId)) {
-      console.log(userId, driverIds);
       changedDriverIds = driverIds.filter(function (id) {
         return id !== userId;
       });
     } else {
-      console.log('else');
       changedDriverIds = [].concat(_toConsumableArray(driverIds), [userId]);
     }
-    console.log(changedDriverIds);
     var changes = {
       drivers: JSON.stringify(changedDriverIds)
     };

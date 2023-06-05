@@ -65,7 +65,7 @@ var DriversGroupOrders = function DriversGroupOrders(props) {
     var regExp = /^[0-9\b]+$/;
     if (value === '' || regExp.test(value)) {
       var changeValue = value === '' ? 0 : parseInt(value);
-      var _maxTimeBetweenBusiness = _objectSpread({}, maxTimeBetweenOrder);
+      var _maxTimeBetweenBusiness = _objectSpread({}, maxTimeBetweenBusiness);
       _maxTimeBetweenBusiness[option] = changeValue;
       setMaxTimeBetweenBusiness(_maxTimeBetweenBusiness);
       var maxTimeBetweenBusinessChanges = (_maxTimeBetweenBusiness === null || _maxTimeBetweenBusiness === void 0 ? void 0 : _maxTimeBetweenBusiness.hour) * 3600 + (_maxTimeBetweenBusiness === null || _maxTimeBetweenBusiness === void 0 ? void 0 : _maxTimeBetweenBusiness.minute) * 60 + (_maxTimeBetweenBusiness === null || _maxTimeBetweenBusiness === void 0 ? void 0 : _maxTimeBetweenBusiness.second);
@@ -78,7 +78,7 @@ var DriversGroupOrders = function DriversGroupOrders(props) {
     var regExp = /^[0-9\b]+$/;
     if (value === '' || regExp.test(value)) {
       var changeValue = value === '' ? 0 : parseInt(value);
-      var _maxTimeBetweenDelivery = _objectSpread({}, maxTimeBetweenOrder);
+      var _maxTimeBetweenDelivery = _objectSpread({}, maxTimeBetweenDelivery);
       _maxTimeBetweenDelivery[option] = changeValue;
       setMaxTimeBetweenDelivery(_maxTimeBetweenDelivery);
       var maxTimeBetweenDeliveryChanges = (_maxTimeBetweenDelivery === null || _maxTimeBetweenDelivery === void 0 ? void 0 : _maxTimeBetweenDelivery.hour) * 3600 + (_maxTimeBetweenDelivery === null || _maxTimeBetweenDelivery === void 0 ? void 0 : _maxTimeBetweenDelivery.minute) * 60 + (_maxTimeBetweenDelivery === null || _maxTimeBetweenDelivery === void 0 ? void 0 : _maxTimeBetweenDelivery.second);
@@ -113,6 +113,22 @@ var DriversGroupOrders = function DriversGroupOrders(props) {
         second: getSeconds(curDriversGroup === null || curDriversGroup === void 0 ? void 0 : curDriversGroup.orders_group_max_time_between_delivery)
       };
       setMaxTimeBetweenDelivery(_maxTimeBetweenDelivery);
+    } else {
+      setMaxTimeBetweenOrder({
+        hour: 0,
+        minute: 0,
+        second: 0
+      });
+      setMaxTimeBetweenBusiness({
+        hour: 0,
+        minute: 0,
+        second: 0
+      });
+      setMaxTimeBetweenDelivery({
+        hour: 0,
+        minute: 0,
+        second: 0
+      });
     }
   }, [curDriversGroup]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
