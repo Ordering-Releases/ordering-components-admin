@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+dayjs.extend(utc)
 
 export const BusinessAnalytics = (props) => {
   const {
@@ -31,7 +34,24 @@ export const BusinessAnalytics = (props) => {
 
   const paramsForAPI = (type) => {
     const rootUrl = `${ordering.root}/reports/${type}`
-    let params = `lapse=${filterList?.lapse}`
+    let lapse = filterList?.lapse
+    if (filterList?.lapse === 'today' ||
+      filterList?.lapse === 'yesterday' ||
+      filterList?.lapse === 'last_7_days' ||
+      filterList?.lapse === 'last_30_days') {
+      const dayCount = filterList?.lapse === 'today'
+        ? 0
+        : filterList?.lapse === 'yesterday'
+          ? -1
+          : filterList?.lapse === 'last_7_days'
+            ? -7
+            : -30
+      const formattedDate = dayjs().add(dayCount, 'day').format('YYYY-MM-DD')
+      const today = dayjs().format('YYYY-MM-DD')
+      lapse = `${formattedDate},${today}`
+    }
+
+    let params = `lapse=${lapse}`
     if (filterList?.businessIds && filterList?.businessIds.length > 0) params = `${params}&businesses=${filterList?.businessIds?.toString()}`
     if (filterList?.app_id && filterList.app_id !== 'all') params = `${params}&app_id=${filterList?.app_id}`
     if (filterList?.franchises_id && filterList?.franchises_id.length > 0) params = `${params}&franchises_id=${JSON.stringify(filterList?.franchises_id)}`

@@ -664,11 +664,7 @@ export const OrderProvider = ({ Alert, children, strategy }) => {
     }
   }, [state, socket])
 
-  /**
-   * Join to carts room
-   */
-  useEffect(() => {
-    if (!session.auth || session.loading) return
+  const handleJoinRooms = () => {
     socket.join(`carts_${session?.user?.id}`)
     socket.join(`orderoptions_${session?.user?.id}`)
     socket.join('drivers')
@@ -684,6 +680,18 @@ export const OrderProvider = ({ Alert, children, strategy }) => {
       socket.join(`orders_${session?.user?.id}`)
       socket.join(`messages_orders_${session?.user?.id}`)
     }
+  }
+
+  /**
+   * Join to carts room
+   */
+  useEffect(() => {
+    if (!session.auth || session.loading || !socket?.socket) return
+
+    handleJoinRooms()
+    socket.socket.on('connect', () => {
+      handleJoinRooms()
+    })
 
     return () => {
       socket.leave(`carts_${session?.user?.id}`)
@@ -702,7 +710,7 @@ export const OrderProvider = ({ Alert, children, strategy }) => {
         socket.leave(`messages_orders_${session?.user?.id}`)
       }
     }
-  }, [socket, session])
+  }, [socket?.socket, session])
 
   const functions = {
     refreshOrderOptions,

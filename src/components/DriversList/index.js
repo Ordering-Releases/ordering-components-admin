@@ -13,7 +13,6 @@ export const DriversList = (props) => {
     propsToFetch,
     isSearchByName,
     isSearchByCellphone,
-    asDashboard,
     isOrderDrivers,
     orderId
   } = props
@@ -23,6 +22,7 @@ export const DriversList = (props) => {
   const [, t] = useLanguage()
   const requestsState = {}
   const [driverActionStatus, setDriverActionStatus] = useState({ loading: true, error: null })
+  const [companyActionStatus, setCompanyActionStatus] = useState({ loading: true, error: null })
   const socket = useWebsocket()
 
   /**
@@ -34,6 +34,10 @@ export const DriversList = (props) => {
    * Array to save drivers
    */
   const [driversList, setDriversList] = useState({ drivers: [], loading: true, error: null })
+  /**
+   * Array to save companys
+   */
+  const [companysList, setCompanysList] = useState({ companys: [], loading: true, error: null })
   /**
    * Array to save online drivers
    */
@@ -97,6 +101,45 @@ export const DriversList = (props) => {
       setDriverActionStatus({ ...driverActionStatus, loading: false, error: [err.message] })
     }
   }
+
+    /**
+   * Method to assign driver_company to order from API
+   * @param {object} assign assigned order_id and driver_company_id
+   */
+    const handleAssignDriverCompany = async (assign) => {
+      try {
+        showToast(ToastType.Info, t('LOADING', 'Loading'))
+        setCompanyActionStatus({ ...companyActionStatus, loading: true })
+
+        const requestOptions = {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.token}`
+          },
+          body: JSON.stringify({
+            driver_company_id: assign.companyId,
+          })
+        }
+        const response = await fetch(`${ordering.root}/orders/${assign.orderId}`, requestOptions)
+        const { error, result } = await response.json()
+
+        setCompanyActionStatus({
+          loading: false,
+          error: result.error ? result.result : null
+        })
+
+        if (!error) {
+          if (assign.driverId) {
+            showToast(ToastType.Success, t('ORDER_COMPANY_ASSIGNED', 'Company assigned to order'))
+          } else {
+            showToast(ToastType.Success, t('ORDER_COMPANY_REMOVED', 'Company removed from the order'))
+          }
+        }
+      } catch (err) {
+        setCompanyActionStatus({ ...companyActionStatus, loading: false, error: [err.message] })
+      }
+    }
 
   /**
    * change online state for drivers
@@ -225,6 +268,7 @@ export const DriversList = (props) => {
   const getOrderDrivers = async () => {
     try {
       setDriversList({ ...driversList, loading: true })
+      setCompanysList({ ...companysList, loading: true })
       const requestOptions = {
         method: 'GET',
         headers: {
@@ -239,9 +283,19 @@ export const DriversList = (props) => {
         drivers: error ? [] : result?.drivers,
         error: error ? result : null
       })
+      setCompanysList({
+        loading: false,
+        companys: error ? [] : result?.driver_companies,
+        error: error ? result : null
+      })
     } catch (err) {
       setDriversList({
         ...driversList,
+        loading: false,
+        error: err.message
+      })
+      setCompanysList({
+        ...companysList,
         loading: false,
         error: err.message
       })
@@ -251,7 +305,6 @@ export const DriversList = (props) => {
   /**
    * listen for busy/not busy filter
    */
-
   useEffect(() => {
     getOnlineOfflineDrivers(driversList.drivers)
   }, [driversSubfilter])
@@ -337,12 +390,14 @@ export const DriversList = (props) => {
         <UIComponent
           {...props}
           driversList={driversList}
+          companysList={companysList}
           onlineDrivers={onlineDrivers}
           offlineDrivers={offlineDrivers}
           driverActionStatus={driverActionStatus}
           driversIsOnline={driversIsOnline}
           driversSubfilter={driversSubfilter}
           searchValue={searchValue}
+          handleAssignDriverCompany={handleAssignDriverCompany}
           handleChangeSearch={handleChangeSearch}
           handleChangeDriverIsOnline={handleChangeDriverIsOnline}
           handleChangeDriversSubFilter={handleChangeDriversSubFilter}

@@ -33,7 +33,22 @@ export const DriverGroupSetting = (props) => {
           Authorization: `Bearer ${token}`
         }
       }
-      const response = await fetch(`${ordering.root}/drivergroups?params=name,drivers`, requestOptions)
+      let where = []
+      const conditions = []
+      conditions.push({
+        attribute: 'type',
+        value: {
+          condition: '!=',
+          value: 1
+        }
+      })
+      if (conditions.length) {
+        where = {
+          conditions,
+          conector: 'AND'
+        }
+      }
+      const response = await fetch(`${ordering.root}/drivergroups?params=name,drivers,type&where=${JSON.stringify(where)}`, requestOptions)
       const content = await response.json()
       if (!content.error) {
         setDriversGroupsState({ ...driversGroupsState, groups: content.result, loading: false })
@@ -85,14 +100,11 @@ export const DriverGroupSetting = (props) => {
     const driverIds = selectedGroup.drivers?.reduce((ids, driver) => [...ids, driver.id], [])
     let changedDriverIds = []
     if (driverIds.includes(userId)) {
-      console.log(userId, driverIds)
       changedDriverIds = driverIds.filter(id => id !== userId)
     } else {
-      console.log('else')
       changedDriverIds = [...driverIds, userId]
     }
 
-    console.log(changedDriverIds)
     const changes = { drivers: JSON.stringify(changedDriverIds) }
     handleUpdateDriversGroup(groupId, changes)
   }

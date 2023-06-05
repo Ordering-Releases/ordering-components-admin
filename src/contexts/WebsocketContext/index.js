@@ -33,15 +33,32 @@ export const WebsocketProvider = ({ settings, children }) => {
   useEffect(() => {
     if (socket) {
       socket.connect()
-      // Get client socket ID
-      // socket.socket.on('connect', () => {
-      //   // console.log('SOCKET CONECCTED', socket.socket.id)
-      // })
     }
     return () => {
       socket && socket.close()
     }
   }, [socket])
+
+  useEffect(() => {
+    if (socket?.socket) {
+      socket.socket.on('connect', () => {
+        window.localStorage.setItem('websocket-connected-date', new Date())
+      })
+
+      socket.socket.on('disconnect', (reason) => {
+        if (reason === 'io server disconnect' && session.auth) {
+          window.setTimeout(socket.socket.connect(), 1000)
+        }
+      })
+
+      socket.socket.on('connect_error', () => {
+        if (session.auth) {
+          window.setTimeout(socket.socket.connect(), 1000)
+        }
+      })
+    }
+  }, [socket?.socket, session])
+
   return (
     <WebsocketContext.Provider value={socket}>
       {children}

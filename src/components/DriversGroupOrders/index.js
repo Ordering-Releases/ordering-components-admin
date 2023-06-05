@@ -39,7 +39,7 @@ export const DriversGroupOrders = (props) => {
     const regExp = /^[0-9\b]+$/
     if (value === '' || regExp.test(value)) {
       const changeValue = value === '' ? 0 : parseInt(value)
-      const _maxTimeBetweenBusiness = { ...maxTimeBetweenOrder }
+      const _maxTimeBetweenBusiness = { ...maxTimeBetweenBusiness }
       _maxTimeBetweenBusiness[option] = changeValue
       setMaxTimeBetweenBusiness(_maxTimeBetweenBusiness)
       const maxTimeBetweenBusinessChanges = _maxTimeBetweenBusiness?.hour * 3600 + _maxTimeBetweenBusiness?.minute * 60 + _maxTimeBetweenBusiness?.second
@@ -51,7 +51,7 @@ export const DriversGroupOrders = (props) => {
     const regExp = /^[0-9\b]+$/
     if (value === '' || regExp.test(value)) {
       const changeValue = value === '' ? 0 : parseInt(value)
-      const _maxTimeBetweenDelivery = { ...maxTimeBetweenOrder }
+      const _maxTimeBetweenDelivery = { ...maxTimeBetweenDelivery }
       _maxTimeBetweenDelivery[option] = changeValue
       setMaxTimeBetweenDelivery(_maxTimeBetweenDelivery)
       const maxTimeBetweenDeliveryChanges = _maxTimeBetweenDelivery?.hour * 3600 + _maxTimeBetweenDelivery?.minute * 60 + _maxTimeBetweenDelivery?.second
@@ -88,6 +88,10 @@ export const DriversGroupOrders = (props) => {
         second: getSeconds(curDriversGroup?.orders_group_max_time_between_delivery)
       }
       setMaxTimeBetweenDelivery(_maxTimeBetweenDelivery)
+    } else {
+      setMaxTimeBetweenOrder({ hour: 0, minute: 0, second: 0 })
+      setMaxTimeBetweenBusiness({ hour: 0, minute: 0, second: 0 })
+      setMaxTimeBetweenDelivery({ hour: 0, minute: 0, second: 0 })
     }
   }, [curDriversGroup])
 

@@ -295,11 +295,19 @@ export const Messages = (props) => {
   }, [messages, socket, order?.status])
 
   useEffect(() => {
+    if (!socket?.socket) return
     if (asDashboard) {
       socket.join(`messages_orders_${orderId}_${user?.level}`)
     } else {
       socket.join(`messages_orders_${user?.id}`)
     }
+    socket.socket.on('connect', () => {
+      if (asDashboard) {
+        socket.join(`messages_orders_${orderId}_${user?.level}`)
+      } else {
+        socket.join(`messages_orders_${user?.id}`)
+      }
+    })
     return () => {
       if (asDashboard) {
         socket.leave(`messages_orders_${orderId}_${user?.level}`)
@@ -307,7 +315,7 @@ export const Messages = (props) => {
         socket.leave(`messages_orders_${user?.id}`)
       }
     }
-  }, [socket, orderId])
+  }, [socket?.socket, orderId])
 
   return (
     <>

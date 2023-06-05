@@ -261,6 +261,7 @@ import { UserTypeFilter } from './components/UserTypeFilter'
 import { UserDetails } from './components/UserDetails'
 import { UserWallet } from './components/UserWallet'
 import { WebhookList } from './components/WebhookList'
+import { WebsocketStatus } from './components/WebsocketStatus'
 
 import { CODES } from './constants/code-numbers'
 
@@ -517,6 +518,7 @@ export {
   UserMetaFields,
   UserWallet,
   WebhookList,
+  WebsocketStatus,
 
   // Contexts
   ConfigContext,
