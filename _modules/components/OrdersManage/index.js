@@ -662,6 +662,16 @@ var OrdersManage = function OrdersManage(props) {
           case 0:
             where = [];
             conditions = [];
+            conditions.push({
+              attribute: 'products',
+              conditions: [{
+                attribute: 'type',
+                value: {
+                  condition: '=',
+                  value: 'item'
+                }
+              }]
+            });
             if (Object.keys(filterValues).length > 0) {
               filterConditons = [];
               if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.statuses.length) > 0) {
@@ -877,7 +887,7 @@ var OrdersManage = function OrdersManage(props) {
                 conector: 'AND'
               };
             }
-            _context5.prev = 11;
+            _context5.prev = 12;
             setNumberOfOrdersByStatus(_objectSpread(_objectSpread({}, numberOfOrdersByStatus), {}, {
               loading: true
             }));
@@ -888,13 +898,13 @@ var OrdersManage = function OrdersManage(props) {
                 Authorization: "Bearer ".concat(token)
               }
             };
-            _context5.next = 16;
+            _context5.next = 17;
             return fetch("".concat(ordering.root, "/orders/dashboard?v=2&where=").concat(JSON.stringify(where)), requestOptions);
-          case 16:
+          case 17:
             response = _context5.sent;
-            _context5.next = 19;
+            _context5.next = 20;
             return response.json();
-          case 19:
+          case 20:
             content = _context5.sent;
             if (!(content !== null && content !== void 0 && content.error)) {
               _orderStatusNumbers = Object.keys(orderStatuesList).reduce(function (sum, curr, index) {
@@ -929,20 +939,20 @@ var OrdersManage = function OrdersManage(props) {
                 error: true
               }));
             }
-            _context5.next = 26;
+            _context5.next = 27;
             break;
-          case 23:
-            _context5.prev = 23;
-            _context5.t0 = _context5["catch"](11);
+          case 24:
+            _context5.prev = 24;
+            _context5.t0 = _context5["catch"](12);
             setNumberOfOrdersByStatus(_objectSpread(_objectSpread({}, numberOfOrdersByStatus), {}, {
               loading: false,
               error: [_context5.t0.message]
             }));
-          case 26:
+          case 27:
           case "end":
             return _context5.stop();
         }
-      }, _callee5, null, [[11, 23]]);
+      }, _callee5, null, [[12, 24]]);
     }));
     return function getOrderNumbersByStatus() {
       return _ref5.apply(this, arguments);

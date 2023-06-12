@@ -191,6 +191,16 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
                 page_size: pageSize
               }
             };
+            conditions.push({
+              attribute: 'products',
+              conditions: [{
+                attribute: 'type',
+                value: {
+                  condition: '=',
+                  value: 'item'
+                }
+              }]
+            });
             if (orderIds) {
               conditions.push({
                 attribute: 'id',
@@ -460,11 +470,11 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
             } else {
               functionFetch = ordering.setAccessToken(accessToken).orders().asDashboard().where(where);
             }
-            _context2.next = 19;
+            _context2.next = 20;
             return functionFetch.get(options);
-          case 19:
-            return _context2.abrupt("return", _context2.sent);
           case 20:
+            return _context2.abrupt("return", _context2.sent);
+          case 21:
           case "end":
             return _context2.stop();
         }
@@ -864,6 +874,8 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       }
     };
     var handleRegisterOrder = function handleRegisterOrder(order) {
+      var _order$products, _order$products$;
+      if ((order === null || order === void 0 ? void 0 : (_order$products = order.products) === null || _order$products === void 0 ? void 0 : (_order$products$ = _order$products[0]) === null || _order$products$ === void 0 ? void 0 : _order$products$.type) === 'gift_card') return;
       if (customerId && (order === null || order === void 0 ? void 0 : order.customer_id) !== customerId) return;
       if (isOnlyDelivery && (order === null || order === void 0 ? void 0 : order.delivery_type) !== 1) return;
       var found = orderList.orders.find(function (_order) {
