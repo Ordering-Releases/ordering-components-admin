@@ -342,6 +342,16 @@ export const OrdersManage = (props) => {
   const getOrderNumbersByStatus = async () => {
     let where = []
     const conditions = []
+    conditions.push({
+      attribute: 'products',
+      conditions: [{
+        attribute: 'type',
+        value: {
+          condition: '=',
+          value: 'item'
+        }
+      }]
+    })
     if (Object.keys(filterValues).length > 0) {
       const filterConditons = []
       if (filterValues?.statuses.length > 0) {

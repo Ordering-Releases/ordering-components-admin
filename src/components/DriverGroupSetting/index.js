@@ -36,6 +36,10 @@ export const DriverGroupSetting = (props) => {
       let where = []
       const conditions = []
       conditions.push({
+        attribute: 'enabled',
+        value: true
+      })
+      conditions.push({
         attribute: 'type',
         value: {
           condition: '!=',

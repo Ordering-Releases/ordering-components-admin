@@ -104,6 +104,17 @@ export const DashboardOrdersList = (props) => {
       }
     }
 
+    conditions.push({
+      attribute: 'products',
+      conditions: [{
+        attribute: 'type',
+        value: {
+          condition: '=',
+          value: 'item'
+        }
+      }]
+    })
+
     if (orderIds) {
       conditions.push({ attribute: 'id', value: orderIds })
     }
@@ -716,6 +727,7 @@ export const DashboardOrdersList = (props) => {
       }
     }
     const handleRegisterOrder = (order) => {
+      if (order?.products?.[0]?.type === 'gift_card') return
       if (customerId && order?.customer_id !== customerId) return
       if (isOnlyDelivery && order?.delivery_type !== 1) return
       const found = orderList.orders.find(_order => _order?.id === order?.id)

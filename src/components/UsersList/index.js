@@ -936,7 +936,7 @@ UsersList.defaultProps = {
     'name', 'lastname', 'email', 'phone', 'photo', 'cellphone', 'schedule',
     'country_phone_code', 'city_id', 'city', 'address', 'addresses', 'max_days_in_future',
     'address_notes', 'driver_zone_restriction', 'dropdown_option_id', 'dropdown_option', 'location',
-    'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups', 'created_at'
+    'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups', 'created_at', 'timezone'
   ],
   paginationSettings: { initialPage: 1, pageSize: 10, controlType: 'infinity' },
   defaultUserTypesSelected: [0, 1, 2, 3],
