@@ -36,6 +36,7 @@ export const OrdersManage = (props) => {
   const [searchValue, setSearchValue] = useState(null)
   const [ordersStatusGroup, setOrdersStatusGroup] = useState(statusGroup || 'pending')
   const [filterValues, setFilterValues] = useState({})
+  const [timeStatus, setTimeStatus] = useState(null)
   const [updateStatus, setUpdateStatus] = useState(null)
   const [startMulitOrderStatusChange, setStartMulitOrderStatusChange] = useState(false)
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
@@ -532,6 +533,14 @@ export const OrdersManage = (props) => {
         value: businessId
       })
     }
+    if (timeStatus) {
+      additionalConditions.push(
+        {
+          attribute: 'time_status',
+          value: timeStatus
+        }
+      )
+    }
     if (additionalConditions.length) {
       conditions.push({
         conector: 'AND',
@@ -750,7 +759,7 @@ export const OrdersManage = (props) => {
 
   useEffect(() => {
     getOrderNumbersByStatus()
-  }, [filterValues, searchValue, driverId, customerId, businessId])
+  }, [filterValues, searchValue, driverId, customerId, businessId, timeStatus])
 
   useEffect(() => {
     if (!user.id || configState?.loading) return
@@ -809,6 +818,8 @@ export const OrdersManage = (props) => {
           numberOfOrdersByStatus={numberOfOrdersByStatus}
           allowColumns={allowColumns}
           setAllowColumns={setAllowColumns}
+          timeStatus={timeStatus}
+          setTimeStatus={setTimeStatus}
         />
       )}
     </>

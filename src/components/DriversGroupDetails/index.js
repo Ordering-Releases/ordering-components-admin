@@ -161,39 +161,14 @@ export const DriversGroupDetails = (props) => {
     try {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
       setActionState({ loading: true, error: null })
-      const extraAttributes = {
-        enabled: true,
-        autoassign_amount_drivers: 1,
-        autoassign_autoaccept_by_driver: false,
-        autoassign_autoreject_time: 30,
-        autoassign_increment_radius: 100,
-        autoassign_initial_radius: 500,
-        autoassign_max_in_accepted_by_business: 5,
-        autoassign_max_in_accepted_by_driver: 5,
-        autoassign_max_in_driver_in_business: 5,
-        autoassign_max_in_pending: 5,
-        autoassign_max_in_pickup_completed: 5,
-        autoassign_max_in_ready_for_pickup: 5,
-        autoassign_max_orders: 5,
-        autoassign_max_radius: 1000,
-        orders_group_max_distance_between_delivery: 200,
-        orders_group_max_distance_between_pickup: 200,
-        orders_group_max_orders: 1,
-        orders_group_max_time_between: 5,
-        orders_group_max_time_between_delivery: 600,
-        orders_group_max_time_between_pickup: 600,
-        orders_group_start_in_status: '7',
-        orders_group_use_maps_api: false,
-        ...(user?.level === 5 && { administrator_id: user?.id })
-      }
-      const changes = { ...changesState, ...extraAttributes }
+
       const requestOptions = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(changes)
+        body: JSON.stringify(changesState)
       }
       const response = await fetch(`${ordering.root}/drivergroups`, requestOptions)
       const content = await response.json()
@@ -344,6 +319,16 @@ export const DriversGroupDetails = (props) => {
     })
   }
 
+  const handleChangeType = (type) => {
+    const changes = { ...changesState }
+    delete changes.drivers
+    delete changes.driver_companies
+    changes.type = type
+    setSelectedDriverIds([])
+    setSelectedDriversCompanyIds([])
+    setChangesState({ ...changes })
+  }
+
   useEffect(() => {
     setChangesState({})
     if (curDriversGroup) {
@@ -360,8 +345,35 @@ export const DriversGroupDetails = (props) => {
       if (driversGroupId) {
         getDriversGroup()
       } else {
+        // default for new group
+        const extraAttributes = {
+          enabled: true,
+          autoassign_amount_drivers: 1,
+          autoassign_autoaccept_by_driver: false,
+          autoassign_autoreject_time: 30,
+          autoassign_increment_radius: 100,
+          autoassign_initial_radius: 500,
+          autoassign_max_in_accepted_by_business: 5,
+          autoassign_max_in_accepted_by_driver: 5,
+          autoassign_max_in_driver_in_business: 5,
+          autoassign_max_in_pending: 5,
+          autoassign_max_in_pickup_completed: 5,
+          autoassign_max_in_ready_for_pickup: 5,
+          autoassign_max_orders: 5,
+          autoassign_max_radius: 1000,
+          orders_group_max_distance_between_delivery: 200,
+          orders_group_max_distance_between_pickup: 200,
+          orders_group_max_orders: 1,
+          orders_group_max_time_between: 5,
+          orders_group_max_time_between_delivery: 600,
+          orders_group_max_time_between_pickup: 600,
+          orders_group_start_in_status: 7,
+          orders_group_use_maps_api: false,
+          ...(user?.level === 5 && { administrator_id: user?.id })
+        }
         setChangesState({
-          type: 0
+          type: 0,
+          ...extraAttributes
         })
         setSelectedBusinessIds([])
         setSelectedPaymethodIds([])
@@ -397,6 +409,7 @@ export const DriversGroupDetails = (props) => {
             handleUpdateDriversGroup={handleUpdateDriversGroup}
             handleDeleteDriversGroup={handleDeleteDriversGroup}
             handleAddDriversGroup={handleAddDriversGroup}
+            handleChangeType={handleChangeType}
           />
         )
       }

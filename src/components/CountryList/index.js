@@ -15,6 +15,7 @@ export const CountryList = (props) => {
   const [ordering] = useApi()
 
   const [countriesState, setCountriesState] = useState({ countries: [], loading: true, error: null })
+  const [actionState, setActionState] = useState({ loading: false, error: null })
   const [searchValue, setSearchValue] = useState(null)
   const [code, setCode] = useState(countryCode)
 
@@ -39,15 +40,15 @@ export const CountryList = (props) => {
     }
 
     try {
-      setCountriesState({ ...countriesState, loading: true })
+      setActionState({ ...actionState, loading: true })
       const { content: { error, result } } = await ordering.businesses().asDashboard().get({ headers: { 'X-Country-Code-X': code } })
       if (!error) {
         const _businessIds = result.map(business => business.id)
         handleChangeFilterList({ ...filterList, businessIds: _businessIds })
-        setCountriesState({ ...countriesState, loading: false })
       }
+      setActionState({ loading: false, error: error ? result : null })
     } catch (err) {
-      setCountriesState({ ...countriesState, loading: false, error: [err.message] })
+      setActionState({ loading: false, error: [err.message] })
     }
   }
 
@@ -119,6 +120,7 @@ export const CountryList = (props) => {
           handleClickFilterButton={handleClickFilterButton}
           code={code}
           setCode={setCode}
+          actionState={actionState}
         />
       )}
     </>

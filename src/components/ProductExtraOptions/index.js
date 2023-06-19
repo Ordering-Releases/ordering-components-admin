@@ -229,17 +229,18 @@ export const ProductExtraOptions = (props) => {
   /**
    * Method to save the new product extra option from API
    */
-  const handleAddOption = async () => {
+  const handleAddOption = async (payload) => {
     try {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
       setExtraState({ ...extraState, loading: true })
+      const changes = payload ? { ...addChangesState, ...payload } : { ...addChangesState }
       const requestOptions = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(addChangesState)
+        body: JSON.stringify(changes)
       }
       const response = await fetch(`${ordering.root}/business/${business.id}/extras/${extra.id}/options`, requestOptions)
       const content = await response.json()

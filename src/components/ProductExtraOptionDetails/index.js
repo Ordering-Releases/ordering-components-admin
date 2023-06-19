@@ -28,7 +28,7 @@ export const ProductExtraOptionDetails = (props) => {
   const [conditionalOptionId, setConditionalOptionId] = useState(null)
   const [extraState, setExtraState] = useState(extra)
   const [conditionalSubOptionId, setConditionalSubOptionId] = useState(null)
-  const [isAddForm, setIsAddForm] = useState(false)
+  const [isAddForm, setIsAddForm] = useState(true)
   const [dragoverSubOptionId, setDragoverSubOptionId] = useState(null)
   const [isSubOptionsBottom, setIsSubOptionsBottom] = useState(false)
 

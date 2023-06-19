@@ -168,13 +168,16 @@ export const ProductExtras = (props) => {
   /**
    * Method to save the new ingredient from API
    */
-  const handleAddExtra = async () => {
-    if (Object.keys(changesState).length === 0) {
+  const handleAddExtra = async (payload) => {
+    if (!payload && Object.keys(changesState).length === 0) {
       setIsAddMode(false)
       return
     }
     try {
-      const changes = {
+      const changes = payload ? {
+        business_id: business?.id,
+        ...payload
+      } : {
         business_id: business?.id,
         ...changesState
       }
