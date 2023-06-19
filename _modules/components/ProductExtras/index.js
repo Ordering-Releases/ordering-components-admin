@@ -333,12 +333,12 @@ var ProductExtras = function ProductExtras(props) {
    * Method to save the new ingredient from API
    */
   var handleAddExtra = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(payload) {
       var changes, requestOptions, response, content, extras, updatedBusiness;
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) switch (_context4.prev = _context4.next) {
           case 0:
-            if (!(Object.keys(changesState).length === 0)) {
+            if (!(!payload && Object.keys(changesState).length === 0)) {
               _context4.next = 3;
               break;
             }
@@ -346,7 +346,9 @@ var ProductExtras = function ProductExtras(props) {
             return _context4.abrupt("return");
           case 3:
             _context4.prev = 3;
-            changes = _objectSpread({
+            changes = payload ? _objectSpread({
+              business_id: business === null || business === void 0 ? void 0 : business.id
+            }, payload) : _objectSpread({
               business_id: business === null || business === void 0 ? void 0 : business.id
             }, changesState);
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
@@ -400,7 +402,7 @@ var ProductExtras = function ProductExtras(props) {
         }
       }, _callee4, null, [[3, 17]]);
     }));
-    return function handleAddExtra() {
+    return function handleAddExtra(_x6) {
       return _ref4.apply(this, arguments);
     };
   }();
@@ -542,7 +544,7 @@ var ProductExtras = function ProductExtras(props) {
         }
       }, _callee5, null, [[0, 13]]);
     }));
-    return function handleChangeExtraRank(_x6, _x7) {
+    return function handleChangeExtraRank(_x7, _x8) {
       return _ref5.apply(this, arguments);
     };
   }();

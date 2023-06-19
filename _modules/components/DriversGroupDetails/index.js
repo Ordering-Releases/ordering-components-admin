@@ -323,7 +323,7 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
    */
   var handleAddDriversGroup = /*#__PURE__*/function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-      var extraAttributes, changes, requestOptions, response, content, _content$result, newGroup, newAdmin, groups;
+      var requestOptions, response, content, _content$result, newGroup, newAdmin, groups;
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) switch (_context4.prev = _context4.next) {
           case 0:
@@ -333,48 +333,21 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
               loading: true,
               error: null
             });
-            extraAttributes = _objectSpread({
-              enabled: true,
-              autoassign_amount_drivers: 1,
-              autoassign_autoaccept_by_driver: false,
-              autoassign_autoreject_time: 30,
-              autoassign_increment_radius: 100,
-              autoassign_initial_radius: 500,
-              autoassign_max_in_accepted_by_business: 5,
-              autoassign_max_in_accepted_by_driver: 5,
-              autoassign_max_in_driver_in_business: 5,
-              autoassign_max_in_pending: 5,
-              autoassign_max_in_pickup_completed: 5,
-              autoassign_max_in_ready_for_pickup: 5,
-              autoassign_max_orders: 5,
-              autoassign_max_radius: 1000,
-              orders_group_max_distance_between_delivery: 200,
-              orders_group_max_distance_between_pickup: 200,
-              orders_group_max_orders: 1,
-              orders_group_max_time_between: 5,
-              orders_group_max_time_between_delivery: 600,
-              orders_group_max_time_between_pickup: 600,
-              orders_group_start_in_status: '7',
-              orders_group_use_maps_api: false
-            }, (user === null || user === void 0 ? void 0 : user.level) === 5 && {
-              administrator_id: user === null || user === void 0 ? void 0 : user.id
-            });
-            changes = _objectSpread(_objectSpread({}, changesState), extraAttributes);
             requestOptions = {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: "Bearer ".concat(token)
               },
-              body: JSON.stringify(changes)
+              body: JSON.stringify(changesState)
             };
-            _context4.next = 8;
+            _context4.next = 6;
             return fetch("".concat(ordering.root, "/drivergroups"), requestOptions);
-          case 8:
+          case 6:
             response = _context4.sent;
-            _context4.next = 11;
+            _context4.next = 9;
             return response.json();
-          case 11:
+          case 9:
             content = _context4.sent;
             if (!content.error) {
               setActionState({
@@ -404,20 +377,20 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
                 error: content.result
               });
             }
-            _context4.next = 18;
+            _context4.next = 16;
             break;
-          case 15:
-            _context4.prev = 15;
+          case 13:
+            _context4.prev = 13;
             _context4.t0 = _context4["catch"](0);
             setActionState({
               loading: false,
               error: [_context4.t0.message]
             });
-          case 18:
+          case 16:
           case "end":
             return _context4.stop();
         }
-      }, _callee4, null, [[0, 15]]);
+      }, _callee4, null, [[0, 13]]);
     }));
     return function handleAddDriversGroup() {
       return _ref4.apply(this, arguments);
@@ -546,6 +519,15 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
       driver_companies: JSON.stringify(filteredIds)
     }));
   };
+  var handleChangeType = function handleChangeType(type) {
+    var changes = _objectSpread({}, changesState);
+    delete changes.drivers;
+    delete changes.driver_companies;
+    changes.type = type;
+    setSelectedDriverIds([]);
+    setSelectedDriversCompanyIds([]);
+    setChangesState(_objectSpread({}, changes));
+  };
   (0, _react.useEffect)(function () {
     setChangesState({});
     if (curDriversGroup) {
@@ -563,9 +545,36 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
       if (driversGroupId) {
         getDriversGroup();
       } else {
-        setChangesState({
-          type: 0
+        // default for new group
+        var extraAttributes = _objectSpread({
+          enabled: true,
+          autoassign_amount_drivers: 1,
+          autoassign_autoaccept_by_driver: false,
+          autoassign_autoreject_time: 30,
+          autoassign_increment_radius: 100,
+          autoassign_initial_radius: 500,
+          autoassign_max_in_accepted_by_business: 5,
+          autoassign_max_in_accepted_by_driver: 5,
+          autoassign_max_in_driver_in_business: 5,
+          autoassign_max_in_pending: 5,
+          autoassign_max_in_pickup_completed: 5,
+          autoassign_max_in_ready_for_pickup: 5,
+          autoassign_max_orders: 5,
+          autoassign_max_radius: 1000,
+          orders_group_max_distance_between_delivery: 200,
+          orders_group_max_distance_between_pickup: 200,
+          orders_group_max_orders: 1,
+          orders_group_max_time_between: 5,
+          orders_group_max_time_between_delivery: 600,
+          orders_group_max_time_between_pickup: 600,
+          orders_group_start_in_status: 7,
+          orders_group_use_maps_api: false
+        }, (user === null || user === void 0 ? void 0 : user.level) === 5 && {
+          administrator_id: user === null || user === void 0 ? void 0 : user.id
         });
+        setChangesState(_objectSpread({
+          type: 0
+        }, extraAttributes));
         setSelectedBusinessIds([]);
         setSelectedPaymethodIds([]);
         setSelectedDriverIds([]);
@@ -595,7 +604,8 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
     handleSelectAllDriversCompany: handleSelectAllDriversCompany,
     handleUpdateDriversGroup: handleUpdateDriversGroup,
     handleDeleteDriversGroup: handleDeleteDriversGroup,
-    handleAddDriversGroup: handleAddDriversGroup
+    handleAddDriversGroup: handleAddDriversGroup,
+    handleChangeType: handleChangeType
   })));
 };
 exports.DriversGroupDetails = DriversGroupDetails;

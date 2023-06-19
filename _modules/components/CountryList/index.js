@@ -45,14 +45,21 @@ var CountryList = function CountryList(props) {
     _useState2 = _slicedToArray(_useState, 2),
     countriesState = _useState2[0],
     setCountriesState = _useState2[1];
-  var _useState3 = (0, _react.useState)(null),
+  var _useState3 = (0, _react.useState)({
+      loading: false,
+      error: null
+    }),
     _useState4 = _slicedToArray(_useState3, 2),
-    searchValue = _useState4[0],
-    setSearchValue = _useState4[1];
-  var _useState5 = (0, _react.useState)(countryCode),
+    actionState = _useState4[0],
+    setActionState = _useState4[1];
+  var _useState5 = (0, _react.useState)(null),
     _useState6 = _slicedToArray(_useState5, 2),
-    code = _useState6[0],
-    setCode = _useState6[1];
+    searchValue = _useState6[0],
+    setSearchValue = _useState6[1];
+  var _useState7 = (0, _react.useState)(countryCode),
+    _useState8 = _slicedToArray(_useState7, 2),
+    code = _useState8[0],
+    setCode = _useState8[1];
   var rex = new RegExp(/^[A-Za-z0-9\s]+$/g);
 
   /**
@@ -98,7 +105,7 @@ var CountryList = function CountryList(props) {
             return _context2.abrupt("return");
           case 3:
             _context2.prev = 3;
-            setCountriesState(_objectSpread(_objectSpread({}, countriesState), {}, {
+            setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
               loading: true
             }));
             _context2.next = 7;
@@ -119,24 +126,25 @@ var CountryList = function CountryList(props) {
               handleChangeFilterList(_objectSpread(_objectSpread({}, filterList), {}, {
                 businessIds: _businessIds
               }));
-              setCountriesState(_objectSpread(_objectSpread({}, countriesState), {}, {
-                loading: false
-              }));
             }
-            _context2.next = 17;
+            setActionState({
+              loading: false,
+              error: error ? result : null
+            });
+            _context2.next = 18;
             break;
-          case 14:
-            _context2.prev = 14;
+          case 15:
+            _context2.prev = 15;
             _context2.t0 = _context2["catch"](3);
-            setCountriesState(_objectSpread(_objectSpread({}, countriesState), {}, {
+            setActionState({
               loading: false,
               error: [_context2.t0.message]
-            }));
-          case 17:
+            });
+          case 18:
           case "end":
             return _context2.stop();
         }
-      }, _callee2, null, [[3, 14]]);
+      }, _callee2, null, [[3, 15]]);
     }));
     return function getBusinessList() {
       return _ref2.apply(this, arguments);
@@ -234,7 +242,8 @@ var CountryList = function CountryList(props) {
     onSearch: setSearchValue,
     handleClickFilterButton: handleClickFilterButton,
     code: code,
-    setCode: setCode
+    setCode: setCode,
+    actionState: actionState
   })));
 };
 exports.CountryList = CountryList;

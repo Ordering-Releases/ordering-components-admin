@@ -329,8 +329,8 @@ var ProductExtraOptions = function ProductExtraOptions(props) {
    * Method to save the new product extra option from API
    */
   var handleAddOption = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var requestOptions, response, content, options, updatedExtra;
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(payload) {
+      var changes, requestOptions, response, content, options, updatedExtra;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -339,21 +339,22 @@ var ProductExtraOptions = function ProductExtraOptions(props) {
             setExtraState(_objectSpread(_objectSpread({}, extraState), {}, {
               loading: true
             }));
+            changes = payload ? _objectSpread(_objectSpread({}, addChangesState), payload) : _objectSpread({}, addChangesState);
             requestOptions = {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: "Bearer ".concat(token)
               },
-              body: JSON.stringify(addChangesState)
+              body: JSON.stringify(changes)
             };
-            _context2.next = 6;
+            _context2.next = 7;
             return fetch("".concat(ordering.root, "/business/").concat(business.id, "/extras/").concat(extra.id, "/options"), requestOptions);
-          case 6:
+          case 7:
             response = _context2.sent;
-            _context2.next = 9;
+            _context2.next = 10;
             return response.json();
-          case 9:
+          case 10:
             content = _context2.sent;
             if (!content.error) {
               setAddChangesState({
@@ -381,22 +382,22 @@ var ProductExtraOptions = function ProductExtraOptions(props) {
                 suboptions: []
               }), 'edit');
             }
-            _context2.next = 16;
+            _context2.next = 17;
             break;
-          case 13:
-            _context2.prev = 13;
+          case 14:
+            _context2.prev = 14;
             _context2.t0 = _context2["catch"](0);
             setExtraState(_objectSpread(_objectSpread({}, extraState), {}, {
               loading: false,
               error: _context2.t0.message
             }));
-          case 16:
+          case 17:
           case "end":
             return _context2.stop();
         }
-      }, _callee2, null, [[0, 13]]);
+      }, _callee2, null, [[0, 14]]);
     }));
-    return function handleAddOption() {
+    return function handleAddOption(_x2) {
       return _ref2.apply(this, arguments);
     };
   }();
@@ -459,7 +460,7 @@ var ProductExtraOptions = function ProductExtraOptions(props) {
         }
       }, _callee3, null, [[0, 13]]);
     }));
-    return function handleDeteteOption(_x2) {
+    return function handleDeteteOption(_x3) {
       return _ref3.apply(this, arguments);
     };
   }();
@@ -688,7 +689,7 @@ var ProductExtraOptions = function ProductExtraOptions(props) {
         }
       }, _callee5, null, [[0, 13]]);
     }));
-    return function handleChangeOptionRank(_x3, _x4) {
+    return function handleChangeOptionRank(_x4, _x5) {
       return _ref5.apply(this, arguments);
     };
   }();
