@@ -9,6 +9,8 @@ var _react = _interopRequireWildcard(require("react"));
 var _propTypes = _interopRequireDefault(require("prop-types"));
 var _OrderContext = require("../../contexts/OrderContext");
 var _LanguageContext = require("../../contexts/LanguageContext");
+var _CustomerContext = require("../../contexts/CustomerContext");
+var _ConfigContext = require("../../contexts/ConfigContext");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -28,14 +30,20 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  * Component to manage coupon form behavior without UI component
  */
 var CouponControl = function CouponControl(props) {
-  var _orderState$carts;
+  var _orderState$carts, _orderState$carts2;
   var businessId = props.businessId,
+    businessIds = props.businessIds,
     price = props.price,
     UIComponent = props.UIComponent;
+  var _useConfig = (0, _ConfigContext.useConfig)(),
+    _useConfig2 = _slicedToArray(_useConfig, 1),
+    configs = _useConfig2[0].configs;
   var _useOrder = (0, _OrderContext.useOrder)(),
     _useOrder2 = _slicedToArray(_useOrder, 2),
     orderState = _useOrder2[0],
-    applyCoupon = _useOrder2[1].applyCoupon;
+    _useOrder2$ = _useOrder2[1],
+    applyCoupon = _useOrder2$.applyCoupon,
+    applyOffer = _useOrder2$.applyOffer;
   var _useState = (0, _react.useState)({
       open: false,
       content: null,
@@ -47,7 +55,10 @@ var CouponControl = function CouponControl(props) {
   var _useLanguage = (0, _LanguageContext.useLanguage)(),
     _useLanguage2 = _slicedToArray(_useLanguage, 2),
     t = _useLanguage2[1];
-  var couponDefault = (orderState === null || orderState === void 0 ? void 0 : orderState.carts) && businessId && (orderState === null || orderState === void 0 ? void 0 : (_orderState$carts = orderState.carts["businessId:".concat(businessId)]) === null || _orderState$carts === void 0 ? void 0 : _orderState$carts.coupon) || null;
+  var _useCustomer = (0, _CustomerContext.useCustomer)(),
+    _useCustomer2 = _slicedToArray(_useCustomer, 1),
+    user = _useCustomer2[0].user;
+  var couponDefault = (orderState === null || orderState === void 0 ? void 0 : orderState.carts) && businessId && (orderState === null || orderState === void 0 ? void 0 : (_orderState$carts = orderState.carts) === null || _orderState$carts === void 0 ? void 0 : (_orderState$carts2 = _orderState$carts["businessId:".concat(businessId)]) === null || _orderState$carts2 === void 0 ? void 0 : _orderState$carts2.coupon) || null;
   var _useState3 = (0, _react.useState)(null),
     _useState4 = _slicedToArray(_useState3, 2),
     couponInput = _useState4[0],
@@ -57,27 +68,92 @@ var CouponControl = function CouponControl(props) {
    * method to manage coupon apply button
    */
   var handleButtonApplyClick = function handleButtonApplyClick() {
-    applyCoupon({
-      business_id: businessId,
-      coupon: couponInput
-    });
+    var _configs$advanced_off;
+    setCouponInput('');
+    if (!(configs !== null && configs !== void 0 && (_configs$advanced_off = configs.advanced_offers_module) !== null && _configs$advanced_off !== void 0 && _configs$advanced_off.value)) {
+      if (user !== null && user !== void 0 && user.id) {
+        // Callcenter
+        if (businessIds) {
+          businessIds.map(function (businessId) {
+            return applyCoupon({
+              business_id: businessId,
+              coupon: couponInput
+            }, {
+              businessId: businessId,
+              userId: user === null || user === void 0 ? void 0 : user.id
+            });
+          });
+          return;
+        }
+        applyCoupon({
+          business_id: businessId,
+          coupon: couponInput
+        }, {
+          businessId: businessId,
+          userId: user === null || user === void 0 ? void 0 : user.id
+        });
+      } else {
+        if (businessIds) {
+          businessIds.map(function (businessId) {
+            return applyCoupon({
+              business_id: businessId,
+              coupon: couponInput
+            });
+          });
+          return;
+        }
+        applyCoupon({
+          business_id: businessId,
+          coupon: couponInput
+        });
+      }
+    } else {
+      if (businessIds) {
+        businessIds.forEach(function (businessId) {
+          var dataOffer = {
+            business_id: businessId,
+            coupon: couponInput,
+            force: true
+          };
+          if (user !== null && user !== void 0 && user.id) dataOffer.userId = user === null || user === void 0 ? void 0 : user.id; // Callcenter
+          applyOffer(dataOffer);
+        });
+        return;
+      }
+      var dataOffer = {
+        business_id: businessId,
+        coupon: couponInput,
+        force: true
+      };
+      if (user !== null && user !== void 0 && user.id) dataOffer.userId = user === null || user === void 0 ? void 0 : user.id; // Callcenter
+      applyOffer(dataOffer);
+    }
   };
 
   /**
    * method to manage remove coupon assigned
    */
   var handleRemoveCouponClick = function handleRemoveCouponClick() {
+    if (businessIds) {
+      businessIds.map(function (businessId) {
+        return applyCoupon({
+          business_id: businessId,
+          coupon: null
+        });
+      });
+      return;
+    }
     applyCoupon({
       business_id: businessId,
       coupon: null
     });
   };
   (0, _react.useEffect)(function () {
-    if (price < 1) {
+    if (price < 0) {
       handleRemoveCouponClick();
       setConfirm(_objectSpread(_objectSpread({}, confirm), {}, {
         open: true,
-        content: t('COUPON_TOTAL_ERROR', 'The total value of the cart with discount must be at least 1$'),
+        content: t('COUPON_TOTAL_ERROR', 'The total value of the cart with discount must be positive'),
         error: true
       }));
     }
@@ -103,31 +179,6 @@ CouponControl.propTypes = {
   /**
    * isDisabled, flag to enable/disable coupon input
    */
-  isDisabled: _propTypes.default.bool,
-  /**
-   * Components types before coupon control
-   * Array of type components, the parent props will pass to these components
-   */
-  beforeComponents: _propTypes.default.arrayOf(_propTypes.default.elementType),
-  /**
-   * Components types after coupon control
-   * Array of type components, the parent props will pass to these components
-   */
-  afterComponents: _propTypes.default.arrayOf(_propTypes.default.elementType),
-  /**
-   * Elements before coupon control
-   * Array of HTML/Components elements, these components will not get the parent props
-   */
-  beforeElements: _propTypes.default.arrayOf(_propTypes.default.element),
-  /**
-   * Elements after coupon control
-   * Array of HTML/Components elements, these components will not get the parent props
-   */
-  afterElements: _propTypes.default.arrayOf(_propTypes.default.element)
+  isDisabled: _propTypes.default.bool
 };
-CouponControl.defaultProps = {
-  beforeComponents: [],
-  afterComponents: [],
-  beforeElements: [],
-  afterElements: []
-};
+CouponControl.defaultProps = {};

@@ -729,6 +729,10 @@ var CODES = [{
   phoneCode: '597',
   countryName: 'Suriname'
 }, {
+  countryCode: 'SX',
+  phoneCode: '721',
+  countryName: 'Sint Maarten'
+}, {
   countryCode: 'SZ',
   phoneCode: '268',
   countryName: 'Swaziland'

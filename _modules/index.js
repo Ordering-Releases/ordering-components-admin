@@ -585,6 +585,12 @@ Object.defineProperty(exports, "CustomDomain", {
     return _CustomDomain.CustomDomain;
   }
 });
+Object.defineProperty(exports, "CustomOrderDetails", {
+  enumerable: true,
+  get: function get() {
+    return _CustomOrderDetails.CustomOrderDetails;
+  }
+});
 Object.defineProperty(exports, "CustomerContext", {
   enumerable: true,
   get: function get() {
@@ -1117,6 +1123,12 @@ Object.defineProperty(exports, "PaymentOptionStripeRedirect", {
   enumerable: true,
   get: function get() {
     return _PaymentOptionStripeRedirect.PaymentOptionStripeRedirect;
+  }
+});
+Object.defineProperty(exports, "PaymentOptionWallet", {
+  enumerable: true,
+  get: function get() {
+    return _PaymentOptionWallet.PaymentOptionWallet;
   }
 });
 Object.defineProperty(exports, "PaymentOptions", {
@@ -1848,6 +1860,7 @@ var _CountryList = require("./components/CountryList");
 var _CouponControl = require("./components/CouponControl");
 var _ContentForm = require("./components/ContentForm");
 var _CustomDomain = require("./components/CustomDomain");
+var _CustomOrderDetails = require("./components/CustomOrderDetails");
 var _DashboardBusinessList = require("./components/DashboardBusinessList");
 var _DashboardOrdersList = require("./components/DashboardOrdersList");
 var _DeliveryzoneList = require("./components/DeliveryzoneList");
@@ -1918,6 +1931,7 @@ var _OrdersOverview = require("./components/OrdersOverview");
 var _OrderTypeControl = require("./components/OrderTypeControl");
 var _PaymentOptions = require("./components/PaymentOptions");
 var _PaymentOptionSquare = require("./components/PaymentOptionSquare");
+var _PaymentOptionWallet = require("./components/PaymentOptionWallet");
 var _PagesList = require("./components/PagesList");
 var _PageForm = require("./components/PageForm");
 var _PlaceList = require("./components/PlaceList");

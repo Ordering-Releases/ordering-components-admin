@@ -7,9 +7,15 @@ Object.defineProperty(exports, "__esModule", {
 exports.ProductForm = void 0;
 var _react = _interopRequireWildcard(require("react"));
 var _propTypes = _interopRequireDefault(require("prop-types"));
+var _moment = _interopRequireDefault(require("moment"));
 var _OrderContext = require("../../contexts/OrderContext");
 var _ConfigContext = require("../../contexts/ConfigContext");
 var _ApiContext = require("../../contexts/ApiContext");
+var _EventContext = require("../../contexts/EventContext");
+var _SessionContext = require("../../contexts/SessionContext");
+var _ToastContext = require("../../contexts/ToastContext");
+var _LanguageContext = require("../../contexts/LanguageContext");
+var _WebsocketContext = require("../../contexts/WebsocketContext");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -22,6 +28,10 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -29,14 +39,42 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var ProductForm = function ProductForm(props) {
-  var _props$productCart, _cart$products, _cart$products2, _product$product, _product$product2, _product$product3, _product$product4;
+  var _props$productCart, _orderState$carts, _product$product, _product$product2, _product$product3, _product$product4;
   var UIComponent = props.UIComponent,
     useOrderContext = props.useOrderContext,
-    onSave = props.onSave;
+    onSave = props.onSave,
+    handleCustomSave = props.handleCustomSave,
+    isStarbucks = props.isStarbucks,
+    isService = props.isService,
+    isCartProduct = props.isCartProduct,
+    productAddedToCartLength = props.productAddedToCartLength,
+    professionalList = props.professionalList,
+    handleUpdateProducts = props.handleUpdateProducts,
+    handleUpdateProfessionals = props.handleUpdateProfessionals,
+    handleChangeProfessional = props.handleChangeProfessional;
   var requestsState = {};
+  var _useSession = (0, _SessionContext.useSession)(),
+    _useSession2 = _slicedToArray(_useSession, 2),
+    _useSession2$ = _useSession2[0],
+    user = _useSession2$.user,
+    token = _useSession2$.token,
+    login = _useSession2[1].login;
+  var _useToast = (0, _ToastContext.useToast)(),
+    _useToast2 = _slicedToArray(_useToast, 2),
+    showToast = _useToast2[1].showToast;
+  var _useLanguage = (0, _LanguageContext.useLanguage)(),
+    _useLanguage2 = _slicedToArray(_useLanguage, 2),
+    t = _useLanguage2[1];
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
+  var socket = (0, _WebsocketContext.useWebsocket)();
+  /**
+   * Events context
+  */
+  var _useEvent = (0, _EventContext.useEvent)(),
+    _useEvent2 = _slicedToArray(_useEvent, 1),
+    events = _useEvent2[0];
   /**
    * Original product state
    */
@@ -71,10 +109,37 @@ var ProductForm = function ProductForm(props) {
   /**
    * Suboption by default when there is only one
    */
-  var _useState7 = (0, _react.useState)(null),
+  var _useState7 = (0, _react.useState)([]),
     _useState8 = _slicedToArray(_useState7, 2),
-    defaultSubOption = _useState8[0],
-    setDefaultSubOption = _useState8[1];
+    defaultSubOptions = _useState8[0],
+    setDefaultSubOptions = _useState8[1];
+
+  /**
+   * Custom Suboption by default
+   */
+  var _useState9 = (0, _react.useState)([]),
+    _useState10 = _slicedToArray(_useState9, 2),
+    customDefaultSubOptions = _useState10[0],
+    setCustomDefaultSubOptions = _useState10[1];
+  var _useState11 = (0, _react.useState)({
+      loading: false,
+      professionals: [],
+      error: null
+    }),
+    _useState12 = _slicedToArray(_useState11, 2),
+    professionalListState = _useState12[0],
+    setProfessionalListState = _useState12[1];
+
+  /**
+   * Action status
+   */
+  var _useState13 = (0, _react.useState)({
+      loading: false,
+      error: null
+    }),
+    _useState14 = _slicedToArray(_useState13, 2),
+    actionStatus = _useState14[0],
+    setActionStatus = _useState14[1];
 
   /**
    * Edit mode
@@ -99,26 +164,26 @@ var ProductForm = function ProductForm(props) {
   /**
    * Current cart
    */
-  var cart = orderState.carts["businessId:".concat(props.businessId)];
+  var cart = (_orderState$carts = orderState.carts) === null || _orderState$carts === void 0 ? void 0 : _orderState$carts["businessId:".concat(props.businessId)];
 
   /**
-   * Product in cart
+   * Total products in cart
    */
-  var productInCart = product.product && (cart === null || cart === void 0 ? void 0 : (_cart$products = cart.products) === null || _cart$products === void 0 ? void 0 : _cart$products.find(function (prod) {
-    return prod.id === product.product.id;
-  }));
-
-  /**
-   * Total product in cart
-   */
-  var totalBalance = ((productInCart === null || productInCart === void 0 ? void 0 : productInCart.quantity) || 0) - removeToBalance;
+  var cartProducts = Object.values(orderState.carts).reduce(function (products, _cart) {
+    return [].concat(_toConsumableArray(products), _toConsumableArray(_cart === null || _cart === void 0 ? void 0 : _cart.products));
+  }, []);
 
   /**
    * Total the current product in cart
    */
-  var productBalance = ((cart === null || cart === void 0 ? void 0 : (_cart$products2 = cart.products) === null || _cart$products2 === void 0 ? void 0 : _cart$products2.reduce(function (sum, _product) {
+  var productBalance = cartProducts.reduce(function (sum, _product) {
     return sum + (product.product && _product.id === product.product.id ? _product.quantity : 0);
-  }, 0)) || 0) - removeToBalance;
+  }, 0);
+
+  /**
+   * Total product in cart
+   */
+  var totalBalance = (productBalance || 0) - removeToBalance;
 
   /**
    * Config context manager
@@ -135,7 +200,7 @@ var ProductForm = function ProductForm(props) {
   /**
    * Max total product in cart by config
    */
-  var maxCartProductInventory = ((_product$product = product.product) !== null && _product$product !== void 0 && _product$product.inventoried ? (_product$product2 = product.product) === null || _product$product2 === void 0 ? void 0 : _product$product2.quantity : undefined) - productBalance;
+  var maxCartProductInventory = ((_product$product = product.product) !== null && _product$product !== void 0 && _product$product.inventoried ? (_product$product2 = product.product) === null || _product$product2 === void 0 ? void 0 : _product$product2.quantity : undefined) - totalBalance;
 
   /**
    * True if product is sold out
@@ -165,6 +230,7 @@ var ProductForm = function ProductForm(props) {
         selected: true
       };
     }
+    var quantity = productAddedToCartLength && product !== null && product !== void 0 && product.maximum_per_order ? (product === null || product === void 0 ? void 0 : product.maximum_per_order) - productAddedToCartLength : (_props$productCart2 = props.productCart) === null || _props$productCart2 === void 0 ? void 0 : _props$productCart2.quantity;
     var newProductCart = _objectSpread(_objectSpread({}, props.productCart), {}, {
       id: product.id,
       price: product.price,
@@ -173,10 +239,11 @@ var ProductForm = function ProductForm(props) {
       categoryId: product.category_id,
       inventoried: product.inventoried,
       stock: product.quantity,
-      ingredients: ((_props$productCart2 = props.productCart) === null || _props$productCart2 === void 0 ? void 0 : _props$productCart2.ingredients) || ingredients,
-      options: ((_props$productCart3 = props.productCart) === null || _props$productCart3 === void 0 ? void 0 : _props$productCart3.options) || {},
-      comment: ((_props$productCart4 = props.productCart) === null || _props$productCart4 === void 0 ? void 0 : _props$productCart4.comment) || null,
-      quantity: ((_props$productCart5 = props.productCart) === null || _props$productCart5 === void 0 ? void 0 : _props$productCart5.quantity) || 1
+      ingredients: ((_props$productCart3 = props.productCart) === null || _props$productCart3 === void 0 ? void 0 : _props$productCart3.ingredients) || ingredients,
+      options: ((_props$productCart4 = props.productCart) === null || _props$productCart4 === void 0 ? void 0 : _props$productCart4.options) || {},
+      comment: ((_props$productCart5 = props.productCart) === null || _props$productCart5 === void 0 ? void 0 : _props$productCart5.comment) || null,
+      quantity: quantity || 1,
+      favorite: product === null || product === void 0 ? void 0 : product.favorite
     });
     newProductCart.unitTotal = getUnitTotal(newProductCart);
     newProductCart.total = newProductCart.unitTotal * newProductCart.quantity;
@@ -190,13 +257,14 @@ var ProductForm = function ProductForm(props) {
   var getUnitTotal = function getUnitTotal(productCart) {
     var _product$product7;
     var subtotal = 0;
-    for (var i = 0; i < ((_product$product5 = product.product) === null || _product$product5 === void 0 ? void 0 : _product$product5.extras.length); i++) {
-      var _product$product5, _product$product6;
+    for (var i = 0; i < ((_product$product5 = product.product) === null || _product$product5 === void 0 ? void 0 : (_product$product5$ext = _product$product5.extras) === null || _product$product5$ext === void 0 ? void 0 : _product$product5$ext.length); i++) {
+      var _product$product5, _product$product5$ext, _product$product6;
       var extra = (_product$product6 = product.product) === null || _product$product6 === void 0 ? void 0 : _product$product6.extras[i];
-      for (var j = 0; j < extra.options.length; j++) {
+      for (var j = 0; j < ((_extra$options = extra.options) === null || _extra$options === void 0 ? void 0 : _extra$options.length); j++) {
+        var _extra$options;
         var option = extra.options[j];
-        for (var k = 0; k < option.suboptions.length; k++) {
-          var _productCart$options, _productCart$options$;
+        for (var k = 0; k < ((_option$suboptions = option.suboptions) === null || _option$suboptions === void 0 ? void 0 : _option$suboptions.length); k++) {
+          var _option$suboptions, _productCart$options, _productCart$options$;
           var suboption = option.suboptions[k];
           if ((_productCart$options = productCart.options["id:".concat(option.id)]) !== null && _productCart$options !== void 0 && (_productCart$options$ = _productCart$options.suboptions["id:".concat(suboption.id)]) !== null && _productCart$options$ !== void 0 && _productCart$options$.selected) {
             var suboptionState = productCart.options["id:".concat(option.id)].suboptions["id:".concat(suboption.id)];
@@ -209,50 +277,148 @@ var ProductForm = function ProductForm(props) {
     }
     return ((_product$product7 = product.product) === null || _product$product7 === void 0 ? void 0 : _product$product7.price) + subtotal;
   };
+  /**
+   * Method to add, remove favorite info for user from API
+   */
+  var handleFavoriteProduct = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(productFav) {
+      var isAdd,
+        productId,
+        changes,
+        requestOptions,
+        fetchEndpoint,
+        response,
+        content,
+        _args = arguments;
+      return _regeneratorRuntime().wrap(function _callee$(_context) {
+        while (1) switch (_context.prev = _context.next) {
+          case 0:
+            isAdd = _args.length > 1 && _args[1] !== undefined ? _args[1] : false;
+            if (!(!product || !user)) {
+              _context.next = 3;
+              break;
+            }
+            return _context.abrupt("return");
+          case 3:
+            showToast(_ToastContext.ToastType.Info, t('LOADING', 'loading'));
+            _context.prev = 4;
+            setProduct(_objectSpread(_objectSpread({}, product), {}, {
+              loading: true,
+              error: null
+            }));
+            productId = productFav === null || productFav === void 0 ? void 0 : productFav.id;
+            changes = {
+              object_id: productId
+            };
+            requestOptions = _objectSpread({
+              method: isAdd ? 'POST' : 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token),
+                'X-App-X': ordering.appId,
+                'X-Socket-Id-X': socket === null || socket === void 0 ? void 0 : socket.getId()
+              }
+            }, isAdd && {
+              body: JSON.stringify(changes)
+            });
+            fetchEndpoint = isAdd ? "".concat(ordering.root, "/users/").concat(user === null || user === void 0 ? void 0 : user.id, "/favorite_products") : "".concat(ordering.root, "/users/").concat(user.id, "/favorite_products/").concat(productId);
+            _context.next = 12;
+            return fetch(fetchEndpoint, requestOptions);
+          case 12:
+            response = _context.sent;
+            _context.next = 15;
+            return response.json();
+          case 15:
+            content = _context.sent;
+            if (!content.error) {
+              loadProductWithOptions();
+              handleUpdateProducts && handleUpdateProducts(productId, {
+                favorite: isAdd
+              });
+              showToast(_ToastContext.ToastType.Success, isAdd ? t('FAVORITE_ADDED', 'Favorite added') : t('FAVORITE_REMOVED', 'Favorite removed'));
+            } else {
+              setProduct(_objectSpread(_objectSpread({}, product), {}, {
+                loading: false,
+                error: content.result
+              }));
+              showToast(_ToastContext.ToastType.Error, content.result);
+            }
+            _context.next = 23;
+            break;
+          case 19:
+            _context.prev = 19;
+            _context.t0 = _context["catch"](4);
+            setProduct(_objectSpread(_objectSpread({}, product), {}, {
+              loading: false,
+              error: [_context.t0.message]
+            }));
+            showToast(_ToastContext.ToastType.Error, [_context.t0.message]);
+          case 23:
+          case "end":
+            return _context.stop();
+        }
+      }, _callee, null, [[4, 19]]);
+    }));
+    return function handleFavoriteProduct(_x2) {
+      return _ref.apply(this, arguments);
+    };
+  }();
 
   /**
    * Load product from API
    */
   var loadProductWithOptions = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var source, _yield$ordering$busin, result;
-      return _regeneratorRuntime().wrap(function _callee$(_context) {
-        while (1) switch (_context.prev = _context.next) {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+      var source, _yield$ordering$busin, _yield$ordering$busin2, result, error;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
           case 0:
-            _context.prev = 0;
+            _context2.prev = 0;
             setProduct(_objectSpread(_objectSpread({}, product), {}, {
               loading: true
             }));
             source = {};
             requestsState.product = source;
-            _context.next = 6;
+            _context2.next = 6;
             return ordering.businesses(props.businessId).categories(props.categoryId).products(props.productId).get({
               cancelToken: source
             });
           case 6:
-            _yield$ordering$busin = _context.sent;
-            result = _yield$ordering$busin.content.result;
+            _yield$ordering$busin = _context2.sent;
+            _yield$ordering$busin2 = _yield$ordering$busin.content;
+            result = _yield$ordering$busin2.result;
+            error = _yield$ordering$busin2.error;
+            if (error) {
+              _context2.next = 13;
+              break;
+            }
             setProduct(_objectSpread(_objectSpread({}, product), {}, {
               loading: false,
               product: result
             }));
-            _context.next = 14;
-            break;
-          case 11:
-            _context.prev = 11;
-            _context.t0 = _context["catch"](0);
+            return _context2.abrupt("return");
+          case 13:
             setProduct(_objectSpread(_objectSpread({}, product), {}, {
               loading: false,
-              error: [_context.t0.message]
+              error: [result]
             }));
-          case 14:
+            _context2.next = 19;
+            break;
+          case 16:
+            _context2.prev = 16;
+            _context2.t0 = _context2["catch"](0);
+            setProduct(_objectSpread(_objectSpread({}, product), {}, {
+              loading: false,
+              error: [_context2.t0.message]
+            }));
+          case 19:
           case "end":
-            return _context.stop();
+            return _context2.stop();
         }
-      }, _callee, null, [[0, 11]]);
+      }, _callee2, null, [[0, 16]]);
     }));
     return function loadProductWithOptions() {
-      return _ref.apply(this, arguments);
+      return _ref2.apply(this, arguments);
     };
   }();
 
@@ -330,8 +496,7 @@ var ProductForm = function ProductForm(props) {
     }
     var newBalance = Object.keys(newProductCart.options["id:".concat(option.id)].suboptions).length;
     if (option.limit_suboptions_by_max) {
-      var _Object$values;
-      newBalance = (_Object$values = Object.values(newProductCart.options["id:".concat(option.id)].suboptions)) === null || _Object$values === void 0 ? void 0 : _Object$values.reduce(function (count, suboption) {
+      newBalance = Object.values(newProductCart.options["id:".concat(option.id)].suboptions).reduce(function (count, suboption) {
         return count + suboption.quantity;
       }, 0);
     }
@@ -342,16 +507,64 @@ var ProductForm = function ProductForm(props) {
       setProductCart(newProductCart);
     }
   };
+  var handleChangeSuboptionDefault = function handleChangeSuboptionDefault(defaultOptions) {
+    var newProductCart = JSON.parse(JSON.stringify(productCart));
+    if (!newProductCart.options) {
+      newProductCart.options = {};
+    }
+    defaultOptions.map(function (_ref3) {
+      var option = _ref3.option,
+        state = _ref3.state,
+        suboption = _ref3.suboption;
+      if (!newProductCart.options["id:".concat(option.id)]) {
+        newProductCart.options["id:".concat(option.id)] = {
+          id: option.id,
+          name: option.name,
+          suboptions: {}
+        };
+      }
+      if (!state.selected) {
+        delete newProductCart.options["id:".concat(option.id)].suboptions["id:".concat(suboption.id)];
+        removeRelatedOptions(newProductCart, suboption.id);
+      } else {
+        if (option.min === option.max && option.min === 1) {
+          var suboptions = newProductCart.options["id:".concat(option.id)].suboptions;
+          if (suboptions) {
+            Object.keys(suboptions).map(function (suboptionKey) {
+              return removeRelatedOptions(newProductCart, parseInt(suboptionKey.split(':')[1]));
+            });
+          }
+          if (newProductCart.options["id:".concat(option.id)]) {
+            newProductCart.options["id:".concat(option.id)].suboptions = {};
+          }
+        }
+        newProductCart.options["id:".concat(option.id)].suboptions["id:".concat(suboption.id)] = state;
+      }
+      var newBalance = Object.keys(newProductCart.options["id:".concat(option.id)].suboptions).length;
+      if (option.limit_suboptions_by_max) {
+        newBalance = Object.values(newProductCart.options["id:".concat(option.id)].suboptions).reduce(function (count, suboption) {
+          return count + suboption.quantity;
+        }, 0);
+      }
+      if (newBalance <= option.max) {
+        newProductCart.options["id:".concat(option.id)].balance = newBalance;
+        newProductCart.unitTotal = getUnitTotal(newProductCart);
+        newProductCart.total = newProductCart.unitTotal * newProductCart.quantity;
+      }
+    });
+    setProductCart(newProductCart);
+  };
 
   /**
    * Change product state with new comment state
    * @param {object} e Product comment
    */
   var handleChangeCommentState = function handleChangeCommentState(e) {
-    var comment = e.target.value;
-    productCart.comment = comment;
+    var _e$target$value;
+    var comment = (_e$target$value = e.target.value) !== null && _e$target$value !== void 0 ? _e$target$value : '';
+    productCart.comment = comment.trim();
     setProductCart(_objectSpread(_objectSpread({}, productCart), {}, {
-      comment: productCart.comment
+      comment: comment.trim()
     }));
   };
 
@@ -359,29 +572,32 @@ var ProductForm = function ProductForm(props) {
    * Check options to get errors
    */
   var checkErrors = function checkErrors() {
+    var _product$product8, _product$product8$ext;
     var errors = {};
-    if (!product.product) {
+    if (!(product !== null && product !== void 0 && product.product)) {
       return errors;
     }
-    product.product.extras.forEach(function (extra) {
+    (_product$product8 = product.product) === null || _product$product8 === void 0 ? void 0 : (_product$product8$ext = _product$product8.extras) === null || _product$product8$ext === void 0 ? void 0 : _product$product8$ext.forEach(function (extra) {
       extra.options.map(function (option) {
-        var _productCart$options3;
+        var _productCart$options3, _Object$keys, _option$suboptions3;
         var suboptions = (_productCart$options3 = productCart.options["id:".concat(option.id)]) === null || _productCart$options3 === void 0 ? void 0 : _productCart$options3.suboptions;
-        var quantity = suboptions ? Object.keys(suboptions).length : 0;
+        var quantity = suboptions ? option.limit_suboptions_by_max ? Object.values(suboptions).reduce(function (count, suboption) {
+          return count + suboption.quantity;
+        }, 0) : (_Object$keys = Object.keys(suboptions)) === null || _Object$keys === void 0 ? void 0 : _Object$keys.length : 0;
         var evaluateRespectTo = false;
         if (option.respect_to && productCart.options) {
-          var options = productCart.options;
+          var options = productCart === null || productCart === void 0 ? void 0 : productCart.options;
           for (var key in options) {
-            var _option$suboptions;
+            var _option$suboptions2;
             var _option = options[key];
-            if ((_option$suboptions = _option.suboptions["id:".concat(option.respect_to)]) !== null && _option$suboptions !== void 0 && _option$suboptions.selected) {
+            if ((_option$suboptions2 = _option.suboptions["id:".concat(option.respect_to)]) !== null && _option$suboptions2 !== void 0 && _option$suboptions2.selected) {
               evaluateRespectTo = true;
               break;
             }
           }
         }
         var evaluate = option.respect_to ? evaluateRespectTo : true;
-        if (evaluate) {
+        if ((option === null || option === void 0 ? void 0 : (_option$suboptions3 = option.suboptions) === null || _option$suboptions3 === void 0 ? void 0 : _option$suboptions3.length) > 0 && evaluate) {
           if (option.min > quantity) {
             errors["id:".concat(option.id)] = true;
           } else if (option.max < quantity) {
@@ -398,49 +614,124 @@ var ProductForm = function ProductForm(props) {
    * Handle when click on save product
    */
   var handleSave = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var errors, successful, _props$productCart6, _props$productCart7;
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-        while (1) switch (_context2.prev = _context2.next) {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(values) {
+      var errors, successful, _values$professional, _values$serviceTime, _orderState$options, _props$productCart6, changes, currentProduct, _props$productCart7, _product$product9, updatedProfessional, duration;
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
           case 0:
+            if (handleCustomSave) {
+              handleCustomSave && handleCustomSave();
+            }
             errors = checkErrors();
             if (!(Object.keys(errors).length === 0)) {
-              _context2.next = 15;
+              _context3.next = 19;
               break;
             }
             successful = true;
             if (!useOrderContext) {
-              _context2.next = 14;
+              _context3.next = 18;
               break;
             }
             successful = false;
+            changes = cart || {
+              business_id: props.businessId
+            };
+            currentProduct = !isService ? _objectSpread({}, productCart) : _objectSpread(_objectSpread({}, productCart), {}, {
+              professional_id: values === null || values === void 0 ? void 0 : (_values$professional = values.professional) === null || _values$professional === void 0 ? void 0 : _values$professional.id,
+              service_start: (_values$serviceTime = values === null || values === void 0 ? void 0 : values.serviceTime) !== null && _values$serviceTime !== void 0 ? _values$serviceTime : (_orderState$options = orderState.options) === null || _orderState$options === void 0 ? void 0 : _orderState$options.moment
+            });
             if ((_props$productCart6 = props.productCart) !== null && _props$productCart6 !== void 0 && _props$productCart6.code) {
-              _context2.next = 11;
+              _context3.next = 14;
               break;
             }
-            _context2.next = 8;
-            return addProduct(productCart);
-          case 8:
-            successful = _context2.sent;
-            _context2.next = 14;
-            break;
+            _context3.next = 11;
+            return addProduct(currentProduct, changes, false);
           case 11:
-            _context2.next = 13;
-            return updateProduct(productCart);
-          case 13:
-            successful = _context2.sent;
+            successful = _context3.sent;
+            _context3.next = 18;
+            break;
           case 14:
+            _context3.next = 16;
+            return updateProduct(currentProduct, changes, false);
+          case 16:
+            successful = _context3.sent;
+            if (successful) {
+              events.emit('product_edited', currentProduct);
+            }
+          case 18:
             if (successful) {
               onSave(productCart, !((_props$productCart7 = props.productCart) !== null && _props$productCart7 !== void 0 && _props$productCart7.code));
+              if (isService) {
+                updatedProfessional = JSON.parse(JSON.stringify(values === null || values === void 0 ? void 0 : values.professional));
+                duration = product === null || product === void 0 ? void 0 : (_product$product9 = product.product) === null || _product$product9 === void 0 ? void 0 : _product$product9.duration;
+                updatedProfessional.busy_times.push({
+                  start: values === null || values === void 0 ? void 0 : values.serviceTime,
+                  end: (0, _moment.default)(values === null || values === void 0 ? void 0 : values.serviceTime).add(duration, 'minutes').format('YYYY-MM-DD HH:mm:ss'),
+                  duration: duration
+                });
+                handleUpdateProfessionals && handleUpdateProfessionals(updatedProfessional);
+                handleChangeProfessional && handleChangeProfessional(updatedProfessional);
+              }
             }
-          case 15:
+          case 19:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
-      }, _callee2);
+      }, _callee3);
     }));
-    return function handleSave() {
-      return _ref2.apply(this, arguments);
+    return function handleSave(_x3) {
+      return _ref4.apply(this, arguments);
+    };
+  }();
+  var handleCreateGuestUser = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(values) {
+      var _yield$ordering$users, _yield$ordering$users2, error, result, _result$session;
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.prev = 0;
+            setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
+              loading: true
+            }));
+            _context4.next = 4;
+            return ordering.users().save(values);
+          case 4:
+            _yield$ordering$users = _context4.sent;
+            _yield$ordering$users2 = _yield$ordering$users.content;
+            error = _yield$ordering$users2.error;
+            result = _yield$ordering$users2.result;
+            if (!error) {
+              setActionStatus({
+                error: null,
+                loading: false
+              });
+              login({
+                user: result,
+                token: (_result$session = result.session) === null || _result$session === void 0 ? void 0 : _result$session.access_token
+              });
+            } else {
+              setActionStatus({
+                error: result,
+                loading: false
+              });
+            }
+            _context4.next = 14;
+            break;
+          case 11:
+            _context4.prev = 11;
+            _context4.t0 = _context4["catch"](0);
+            setActionStatus({
+              error: _context4.t0.message,
+              loading: false
+            });
+          case 14:
+          case "end":
+            return _context4.stop();
+        }
+      }, _callee4, null, [[0, 11]]);
+    }));
+    return function handleCreateGuestUser(_x4) {
+      return _ref5.apply(this, arguments);
     };
   }();
   var increment = function increment() {
@@ -461,29 +752,93 @@ var ProductForm = function ProductForm(props) {
     productCart.total = productCart.unitTotal * productCart.quantity;
     setProductCart(_objectSpread({}, productCart));
   };
+  var handleChangeProductCartQuantity = function handleChangeProductCartQuantity(quantity) {
+    if (maxProductQuantity <= 0 || quantity > maxProductQuantity) {
+      return;
+    }
+    productCart.quantity = quantity || 0;
+    productCart.total = productCart.unitTotal * productCart.quantity;
+    setProductCart(_objectSpread({}, productCart));
+  };
 
   /**
    * Check if option must show
    * @param {object} option Option to check
    */
   var showOption = function showOption(option) {
+    var _option$suboptions5;
     var showOption = true;
     if (option.respect_to) {
       showOption = false;
       if (productCart.options) {
         var options = productCart.options;
         for (var key in options) {
-          var _option$suboptions2;
+          var _option$suboptions4;
           var _option = options[key];
-          if ((_option$suboptions2 = _option.suboptions["id:".concat(option.respect_to)]) !== null && _option$suboptions2 !== void 0 && _option$suboptions2.selected) {
+          if ((_option$suboptions4 = _option.suboptions["id:".concat(option.respect_to)]) !== null && _option$suboptions4 !== void 0 && _option$suboptions4.selected) {
             showOption = true;
             break;
           }
         }
       }
     }
+    if ((option === null || option === void 0 ? void 0 : (_option$suboptions5 = option.suboptions) === null || _option$suboptions5 === void 0 ? void 0 : _option$suboptions5.length) === 0) showOption = false;
     return showOption;
   };
+
+  /**
+   * Load professionals from API
+   */
+  var getProfessionalList = /*#__PURE__*/function () {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+      var _yield$ordering$busin3, _yield$ordering$busin4, result, error, _result$professionals;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.prev = 0;
+            setProfessionalListState(_objectSpread(_objectSpread({}, professionalListState), {}, {
+              loading: true
+            }));
+            _context5.next = 4;
+            return ordering.businesses(props.businessId).select(['id', 'professionals']).get();
+          case 4:
+            _yield$ordering$busin3 = _context5.sent;
+            _yield$ordering$busin4 = _yield$ordering$busin3.content;
+            result = _yield$ordering$busin4.result;
+            error = _yield$ordering$busin4.error;
+            if (error) {
+              _context5.next = 11;
+              break;
+            }
+            setProfessionalListState(_objectSpread(_objectSpread({}, professionalListState), {}, {
+              loading: false,
+              professionals: (_result$professionals = result === null || result === void 0 ? void 0 : result.professionals) !== null && _result$professionals !== void 0 ? _result$professionals : []
+            }));
+            return _context5.abrupt("return");
+          case 11:
+            setProfessionalListState(_objectSpread(_objectSpread({}, professionalListState), {}, {
+              loading: false,
+              error: [result]
+            }));
+            _context5.next = 17;
+            break;
+          case 14:
+            _context5.prev = 14;
+            _context5.t0 = _context5["catch"](0);
+            setProfessionalListState(_objectSpread(_objectSpread({}, professionalListState), {}, {
+              loading: false,
+              error: [_context5.t0.message]
+            }));
+          case 17:
+          case "end":
+            return _context5.stop();
+        }
+      }, _callee5, null, [[0, 14]]);
+    }));
+    return function getProfessionalList() {
+      return _ref6.apply(this, arguments);
+    };
+  }();
 
   /**
    * Init product cart when product changed
@@ -492,7 +847,7 @@ var ProductForm = function ProductForm(props) {
     if (product.product) {
       initProductCart(product.product);
     }
-  }, [product.product, props.productCart]);
+  }, [product.product]);
 
   /**
    * Check error when product state changed
@@ -502,48 +857,133 @@ var ProductForm = function ProductForm(props) {
   }, [productCart]);
 
   /**
+   * Listening product changes
+   */
+  (0, _react.useEffect)(function () {
+    setProduct(_objectSpread(_objectSpread({}, product), {}, {
+      product: props.product
+    }));
+  }, [props.product]);
+  var checkHasPreselected = function checkHasPreselected(options, option) {
+    if (!(option !== null && option !== void 0 && option.respect_to)) return true;
+    var selectedOption = options.filter(function (option1) {
+      var _option1$suboptions;
+      return (option1 === null || option1 === void 0 ? void 0 : (_option1$suboptions = option1.suboptions) === null || _option1$suboptions === void 0 ? void 0 : _option1$suboptions.filter(function (suboption) {
+        return option.respect_to === (suboption === null || suboption === void 0 ? void 0 : suboption.id) && suboption.preselected;
+      }).length) > 0;
+    });
+    if (!selectedOption) return false;
+    checkHasPreselected(options, selectedOption);
+  };
+
+  /**
    * Check if there is an option required with one suboption
    */
   (0, _react.useEffect)(function () {
-    if (product !== null && product !== void 0 && product.product && Object.keys(product === null || product === void 0 ? void 0 : product.product).length) {
-      var option = product.product.extras.map(function (extra) {
-        return extra.options.find(function (option) {
-          return option.min === 1 && option.max === 1 && option.suboptions.length === 1;
+    var _product$product10, _product$product10$ex;
+    if (product !== null && product !== void 0 && product.product && ((_product$product10 = product.product) === null || _product$product10 === void 0 ? void 0 : (_product$product10$ex = _product$product10.extras) === null || _product$product10$ex === void 0 ? void 0 : _product$product10$ex.length) > 0) {
+      var _ref7, _ref8;
+      var options = (_ref7 = []).concat.apply(_ref7, _toConsumableArray(product.product.extras.map(function (extra) {
+        return extra.options.filter(function (option) {
+          var preselected = checkHasPreselected(extra.options, option);
+          return (option.min === 1 && option.max === 1 && option.suboptions.filter(function (suboption) {
+            return suboption.enabled;
+          }).length === 1 || option.suboptions.filter(function (suboption) {
+            return suboption.preselected;
+          }).length > 0) && (!(option !== null && option !== void 0 && option.conditioned) || (option === null || option === void 0 ? void 0 : option.conditioned) && preselected);
         });
-      })[0];
-      if (!option) {
+      })));
+      if (!(options !== null && options !== void 0 && options.length)) {
         return;
       }
-      var suboption = option.suboptions[0];
-      var price = option.with_half_option && suboption.half_price && (suboption === null || suboption === void 0 ? void 0 : suboption.position) !== 'whole' ? suboption.half_price : suboption.price;
-      var state = {
-        id: suboption.id,
-        name: suboption.name,
-        position: suboption.position || 'whole',
-        price: price,
-        quantity: 1,
-        selected: true,
-        total: price
-      };
-      setDefaultSubOption({
-        state: state,
-        suboption: suboption,
-        option: option
+      var suboptions = (_ref8 = []).concat.apply(_ref8, _toConsumableArray(options.map(function (option) {
+        return option.suboptions;
+      }))).filter(function (suboption) {
+        return suboption.enabled;
       });
+      var states = suboptions.map(function (suboption, i) {
+        var _options$i;
+        var price = (_options$i = options[i]) !== null && _options$i !== void 0 && _options$i.with_half_option && suboption !== null && suboption !== void 0 && suboption.half_price && (suboption === null || suboption === void 0 ? void 0 : suboption.position) !== 'whole' ? suboption.half_price : suboption.price;
+        return {
+          id: suboption.id,
+          name: suboption.name,
+          position: suboption.position || 'whole',
+          price: price,
+          quantity: 1,
+          selected: true,
+          total: price
+        };
+      });
+      var suboptionsArray = [];
+      options.map(function (option) {
+        var defaultSuboptions = option.suboptions.filter(function (suboption) {
+          var _option$suboptions6;
+          return (suboption === null || suboption === void 0 ? void 0 : suboption.enabled) && ((suboption === null || suboption === void 0 ? void 0 : suboption.preselected) || (option === null || option === void 0 ? void 0 : (_option$suboptions6 = option.suboptions) === null || _option$suboptions6 === void 0 ? void 0 : _option$suboptions6.length) === 1);
+        }).map(function (suboption) {
+          return {
+            option: option,
+            suboption: suboption,
+            state: states.find(function (state) {
+              return (state === null || state === void 0 ? void 0 : state.id) === (suboption === null || suboption === void 0 ? void 0 : suboption.id);
+            })
+          };
+        });
+        suboptionsArray = [].concat(_toConsumableArray(suboptionsArray), _toConsumableArray(defaultSuboptions));
+      });
+      setDefaultSubOptions(suboptionsArray);
+      setCustomDefaultSubOptions(suboptionsArray);
     }
   }, [product.product]);
-
+  if (isStarbucks) {
+    (0, _react.useEffect)(function () {
+      if (product !== null && product !== void 0 && product.product && Object.keys(product === null || product === void 0 ? void 0 : product.product).length) {
+        var _ref9, _ref10;
+        var options = (_ref9 = []).concat.apply(_ref9, _toConsumableArray(product.product.extras.map(function (extra) {
+          return extra.options.filter(function (option) {
+            return option.name === 'Tamaño' && option.suboptions.filter(function (suboption) {
+              return suboption.name === 'Grande (16oz - 437ml)';
+            }).length === 1;
+          });
+        })));
+        if (!(options !== null && options !== void 0 && options.length)) {
+          return;
+        }
+        var suboptions = (_ref10 = []).concat.apply(_ref10, _toConsumableArray(options.map(function (option) {
+          return option.suboptions;
+        }))).filter(function (suboption) {
+          return suboption.name === 'Grande (16oz - 437ml)';
+        });
+        var states = suboptions.map(function (suboption, i) {
+          var price = options[i].with_half_option && suboption.half_price && (suboption === null || suboption === void 0 ? void 0 : suboption.position) !== 'whole' ? suboption.half_price : suboption.price;
+          return {
+            id: suboption.id,
+            name: suboption.name,
+            position: suboption.position || 'whole',
+            price: price,
+            quantity: 1,
+            selected: true,
+            total: price
+          };
+        });
+        var defaultOptions = options.map(function (option, i) {
+          return {
+            option: option,
+            suboption: suboptions[i],
+            state: states[i]
+          };
+        });
+        setDefaultSubOptions([].concat(_toConsumableArray(customDefaultSubOptions), _toConsumableArray(defaultOptions)));
+      }
+    }, [customDefaultSubOptions]);
+  }
   /**
    * Check if defaultSubOption has content to set product Cart
    */
   (0, _react.useEffect)(function () {
-    if (defaultSubOption) {
-      var state = defaultSubOption.state,
-        suboption = defaultSubOption.suboption,
-        option = defaultSubOption.option;
-      handleChangeSuboptionState(state, suboption, option);
+    if (defaultSubOptions !== null && defaultSubOptions !== void 0 && defaultSubOptions.length) {
+      handleChangeSuboptionDefault(defaultSubOptions);
     }
-  }, [defaultSubOption]);
+  }, [defaultSubOptions]);
 
   /**
    * Load product on component mounted
@@ -561,20 +1001,35 @@ var ProductForm = function ProductForm(props) {
       }
     };
   }, []);
+  (0, _react.useEffect)(function () {
+    if (!isService) return;
+    if (isCartProduct) {
+      getProfessionalList();
+    } else {
+      setProfessionalListState(_objectSpread(_objectSpread({}, professionalListState), {}, {
+        professionals: professionalList
+      }));
+    }
+  }, [isService, isCartProduct, professionalList]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     productObject: product,
     productCart: productCart,
     errors: errors,
     editMode: editMode,
     isSoldOut: isSoldOut,
+    actionStatus: actionStatus,
     maxProductQuantity: maxProductQuantity,
     increment: increment,
     decrement: decrement,
+    handleChangeProductCartQuantity: handleChangeProductCartQuantity,
     handleSave: handleSave,
     showOption: showOption,
+    handleCreateGuestUser: handleCreateGuestUser,
+    handleFavoriteProduct: handleFavoriteProduct,
     handleChangeIngredientState: handleChangeIngredientState,
     handleChangeSuboptionState: handleChangeSuboptionState,
-    handleChangeCommentState: handleChangeCommentState
+    handleChangeCommentState: handleChangeCommentState,
+    professionalListState: professionalListState
   })));
 };
 exports.ProductForm = ProductForm;

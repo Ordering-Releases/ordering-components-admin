@@ -41,7 +41,17 @@ var ProductIngredient = function ProductIngredient(props) {
     product = props.product,
     ingredient = props.ingredient,
     UIComponent = props.UIComponent,
-    handleSuccessUpdate = props.handleSuccessUpdate;
+    handleSuccessUpdate = props.handleSuccessUpdate,
+    onChange = props.onChange;
+
+  /**
+   * Set current state
+   */
+  var state = {
+    id: ingredient.id,
+    name: ingredient.name,
+    selected: props.state.selected
+  };
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -290,6 +300,23 @@ var ProductIngredient = function ProductIngredient(props) {
       return _ref3.apply(this, arguments);
     };
   }();
+
+  /**
+   * Run onChange function with new state
+   * @param {object} newState State with changes
+   */
+  var changeState = function changeState(newState) {
+    onChange && onChange(newState, ingredient);
+  };
+
+  /**
+     * Select/unselect the suboption
+     */
+  var toggleSelect = function toggleSelect() {
+    changeState({
+      selected: !state.selected
+    });
+  };
   (0, _react.useEffect)(function () {
     setChangesState({});
     setIngredientState(_objectSpread(_objectSpread({}, ingredientState), {}, {
@@ -308,7 +335,9 @@ var ProductIngredient = function ProductIngredient(props) {
     handleChangeInput: handleChangeInput,
     handleDeleteIngredient: handleDeleteIngredient,
     handleAddIngredient: handleAddIngredient,
-    handleUpdateIngredient: handleUpdateIngredient
+    handleUpdateIngredient: handleUpdateIngredient,
+    state: state,
+    toggleSelect: toggleSelect
   })));
 };
 exports.ProductIngredient = ProductIngredient;

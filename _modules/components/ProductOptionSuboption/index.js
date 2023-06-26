@@ -22,7 +22,8 @@ var ProductOptionSuboption = function ProductOptionSuboption(props) {
     balance = props.balance,
     option = props.option,
     suboption = props.suboption,
-    onChange = props.onChange;
+    onChange = props.onChange,
+    isOrigin = props.isOrigin;
 
   /**
    * Predefine default values for suboption state
@@ -62,7 +63,8 @@ var ProductOptionSuboption = function ProductOptionSuboption(props) {
    * Select/unselect the suboption
    */
   var toggleSelect = function toggleSelect() {
-    if (!state.selected && option.limit_suboptions_by_max && balance === option.max) {
+    var selectStatus = isOrigin ? !state.selected : state.selected;
+    if (selectStatus && option.limit_suboptions_by_max && balance === option.max && !((option === null || option === void 0 ? void 0 : option.max) === 1 && (option === null || option === void 0 ? void 0 : option.min) === 1)) {
       return;
     }
     changeState(_objectSpread(_objectSpread({}, state), {}, {
@@ -75,7 +77,7 @@ var ProductOptionSuboption = function ProductOptionSuboption(props) {
    * Increment suboption quantity
    */
   var increment = function increment() {
-    if (option.limit_suboptions_by_max && balance === option.max) {
+    if (option.limit_suboptions_by_max && (balance === option.max || state.quantity === suboption.max)) {
       return;
     }
     if (!option.limit_suboptions_by_max && state.quantity === suboption.max) {

@@ -8,7 +8,6 @@ exports.AddressList = void 0;
 var _react = _interopRequireWildcard(require("react"));
 var _propTypes = _interopRequireDefault(require("prop-types"));
 var _SessionContext = require("../../contexts/SessionContext");
-var _OrderContext = require("../../contexts/OrderContext");
 var _ApiContext = require("../../contexts/ApiContext");
 var _CustomerContext = require("../../contexts/CustomerContext");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -35,7 +34,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  */
 var AddressList = function AddressList(props) {
   var UIComponent = props.UIComponent,
-    changeOrderAddressWithDefault = props.changeOrderAddressWithDefault,
     handleClickSetDefault = props.handleClickSetDefault,
     handleClickDelete = props.handleClickDelete,
     handleSuccessUpdate = props.handleSuccessUpdate,
@@ -74,9 +72,6 @@ var AddressList = function AddressList(props) {
     _useState4 = _slicedToArray(_useState3, 2),
     actionStatus = _useState4[0],
     setActionStatus = _useState4[1];
-  var _useOrder = (0, _OrderContext.useOrder)(),
-    _useOrder2 = _slicedToArray(_useOrder, 2),
-    changeAddress = _useOrder2[1].changeAddress;
   var requestsState = {};
 
   /**
@@ -148,7 +143,7 @@ var AddressList = function AddressList(props) {
    */
   var handleSetDefault = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(address, userCustomerSetup) {
-      var _yield$ordering$setAc2, content;
+      var _yield$ordering$setAc2, content, addresses, updatedUser;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -177,14 +172,17 @@ var AddressList = function AddressList(props) {
               error: content.error ? content.result : null
             });
             if (!content.error && content.result.default) {
-              addressList.addresses.map(function (_address) {
+              addresses = addressList.addresses.map(function (_address) {
                 _address.default = _address.id === address.id;
                 return _address;
               });
-              if (changeOrderAddressWithDefault) {
-                changeAddress(content.result.id);
-              }
               setAddressList(_objectSpread({}, addressList));
+              if (handleSuccessUpdate) {
+                updatedUser = _objectSpread(_objectSpread({}, userState.user), {}, {
+                  addresses: addresses
+                });
+                handleSuccessUpdate(updatedUser);
+              }
             }
             _context2.next = 16;
             break;
