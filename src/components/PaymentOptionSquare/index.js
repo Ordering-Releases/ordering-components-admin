@@ -1,233 +1,320 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import { useApi } from '../../contexts/ApiContext'
-import { useSession } from '../../contexts/SessionContext'
-import { useToast, ToastType } from '../../contexts/ToastContext'
+import React, { useEffect, useState } from 'react'
+import propTypes from 'prop-types'
 import { useLanguage } from '../../contexts/LanguageContext'
+import { useSession } from '../../contexts/SessionContext'
+import { useOrder } from '../../contexts/OrderContext'
 
 export const PaymentOptionSquare = (props) => {
   const {
-    businessPaymethod,
     UIComponent,
-    business,
-    businessPaymethods,
-    handleSuccessPaymethodUpdate
+    cartTotal,
+    onPlaceOrderClick,
+    body,
+    data,
+    setCreateOrder
   } = props
 
-  const [, { showToast }] = useToast()
   const [, t] = useLanguage()
-  const [ordering] = useApi()
-  const [{ user, token }] = useSession()
+  const [{ user }] = useSession()
+  const [, { confirmCart, placeCart }] = useOrder()
+  const [isSquareReady, setIsSquareReady] = useState(false)
+  const [methodSelected, setMethodSelected] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingMethod, setIsLoadingMethod] = useState(false)
+  const [isLoadingPlace, setIsLoadingPlace] = useState(false)
 
-  const [squareUrlState, setSquareUrlState] = useState({ url: null, loading: true, error: null })
-  const [squareData, setSquareData] = useState({
-    sandbox: businessPaymethod?.sandbox,
-    data: businessPaymethod?.data,
-    data_sandbox: businessPaymethod?.data_sandbox
-  })
-  const [actionState, setActionState] = useState({ loading: false, error: null })
+  const [alertState, setAlertState] = useState({ open: false, content: [] })
+  const [payments, setPayments] = useState(null)
+  const [paymentRequest, setPaymentRequest] = useState({})
+  const [digitalWalletPaymethod, setDigitalWalletPaymethod] = useState('')
+  const paymentMethods = [
+    { name: t('CARD_PAYMENTS', 'Card payments'), value: 'card_payments' },
+    { name: t('ACH_BANK_TRANSFER', 'ACH Back transfer'), value: 'ach_bank_transfer' },
+    // { name: t('DIGITAL_WALLETS', 'Digital Wallets'), value: 'digital_wallets' },
+    { name: t('GIFT_CARDS', 'Gift Cards'), value: 'gift_cards' }
+  ]
 
-  /**
-   * Method to get the api key
-   */
-  const handleGetApiKey = async () => {
-    try {
-      setActionState({ ...actionState, loading: false })
-      const requestOptions = {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+  const params = {
+    paymethod_id: body.paymethod_id,
+    amount: body.amount,
+    delivery_zone_id: body.delivery_zone_id
+  }
+
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.src = 'https://sandbox.web.squarecdn.com/v1/square.js'
+    script.async = true
+    script.onload = () => {
+      setIsLoading(false)
+      setIsSquareReady(true)
+      initPaymentObject()
+    }
+    script.onerror = () => {
+      setIsLoading(false)
+      throw new Error('Square could not be loaded.')
+    }
+
+    document.body.appendChild(script)
+
+    return () => {
+      script.onload = null
+      const cardButton = document.getElementById('card-button')
+      cardButton && cardButton.removeEventListener('click')
+      const achButton = document.getElementById('ach-button')
+      achButton && achButton.removeEventListener('click')
+      const giftCardButton = document.getElementById('gift-card-button')
+      giftCardButton && giftCardButton.removeEventListener('click')
+    }
+  }, [])
+
+  const initPaymentObject = async () => {
+    const payments = window.Square.payments(
+      data?.application_id,
+      data?.location_id
+    )
+    setPayments(payments)
+  }
+
+  const initCardPayments = async () => {
+    setIsLoadingMethod(true)
+    const card = await payments.card()
+    await card.attach('#card-container')
+    setIsLoadingMethod(false)
+
+    const eventHandler = async (e) => {
+      e.preventDefault()
+
+      setIsLoadingPlace(true)
+      setCreateOrder && setCreateOrder(true)
+      try {
+        const result = await card.tokenize()
+        if (result.status === 'OK') {
+          params.paymethod_data = { token: result.token }
+          const response = await placeCart(body.cartUuid, params)
+          if (!response?.error && response?.result) {
+            onPlaceOrderClick(null, null, response?.result)
+            return
+          }
+          if (response?.result) {
+            setAlertState({
+              open: true,
+              content: response?.result
+            })
+          }
         }
-      }
-      const response = await fetch(`${ordering.root}/users/${user?.id}/keys`, requestOptions)
-      const content = await response.json()
-      if (!content.error) {
-        const apiKey = content.result[0]?.key
-        if (apiKey) {
-          handleGetConnectUrl(apiKey)
-          setActionState({ ...actionState, loading: false, error: null })
-        } else {
-          setActionState({
-            ...actionState,
-            loading: false,
-            error: t('NO_API_KEY_SQUARE', 'There is no Api Key for Square connection')
+        if (result.status === 'INVALID') {
+          setAlertState({
+            open: true,
+            content: result.errors.map(() => `ValidationError: ${result.errors[0].field}: ${result.errors[0].message}`)
           })
         }
-      } else {
-        setActionState({
-          ...actionState,
-          loading: false,
-          error: content.result
+      } catch (e) {
+        setAlertState({
+          open: true,
+          content: e.message
         })
       }
-    } catch (error) {
-      setActionState({
-        ...actionState,
-        loading: false,
-        error: [error.message]
-      })
+      setCreateOrder && setCreateOrder(false)
+      setIsLoadingPlace(false)
     }
+
+    const cardButton = document.getElementById('card-button')
+    cardButton.addEventListener('click', eventHandler)
   }
 
-  /**
-   * Method to get connect url
-   */
-  const handleGetConnectUrl = async (apiKey) => {
-    try {
-      setSquareUrlState({ ...squareUrlState, loading: true })
-      const requestOptions = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          business_id: business?.id,
-          project_name: ordering?.project,
-          api_key: apiKey
-        })
-      }
-      const url = 'https://plugins-live.ordering.co/square/oauth/oauth'
-      const response = await fetch(url, requestOptions)
-      const { status, result } = await response.json()
-      if (status === 'ok') {
-        setSquareUrlState({
-          ...squareUrlState,
-          loading: false,
-          url: result?.data.url
-        })
-        handleConnectSquare(result?.data.url)
-      } else {
-        setSquareUrlState({
-          ...squareUrlState,
-          loading: false,
-          error: result
-        })
-      }
-    } catch (err) {
-      setSquareUrlState({ ...squareUrlState, loading: false, error: [err.message] })
-    }
-  }
+  const initACHBankTransfer = async () => {
+    setIsLoadingMethod(true)
+    const ach = await payments.ach()
+    setIsLoadingMethod(false)
 
-  /**
-   * Method to connect with Square
-   */
-  const handleConnectSquare = (squareConnectUrl) => {
-    const connect = window.open(squareConnectUrl, '_blank', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,clearcache=yes')
-    const interval = setInterval(function () {
-      if (!connect.closed) {
-        connect.postMessage('data', ordering.url)
-      } else {
-        clearInterval(interval)
-      }
-    }, 200)
-    let timeout = null
-    window.addEventListener('message', (e) => {
-      if (e.origin.indexOf('.ordering.co') === -1) {
-        return
-      }
-      clearInterval(interval)
-      if (timeout) clearTimeout(timeout)
-      timeout = setTimeout(function () {
-        connect.postMessage('close', ordering.url)
-        if (e.data) {
-          setSquareData(e.data.paymethod_credentials)
-          connect.close()
-        }
-      }, 1000)
-    })
-  }
-
-  /**
-   * Method to update the business paymethod option
-   * @param {Number} paymethodId business paymethod id to delete
-   * @param {Object} options parameters to update
-   */
-  const handleSavePaymethod = async (paymethodId) => {
-    try {
-      showToast(ToastType.Info, t('LOADING', 'Loading'))
-      setActionState({ ...actionState, loading: true })
-      const requestOptions = {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          sandbox: squareData?.sandbox,
-          data: JSON.stringify(squareData?.data),
-          data_sandbox: JSON.stringify(squareData?.data_sandbox)
+    const eventHandler = async (e) => {
+      e.preventDefault()
+      try {
+        const result = await ach.tokenize({
+          accountHolderName: user?.name
         })
-      }
-      const response = await fetch(`${ordering.root}/business/${business.id}/paymethods/${paymethodId}`, requestOptions)
-      const content = await response.json()
-      if (!content.error) {
-        const updatedPaymethods = businessPaymethods.map(paymethod => {
-          if (paymethod.id === paymethodId) {
-            Object.assign(paymethod, content.result)
+        if (result.status === 'OK') {
+          setIsLoadingPlace(true)
+          setCreateOrder && setCreateOrder(true)
+          params.paymethod_data = { token: result.token }
+          const response = await placeCart(body.cartUuid, params)
+          if (!response?.error && response?.result) {
+            const resultConfirm = await confirmCart(body.cartUuid)
+            if (!resultConfirm?.error && resultConfirm?.result) {
+              onPlaceOrderClick(null, null, resultConfirm?.result)
+              return
+            }
+            setAlertState({
+              open: true,
+              content: resultConfirm
+            })
+            return
           }
-          return paymethod
+          if (response?.result) {
+            setAlertState({
+              open: true,
+              content: response?.result
+            })
+          }
+        }
+      } catch (e) {
+        setAlertState({
+          open: true,
+          content: e.message
         })
-        handleSuccessPaymethodUpdate && handleSuccessPaymethodUpdate(updatedPaymethods)
-        showToast(ToastType.Success, t('PAYMETHOD_SAVED', 'Payment method saved'))
       }
-      setActionState({
-        loading: false,
-        error: content.error ? content.result : null
-      })
-    } catch (err) {
-      setActionState({ error: [err.message], loading: false })
+      setIsLoadingPlace(false)
+      setCreateOrder && setCreateOrder(false)
     }
+    const achButton = document.getElementById('ach-button')
+    achButton.addEventListener('click', eventHandler)
   }
 
-  /**
-   * Update square data
-   * @param {EventTarget} e Related HTML event
-   */
-  const handleChangeDataInput = (e) => {
-    setSquareData({
-      ...squareData,
-      data: {
-        ...squareData?.data,
-        [e.target.name]: e.target.value
+  const initGiftCard = async () => {
+    setIsLoadingMethod(true)
+    const giftCard = await payments.giftCard()
+    await giftCard.attach('#gift-card-container')
+    setIsLoadingMethod(false)
+    const eventHandler = async (e) => {
+      e.preventDefault()
+      setIsLoadingPlace(true)
+      setCreateOrder && setCreateOrder(true)
+      try {
+        const result = await giftCard.tokenize()
+        if (result.status === 'OK') {
+          params.paymethod_data = { token: result.token }
+          const response = await placeCart(body.cartUuid, params)
+          if (!response?.error && response?.result) {
+            onPlaceOrderClick(null, null, response?.result)
+            return
+          }
+          if (response?.result) {
+            setAlertState({
+              open: true,
+              content: response?.result
+            })
+          }
+        }
+      } catch (e) {
+        setAlertState({
+          open: true,
+          content: e.message
+        })
+      }
+      setIsLoadingPlace(false)
+      setCreateOrder && setCreateOrder(false)
+    }
+    const giftCardButton = document.getElementById('gift-card-button')
+    giftCardButton.addEventListener('click', eventHandler)
+  }
+
+  const initDigitalWallets = async () => {
+    // setIsLoadingMethod(true)
+    const paymentRequest = payments.paymentRequest({
+      countryCode: 'US',
+      currencyCode: 'USD',
+      total: {
+        amount: cartTotal.toString(),
+        label: t('TOTAL', 'Total')
       }
     })
+    console.log(paymentRequest)
+    setPaymentRequest(paymentRequest)
   }
 
-  const handleChangeSandbox = (checked) => {
-    setSquareData({
-      ...squareData,
-      sandbox: checked
-    })
-  }
-
-  /**
-   * Update square sandbox data
-   * @param {EventTarget} e Related HTML event
-   */
-  const handleChangeSanboxDataInput = (e) => {
-    setSquareData({
-      ...squareData,
-      data_sandbox: {
-        ...squareData?.data_sandbox,
-        [e.target.name]: e.target.value
+  const applePay = async () => {
+    const applePay = await payments.applePay(paymentRequest)
+    console.log(applePay)
+    setIsLoadingMethod(false)
+    const eventHandler = async (e) => {
+      e.preventDefault()
+      try {
+        const result = await applePay.tokenize()
+        if (result.status === 'OK') {
+          params.paymethod_data = { token: result.token }
+          const { error, result: resultApi } = await placeCart(body.cartUuid, params)
+          console.log(resultApi)
+          if (!error) {
+            onPlaceOrderClick(null, null, resultApi)
+          }
+        }
+      } catch (e) {
+        setAlertState({
+          open: true,
+          content: e.message
+        })
       }
-    })
+    }
+    const applePayButtonTarget = document.getElementById('apple-pay-button')
+    applePayButtonTarget.addEventListener('click', eventHandler)
   }
+
+  const googlePay = async () => {
+    const googlePay = await payments.googlePay(paymentRequest)
+    console.log(googlePay)
+    await googlePay.attach('#google-pay-button')
+
+    setIsLoadingMethod(false)
+    const eventHandler = async (e) => {
+      e.preventDefault()
+      try {
+        const result = await googlePay.tokenize()
+        if (result.status === 'OK') {
+          params.paymethod_data = { token: result.token }
+          const { error, result: resultApi } = await placeCart(body.cartUuid, params)
+          console.log(resultApi)
+          if (!error) {
+            onPlaceOrderClick(null, null, resultApi)
+          }
+        }
+      } catch (e) {
+        setAlertState({
+          open: true,
+          content: e.message
+        })
+      }
+    }
+    const googlePayButtonTarget = document.getElementById('google-pay-button')
+    googlePayButtonTarget.addEventListener('click', eventHandler)
+  }
+
+  const handleChangeMethodSelected = (method) => {
+    setDigitalWalletPaymethod(null)
+    setMethodSelected(method)
+    method === 'card_payments'
+      ? initCardPayments()
+      : method === 'ach_bank_transfer'
+        ? initACHBankTransfer()
+        : method === 'digital_wallets'
+          ? initDigitalWallets()
+          : initGiftCard()
+  }
+
+  useEffect(() => {
+    if (methodSelected !== 'digital_wallets') return
+    if (digitalWalletPaymethod === 'apple_pay') applePay()
+    if (digitalWalletPaymethod === 'google_pay') googlePay()
+  }, [digitalWalletPaymethod])
 
   return (
     <>
       {UIComponent && (
         <UIComponent
           {...props}
-          squareUrlState={squareUrlState}
-          squareData={squareData}
-          actionState={actionState}
-          handleConnectSquare={handleGetApiKey}
-          handleSavePaymethod={handleSavePaymethod}
-          handleChangeDataInput={handleChangeDataInput}
-          handleChangeSanboxDataInput={handleChangeSanboxDataInput}
-          handleChangeSandbox={handleChangeSandbox}
+          isSquareReady={isSquareReady}
+          isLoading={isLoading}
+          isLoadingMethod={isLoadingMethod}
+          paymentMethods={paymentMethods}
+          methodSelected={methodSelected}
+          alertState={alertState}
+          digitalWalletPaymethod={digitalWalletPaymethod}
+          initCardPayments={initCardPayments}
+          setDigitalWalletPaymethod={setDigitalWalletPaymethod}
+          handleChangeMethodSelected={handleChangeMethodSelected}
+          setAlertState={setAlertState}
+          applePay={applePay}
+          isLoadingPlace={isLoadingPlace}
         />
       )}
     </>
@@ -238,27 +325,7 @@ PaymentOptionSquare.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props
    */
-  UIComponent: PropTypes.elementType,
-  /**
-    * Components types before business promotions
-    * Array of type components, the parent props will pass to these components
-    */
-  beforeComponents: PropTypes.arrayOf(PropTypes.elementType),
-  /**
-   * Components types after business promotions
-   * Array of type components, the parent props will pass to these components
-   */
-  afterComponents: PropTypes.arrayOf(PropTypes.elementType),
-  /**
-   * Elements before business promotions
-   * Array of HTML/Components elements, these components will not get the parent props
-   */
-  beforeElements: PropTypes.arrayOf(PropTypes.element),
-  /**
-   * Elements after business promotions
-   * Array of HTML/Components elements, these components will not get the parent props
-   */
-  afterElements: PropTypes.arrayOf(PropTypes.element)
+  UIComponent: propTypes.elementType
 }
 
 PaymentOptionSquare.defaultProps = {

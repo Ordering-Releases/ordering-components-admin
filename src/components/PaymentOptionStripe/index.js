@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
+import { useWebsocket } from '../../contexts/WebsocketContext'
 
 /**
  * Component to manage payment option stripe behavior without UI component
@@ -9,13 +10,16 @@ import { useApi } from '../../contexts/ApiContext'
 export const PaymentOptionStripe = (props) => {
   const {
     businessId,
-    UIComponent
+    UIComponent,
+    setCardList,
+    gateway,
+    onPaymentChange
   } = props
 
   const [{ token, user }] = useSession()
 
   const [ordering] = useApi()
-
+  const socket = useWebsocket()
   /**
    * Contains and object to save cards, handle loading and error
    */
@@ -26,28 +30,37 @@ export const PaymentOptionStripe = (props) => {
   const [publicKey, setPublicKey] = useState(props.publicKey)
 
   const [cardSelected, setCardSelected] = useState(null)
+  const [cardDefault, setCardDefault] = useState(null)
   const [defaultCardSetActionStatus, setDefaultCardSetActionStatus] = useState({ loading: false, error: null })
 
   const requestState = {}
+
+  const paymethodsWithoutSaveCards = ['credomatic']
 
   /**
    * method to get cards from API
    */
   const getCards = async () => {
+    if (paymethodsWithoutSaveCards.includes(gateway)) {
+      setCardsList({ cards: [], loading: false, error: null })
+      setCardList({ cards: [], loading: false, error: null })
+      return
+    }
     setCardsList({ ...cardsList, loading: true })
     try {
       const source = {}
       requestState.paymentCards = source
       // The order of paymentCards params is businessId, userId. This sdk needs to be improved in the future,
       const { content: { result } } = await ordering.setAccessToken(token).paymentCards(businessId, user.id).get({ cancelToken: source })
-      const defaultCart = result?.find(card => card.default)
-      if (defaultCart) {
-        setCardSelected({
-          id: defaultCart.id,
+      const defaultCard = result?.find(card => card.default)
+      if (defaultCard) {
+        setCardDefault({
+          id: defaultCard.id,
           type: 'card',
           card: {
-            brand: defaultCart.brand,
-            last4: defaultCart.last4
+            brand: defaultCard.brand,
+            last4: defaultCard.last4,
+            zipcode: defaultCard?.zipcode
           }
         })
       }
@@ -56,8 +69,18 @@ export const PaymentOptionStripe = (props) => {
         loading: false,
         cards: result
       })
+      setCardList && setCardList({
+        ...cardsList,
+        loading: false,
+        cards: result
+      })
     } catch (error) {
       setCardsList({
+        ...cardsList,
+        loading: false,
+        error
+      })
+      setCardList && setCardList({
         ...cardsList,
         loading: false,
         error
@@ -70,6 +93,12 @@ export const PaymentOptionStripe = (props) => {
    */
   const deleteCard = async (card) => {
     try {
+      if (paymethodsWithoutSaveCards.includes(gateway)) {
+        setCardsList({ cards: [], loading: false, error: null })
+        setCardSelected(null)
+        setCardList({ cards: [], loading: false, error: null })
+        return
+      }
       // The order of paymentCards params is businessId, userId, cardId. This sdk needs to be improved in the future,
       const { content: { error } } = await ordering.paymentCards(-1, user.id, card.id).delete()
       if (!error) {
@@ -77,6 +106,11 @@ export const PaymentOptionStripe = (props) => {
         setCardsList({
           ...cardsList
         })
+        if (cardSelected?.id === card?.id) {
+          setCardSelected(null)
+          onPaymentChange && onPaymentChange(null)
+        }
+        getCards()
       }
     } catch (error) {
       console.error(error.message)
@@ -86,13 +120,16 @@ export const PaymentOptionStripe = (props) => {
    * method to set card as default
    */
   const setDefaultCard = async (card) => {
+    if (paymethodsWithoutSaveCards.includes(gateway)) return
     try {
       setDefaultCardSetActionStatus({ ...defaultCardSetActionStatus, loading: true })
       const requestOptions = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
+          'X-App-X': ordering.appId,
+          'X-Socket-Id-X': socket?.getId()
         },
         body: JSON.stringify({
           business_id: businessId,
@@ -104,12 +141,13 @@ export const PaymentOptionStripe = (props) => {
       const response = await fetch(functionFetch, requestOptions)
       const content = await response.json()
       if (!content.error) {
-        setCardSelected({
+        setCardDefault({
           id: card.id,
           type: 'card',
           card: {
             brand: card.brand,
-            last4: card.last4
+            last4: card.last4,
+            zipcode: card.zipcode
           }
         })
         setDefaultCardSetActionStatus({ loading: false, error: null })
@@ -124,6 +162,7 @@ export const PaymentOptionStripe = (props) => {
    * Method to get stripe credentials from API
    */
   const getCredentials = async () => {
+    if (paymethodsWithoutSaveCards.includes(gateway)) return
     try {
       const { content: { result } } = await ordering.setAccessToken(token).paymentCards().getCredentials()
       setPublicKey(result.publishable)
@@ -133,21 +172,33 @@ export const PaymentOptionStripe = (props) => {
   }
 
   const handleCardClick = (card) => {
-    setCardSelected({
-      id: card.id,
-      type: 'card',
-      card: {
-        brand: card.brand,
-        last4: card.last4
-      }
-    })
+    if (paymethodsWithoutSaveCards.includes(gateway)) {
+      setCardSelected(card)
+    } else {
+      setCardSelected({
+        id: card.id,
+        type: 'card',
+        card: {
+          brand: card.brand,
+          last4: card.last4,
+          zipcode: card.zipcode
+        }
+      })
+    }
   }
 
   const handleNewCard = (card) => {
     cardsList.cards.push(card)
     setCardsList({
-      ...cardsList
+      ...cardsList,
+      card
     })
+    if (paymethodsWithoutSaveCards.includes(gateway)) {
+      setCardList({
+        ...cardsList,
+        card
+      })
+    }
     handleCardClick(card)
   }
 
@@ -159,11 +210,11 @@ export const PaymentOptionStripe = (props) => {
       }
     }
     return () => {
-      if (requestState.paymentCards) {
+      if (requestState.paymentCards && requestState.paymentCards.cancel) {
         requestState.paymentCards.cancel()
       }
     }
-  }, [token])
+  }, [token, businessId])
 
   return (
     <>
@@ -171,13 +222,16 @@ export const PaymentOptionStripe = (props) => {
         <UIComponent
           {...props}
           cardSelected={cardSelected}
+          cardDefault={cardDefault}
           cardsList={cardsList}
+          setCardsList={setCardsList}
           handleCardClick={handleCardClick}
           publicKey={publicKey}
           handleNewCard={handleNewCard}
           deleteCard={deleteCard}
           setDefaultCard={setDefaultCard}
           defaultCardSetActionStatus={defaultCardSetActionStatus}
+          paymethodsWithoutSaveCards={paymethodsWithoutSaveCards}
         />
       )}
     </>

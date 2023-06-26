@@ -10,7 +10,8 @@ export const ProductOptionSuboption = (props) => {
     balance,
     option,
     suboption,
-    onChange
+    onChange,
+    isOrigin
   } = props
 
   /**
@@ -43,7 +44,8 @@ export const ProductOptionSuboption = (props) => {
    * Select/unselect the suboption
    */
   const toggleSelect = () => {
-    if (!state.selected && option.limit_suboptions_by_max && balance === option.max) {
+    const selectStatus = isOrigin ? !state.selected : state.selected
+    if (selectStatus && option.limit_suboptions_by_max && balance === option.max && !(option?.max === 1 && option?.min === 1)) {
       return
     }
     changeState({
@@ -57,7 +59,7 @@ export const ProductOptionSuboption = (props) => {
    * Increment suboption quantity
    */
   const increment = () => {
-    if (option.limit_suboptions_by_max && balance === option.max) {
+    if (option.limit_suboptions_by_max && (balance === option.max || state.quantity === suboption.max)) {
       return
     }
     if (!option.limit_suboptions_by_max && state.quantity === suboption.max) {

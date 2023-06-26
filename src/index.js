@@ -85,6 +85,7 @@ import { CountryList } from './components/CountryList'
 import { CouponControl } from './components/CouponControl'
 import { ContentForm } from './components/ContentForm'
 import { CustomDomain } from './components/CustomDomain'
+import { CustomOrderDetails } from './components/CustomOrderDetails'
 import { DashboardBusinessList } from './components/DashboardBusinessList'
 import { DashboardOrdersList } from './components/DashboardOrdersList'
 import { DeliveryzoneList } from './components/DeliveryzoneList'
@@ -155,6 +156,7 @@ import { OrdersOverview } from './components/OrdersOverview'
 import { OrderTypeControl } from './components/OrderTypeControl'
 import { PaymentOptions } from './components/PaymentOptions'
 import { PaymentOptionSquare } from './components/PaymentOptionSquare'
+import { PaymentOptionWallet } from './components/PaymentOptionWallet'
 import { PagesList } from './components/PagesList'
 import { PageForm } from './components/PageForm'
 import { PlaceList } from './components/PlaceList'
@@ -353,6 +355,7 @@ export {
   CouponControl,
   ContentForm,
   CustomDomain,
+  CustomOrderDetails,
   DashboardBusinessList,
   DashboardOrdersList,
   DeliveryzoneList,
@@ -424,6 +427,7 @@ export {
   Messages,
   PaymentOptions,
   PaymentOptionSquare,
+  PaymentOptionWallet,
   PagesList,
   PageForm,
   PlaceList,

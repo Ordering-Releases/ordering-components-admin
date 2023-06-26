@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import Decimal from 'decimal.js'
 import { useOrder } from '../../contexts/OrderContext'
+import { useConfig } from '../../contexts/ConfigContext'
 
 /**
  * Component to manage driver tips behavior without UI component
@@ -9,10 +11,11 @@ export const DriverTips = (props) => {
   const {
     UIComponent,
     businessId,
+    businessIds,
     useOrderContext
   } = props
 
-  if (useOrderContext && !businessId) {
+  if (useOrderContext && !businessId && !businessIds) {
     throw new Error('`businessId` is required when `useOrderContext` is true.')
   }
 
@@ -20,7 +23,10 @@ export const DriverTips = (props) => {
    * Order context
    */
   const [orderState, { changeDriverTip }] = useOrder()
-
+  /**
+   * Config context
+   */
+  const [{ configs }] = useConfig()
   /**
    * Save percentage selected by user
    */
@@ -34,10 +40,26 @@ export const DriverTips = (props) => {
    * handler when user change driver tip option
    * @param {number} val
    */
-  const handlerChangeOption = (driverTip) => {
-    driverTip = parseInt(driverTip)
+  const handlerChangeOption = (driverTip, isFixedPrice = props.isFixedPrice) => {
+    driverTip = typeof driverTip === 'string' ? parseFloat(driverTip) : driverTip
     if (useOrderContext) {
-      changeDriverTip(businessId, driverTip)
+      if (businessIds) {
+        const tip = new Decimal(driverTip)
+
+        const tipPerCart = !isFixedPrice ? driverTip
+          : parseFloat((Math.trunc(tip.dividedBy(businessIds?.length) * 100) / 100).toFixed(2))
+
+        const correctionValue = !isFixedPrice ? 0
+          : parseFloat(tip.minus(new Decimal(tipPerCart).times(businessIds?.length)).toFixed(2))
+
+        const tipsPerCart = businessIds.map((bid, idx) => {
+          return { bid, value: parseFloat(new Decimal(tipPerCart).plus(idx === 0 ? correctionValue : 0).toFixed(2)) }
+        })
+
+        Promise.all(tipsPerCart.map(tip => changeDriverTip(tip.bid, tip.value, isFixedPrice)))
+      } else {
+        changeDriverTip(businessId, driverTip, isFixedPrice)
+      }
     } else {
       setOptionSelected(driverTip)
     }
@@ -45,10 +67,11 @@ export const DriverTips = (props) => {
   }
 
   useEffect(() => {
-    const orderDriverTipRate = orderState.carts[`businessId:${businessId}`]?.driver_tip_rate || 0
-    const orderDriverTip = orderState.carts[`businessId:${businessId}`]?.driver_tip || 0
+    const orderDriverTipRate = orderState.carts?.[`businessId:${businessId ?? businessIds?.[0]}`]?.driver_tip_rate || 0
+    const orderDriverTip = orderState.carts?.[`businessId:${businessId ?? businessIds?.[0]}`]?.driver_tip || 0
+    const isFixedPrice = parseInt(configs?.driver_tip_type?.value, 10) === 1 || !!parseInt(configs?.driver_tip_use_custom?.value, 10) // 1 - fixed, 2 - percentage
 
-    setOptionSelected(orderDriverTipRate)
+    setOptionSelected(isFixedPrice ? orderDriverTip : orderDriverTipRate)
     setDriverTipAmount(orderDriverTip)
   }, [orderState])
 

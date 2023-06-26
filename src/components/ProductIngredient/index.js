@@ -14,8 +14,15 @@ export const ProductIngredient = (props) => {
     product,
     ingredient,
     UIComponent,
-    handleSuccessUpdate
+    handleSuccessUpdate,
+    onChange
   } = props
+
+  /**
+   * Set current state
+   */
+  const state = { id: ingredient.id, name: ingredient.name, selected: props.state.selected }
+
   const [ordering] = useApi()
   const [{ token }] = useSession()
   const [, { showToast }] = useToast()
@@ -161,6 +168,21 @@ export const ProductIngredient = (props) => {
     }
   }
 
+  /**
+   * Run onChange function with new state
+   * @param {object} newState State with changes
+   */
+  const changeState = (newState) => {
+    onChange && onChange(newState, ingredient)
+  }
+
+  /**
+     * Select/unselect the suboption
+     */
+  const toggleSelect = () => {
+    changeState({ selected: !state.selected })
+  }
+
   useEffect(() => {
     setChangesState({})
     setIngredientState({
@@ -186,6 +208,9 @@ export const ProductIngredient = (props) => {
           handleDeleteIngredient={handleDeleteIngredient}
           handleAddIngredient={handleAddIngredient}
           handleUpdateIngredient={handleUpdateIngredient}
+
+          state={state}
+          toggleSelect={toggleSelect}
         />
       )}
     </>

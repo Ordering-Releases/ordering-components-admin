@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
-import { useOrder } from '../../contexts/OrderContext'
 import { useApi } from '../../contexts/ApiContext'
 import { useCustomer } from '../../contexts/CustomerContext'
 
@@ -12,7 +11,6 @@ import { useCustomer } from '../../contexts/CustomerContext'
 export const AddressList = (props) => {
   const {
     UIComponent,
-    changeOrderAddressWithDefault,
     handleClickSetDefault,
     handleClickDelete,
     handleSuccessUpdate,
@@ -35,7 +33,6 @@ export const AddressList = (props) => {
 
   const [addressList, setAddressList] = useState({ loading: false, error: null, addresses: [] })
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
-  const [, { changeAddress }] = useOrder()
   const requestsState = {}
 
   /**
@@ -94,14 +91,15 @@ export const AddressList = (props) => {
         error: content.error ? content.result : null
       })
       if (!content.error && content.result.default) {
-        addressList.addresses.map(_address => {
+        const addresses = addressList.addresses.map(_address => {
           _address.default = _address.id === address.id
           return _address
         })
-        if (changeOrderAddressWithDefault) {
-          changeAddress(content.result.id)
-        }
         setAddressList({ ...addressList })
+        if (handleSuccessUpdate) {
+          const updatedUser = { ...userState.user, addresses: addresses }
+          handleSuccessUpdate(updatedUser)
+        }
       }
     } catch (err) {
       setActionStatus({ ...actionStatus, loading: false, error: [err.message] })

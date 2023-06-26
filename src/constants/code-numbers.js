@@ -180,6 +180,7 @@ export const CODES = [
   { countryCode: 'SC', phoneCode: '1758', countryName: 'St. Lucia' },
   { countryCode: 'SD', phoneCode: '249', countryName: 'Sudan' },
   { countryCode: 'SR', phoneCode: '597', countryName: 'Suriname' },
+  { countryCode: 'SX', phoneCode: '721', countryName: 'Sint Maarten' },
   { countryCode: 'SZ', phoneCode: '268', countryName: 'Swaziland' },
   { countryCode: 'SE', phoneCode: '46', countryName: 'Sweden' },
   { countryCode: 'CH', phoneCode: '41', countryName: 'Switzerland' },
