@@ -615,6 +615,39 @@ export const UsersList = (props) => {
   }
 
   /**
+   * Method to change user type from API
+   * @param {Object} user user id and new type
+   */
+  const handleChangeAvailable = async (user) => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setActionStatus({ ...actionStatus, loading: true })
+      const requestsState = {}
+      const source = {}
+      requestsState.updateOrder = source
+      const { content: { error, result } } = await ordering.setAccessToken(session.token).users(user.id).save({ available: user.available }, { cancelToken: source })
+      setActionStatus({
+        ...actionStatus,
+        loading: false,
+        error: error ? result : null
+      })
+      if (!error) {
+        let users = []
+        users = usersList.users.filter(_user => {
+          if (_user.id === user.id) {
+            _user.available = user.available
+          }
+          return true
+        })
+        setUsersList({ ...usersList, users })
+        showToast(ToastType.Success, t('UPDATED', 'Updated'))
+      }
+    } catch (err) {
+      setActionStatus({ ...actionStatus, loading: false, error: [err.message] })
+    }
+  }
+
+  /**
    * Method to delete users from API
    * @param {Number} userId user id to delete
    */
@@ -879,6 +912,7 @@ export const UsersList = (props) => {
             handleChangeUserActiveState={handleChangeUserActiveState}
             handleChangeUserType={handleChangeUserType}
             handleChangeActiveUser={handleChangeActiveUser}
+            handleChangeAvailable={handleChangeAvailable}
             handleDeleteUser={handleDeleteUser}
             selectedUsers={selectedUsers}
             handleSelectedUsers={handleSelectedUsers}
@@ -935,7 +969,7 @@ UsersList.defaultProps = {
   propsToFetch: [
     'name', 'lastname', 'email', 'phone', 'photo', 'cellphone', 'schedule', 'external_id',
     'country_phone_code', 'city_id', 'city', 'address', 'addresses', 'max_days_in_future',
-    'address_notes', 'driver_zone_restriction', 'dropdown_option_id', 'dropdown_option', 'location',
+    'address_notes', 'driver_zone_restriction', 'dropdown_option_id', 'dropdown_option', 'location', 'available',
     'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups', 'created_at', 'timezone'
   ],
   paginationSettings: { initialPage: 1, pageSize: 10, controlType: 'infinity' },
