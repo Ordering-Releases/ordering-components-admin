@@ -172,7 +172,7 @@ var Messages = function Messages(props) {
         comment = t('ORDER_ATTRIBUTE_CHANGED_TO').replace('_attribute_', '<b>' + t(changeAttribute.toUpperCase()).toLowerCase() + '</b>').replace('_to_', '<b>' + message.change.new + '</b>');
       }
     }
-    if (['status', 'reject_reason'].includes(changeAttribute)) {
+    if (['status', 'reject_reason', 'driver_id'].includes(changeAttribute)) {
       if (user.level === 0 || user.level === 2) {
         comment += '<br>-';
         if (message.app_id) comment += '<br><strong>' + t('APP_ID') + ':</strong> ' + message.app_id;
