@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
+import PropTypes, { string } from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
@@ -11,6 +11,7 @@ import { useLanguage } from '../../contexts/LanguageContext'
 export const BannerDetails = (props) => {
   const {
     UIComponent,
+    propsToFetch,
     banner,
     sitesState,
     defaultPosition,
@@ -31,6 +32,8 @@ export const BannerDetails = (props) => {
   const [changesState, setChangesState] = useState({ changes: {}, itemId: null, loading: false, error: null })
   const [selectedSitesIds, setSelectedSitesIds] = useState([])
   const [actionState, setActionState] = useState({ loading: false, error: null })
+  const [businessList, setBusinessList] = useState({ loading: false, businesses: [], result: { error: null } })
+  const [selectedBusinessIds, setSelectedBusinessIds] = useState([])
 
   /**
    * Method to change the option state
@@ -311,6 +314,11 @@ export const BannerDetails = (props) => {
         ...changesState?.changes,
         position: defaultPosition
       }
+      if (defaultPosition === 'web_business_page' || defaultPosition === 'app_business_page') {
+        if (selectedBusinessIds.length) {
+          changes.businesses = selectedBusinessIds
+        }
+      }
       const requestOptions = {
         method: 'POST',
         headers: {
@@ -379,6 +387,85 @@ export const BannerDetails = (props) => {
     }
   }
 
+  /**
+   * Method to get business list from API
+   */
+  const getBusinessList = async () => {
+    try {
+      setBusinessList({
+        ...businessList,
+        loading: true
+      })
+
+      let where = null
+      const conditions = []
+      conditions.push({
+        attribute: 'enabled',
+        value: true
+      })
+      if (conditions.length) {
+        where = {
+          conditions,
+          conector: 'AND'
+        }
+      }
+      const fetchEndpoint = where
+        ? ordering.businesses().asDashboard().select(propsToFetch).where(where)
+        : ordering.businesses().asDashboard().select(propsToFetch)
+      const { content: { error, result, pagination } } = await fetchEndpoint.get()
+      if (!error) {
+        setBusinessList({
+          ...businessList,
+          loading: false,
+          businesses: result,
+          pagination
+        })
+      } else {
+        setBusinessList({
+          ...businessList,
+          loading: false,
+          error: result
+        })
+      }
+    } catch (error) {
+      setBusinessList({
+        ...businessList,
+        loading: false,
+        error: [error || error?.toString() || error?.message]
+      })
+    }
+  }
+
+  const handleSelectBusiness = (businessId, checked) => {
+    const businessIds = [...selectedBusinessIds]
+    let filteredIds = []
+    if (checked) {
+      filteredIds = [...businessIds, businessId]
+    } else {
+      filteredIds = businessIds.filter(id => id !== businessId)
+    }
+    setSelectedBusinessIds(filteredIds)
+    setChangesState({
+      ...changesState,
+      business: JSON.stringify(filteredIds)
+    })
+  }
+
+  const handleSelectAllBusiness = (isAll) => {
+    const businessIds = businessList?.businesses?.reduce((ids, business) => [...ids, business.id], [])
+    let filteredIds = []
+    if (isAll) {
+      filteredIds = [...businessIds]
+    } else {
+      filteredIds = []
+    }
+    setSelectedBusinessIds(filteredIds)
+    setChangesState({
+      ...changesState,
+      business: JSON.stringify(filteredIds)
+    })
+  }
+
   const handleSuccessBannerItemAdd = (newItem) => {
     const items = [...bannerItemsState.items, newItem]
     if (newItem?.type === 'image') {
@@ -432,8 +519,15 @@ export const BannerDetails = (props) => {
       const sitesIds = banner?.sites?.reduce((ids, site) => [...ids, site.id], [])
       setSelectedSitesIds(sitesIds || [])
       setBannerState({ ...bannerState, banner: banner })
+
+      const businessIds = banner?.business?.reduce((ids, business) => [...ids, business.id], [])
+      setSelectedBusinessIds(businessIds)
     }
   }, [banner])
+
+  useEffect(() => {
+    getBusinessList()
+  }, [])
 
   return (
     <>
@@ -456,6 +550,10 @@ export const BannerDetails = (props) => {
           handleDeleteBanner={handleDeleteBanner}
           handleDeleteBannerItem={handleDeleteBannerItem}
           handleSuccessBannerItemAdd={handleSuccessBannerItemAdd}
+          businessList={businessList}
+          selectedBusinessIds={selectedBusinessIds}
+          handleSelectBusiness={handleSelectBusiness}
+          handleSelectAllBusiness={handleSelectAllBusiness}
         />
       )}
     </>
@@ -466,7 +564,13 @@ BannerDetails.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props
    */
-  UIComponent: PropTypes.elementType
+  UIComponent: PropTypes.elementType,
+  /**
+   * Array of business props to fetch
+   */
+  propsToFetch: PropTypes.arrayOf(string)
 }
 
-BannerDetails.defaultProps = {}
+BannerDetails.defaultProps = {
+  propsToFetch: ['id', 'name', 'logo', 'slug']
+}

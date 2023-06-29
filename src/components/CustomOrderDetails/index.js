@@ -196,7 +196,9 @@ export const CustomOrderDetails = (props) => {
   }, [phone])
 
   useEffect(() => {
-    if (selectedBusiness) {
+    if (selectedBusiness?.id) {
+      getProducts()
+    } else {
       setProductList({ loading: false, products: [], error: null })
     }
   }, [selectedBusiness])

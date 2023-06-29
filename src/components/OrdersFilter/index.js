@@ -104,25 +104,26 @@ export const OrdersFilter = (props) => {
       case 'today': {
         const today = now.format('YYYY-MM-DD')
         const todayDatetime = dayjs(today).format('YYYY-MM-DD HH:mm:ss')
-        setFilterValues({ ...filterValues, dateType: 'today', deliveryFromDatetime: todayDatetime })
+        setFilterValues({ ...filterValues, dateType: 'today', deliveryFromDatetime: todayDatetime, deliveryEndDatetime: null })
         break
       }
       case 'yesterday': {
         const yesterday = now.subtract('1', 'day').format('YYYY-MM-DD')
-        const yesterdayDatetime = dayjs(yesterday).format('YYYY-MM-DD HH:mm:ss')
-        setFilterValues({ ...filterValues, dateType: 'yesterday', deliveryFromDatetime: yesterdayDatetime })
+        const yesterFrom = dayjs(yesterday).format('YYYY-MM-DD 00:00:00')
+        const yesterEnd = dayjs(yesterday).format('YYYY-MM-DD 23:59:59')
+        setFilterValues({ ...filterValues, dateType: 'yesterday', deliveryFromDatetime: yesterFrom, deliveryEndDatetime: yesterEnd })
         break
       }
       case 'last7': {
         const last7day = now.subtract('7', 'day').format('YYYY-MM-DD')
         const last7Datetime = dayjs(last7day).format('YYYY-MM-DD HH:mm:ss')
-        setFilterValues({ ...filterValues, dateType: 'last7', deliveryFromDatetime: last7Datetime })
+        setFilterValues({ ...filterValues, dateType: 'last7', deliveryFromDatetime: last7Datetime, deliveryEndDatetime: null })
         break
       }
       case 'last30': {
         const last30day = now.subtract('30', 'day').format('YYYY-MM-DD')
         const last30Datetime = dayjs(last30day).format('YYYY-MM-DD HH:mm:ss')
-        setFilterValues({ ...filterValues, dateType: 'last30', deliveryFromDatetime: last30Datetime })
+        setFilterValues({ ...filterValues, dateType: 'last30', deliveryFromDatetime: last30Datetime, deliveryEndDatetime: null })
         break
       }
       case 'term':

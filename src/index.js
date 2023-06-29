@@ -232,6 +232,7 @@ import { EventContext, EventProvider, useEvent } from './contexts/EventContext'
 import { UtilsContext, UtilsProviders, useUtils } from './contexts/UtilsContext'
 import { OrderingContext, OrderingProvider } from './contexts/OrderingContext'
 import { CustomerContext, CustomerProvider, useCustomer } from './contexts/CustomerContext'
+import { SiteContext, SiteProvider, useSite } from './contexts/SiteContext'
 import { ValidationFieldsContext, ValidationFieldsProvider, useValidationFields } from './contexts/ValidationsFieldsContext'
 import { ToastContext, ToastProvider, useToast, ToastType } from './contexts/ToastContext'
 import { PaymentOptionCash } from './components/PaymentOptionCash'
@@ -564,6 +565,9 @@ export {
   ToastProvider,
   useToast,
   ToastType,
+  SiteContext,
+  SiteProvider,
+  useSite,
 
   // Constants
   CODES

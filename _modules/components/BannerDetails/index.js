@@ -6,12 +6,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BannerDetails = void 0;
 var _react = _interopRequireWildcard(require("react"));
-var _propTypes = _interopRequireDefault(require("prop-types"));
+var _propTypes = _interopRequireWildcard(require("prop-types"));
 var _SessionContext = require("../../contexts/SessionContext");
 var _ApiContext = require("../../contexts/ApiContext");
 var _ToastContext = require("../../contexts/ToastContext");
 var _LanguageContext = require("../../contexts/LanguageContext");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -38,6 +37,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  */
 var BannerDetails = function BannerDetails(props) {
   var UIComponent = props.UIComponent,
+    propsToFetch = props.propsToFetch,
     banner = props.banner,
     sitesState = props.sitesState,
     defaultPosition = props.defaultPosition,
@@ -98,6 +98,20 @@ var BannerDetails = function BannerDetails(props) {
     _useState12 = _slicedToArray(_useState11, 2),
     actionState = _useState12[0],
     setActionState = _useState12[1];
+  var _useState13 = (0, _react.useState)({
+      loading: false,
+      businesses: [],
+      result: {
+        error: null
+      }
+    }),
+    _useState14 = _slicedToArray(_useState13, 2),
+    businessList = _useState14[0],
+    setBusinessList = _useState14[1];
+  var _useState15 = (0, _react.useState)([]),
+    _useState16 = _slicedToArray(_useState15, 2),
+    selectedBusinessIds = _useState16[0],
+    setSelectedBusinessIds = _useState16[1];
 
   /**
    * Method to change the option state
@@ -568,6 +582,11 @@ var BannerDetails = function BannerDetails(props) {
             changes = _objectSpread(_objectSpread({}, changesState === null || changesState === void 0 ? void 0 : changesState.changes), {}, {
               position: defaultPosition
             });
+            if (defaultPosition === 'web_business_page' || defaultPosition === 'app_business_page') {
+              if (selectedBusinessIds.length) {
+                changes.businesses = selectedBusinessIds;
+              }
+            }
             requestOptions = {
               method: 'POST',
               headers: {
@@ -576,13 +595,13 @@ var BannerDetails = function BannerDetails(props) {
               },
               body: JSON.stringify(changes)
             };
-            _context5.next = 7;
+            _context5.next = 8;
             return fetch("".concat(ordering.root, "/banners"), requestOptions);
-          case 7:
+          case 8:
             response = _context5.sent;
-            _context5.next = 10;
+            _context5.next = 11;
             return response.json();
-          case 10:
+          case 11:
             content = _context5.sent;
             if (!content.error) {
               setActionState({
@@ -600,20 +619,20 @@ var BannerDetails = function BannerDetails(props) {
                 error: content.result
               });
             }
-            _context5.next = 17;
+            _context5.next = 18;
             break;
-          case 14:
-            _context5.prev = 14;
+          case 15:
+            _context5.prev = 15;
             _context5.t0 = _context5["catch"](0);
             setActionState({
               loading: false,
               error: _context5.t0.message
             });
-          case 17:
+          case 18:
           case "end":
             return _context5.stop();
         }
-      }, _callee5, null, [[0, 14]]);
+      }, _callee5, null, [[0, 15]]);
     }));
     return function handleAddBanner() {
       return _ref5.apply(this, arguments);
@@ -683,6 +702,103 @@ var BannerDetails = function BannerDetails(props) {
       return _ref6.apply(this, arguments);
     };
   }();
+
+  /**
+   * Method to get business list from API
+   */
+  var getBusinessList = /*#__PURE__*/function () {
+    var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+      var where, conditions, fetchEndpoint, _yield$fetchEndpoint$, _yield$fetchEndpoint$2, error, result, pagination;
+      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+        while (1) switch (_context7.prev = _context7.next) {
+          case 0:
+            _context7.prev = 0;
+            setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
+              loading: true
+            }));
+            where = null;
+            conditions = [];
+            conditions.push({
+              attribute: 'enabled',
+              value: true
+            });
+            if (conditions.length) {
+              where = {
+                conditions: conditions,
+                conector: 'AND'
+              };
+            }
+            fetchEndpoint = where ? ordering.businesses().asDashboard().select(propsToFetch).where(where) : ordering.businesses().asDashboard().select(propsToFetch);
+            _context7.next = 9;
+            return fetchEndpoint.get();
+          case 9:
+            _yield$fetchEndpoint$ = _context7.sent;
+            _yield$fetchEndpoint$2 = _yield$fetchEndpoint$.content;
+            error = _yield$fetchEndpoint$2.error;
+            result = _yield$fetchEndpoint$2.result;
+            pagination = _yield$fetchEndpoint$2.pagination;
+            if (!error) {
+              setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
+                loading: false,
+                businesses: result,
+                pagination: pagination
+              }));
+            } else {
+              setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
+                loading: false,
+                error: result
+              }));
+            }
+            _context7.next = 20;
+            break;
+          case 17:
+            _context7.prev = 17;
+            _context7.t0 = _context7["catch"](0);
+            setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
+              loading: false,
+              error: [_context7.t0 || (_context7.t0 === null || _context7.t0 === void 0 ? void 0 : _context7.t0.toString()) || (_context7.t0 === null || _context7.t0 === void 0 ? void 0 : _context7.t0.message)]
+            }));
+          case 20:
+          case "end":
+            return _context7.stop();
+        }
+      }, _callee7, null, [[0, 17]]);
+    }));
+    return function getBusinessList() {
+      return _ref7.apply(this, arguments);
+    };
+  }();
+  var handleSelectBusiness = function handleSelectBusiness(businessId, checked) {
+    var businessIds = _toConsumableArray(selectedBusinessIds);
+    var filteredIds = [];
+    if (checked) {
+      filteredIds = [].concat(_toConsumableArray(businessIds), [businessId]);
+    } else {
+      filteredIds = businessIds.filter(function (id) {
+        return id !== businessId;
+      });
+    }
+    setSelectedBusinessIds(filteredIds);
+    setChangesState(_objectSpread(_objectSpread({}, changesState), {}, {
+      business: JSON.stringify(filteredIds)
+    }));
+  };
+  var handleSelectAllBusiness = function handleSelectAllBusiness(isAll) {
+    var _businessList$busines;
+    var businessIds = businessList === null || businessList === void 0 ? void 0 : (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.reduce(function (ids, business) {
+      return [].concat(_toConsumableArray(ids), [business.id]);
+    }, []);
+    var filteredIds = [];
+    if (isAll) {
+      filteredIds = _toConsumableArray(businessIds);
+    } else {
+      filteredIds = [];
+    }
+    setSelectedBusinessIds(filteredIds);
+    setChangesState(_objectSpread(_objectSpread({}, changesState), {}, {
+      business: JSON.stringify(filteredIds)
+    }));
+  };
   var handleSuccessBannerItemAdd = function handleSuccessBannerItemAdd(newItem) {
     var items = [].concat(_toConsumableArray(bannerItemsState.items), [newItem]);
     if ((newItem === null || newItem === void 0 ? void 0 : newItem.type) === 'image') {
@@ -716,7 +832,7 @@ var BannerDetails = function BannerDetails(props) {
         videos: []
       }));
     } else {
-      var _banner$sites2;
+      var _banner$sites2, _banner$business;
       setIsAddMode(false);
       setChangesState(_objectSpread(_objectSpread({}, changesState), {}, {
         changes: {}
@@ -740,8 +856,15 @@ var BannerDetails = function BannerDetails(props) {
       setBannerState(_objectSpread(_objectSpread({}, bannerState), {}, {
         banner: banner
       }));
+      var businessIds = banner === null || banner === void 0 ? void 0 : (_banner$business = banner.business) === null || _banner$business === void 0 ? void 0 : _banner$business.reduce(function (ids, business) {
+        return [].concat(_toConsumableArray(ids), [business.id]);
+      }, []);
+      setSelectedBusinessIds(businessIds);
     }
   }, [banner]);
+  (0, _react.useEffect)(function () {
+    getBusinessList();
+  }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     bannerState: bannerState,
     bannerItemsState: bannerItemsState,
@@ -758,7 +881,11 @@ var BannerDetails = function BannerDetails(props) {
     handleAddBanner: handleAddBanner,
     handleDeleteBanner: handleDeleteBanner,
     handleDeleteBannerItem: handleDeleteBannerItem,
-    handleSuccessBannerItemAdd: handleSuccessBannerItemAdd
+    handleSuccessBannerItemAdd: handleSuccessBannerItemAdd,
+    businessList: businessList,
+    selectedBusinessIds: selectedBusinessIds,
+    handleSelectBusiness: handleSelectBusiness,
+    handleSelectAllBusiness: handleSelectAllBusiness
   })));
 };
 exports.BannerDetails = BannerDetails;
@@ -766,6 +893,12 @@ BannerDetails.propTypes = {
   /**
    * UI Component, this must be containt all graphic elements and use parent props
    */
-  UIComponent: _propTypes.default.elementType
+  UIComponent: _propTypes.default.elementType,
+  /**
+   * Array of business props to fetch
+   */
+  propsToFetch: _propTypes.default.arrayOf(_propTypes.string)
 };
-BannerDetails.defaultProps = {};
+BannerDetails.defaultProps = {
+  propsToFetch: ['id', 'name', 'logo', 'slug']
+};

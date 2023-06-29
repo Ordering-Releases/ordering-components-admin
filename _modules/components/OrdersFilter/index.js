@@ -146,17 +146,20 @@ var OrdersFilter = function OrdersFilter(props) {
           var todayDatetime = (0, _dayjs.default)(today).format('YYYY-MM-DD HH:mm:ss');
           setFilterValues(_objectSpread(_objectSpread({}, filterValues), {}, {
             dateType: 'today',
-            deliveryFromDatetime: todayDatetime
+            deliveryFromDatetime: todayDatetime,
+            deliveryEndDatetime: null
           }));
           break;
         }
       case 'yesterday':
         {
           var yesterday = now.subtract('1', 'day').format('YYYY-MM-DD');
-          var yesterdayDatetime = (0, _dayjs.default)(yesterday).format('YYYY-MM-DD HH:mm:ss');
+          var yesterFrom = (0, _dayjs.default)(yesterday).format('YYYY-MM-DD 00:00:00');
+          var yesterEnd = (0, _dayjs.default)(yesterday).format('YYYY-MM-DD 23:59:59');
           setFilterValues(_objectSpread(_objectSpread({}, filterValues), {}, {
             dateType: 'yesterday',
-            deliveryFromDatetime: yesterdayDatetime
+            deliveryFromDatetime: yesterFrom,
+            deliveryEndDatetime: yesterEnd
           }));
           break;
         }
@@ -166,7 +169,8 @@ var OrdersFilter = function OrdersFilter(props) {
           var last7Datetime = (0, _dayjs.default)(last7day).format('YYYY-MM-DD HH:mm:ss');
           setFilterValues(_objectSpread(_objectSpread({}, filterValues), {}, {
             dateType: 'last7',
-            deliveryFromDatetime: last7Datetime
+            deliveryFromDatetime: last7Datetime,
+            deliveryEndDatetime: null
           }));
           break;
         }
@@ -176,7 +180,8 @@ var OrdersFilter = function OrdersFilter(props) {
           var last30Datetime = (0, _dayjs.default)(last30day).format('YYYY-MM-DD HH:mm:ss');
           setFilterValues(_objectSpread(_objectSpread({}, filterValues), {}, {
             dateType: 'last30',
-            deliveryFromDatetime: last30Datetime
+            deliveryFromDatetime: last30Datetime,
+            deliveryEndDatetime: null
           }));
           break;
         }

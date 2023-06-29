@@ -59,6 +59,10 @@ export const BannerImageDetails = (props) => {
 
       let where = null
       const conditions = []
+      conditions.push({
+        attribute: 'enabled',
+        value: true
+      })
       if (searchValue) {
         const searchConditions = []
         const isSpecialCharacter = rex.test(searchValue)

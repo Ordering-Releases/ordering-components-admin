@@ -327,7 +327,9 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
     }
   }, [phone]);
   (0, _react.useEffect)(function () {
-    if (selectedBusiness) {
+    if (selectedBusiness !== null && selectedBusiness !== void 0 && selectedBusiness.id) {
+      getProducts();
+    } else {
       setProductList({
         loading: false,
         products: [],

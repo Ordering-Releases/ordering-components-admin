@@ -326,7 +326,7 @@ export const DriversList = (props) => {
         requestsState.drivers.cancel()
       }
     }
-  }, [drivers, searchValue])
+  }, [drivers, searchValue, orderId])
 
   /**
    * Listening driver change
