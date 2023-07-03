@@ -359,6 +359,8 @@ export const DriversGroupDetails = (props) => {
           autoassign_max_in_pending: 5,
           autoassign_max_in_pickup_completed: 5,
           autoassign_max_in_ready_for_pickup: 5,
+          autoassign_max_in_driver_on_way: 5,
+          autoassign_max_in_driver_almost_arrived_to_customer: 5,
           autoassign_max_orders: 5,
           autoassign_max_radius: 1000,
           orders_group_max_distance_between_delivery: 200,

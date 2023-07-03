@@ -69,6 +69,10 @@ export const SessionProvider = ({ children, strategy }) => {
   const logout = async () => {
     await strategy.removeItem('token')
     await strategy.removeItem('user')
+    const userCustomer = await strategy.getItem('user-customer')
+    if (userCustomer) {
+      await strategy.removeItem('user-customer')
+    }
     setState({
       ...state,
       auth: false,

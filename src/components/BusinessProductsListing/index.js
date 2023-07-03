@@ -494,7 +494,7 @@ export const BusinessProductsListing = (props) => {
     if (!businessState.loading && (categorySelected || isAllCategoryProducts)) {
       getProducts(true)
     }
-  }, [businessState])
+  }, [businessState?.loading])
 
   useEffect(() => {
     if (searchValue !== null) getProducts(!!searchValue)
