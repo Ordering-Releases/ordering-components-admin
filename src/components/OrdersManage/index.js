@@ -381,6 +381,14 @@ export const OrdersManage = (props) => {
           }
         )
       }
+      if (filterValues?.logisticStatus !== null) {
+        filterConditons.push(
+          {
+            attribute: 'logistic_status',
+            value: filterValues?.logisticStatus
+          }
+        )
+      }
       if (filterValues?.metafield?.length > 0) {
         const metafieldConditions = filterValues?.metafield.map(item => (
           {

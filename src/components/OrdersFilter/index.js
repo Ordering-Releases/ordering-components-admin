@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import dayjs from 'dayjs'
+
 export const OrdersFilter = (props) => {
   const {
     UIComponent,
@@ -26,7 +27,8 @@ export const OrdersFilter = (props) => {
     paymethodIds: [],
     countryCode: [],
     currency: [],
-    metafield: []
+    metafield: [],
+    logisticStatus: null
   })
 
   /**
@@ -263,6 +265,14 @@ export const OrdersFilter = (props) => {
     setFilterValues({ ...filterValues, paymethodIds: _paymethodIds })
   }
   /**
+   * Change filter values
+   * * @param {Object} changes filter value changes
+  */
+  const handleChangeChildFilterValue = (changes) => {
+    setFilterValues({ ...filterValues, ...changes })
+  }
+
+  /**
    * Reset filter values
   */
   const handleResetFilterValues = () => {
@@ -272,6 +282,7 @@ export const OrdersFilter = (props) => {
       groupTypes: [],
       deliveryFromDatetime: null,
       deliveryEndDatetime: null,
+      logisticStatus: null,
       businessIds: [],
       driverIds: [],
       cityIds: [],
@@ -323,6 +334,7 @@ export const OrdersFilter = (props) => {
           handleAddMetaField={handleAddMetaField}
           handleDeleteMetafield={handleDeleteMetafield}
           handleChangeExternalId={handleChangeExternalId}
+          handleChangeChildFilterValue={handleChangeChildFilterValue}
         />
       )}
     </>

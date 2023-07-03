@@ -292,6 +292,14 @@ export const DashboardOrdersList = (props) => {
           }
         )
       }
+      if (filterValues?.logisticStatus !== null) {
+        filterConditons.push(
+          {
+            attribute: 'logistic_status',
+            value: filterValues?.logisticStatus
+          }
+        )
+      }
       if (filterValues?.externalId) {
         filterConditons.push(
           {
