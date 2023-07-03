@@ -51,7 +51,8 @@ var OrdersFilter = function OrdersFilter(props) {
       paymethodIds: [],
       countryCode: [],
       currency: [],
-      metafield: []
+      metafield: [],
+      logisticStatus: null
     }),
     _useState2 = _slicedToArray(_useState, 2),
     filterValues = _useState2[0],
@@ -362,6 +363,14 @@ var OrdersFilter = function OrdersFilter(props) {
     }));
   };
   /**
+   * Change filter values
+   * * @param {Object} changes filter value changes
+  */
+  var handleChangeChildFilterValue = function handleChangeChildFilterValue(changes) {
+    setFilterValues(_objectSpread(_objectSpread({}, filterValues), changes));
+  };
+
+  /**
    * Reset filter values
   */
   var handleResetFilterValues = function handleResetFilterValues() {
@@ -371,6 +380,7 @@ var OrdersFilter = function OrdersFilter(props) {
       groupTypes: [],
       deliveryFromDatetime: null,
       deliveryEndDatetime: null,
+      logisticStatus: null,
       businessIds: [],
       driverIds: [],
       cityIds: [],
@@ -432,7 +442,8 @@ var OrdersFilter = function OrdersFilter(props) {
     handleChangeMetaFieldValue: handleChangeMetaFieldValue,
     handleAddMetaField: handleAddMetaField,
     handleDeleteMetafield: handleDeleteMetafield,
-    handleChangeExternalId: handleChangeExternalId
+    handleChangeExternalId: handleChangeExternalId,
+    handleChangeChildFilterValue: handleChangeChildFilterValue
   })));
 };
 exports.OrdersFilter = OrdersFilter;

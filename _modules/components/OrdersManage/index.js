@@ -702,6 +702,12 @@ var OrdersManage = function OrdersManage(props) {
                   }
                 });
               }
+              if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.logisticStatus) !== null) {
+                filterConditons.push({
+                  attribute: 'logistic_status',
+                  value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.logisticStatus
+                });
+              }
               if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$metafie = filterValues.metafield) === null || _filterValues$metafie === void 0 ? void 0 : _filterValues$metafie.length) > 0) {
                 metafieldConditions = filterValues === null || filterValues === void 0 ? void 0 : filterValues.metafield.map(function (item) {
                   return {

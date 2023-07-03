@@ -349,6 +349,12 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
                   }
                 });
               }
+              if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.logisticStatus) !== null) {
+                filterConditons.push({
+                  attribute: 'logistic_status',
+                  value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.logisticStatus
+                });
+              }
               if (filterValues !== null && filterValues !== void 0 && filterValues.externalId) {
                 filterConditons.push({
                   attribute: 'external_id',
