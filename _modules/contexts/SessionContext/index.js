@@ -168,6 +168,7 @@ var SessionProvider = function SessionProvider(_ref) {
   }();
   var logout = /*#__PURE__*/function () {
     var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      var userCustomer;
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) switch (_context4.prev = _context4.next) {
           case 0:
@@ -177,13 +178,24 @@ var SessionProvider = function SessionProvider(_ref) {
             _context4.next = 4;
             return strategy.removeItem('user');
           case 4:
+            _context4.next = 6;
+            return strategy.getItem('user-customer');
+          case 6:
+            userCustomer = _context4.sent;
+            if (!userCustomer) {
+              _context4.next = 10;
+              break;
+            }
+            _context4.next = 10;
+            return strategy.removeItem('user-customer');
+          case 10:
             setState(_objectSpread(_objectSpread({}, state), {}, {
               auth: false,
               user: null,
               token: null,
               loading: false
             }));
-          case 5:
+          case 11:
           case "end":
             return _context4.stop();
         }

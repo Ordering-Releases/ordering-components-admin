@@ -760,7 +760,7 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
     if (!businessState.loading && (categorySelected || isAllCategoryProducts)) {
       getProducts(true);
     }
-  }, [businessState]);
+  }, [businessState === null || businessState === void 0 ? void 0 : businessState.loading]);
   (0, _react.useEffect)(function () {
     if (searchValue !== null) getProducts(!!searchValue);
   }, [searchValue]);
