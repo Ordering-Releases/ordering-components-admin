@@ -203,9 +203,9 @@ var DriversList = function DriversList(props) {
   }();
 
   /**
-  * Method to assign driver_company to order from API
-  * @param {object} assign assigned order_id and driver_company_id
-  */
+   * Method to assign driver_company to order from API
+   * @param {object} assign assigned order_id and driver_company_id
+   */
   var handleAssignDriverCompany = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(assign) {
       var requestOptions, response, _yield$response$json, error, result;
@@ -416,7 +416,7 @@ var DriversList = function DriversList(props) {
    */
   var getOrderDrivers = /*#__PURE__*/function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-      var requestOptions, response, _yield$response$json2, error, result;
+      var _result$drivers, requestOptions, response, _yield$response$json2, error, result, _drivers2;
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) switch (_context4.prev = _context4.next) {
           case 0:
@@ -444,9 +444,14 @@ var DriversList = function DriversList(props) {
             _yield$response$json2 = _context4.sent;
             error = _yield$response$json2.error;
             result = _yield$response$json2.result;
+            _drivers2 = result === null || result === void 0 ? void 0 : (_result$drivers = result.drivers) === null || _result$drivers === void 0 ? void 0 : _result$drivers.map(function (driver) {
+              return _objectSpread(_objectSpread({}, driver), {}, {
+                enabled: true
+              });
+            });
             setDriversList({
               loading: false,
-              drivers: error ? [] : result === null || result === void 0 ? void 0 : result.drivers,
+              drivers: error ? [] : _drivers2,
               error: error ? result : null
             });
             setCompanysList({
@@ -454,10 +459,10 @@ var DriversList = function DriversList(props) {
               companys: error ? [] : result === null || result === void 0 ? void 0 : result.driver_companies,
               error: error ? result : null
             });
-            _context4.next = 20;
+            _context4.next = 21;
             break;
-          case 16:
-            _context4.prev = 16;
+          case 17:
+            _context4.prev = 17;
             _context4.t0 = _context4["catch"](0);
             setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
               loading: false,
@@ -467,11 +472,11 @@ var DriversList = function DriversList(props) {
               loading: false,
               error: _context4.t0.message
             }));
-          case 20:
+          case 21:
           case "end":
             return _context4.stop();
         }
-      }, _callee4, null, [[0, 16]]);
+      }, _callee4, null, [[0, 17]]);
     }));
     return function getOrderDrivers() {
       return _ref4.apply(this, arguments);
@@ -568,6 +573,7 @@ var DriversList = function DriversList(props) {
     onlineDrivers: onlineDrivers,
     offlineDrivers: offlineDrivers,
     driverActionStatus: driverActionStatus,
+    companyActionStatus: companyActionStatus,
     driversIsOnline: driversIsOnline,
     driversSubfilter: driversSubfilter,
     searchValue: searchValue,
