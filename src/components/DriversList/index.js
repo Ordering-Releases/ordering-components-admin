@@ -102,44 +102,44 @@ export const DriversList = (props) => {
     }
   }
 
-    /**
+  /**
    * Method to assign driver_company to order from API
    * @param {object} assign assigned order_id and driver_company_id
    */
-    const handleAssignDriverCompany = async (assign) => {
-      try {
-        showToast(ToastType.Info, t('LOADING', 'Loading'))
-        setCompanyActionStatus({ ...companyActionStatus, loading: true })
+  const handleAssignDriverCompany = async (assign) => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setCompanyActionStatus({ ...companyActionStatus, loading: true })
 
-        const requestOptions = {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${session.token}`
-          },
-          body: JSON.stringify({
-            driver_company_id: assign.companyId,
-          })
-        }
-        const response = await fetch(`${ordering.root}/orders/${assign.orderId}`, requestOptions)
-        const { error, result } = await response.json()
-
-        setCompanyActionStatus({
-          loading: false,
-          error: result.error ? result.result : null
+      const requestOptions = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.token}`
+        },
+        body: JSON.stringify({
+          driver_company_id: assign.companyId
         })
-
-        if (!error) {
-          if (assign.driverId) {
-            showToast(ToastType.Success, t('ORDER_COMPANY_ASSIGNED', 'Company assigned to order'))
-          } else {
-            showToast(ToastType.Success, t('ORDER_COMPANY_REMOVED', 'Company removed from the order'))
-          }
-        }
-      } catch (err) {
-        setCompanyActionStatus({ ...companyActionStatus, loading: false, error: [err.message] })
       }
+      const response = await fetch(`${ordering.root}/orders/${assign.orderId}`, requestOptions)
+      const { error, result } = await response.json()
+
+      setCompanyActionStatus({
+        loading: false,
+        error: result.error ? result.result : null
+      })
+
+      if (!error) {
+        if (assign.driverId) {
+          showToast(ToastType.Success, t('ORDER_COMPANY_ASSIGNED', 'Company assigned to order'))
+        } else {
+          showToast(ToastType.Success, t('ORDER_COMPANY_REMOVED', 'Company removed from the order'))
+        }
+      }
+    } catch (err) {
+      setCompanyActionStatus({ ...companyActionStatus, loading: false, error: [err.message] })
     }
+  }
 
   /**
    * change online state for drivers
@@ -278,9 +278,11 @@ export const DriversList = (props) => {
       }
       const response = await fetch(`${ordering.root}/controls/orders/${orderId}`, requestOptions)
       const { error, result } = await response.json()
+
+      const drivers = result?.drivers?.map(driver => ({ ...driver, enabled: true }))
       setDriversList({
         loading: false,
-        drivers: error ? [] : result?.drivers,
+        drivers: error ? [] : drivers,
         error: error ? result : null
       })
       setCompanysList({
@@ -394,6 +396,7 @@ export const DriversList = (props) => {
           onlineDrivers={onlineDrivers}
           offlineDrivers={offlineDrivers}
           driverActionStatus={driverActionStatus}
+          companyActionStatus={companyActionStatus}
           driversIsOnline={driversIsOnline}
           driversSubfilter={driversSubfilter}
           searchValue={searchValue}
