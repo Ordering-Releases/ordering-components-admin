@@ -23,7 +23,7 @@ export const OrderContext = createContext()
  * This provider has a reducer for manage order state
  * @param {props} props
  */
-export const OrderProvider = ({ Alert, children, strategy, isAlsea, isDisableToast, franchiseId, isDisabledDefaultOpts, businessSlug }) => {
+export const OrderProvider = ({ Alert, children, strategy, isAlsea, franchiseId, isDisabledDefaultOpts, businessSlug }) => {
   const [confirmAlert, setConfirm] = useState({ show: false })
   const [alert, setAlert] = useState({ show: false })
   const [ordering] = useApi()
@@ -34,6 +34,7 @@ export const OrderProvider = ({ Alert, children, strategy, isAlsea, isDisableToa
   const [session, { logout }] = useSession()
   const [customerState, { setUserCustomer }] = useCustomer()
   const [, { showToast }] = useToast()
+  const [isDisableToast, setIsDisableToast] = useState(true)
 
   const configTypes = configState?.configs?.order_types_allowed?.value.split('|').map(value => Number(value)) || []
 
@@ -1172,6 +1173,10 @@ export const OrderProvider = ({ Alert, children, strategy, isAlsea, isDisableToa
     setState({ ...state, loading: false })
   }
 
+  const handleDisableToast = (isDisable) => {
+    setIsDisableToast(isDisable)
+  }
+
   useEffect(() => {
     if (session.loading || languageState.loading) return
     if (session.auth) {
@@ -1252,7 +1257,7 @@ export const OrderProvider = ({ Alert, children, strategy, isAlsea, isDisableToa
       socket.off('carts_update', handleCartUpdate)
       socket.off('order_options_update', handleOrderOptionUpdate)
     }
-  }, [state, socket])
+  }, [state, socket, isDisableToast])
 
   const handleJoinRooms = () => {
     socket.join(`carts_${customerState?.user?.id || session?.user?.id}`)
@@ -1326,7 +1331,8 @@ export const OrderProvider = ({ Alert, children, strategy, isAlsea, isDisableToa
     placeMultiCarts,
     getLastOrderHasNoReview,
     changeCityFilter,
-    confirmMultiCarts
+    confirmMultiCarts,
+    handleDisableToast
   }
 
   const copyState = JSON.parse(JSON.stringify(state))

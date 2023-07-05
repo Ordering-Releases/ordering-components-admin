@@ -5,6 +5,7 @@ import { useOrder } from '../../contexts/OrderContext'
 import { useApi } from '../../contexts/ApiContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
 import { useLanguage } from '../../contexts/LanguageContext'
+import { useConfig } from '../../contexts/ConfigContext'
 
 /**
  * Component to manage custom order details behavior without UI component
@@ -17,9 +18,10 @@ export const CustomOrderDetails = (props) => {
 
   const [ordering] = useApi()
   const [{ token }] = useSession()
-  const [{ carts }, { updateProduct }] = useOrder()
+  const [orderState, { updateProduct, handleDisableToast }] = useOrder()
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
+  const [{ configs }] = useConfig()
 
   const [selectedUser, setSelectedUser] = useState(null)
   const [selectedBusiness, setSelectedBusiness] = useState(null)
@@ -27,11 +29,13 @@ export const CustomOrderDetails = (props) => {
   const [customersPhones, setCustomersPhones] = useState({ users: [], loading: false, error: null })
   const [businessList, setBusinessList] = useState({ loading: false, businesses: [], error: null })
   const [productList, setProductList] = useState({ loading: false, products: [], error: null })
+  const [defaultCountryCodeState, setDefaultCountryCodeState] = useState({ loading: true, code: 'US', error: null })
 
+  const googleMapsApiKey = useMemo(() => configs?.google_maps_api_key?.value, [configs])
   const cart = useMemo(() => {
-    if (!carts || !selectedBusiness?.id) return null
-    return carts[`businessId:${selectedBusiness?.id}`]
-  }, [carts, selectedBusiness?.id])
+    if (!orderState?.carts || !selectedBusiness?.id) return null
+    return orderState?.carts[`businessId:${selectedBusiness?.id}`]
+  }, [orderState?.carts, selectedBusiness?.id])
 
   /**
    * Get users from API
@@ -85,7 +89,8 @@ export const CustomOrderDetails = (props) => {
       })
 
       const parameters = {
-        location
+        location: location,
+        type: orderState.options?.type || 1
       }
 
       const conditions = {
@@ -96,7 +101,7 @@ export const CustomOrderDetails = (props) => {
         }]
       }
 
-      const fetchEndpoint = ordering.businesses().where(conditions).select(businessPropsToFetch).parameters(parameters)
+      const fetchEndpoint = ordering.businesses().where(conditions).asDashboard().select(businessPropsToFetch).parameters(parameters)
       const { content: { error, result } } = await fetchEndpoint.get()
       if (!error) {
         setBusinessList({
@@ -186,6 +191,61 @@ export const CustomOrderDetails = (props) => {
     }
   }
 
+  /**
+   * Method to get the phone code from the location
+   */
+  const handleGetPhoneCode = async () => {
+    if (!googleMapsApiKey) return
+    setDefaultCountryCodeState({
+      ...defaultCountryCodeState,
+      loading: true
+    })
+    navigator.geolocation.getCurrentPosition((geo) => {
+      const latitude = geo.coords.latitude
+      const longitude = geo.coords.longitude
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${googleMapsApiKey}`
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          const results = data.results
+          if (results.length > 0) {
+            const addressComponents = results[0].address_components
+            addressComponents.forEach(address => {
+              if (address.types.includes('country')) {
+                setDefaultCountryCodeState({
+                  loading: false,
+                  code: address.short_name ?? 'US',
+                  error: null
+                })
+              }
+            })
+          } else {
+            setDefaultCountryCodeState({
+              loading: false,
+              code: '+1',
+              error: null
+            })
+          }
+        })
+        .catch(err => {
+          setDefaultCountryCodeState({
+            ...defaultCountryCodeState,
+            loading: false,
+            error: [err.message]
+          })
+        })
+    }, (err) => {
+      setDefaultCountryCodeState({
+        ...defaultCountryCodeState,
+        loading: false,
+        error: [err.message]
+      })
+    }, {
+      timeout: 5000,
+      enableHighAccuracy: true
+    })
+  }
+
   useEffect(() => {
     if (phone && phone.length >= 7) {
       getUsers()
@@ -202,6 +262,19 @@ export const CustomOrderDetails = (props) => {
       setProductList({ loading: false, products: [], error: null })
     }
   }, [selectedBusiness])
+
+  useEffect(() => {
+    if (selectedUser) {
+      handleDisableToast(false)
+    } else {
+      handleDisableToast(true)
+    }
+  }, [selectedUser])
+
+  useEffect(() => {
+    handleGetPhoneCode()
+    return () => handleDisableToast(true)
+  }, [])
 
   return (
     <>
@@ -222,6 +295,7 @@ export const CustomOrderDetails = (props) => {
           getProducts={getProducts}
           handeUpdateProductCart={handeUpdateProductCart}
           cart={cart}
+          defaultCountryCodeState={defaultCountryCodeState}
         />
       )}
     </>
@@ -236,5 +310,5 @@ CustomOrderDetails.propTypes = {
 }
 
 CustomOrderDetails.defaultProps = {
-  businessPropsToFetch: ['id', 'name', 'location', 'logo', 'slug']
+  businessPropsToFetch: ['id', 'name', 'location', 'logo', 'slug', 'zones']
 }
