@@ -58,7 +58,6 @@ var OrderProvider = function OrderProvider(_ref) {
     children = _ref.children,
     strategy = _ref.strategy,
     isAlsea = _ref.isAlsea,
-    isDisableToast = _ref.isDisableToast,
     franchiseId = _ref.franchiseId,
     isDisabledDefaultOpts = _ref.isDisabledDefaultOpts,
     businessSlug = _ref.businessSlug;
@@ -99,6 +98,10 @@ var OrderProvider = function OrderProvider(_ref) {
   var _useToast = (0, _ToastContext.useToast)(),
     _useToast2 = _slicedToArray(_useToast, 2),
     showToast = _useToast2[1].showToast;
+  var _useState5 = (0, _react.useState)(true),
+    _useState6 = _slicedToArray(_useState5, 2),
+    isDisableToast = _useState6[0],
+    setIsDisableToast = _useState6[1];
   var configTypes = (configState === null || configState === void 0 ? void 0 : (_configState$configs = configState.configs) === null || _configState$configs === void 0 ? void 0 : (_configState$configs$ = _configState$configs.order_types_allowed) === null || _configState$configs$ === void 0 ? void 0 : _configState$configs$.value.split('|').map(function (value) {
     return Number(value);
   })) || [];
@@ -109,7 +112,7 @@ var OrderProvider = function OrderProvider(_ref) {
     curbside: 4,
     drivethru: 5
   };
-  var _useState5 = (0, _react.useState)({
+  var _useState7 = (0, _react.useState)({
       loading: true,
       options: isDisabledDefaultOpts ? {
         type: null,
@@ -124,9 +127,9 @@ var OrderProvider = function OrderProvider(_ref) {
       confirmAlert: confirmAlert,
       alert: alert
     }),
-    _useState6 = _slicedToArray(_useState5, 2),
-    state = _useState6[0],
-    setState = _useState6[1];
+    _useState8 = _slicedToArray(_useState7, 2),
+    state = _useState8[0],
+    setState = _useState8[1];
 
   /**
    * Refresh order options and carts from API
@@ -2128,6 +2131,9 @@ var OrderProvider = function OrderProvider(_ref) {
       return _ref25.apply(this, arguments);
     };
   }();
+  var handleDisableToast = function handleDisableToast(isDisable) {
+    setIsDisableToast(isDisable);
+  };
   (0, _react.useEffect)(function () {
     if (session.loading || languageState.loading) return;
     if (session.auth) {
@@ -2210,7 +2216,7 @@ var OrderProvider = function OrderProvider(_ref) {
       socket.off('carts_update', handleCartUpdate);
       socket.off('order_options_update', handleOrderOptionUpdate);
     };
-  }, [state, socket]);
+  }, [state, socket, isDisableToast]);
   var handleJoinRooms = function handleJoinRooms() {
     var _customerState$user, _session$user, _customerState$user2, _session$user2, _session$user3, _session$user4;
     socket.join("carts_".concat((customerState === null || customerState === void 0 ? void 0 : (_customerState$user = customerState.user) === null || _customerState$user === void 0 ? void 0 : _customerState$user.id) || (session === null || session === void 0 ? void 0 : (_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.id)));
@@ -2284,7 +2290,8 @@ var OrderProvider = function OrderProvider(_ref) {
     placeMultiCarts: placeMultiCarts,
     getLastOrderHasNoReview: getLastOrderHasNoReview,
     changeCityFilter: changeCityFilter,
-    confirmMultiCarts: confirmMultiCarts
+    confirmMultiCarts: confirmMultiCarts,
+    handleDisableToast: handleDisableToast
   };
   var copyState = JSON.parse(JSON.stringify(state));
   return /*#__PURE__*/_react.default.createElement(OrderContext.Provider, {

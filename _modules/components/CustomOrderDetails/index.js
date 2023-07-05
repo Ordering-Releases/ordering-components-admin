@@ -12,6 +12,7 @@ var _OrderContext = require("../../contexts/OrderContext");
 var _ApiContext = require("../../contexts/ApiContext");
 var _ToastContext = require("../../contexts/ToastContext");
 var _LanguageContext = require("../../contexts/LanguageContext");
+var _ConfigContext = require("../../contexts/ConfigContext");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -44,14 +45,19 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
     token = _useSession2[0].token;
   var _useOrder = (0, _OrderContext.useOrder)(),
     _useOrder2 = _slicedToArray(_useOrder, 2),
-    carts = _useOrder2[0].carts,
-    updateProduct = _useOrder2[1].updateProduct;
+    orderState = _useOrder2[0],
+    _useOrder2$ = _useOrder2[1],
+    updateProduct = _useOrder2$.updateProduct,
+    handleDisableToast = _useOrder2$.handleDisableToast;
   var _useToast = (0, _ToastContext.useToast)(),
     _useToast2 = _slicedToArray(_useToast, 2),
     showToast = _useToast2[1].showToast;
   var _useLanguage = (0, _LanguageContext.useLanguage)(),
     _useLanguage2 = _slicedToArray(_useLanguage, 2),
     t = _useLanguage2[1];
+  var _useConfig = (0, _ConfigContext.useConfig)(),
+    _useConfig2 = _slicedToArray(_useConfig, 1),
+    configs = _useConfig2[0].configs;
   var _useState = (0, _react.useState)(null),
     _useState2 = _slicedToArray(_useState, 2),
     selectedUser = _useState2[0],
@@ -88,10 +94,22 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
     _useState12 = _slicedToArray(_useState11, 2),
     productList = _useState12[0],
     setProductList = _useState12[1];
+  var _useState13 = (0, _react.useState)({
+      loading: true,
+      code: 'US',
+      error: null
+    }),
+    _useState14 = _slicedToArray(_useState13, 2),
+    defaultCountryCodeState = _useState14[0],
+    setDefaultCountryCodeState = _useState14[1];
+  var googleMapsApiKey = (0, _react.useMemo)(function () {
+    var _configs$google_maps_;
+    return configs === null || configs === void 0 ? void 0 : (_configs$google_maps_ = configs.google_maps_api_key) === null || _configs$google_maps_ === void 0 ? void 0 : _configs$google_maps_.value;
+  }, [configs]);
   var cart = (0, _react.useMemo)(function () {
-    if (!carts || !(selectedBusiness !== null && selectedBusiness !== void 0 && selectedBusiness.id)) return null;
-    return carts["businessId:".concat(selectedBusiness === null || selectedBusiness === void 0 ? void 0 : selectedBusiness.id)];
-  }, [carts, selectedBusiness === null || selectedBusiness === void 0 ? void 0 : selectedBusiness.id]);
+    if (!(orderState !== null && orderState !== void 0 && orderState.carts) || !(selectedBusiness !== null && selectedBusiness !== void 0 && selectedBusiness.id)) return null;
+    return orderState === null || orderState === void 0 ? void 0 : orderState.carts["businessId:".concat(selectedBusiness === null || selectedBusiness === void 0 ? void 0 : selectedBusiness.id)];
+  }, [orderState === null || orderState === void 0 ? void 0 : orderState.carts, selectedBusiness === null || selectedBusiness === void 0 ? void 0 : selectedBusiness.id]);
 
   /**
    * Get users from API
@@ -162,7 +180,7 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
    */
   var getBusinessList = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(location) {
-      var parameters, conditions, fetchEndpoint, _yield$fetchEndpoint$, _yield$fetchEndpoint$2, error, result;
+      var _orderState$options, parameters, conditions, fetchEndpoint, _yield$fetchEndpoint$, _yield$fetchEndpoint$2, error, result;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -171,7 +189,8 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
               loading: true
             }));
             parameters = {
-              location: location
+              location: location,
+              type: ((_orderState$options = orderState.options) === null || _orderState$options === void 0 ? void 0 : _orderState$options.type) || 1
             };
             conditions = {
               conector: 'AND',
@@ -180,7 +199,7 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
                 value: encodeURI(true)
               }]
             };
-            fetchEndpoint = ordering.businesses().where(conditions).select(businessPropsToFetch).parameters(parameters);
+            fetchEndpoint = ordering.businesses().where(conditions).asDashboard().select(businessPropsToFetch).parameters(parameters);
             _context2.next = 7;
             return fetchEndpoint.get();
           case 7:
@@ -316,6 +335,76 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
       return _ref4.apply(this, arguments);
     };
   }();
+
+  /**
+   * Method to get the phone code from the location
+   */
+  var handleGetPhoneCode = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) switch (_context5.prev = _context5.next) {
+          case 0:
+            if (googleMapsApiKey) {
+              _context5.next = 2;
+              break;
+            }
+            return _context5.abrupt("return");
+          case 2:
+            setDefaultCountryCodeState(_objectSpread(_objectSpread({}, defaultCountryCodeState), {}, {
+              loading: true
+            }));
+            navigator.geolocation.getCurrentPosition(function (geo) {
+              var latitude = geo.coords.latitude;
+              var longitude = geo.coords.longitude;
+              var url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=".concat(latitude, ",").concat(longitude, "&key=").concat(googleMapsApiKey);
+              fetch(url).then(function (response) {
+                return response.json();
+              }).then(function (data) {
+                var results = data.results;
+                if (results.length > 0) {
+                  var addressComponents = results[0].address_components;
+                  addressComponents.forEach(function (address) {
+                    if (address.types.includes('country')) {
+                      var _address$short_name;
+                      setDefaultCountryCodeState({
+                        loading: false,
+                        code: (_address$short_name = address.short_name) !== null && _address$short_name !== void 0 ? _address$short_name : 'US',
+                        error: null
+                      });
+                    }
+                  });
+                } else {
+                  setDefaultCountryCodeState({
+                    loading: false,
+                    code: '+1',
+                    error: null
+                  });
+                }
+              }).catch(function (err) {
+                setDefaultCountryCodeState(_objectSpread(_objectSpread({}, defaultCountryCodeState), {}, {
+                  loading: false,
+                  error: [err.message]
+                }));
+              });
+            }, function (err) {
+              setDefaultCountryCodeState(_objectSpread(_objectSpread({}, defaultCountryCodeState), {}, {
+                loading: false,
+                error: [err.message]
+              }));
+            }, {
+              timeout: 5000,
+              enableHighAccuracy: true
+            });
+          case 4:
+          case "end":
+            return _context5.stop();
+        }
+      }, _callee5);
+    }));
+    return function handleGetPhoneCode() {
+      return _ref5.apply(this, arguments);
+    };
+  }();
   (0, _react.useEffect)(function () {
     if (phone && phone.length >= 7) {
       getUsers();
@@ -337,6 +426,19 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
       });
     }
   }, [selectedBusiness]);
+  (0, _react.useEffect)(function () {
+    if (selectedUser) {
+      handleDisableToast(false);
+    } else {
+      handleDisableToast(true);
+    }
+  }, [selectedUser]);
+  (0, _react.useEffect)(function () {
+    handleGetPhoneCode();
+    return function () {
+      return handleDisableToast(true);
+    };
+  }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     selectedUser: selectedUser,
     setSelectedUser: setSelectedUser,
@@ -353,7 +455,8 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
     productList: productList,
     getProducts: getProducts,
     handeUpdateProductCart: handeUpdateProductCart,
-    cart: cart
+    cart: cart,
+    defaultCountryCodeState: defaultCountryCodeState
   })));
 };
 exports.CustomOrderDetails = CustomOrderDetails;
@@ -364,5 +467,5 @@ CustomOrderDetails.propTypes = {
   UIComponent: _propTypes.default.elementType
 };
 CustomOrderDetails.defaultProps = {
-  businessPropsToFetch: ['id', 'name', 'location', 'logo', 'slug']
+  businessPropsToFetch: ['id', 'name', 'location', 'logo', 'slug', 'zones']
 };
