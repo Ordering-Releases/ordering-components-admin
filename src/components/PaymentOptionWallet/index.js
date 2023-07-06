@@ -119,7 +119,8 @@ export const PaymentOptionWallet = (props) => {
             'X-Socket-Id-X': socket?.getId()
           },
           body: JSON.stringify({
-            wallet_id: wallet.id
+            wallet_id: wallet.id,
+            user_id: user.id
           })
         }
       )
