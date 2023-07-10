@@ -63,9 +63,11 @@ var AdvancedReports = function AdvancedReports(props) {
     _useState6 = _slicedToArray(_useState5, 2),
     countryCode = _useState6[0],
     setCountryCode = _useState6[1];
+  var now = (0, _dayjs.default)();
+  var last7day = now.subtract('7', 'day').format('YYYY-MM-DD');
   var _useState7 = (0, _react.useState)({
-      from: '',
-      to: '',
+      from: (0, _dayjs.default)(last7day),
+      to: now,
       businessIds: null,
       drivers_ids: null,
       franchises_id: null,

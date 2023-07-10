@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.useWebsocket = exports.WebsocketProvider = exports.WebsocketContext = void 0;
 var _react = _interopRequireWildcard(require("react"));
 var _SessionContext = require("../SessionContext");
+var _EventContext = require("../EventContext");
 var _socket2 = require("./socket");
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -41,6 +42,9 @@ var WebsocketProvider = function WebsocketProvider(_ref) {
   var _useSession = (0, _SessionContext.useSession)(),
     _useSession2 = _slicedToArray(_useSession, 1),
     session = _useSession2[0];
+  var _useEvent = (0, _EventContext.useEvent)(),
+    _useEvent2 = _slicedToArray(_useEvent, 1),
+    events = _useEvent2[0];
   var _useState = (0, _react.useState)(),
     _useState2 = _slicedToArray(_useState, 2),
     socket = _useState2[0],
@@ -69,6 +73,7 @@ var WebsocketProvider = function WebsocketProvider(_ref) {
     if (socket !== null && socket !== void 0 && socket.socket) {
       socket.socket.on('connect', function () {
         window.localStorage.setItem('websocket-connected-date', new Date());
+        events.emit('websocket_connected');
       });
       socket.socket.on('disconnect', function (reason) {
         if (reason === 'io server disconnect' && session.auth) {

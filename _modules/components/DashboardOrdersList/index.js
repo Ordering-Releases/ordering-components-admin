@@ -865,16 +865,37 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
           orders: _orders
         }));
       } else {
-        if (isFilteredOrder(order)) {
-          var isOrderStatus = orderStatus.includes(parseInt(order.status));
-          if (isOrderStatus) {
-            orders = [].concat(_toConsumableArray(orderList.orders), [order]);
-            var _orders3 = sortOrdersArray(orderBy, orders);
-            pagination.total++;
-            setPagination(_objectSpread({}, pagination));
-            setOrderList(_objectSpread(_objectSpread({}, orderList), {}, {
-              orders: _orders3.slice(0, pagination.pageSize)
-            }));
+        var statusChange = null;
+        if (order !== null && order !== void 0 && order.history) {
+          var _order$history, _order$history2;
+          var length = order === null || order === void 0 ? void 0 : (_order$history = order.history) === null || _order$history === void 0 ? void 0 : _order$history.length;
+          var lastHistoryData = order === null || order === void 0 ? void 0 : (_order$history2 = order.history[length - 1]) === null || _order$history2 === void 0 ? void 0 : _order$history2.data;
+          statusChange = lastHistoryData === null || lastHistoryData === void 0 ? void 0 : lastHistoryData.find(function (_ref9) {
+            var attribute = _ref9.attribute;
+            return attribute === 'status';
+          });
+        }
+        var isOrderStatus = orderStatus.includes(parseInt(order.status));
+        if (isOrderStatus) {
+          orders = [].concat(_toConsumableArray(orderList.orders), [order]);
+          var _orders3 = sortOrdersArray(orderBy, orders);
+          if (statusChange && isFilteredOrder(order)) {
+            var from = parseInt(statusChange.old);
+            if (!orderStatus.includes(from)) {
+              pagination.total++;
+              setPagination(_objectSpread({}, pagination));
+            }
+          }
+          setOrderList(_objectSpread(_objectSpread({}, orderList), {}, {
+            orders: _orders3.slice(0, pagination.pageSize)
+          }));
+        } else {
+          if (statusChange) {
+            var _from = parseInt(statusChange.old);
+            if (orderStatus.includes(_from)) {
+              pagination.total--;
+              setPagination(_objectSpread({}, pagination));
+            }
           }
         }
       }
@@ -937,10 +958,12 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
         }));
       }
     };
-    if (!orderList.loading && orderList.orders.length === 0) {
+    if (!orderList.loading) {
       if ((pagination === null || pagination === void 0 ? void 0 : pagination.currentPage) !== 0 && (pagination === null || pagination === void 0 ? void 0 : pagination.total) !== 0) {
         if (Math.ceil((pagination === null || pagination === void 0 ? void 0 : pagination.total) / pagination.pageSize) >= (pagination === null || pagination === void 0 ? void 0 : pagination.currentPage)) {
-          getPageOrders(pagination.pageSize, pagination.currentPage);
+          if (orderList.orders.length === 0) {
+            getPageOrders(pagination.pageSize, pagination.currentPage);
+          }
         } else {
           getPageOrders(pagination.pageSize, pagination.currentPage - 1);
         }
@@ -975,6 +998,15 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       events.off('customer_reviewed', handleCustomerReviewed);
     };
   }, [orderList, orderBy]);
+  var reloadPageOrders = function reloadPageOrders() {
+    getPageOrders(pagination.pageSize, pagination.currentPage);
+  };
+  (0, _react.useEffect)(function () {
+    events.on('websocket_connected', reloadPageOrders);
+    return function () {
+      events.off('websocket_connected', reloadPageOrders);
+    };
+  }, [pagination]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     orderList: orderList,
     pagination: pagination,
