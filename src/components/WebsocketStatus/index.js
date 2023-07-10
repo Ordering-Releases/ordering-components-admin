@@ -15,11 +15,7 @@ export const WebsocketStatus = (props) => {
   const socket = useWebsocket()
 
   const [socketStatus, setSocketStatus] = useState(socket?.socket?.connected ? 1 : 2)
-  const [connectedDate, setConnectedDate] = useState(
-    window.localStorage.getItem('websocket-connected-date')
-      ? new Date(window.localStorage.getItem('websocket-connected-date'))
-      : new Date()
-  )
+  const [connectedDate, setConnectedDate] = useState(new Date())
   const [reconnectAttemptCount, setReconnectAttemptCount] = useState(0)
 
   const getWebsocketStatus = (num) => {

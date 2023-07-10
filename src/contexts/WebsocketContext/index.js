@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useSession } from '../SessionContext'
+import { useEvent } from '../EventContext'
 import { Socket } from './socket'
 
 /**
@@ -17,6 +18,7 @@ export const WebsocketContext = createContext()
  */
 export const WebsocketProvider = ({ settings, children }) => {
   const [session] = useSession()
+  const [events] = useEvent()
   const [socket, setSocket] = useState()
 
   useEffect(() => {
@@ -43,6 +45,7 @@ export const WebsocketProvider = ({ settings, children }) => {
     if (socket?.socket) {
       socket.socket.on('connect', () => {
         window.localStorage.setItem('websocket-connected-date', new Date())
+        events.emit('websocket_connected')
       })
 
       socket.socket.on('disconnect', (reason) => {

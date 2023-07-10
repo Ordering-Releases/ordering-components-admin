@@ -6,6 +6,7 @@ import { useWebsocket } from '../../contexts/WebsocketContext'
 import { useConfig } from '../../contexts/ConfigContext'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
+import { useEvent } from '../../contexts/EventContext'
 
 export const OrdersManage = (props) => {
   const {
@@ -24,6 +25,7 @@ export const OrdersManage = (props) => {
   const [configState] = useConfig()
   const [, t] = useLanguage()
   const [, { showToast }] = useToast()
+  const [events] = useEvent()
 
   const requestsState = {}
   const orderStatuesList = {
@@ -689,14 +691,10 @@ export const OrdersManage = (props) => {
 
   const handleNewOrder = (order) => {
     if (customerId && order?.customer_id !== customerId) return
-    if (!numberOfOrdersByStatus.result) return
-    const _orderStatusNumbers = numberOfOrdersByStatus.result
-    _orderStatusNumbers.pending += 1
-    setNumberOfOrdersByStatus({
-      ...numberOfOrdersByStatus,
-      loading: false,
-      error: false,
-      result: _orderStatusNumbers
+    setNumberOfOrdersByStatus(prevState => {
+      const _orderStatusNumbers = { ...prevState.result }
+      _orderStatusNumbers.pending += 1
+      return { ...prevState, result: _orderStatusNumbers }
     })
   }
 
@@ -706,35 +704,30 @@ export const OrdersManage = (props) => {
     const length = order.history.length
     const lastHistoryData = order?.history[length - 1].data
     const statusChange = lastHistoryData?.find(({ attribute }) => (attribute === 'status'))
-    if (statusChange && numberOfOrdersByStatus.result) {
-      const from = statusChange.old
-      const to = statusChange.new
-      const _orderStatusNumbers = numberOfOrdersByStatus.result
-      let fromTab = null
-      let toTab = null
+    if (statusChange) {
+      setNumberOfOrdersByStatus(prevState => {
+        const _orderStatusNumbers = { ...prevState.result }
 
-      Object.values(orderStatuesList).map((statusTabs, key) => {
-        if (statusTabs.includes(from)) {
-          fromTab = Object.keys(orderStatuesList)[key]
-          if (_orderStatusNumbers[fromTab] > 0) {
-            _orderStatusNumbers[fromTab] -= 1
+        Object.values(orderStatuesList).map((statusTabs, key) => {
+          if (statusTabs.includes(statusChange.old)) {
+            const fromTab = Object.keys(orderStatuesList)[key]
+            if (_orderStatusNumbers[fromTab] > 0) {
+              _orderStatusNumbers[fromTab] -= 1
+            }
           }
-        }
-        if (statusTabs.includes(to)) {
-          toTab = Object.keys(orderStatuesList)[key]
-          _orderStatusNumbers[toTab] += 1
-        }
-      })
-      setNumberOfOrdersByStatus({
-        ...numberOfOrdersByStatus,
-        loading: false,
-        error: false,
-        result: _orderStatusNumbers
+          if (statusTabs.includes(statusChange.new)) {
+            const toTab = Object.keys(orderStatuesList)[key]
+            _orderStatusNumbers[toTab] += 1
+          }
+        })
+
+        return { ...prevState, result: _orderStatusNumbers }
       })
     }
   }
 
   useEffect(() => {
+    if (!numberOfOrdersByStatus.result) return
     socket.on('update_order', handleUpdateOrder)
     socket.on('orders_register', handleNewOrder)
     return () => {
@@ -765,8 +758,16 @@ export const OrdersManage = (props) => {
     }
   }, [user, loading])
 
+  const reloadOrderNumbersByStatus = () => {
+    getOrderNumbersByStatus()
+  }
+
   useEffect(() => {
     getOrderNumbersByStatus()
+    events.on('websocket_connected', reloadOrderNumbersByStatus)
+    return () => {
+      events.off('websocket_connected', reloadOrderNumbersByStatus)
+    }
   }, [filterValues, searchValue, driverId, customerId, businessId, timeStatus])
 
   useEffect(() => {

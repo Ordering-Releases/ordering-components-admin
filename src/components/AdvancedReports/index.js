@@ -19,10 +19,14 @@ export const AdvancedReports = (props) => {
   const [businessDistanceList, setBusinessDistanceList] = useState({ content: [], loading: false, error: null })
   const [businessDistanceList1, setBusinessDistanceList1] = useState({ content: [], loading: false, error: null })
   const [countryCode, setCountryCode] = useState('')
+
+  const now = dayjs()
+  const last7day = now.subtract('7', 'day').format('YYYY-MM-DD')
+
   const [filterList, setFilterList] = useState(
     {
-      from: '',
-      to: '',
+      from: dayjs(last7day),
+      to: now,
       businessIds: null,
       drivers_ids: null,
       franchises_id: null,
