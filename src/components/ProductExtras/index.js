@@ -346,6 +346,7 @@ export const ProductExtras = (props) => {
           handleDrop={handleDrop}
           handleDragEnd={handleDragEnd}
           handleUpdateExtraState={handleUpdateExtraState}
+          setExtrasState={setExtrasState}
         />
       )}
     </>

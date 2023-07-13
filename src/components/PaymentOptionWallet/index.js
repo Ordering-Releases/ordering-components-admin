@@ -148,7 +148,10 @@ export const PaymentOptionWallet = (props) => {
             Authorization: `Bearer ${token}`,
             'X-App-X': ordering.appId,
             'X-Socket-Id-X': socket?.getId()
-          }
+          },
+          body: JSON.stringify({
+            user_id: user.id
+          })
         }
       )
       const { error, result } = await response.json()

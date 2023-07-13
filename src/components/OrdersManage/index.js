@@ -6,17 +6,12 @@ import { useWebsocket } from '../../contexts/WebsocketContext'
 import { useConfig } from '../../contexts/ConfigContext'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
-import { useEvent } from '../../contexts/EventContext'
 
 export const OrdersManage = (props) => {
   const {
     UIComponent,
     statusGroup,
-    driversPropsToFetch,
-    driverId,
-    customerId,
-    businessId,
-    isOnlyDelivery
+    driversPropsToFetch
   } = props
 
   const [ordering] = useApi()
@@ -25,7 +20,6 @@ export const OrdersManage = (props) => {
   const [configState] = useConfig()
   const [, t] = useLanguage()
   const [, { showToast }] = useToast()
-  const [events] = useEvent()
 
   const requestsState = {}
   const orderStatuesList = {
@@ -43,7 +37,6 @@ export const OrdersManage = (props) => {
   const [startMulitOrderStatusChange, setStartMulitOrderStatusChange] = useState(false)
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
   const [deletedOrderIds, setDeletedOrderIds] = useState([])
-  const [numberOfOrdersByStatus, setNumberOfOrdersByStatus] = useState({ result: null, loading: false, error: false })
   const allowColumnsModel = {
     slaBar: { visable: false, title: '', className: '', draggable: false, colSpan: 1, order: -2 },
     orderNumber: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: -1 },
@@ -300,39 +293,38 @@ export const OrdersManage = (props) => {
   useEffect(() => {
     if (loading) return
     const handleUpdateDriver = (driver) => {
-      const found = driversList.drivers.find(_driver => _driver.id === driver.id)
-      let _drivers = []
-      if (found) {
-        _drivers = driversList.drivers.filter(_driver => {
-          if (_driver.id === driver.id) {
-            Object.assign(_driver, driver)
-          }
-          return true
-        })
-      } else {
-        _drivers = [...driversList.drivers, driver]
-      }
-      setDriversList({
-        ...driversList,
-        drivers: _drivers
+      setDriversList(prevState => {
+        const driverIndex = prevState.drivers.findIndex(_driver => _driver.id === driver.id)
+        if (driverIndex !== -1) {
+          const updatedDrivers = [...prevState.drivers]
+          Object.assign(updatedDrivers[driverIndex], driver)
+          return { ...prevState, drivers: updatedDrivers }
+        } else {
+          const updatedDrivers = [...prevState.drivers, driver]
+          return { ...prevState, drivers: updatedDrivers }
+        }
       })
     }
     const handleTrackingDriver = (trackingData) => {
-      let drivers = []
-      drivers = driversList.drivers.filter(_driver => {
-        if (_driver.id === trackingData.driver_id) {
-          if (typeof trackingData.location === 'string') {
-            const trackingLocation = trackingData.location
-            const _location = trackingLocation.replaceAll('\\', '')
-            const location = JSON.parse(_location)
-            _driver.location = location
-          } else {
-            _driver.location = trackingData.location
+      setDriversList(prevState => {
+        const updatedDrivers = prevState.drivers.map(driver => {
+          if (driver.id === trackingData.driver_id) {
+            const updatedDriver = { ...driver }
+            if (typeof trackingData.location === 'string') {
+              const trackingLocation = trackingData.location
+              const _location = trackingLocation.replaceAll('\\', '')
+              const location = JSON.parse(_location)
+              updatedDriver.location = location
+            } else {
+              updatedDriver.location = trackingData.location
+            }
+            return updatedDriver
           }
-        }
-        return true
+          return driver
+        })
+
+        return { ...prevState, drivers: updatedDrivers }
       })
-      setDriversList({ ...driversList, drivers: drivers })
     }
     socket.on('drivers_update', handleUpdateDriver)
     socket.on('tracking_driver', handleTrackingDriver)
@@ -341,400 +333,6 @@ export const OrdersManage = (props) => {
       socket.off('tracking_driver', handleTrackingDriver)
     }
   }, [socket, loading, driversList.drivers])
-
-  const getOrderNumbersByStatus = async () => {
-    let where = []
-    const conditions = []
-    conditions.push({
-      attribute: 'products',
-      conditions: [{
-        attribute: 'type',
-        value: {
-          condition: '=',
-          value: 'item'
-        }
-      }]
-    })
-    if (Object.keys(filterValues).length > 0) {
-      const filterConditons = []
-      if (filterValues?.statuses.length > 0) {
-        filterConditons.push({ attribute: 'status', value: filterValues?.statuses })
-      }
-
-      if (filterValues?.orderId) {
-        filterConditons.push(
-          {
-            attribute: 'id',
-            value: {
-              condition: 'ilike',
-              value: encodeURI(`%${filterValues?.orderId}%`)
-            }
-          }
-        )
-      }
-      if (filterValues?.externalId) {
-        filterConditons.push(
-          {
-            attribute: 'external_id',
-            value: {
-              condition: 'ilike',
-              value: encodeURI(`%${filterValues?.externalId}%`)
-            }
-          }
-        )
-      }
-      if (filterValues?.logisticStatus !== null) {
-        filterConditons.push(
-          {
-            attribute: 'logistic_status',
-            value: filterValues?.logisticStatus
-          }
-        )
-      }
-      if (filterValues?.metafield?.length > 0) {
-        const metafieldConditions = filterValues?.metafield.map(item => (
-          {
-            attribute: 'metafields',
-            conditions: [
-              {
-                attribute: 'key',
-                value: item?.key
-              },
-              {
-                attribute: 'value',
-                value: {
-                  condition: 'ilike',
-                  value: encodeURI(`%${item?.value}%`)
-                }
-              }
-            ],
-            conector: 'AND'
-          }
-        ))
-        filterConditons.push({
-          conector: 'OR',
-          conditions: metafieldConditions
-        })
-      }
-      if (filterValues?.deliveryFromDatetime !== null) {
-        filterConditons.push(
-          {
-            attribute: 'delivery_datetime',
-            value: {
-              condition: '>=',
-              value: encodeURI(filterValues?.deliveryFromDatetime)
-            }
-          }
-        )
-      }
-      if (filterValues?.deliveryEndDatetime !== null) {
-        filterConditons.push(
-          {
-            attribute: 'delivery_datetime',
-            value: {
-              condition: '<=',
-              value: filterValues?.deliveryEndDatetime
-            }
-          }
-        )
-      }
-      if (filterValues?.businessIds.length !== 0) {
-        filterConditons.push(
-          {
-            attribute: 'business_id',
-            value: filterValues?.businessIds
-          }
-        )
-      }
-      if (filterValues?.countryCode.length !== 0) {
-        filterConditons.push(
-          {
-            attribute: 'country_code',
-            value: filterValues?.countryCode
-          }
-        )
-      }
-      if (filterValues?.currency.length !== 0) {
-        filterConditons.push(
-          {
-            attribute: 'currency',
-            value: filterValues?.currency
-          }
-        )
-      }
-      if (filterValues?.driverIds.length > 0) {
-        filterConditons.push(
-          {
-            attribute: 'driver_id',
-            value: filterValues?.driverIds
-          }
-        )
-      }
-      if (filterValues?.deliveryTypes.length !== 0) {
-        filterConditons.push(
-          {
-            attribute: 'delivery_type',
-            value: filterValues?.deliveryTypes
-          }
-        )
-      }
-      if (filterValues?.cityIds.length !== 0) {
-        filterConditons.push(
-          {
-            attribute: 'business',
-            conditions: [
-              {
-                attribute: 'city_id',
-                value: filterValues?.cityIds
-              }
-            ]
-          }
-        )
-      }
-      if (filterValues?.driverGroupIds.length !== 0) {
-        filterConditons.push(
-          {
-            attribute: 'driver_id',
-            value: filterValues?.driverGroupIds
-          }
-        )
-      }
-      if (filterValues?.paymethodIds.length !== 0) {
-        filterConditons.push(
-          {
-            attribute: 'paymethod_id',
-            value: filterValues?.paymethodIds
-          }
-        )
-      }
-
-      if (filterConditons.length) {
-        conditions.push({
-          conector: 'AND',
-          conditions: filterConditons
-        })
-      }
-    }
-
-    const additionalConditions = []
-
-    if (isOnlyDelivery) {
-      additionalConditions.push({
-        attribute: 'delivery_type',
-        value: 1
-      })
-    }
-
-    if (driverId) {
-      additionalConditions.push({
-        attribute: 'driver_id',
-        value: driverId
-      })
-    }
-    if (customerId) {
-      additionalConditions.push({
-        attribute: 'customer_id',
-        value: customerId
-      })
-    }
-    if (businessId) {
-      additionalConditions.push({
-        attribute: 'business_id',
-        value: businessId
-      })
-    }
-    if (timeStatus) {
-      additionalConditions.push(
-        {
-          attribute: 'time_status',
-          value: timeStatus
-        }
-      )
-    }
-    if (additionalConditions.length) {
-      conditions.push({
-        conector: 'AND',
-        conditions: additionalConditions
-      })
-    }
-
-    if (searchValue) {
-      const searchConditions = []
-      searchConditions.push(
-        {
-          attribute: 'id',
-          value: {
-            condition: 'ilike',
-            value: encodeURI(`%${searchValue}%`)
-          }
-        }
-      )
-
-      searchConditions.push(
-        {
-          attribute: 'customer',
-          conditions: [
-            {
-              attribute: 'email',
-              value: {
-                condition: 'ilike',
-                value: encodeURI(`%${searchValue}%`)
-              }
-            }
-          ]
-        }
-      )
-
-      searchConditions.push(
-        {
-          attribute: 'customer',
-          conditions: [
-            {
-              attribute: 'cellphone',
-              value: {
-                condition: 'ilike',
-                value: encodeURI(`%${searchValue}%`)
-              }
-            }
-          ]
-        }
-      )
-
-      searchConditions.push(
-        {
-          attribute: 'business',
-          conditions: [
-            {
-              attribute: 'name',
-              value: {
-                condition: 'ilike',
-                value: encodeURI(`%${searchValue}%`)
-              }
-            }
-          ]
-        }
-      )
-
-      searchConditions.push(
-        {
-          attribute: 'driver',
-          conditions: [
-            {
-              attribute: 'name',
-              value: {
-                condition: 'ilike',
-                value: encodeURI(`%${searchValue}%`)
-              }
-            }
-          ]
-        }
-      )
-
-      conditions.push({
-        conector: 'OR',
-        conditions: searchConditions
-      })
-    }
-
-    if (conditions.length) {
-      where = {
-        conditions,
-        conector: 'AND'
-      }
-    }
-    try {
-      setNumberOfOrdersByStatus({ ...numberOfOrdersByStatus, loading: true })
-      const requestOptions = {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      }
-      const response = await fetch(`${ordering.root}/orders/dashboard?v=2&where=${JSON.stringify(where)}`, requestOptions)
-      const content = await response.json()
-      if (!content?.error) {
-        const _orderStatusNumbers = Object.keys(orderStatuesList).reduce((sum, curr, index) => {
-          const _currRe = content?.result.filter(ele => orderStatuesList[curr].indexOf(ele?.status) >= 0)
-          if (index === 1) {
-            const _sumRe = content?.result.filter(ele => orderStatuesList[sum].indexOf(ele?.status) >= 0)
-            return {
-              [sum]: _sumRe.length > 1 ? _sumRe.reduce((_sum, _curr) => Number(_sum?.quantity || _sum || 0) + Number(_curr?.quantity)) : _sumRe[0]?.quantity || 0,
-              [curr]: _currRe.length > 1 ? _currRe.reduce((_sum, _curr) => Number(_sum?.quantity || _sum || 0) + Number(_curr?.quantity)) : _currRe[0]?.quantity || 0
-            }
-          } else {
-            return { ...sum, [curr]: _currRe.length > 1 ? _currRe.reduce((_sum, _curr) => Number(_sum?.quantity || _sum || 0) + Number(_curr?.quantity)) : _currRe[0]?.quantity || 0 }
-          }
-        })
-
-        setNumberOfOrdersByStatus({
-          ...numberOfOrdersByStatus,
-          loading: false,
-          error: false,
-          result: _orderStatusNumbers
-        })
-      } else {
-        setNumberOfOrdersByStatus({
-          ...numberOfOrdersByStatus,
-          loading: false,
-          error: true
-        })
-      }
-    } catch (err) {
-      setNumberOfOrdersByStatus({
-        ...numberOfOrdersByStatus,
-        loading: false,
-        error: [err.message]
-      })
-    }
-  }
-
-  const handleNewOrder = (order) => {
-    if (customerId && order?.customer_id !== customerId) return
-    setNumberOfOrdersByStatus(prevState => {
-      const _orderStatusNumbers = { ...prevState.result }
-      _orderStatusNumbers.pending += 1
-      return { ...prevState, result: _orderStatusNumbers }
-    })
-  }
-
-  const handleUpdateOrder = (order) => {
-    if (!order?.history) return
-    if (customerId && order?.customer_id !== customerId) return
-    const length = order.history.length
-    const lastHistoryData = order?.history[length - 1].data
-    const statusChange = lastHistoryData?.find(({ attribute }) => (attribute === 'status'))
-    if (statusChange) {
-      setNumberOfOrdersByStatus(prevState => {
-        const _orderStatusNumbers = { ...prevState.result }
-
-        Object.values(orderStatuesList).map((statusTabs, key) => {
-          if (statusTabs.includes(statusChange.old)) {
-            const fromTab = Object.keys(orderStatuesList)[key]
-            if (_orderStatusNumbers[fromTab] > 0) {
-              _orderStatusNumbers[fromTab] -= 1
-            }
-          }
-          if (statusTabs.includes(statusChange.new)) {
-            const toTab = Object.keys(orderStatuesList)[key]
-            _orderStatusNumbers[toTab] += 1
-          }
-        })
-
-        return { ...prevState, result: _orderStatusNumbers }
-      })
-    }
-  }
-
-  useEffect(() => {
-    if (!numberOfOrdersByStatus.result) return
-    socket.on('update_order', handleUpdateOrder)
-    socket.on('orders_register', handleNewOrder)
-    return () => {
-      socket.off('update_order', handleUpdateOrder)
-      socket.off('orders_register', handleNewOrder)
-    }
-  }, [socket, filterValues, searchValue, JSON.stringify(numberOfOrdersByStatus)])
 
   /**
    * Listening multi orders action start to change status
@@ -757,18 +355,6 @@ export const OrdersManage = (props) => {
       }
     }
   }, [user, loading])
-
-  const reloadOrderNumbersByStatus = () => {
-    getOrderNumbersByStatus()
-  }
-
-  useEffect(() => {
-    getOrderNumbersByStatus()
-    events.on('websocket_connected', reloadOrderNumbersByStatus)
-    return () => {
-      events.off('websocket_connected', reloadOrderNumbersByStatus)
-    }
-  }, [filterValues, searchValue, driverId, customerId, businessId, timeStatus])
 
   useEffect(() => {
     if (!user.id || configState?.loading) return
@@ -824,7 +410,6 @@ export const OrdersManage = (props) => {
           handleChangeMultiOrdersStatus={handleChangeMultiOrdersStatus}
           handleDeleteMultiOrders={handleDeleteMultiOrders}
           setSelectedOrderIds={setSelectedOrderIds}
-          numberOfOrdersByStatus={numberOfOrdersByStatus}
           allowColumns={allowColumns}
           setAllowColumns={setAllowColumns}
           timeStatus={timeStatus}

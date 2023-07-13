@@ -8,7 +8,7 @@ import { useLanguage } from '../../contexts/LanguageContext'
 export const OrderingWebsite = (props) => {
   const {
     UIComponent,
-    appId
+    appId,
   } = props
 
   const [ordering] = useApi()
@@ -23,6 +23,26 @@ export const OrderingWebsite = (props) => {
   const [site, setSite] = useState(null)
   const [businessesList, setBusinessesList] = useState({ businesses: [], loading: false, error: null })
   const [franchisesList, setFranchisesList] = useState({ loading: false, franchises: [], error: null })
+  const [formState, setFormState] = useState({ loading: false, changes: {}, error: null })
+
+/**
+ * Update form data
+ * @param {EventTarget} e Related HTML event
+ */
+  const handleChangeInput = (e) => {
+    setFormState({
+      ...formState,
+      changes: {
+        ...formState.changes,
+        [e.target.name]: e.target.value
+      }
+    })
+    setSite({
+      ...site,
+      [e.target.name]: e.target.value
+    })
+  }
+
 
   /**
  * Method to get the themes from API
@@ -290,6 +310,16 @@ export const OrderingWebsite = (props) => {
           components: { ...themeValues }
         }
       }
+      const seoOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(formState.changes)
+      }
+      await fetch(`${ordering.root}/sites/${site.id}`, seoOptions)
+
       const values = advancedTheme ? JSON.parse(JSON.stringify(advancedTheme)) : JSON.parse(JSON.stringify(myProductvalues))
       const requestOptions = {
         method: 'POST',
@@ -355,6 +385,7 @@ export const OrderingWebsite = (props) => {
           setSite={setSite}
           businessesList={businessesList}
           franchisesList={franchisesList}
+          handleChangeInput={handleChangeInput}
         />
       )}
     </>

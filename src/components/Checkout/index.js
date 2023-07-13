@@ -7,6 +7,7 @@ import { useSession } from '../../contexts/SessionContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useWebsocket } from '../../contexts/WebsocketContext'
+
 /**
  * Component to manage Checkout page behavior without UI component
  */
@@ -19,7 +20,8 @@ export const Checkout = (props) => {
     onPlaceOrderClick,
     UIComponent,
     isApp,
-    isKiosk
+    isKiosk,
+    extraFields
   } = props
 
   const [ordering] = useApi()
@@ -152,7 +154,8 @@ export const Checkout = (props) => {
     }
     let payload = {
       offer_id: cart?.offer_id,
-      amount: cart?.balance ?? cart?.total
+      amount: cart?.balance ?? cart?.total,
+      ...(extraFields?.external_id && { external_id: extraFields?.external_id })
     }
 
     if (paymethodSelected?.paymethod) {

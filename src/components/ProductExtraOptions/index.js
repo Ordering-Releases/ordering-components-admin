@@ -13,7 +13,9 @@ export const ProductExtraOptions = (props) => {
     UIComponent,
     business,
     extra,
-    handleUpdateBusinessState
+    handleUpdateBusinessState,
+    extrasState,
+    setExtrasState
   } = props
   const [ordering] = useApi()
   const [{ token }] = useSession()
@@ -442,6 +444,38 @@ export const ProductExtraOptions = (props) => {
     }
   }
 
+  /**
+   * Method to duplicate extra from API
+   */
+  const handleDuplicateExtra = async () => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ copy_options: 'metafields,options,suboptions,products' })
+      }
+      const response = await fetch(`${ordering.root}/business/${business.id}/extras/${extra.id}/duplicate`, requestOptions)
+      const content = await response.json()
+
+      if (!content.error) {
+        const clonedExtra = JSON.parse(JSON.stringify(extra))
+        const extras = [...extrasState.extras, { ...clonedExtra, ...content.result }]
+        setExtrasState({ ...extrasState, extras: extras })
+        if (handleUpdateBusinessState) {
+          const updatedBusiness = { ...business, extras: extras }
+          handleUpdateBusinessState(updatedBusiness)
+        }
+        showToast(ToastType.Success, t('EXTRA_DUPLICATED', 'Extra duplicated'))
+      }
+    } catch (err) {
+      showToast(ToastType.Error, err.message)
+    }
+  }
+
   useEffect(() => {
     setChangesState({ changes: {}, result: {} })
     setExtraState({ ...extraState, extra: extra })
@@ -489,6 +523,8 @@ export const ProductExtraOptions = (props) => {
           hanldeDragOver={hanldeDragOver}
           handleDrop={handleDrop}
           handleDragEnd={handleDragEnd}
+          handleDuplicateExtra={handleDuplicateExtra}
+          setExtraState={setExtraState}
         />
       )}
     </>

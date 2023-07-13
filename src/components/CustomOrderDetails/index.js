@@ -5,7 +5,6 @@ import { useOrder } from '../../contexts/OrderContext'
 import { useApi } from '../../contexts/ApiContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
 import { useLanguage } from '../../contexts/LanguageContext'
-import { useConfig } from '../../contexts/ConfigContext'
 
 /**
  * Component to manage custom order details behavior without UI component
@@ -21,7 +20,6 @@ export const CustomOrderDetails = (props) => {
   const [orderState, { updateProduct, handleDisableToast }] = useOrder()
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
-  const [{ configs }] = useConfig()
 
   const [selectedUser, setSelectedUser] = useState(null)
   const [selectedBusiness, setSelectedBusiness] = useState(null)
@@ -29,13 +27,21 @@ export const CustomOrderDetails = (props) => {
   const [customersPhones, setCustomersPhones] = useState({ users: [], loading: false, error: null })
   const [businessList, setBusinessList] = useState({ loading: false, businesses: [], error: null })
   const [productList, setProductList] = useState({ loading: false, products: [], error: null })
-  const [defaultCountryCodeState, setDefaultCountryCodeState] = useState({ loading: true, code: 'US', error: null })
+  const [extraFields, setExtraFields] = useState({})
+  const [actionState, setActionState] = useState({ loading: false, error: null })
 
-  const googleMapsApiKey = useMemo(() => configs?.google_maps_api_key?.value, [configs])
   const cart = useMemo(() => {
     if (!orderState?.carts || !selectedBusiness?.id) return null
     return orderState?.carts[`businessId:${selectedBusiness?.id}`]
   }, [orderState?.carts, selectedBusiness?.id])
+
+  const customerAddress = useMemo(() => {
+    let address = null
+    if (selectedUser?.addresses) {
+      address = selectedUser.addresses.find(address => address?.default)
+    }
+    return address
+  }, [selectedUser])
 
   /**
    * Get users from API
@@ -191,59 +197,46 @@ export const CustomOrderDetails = (props) => {
     }
   }
 
-  /**
-   * Method to get the phone code from the location
-   */
-  const handleGetPhoneCode = async () => {
-    if (!googleMapsApiKey) return
-    setDefaultCountryCodeState({
-      ...defaultCountryCodeState,
-      loading: true
-    })
-    navigator.geolocation.getCurrentPosition((geo) => {
-      const latitude = geo.coords.latitude
-      const longitude = geo.coords.longitude
-      const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${googleMapsApiKey}`
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          const results = data.results
-          if (results.length > 0) {
-            const addressComponents = results[0].address_components
-            addressComponents.forEach(address => {
-              if (address.types.includes('country')) {
-                setDefaultCountryCodeState({
-                  loading: false,
-                  code: address.short_name ?? 'US',
-                  error: null
-                })
-              }
-            })
-          } else {
-            setDefaultCountryCodeState({
-              loading: false,
-              code: '+1',
-              error: null
-            })
-          }
-        })
-        .catch(err => {
-          setDefaultCountryCodeState({
-            ...defaultCountryCodeState,
-            loading: false,
-            error: [err.message]
-          })
-        })
-    }, (err) => {
-      setDefaultCountryCodeState({
-        ...defaultCountryCodeState,
-        loading: false,
-        error: [err.message]
-      })
-    }, {
-      timeout: 5000,
-      enableHighAccuracy: true
-    })
+  const handlePlaceOrderByTotal = async () => {
+    const customer = {
+      name: selectedUser?.name,
+      cellphone: selectedUser?.cellphone,
+      address: customerAddress?.address,
+      ...(selectedUser?.phone && { phone: selectedUser?.phone }),
+      ...(customerAddress?.address_notes && { address_notes: customerAddress?.address_notes }),
+      location: JSON.stringify(customerAddress?.location)
+    }
+
+    const changes = {
+      paymethod: 'cash',
+      business_id: selectedBusiness?.id,
+      delivery_type: orderState.options?.type || 1,
+      customer: JSON.stringify(customer),
+      ...extraFields
+    }
+
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setActionState({ ...actionState, loading: true })
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(changes)
+      }
+      const response = await fetch(`${ordering.root}/orders/custom`, requestOptions)
+      const content = await response.json()
+      if (!content.error) {
+        showToast(ToastType.Success, t('CUSTOM_ORDER_CREATED', 'Custom order created'))
+        setActionState({ ...actionState, loading: false, error: null })
+      } else {
+        setActionState({ ...actionState, loading: false, error: content.result })
+      }
+    } catch (err) {
+      setActionState({ ...actionState, loading: false, error: [err.message] })
+    }
   }
 
   useEffect(() => {
@@ -272,7 +265,6 @@ export const CustomOrderDetails = (props) => {
   }, [selectedUser])
 
   useEffect(() => {
-    handleGetPhoneCode()
     return () => handleDisableToast(true)
   }, [])
 
@@ -295,7 +287,10 @@ export const CustomOrderDetails = (props) => {
           getProducts={getProducts}
           handeUpdateProductCart={handeUpdateProductCart}
           cart={cart}
-          defaultCountryCodeState={defaultCountryCodeState}
+          handlePlaceOrderByTotal={handlePlaceOrderByTotal}
+          setExtraFields={setExtraFields}
+          extraFields={extraFields}
+          actionState={actionState}
         />
       )}
     </>

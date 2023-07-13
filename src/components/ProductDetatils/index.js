@@ -14,7 +14,9 @@ export const ProductDetatils = (props) => {
     UIComponent,
     productId,
     categoryId,
-    handleUpdateBusinessState
+    handleUpdateBusinessState,
+    categoryState,
+    handleUpdateCategoryState
   } = props
 
   const [ordering] = useApi()
@@ -133,16 +135,9 @@ export const ProductDetatils = (props) => {
             result: result
           }
         })
-        if (handleUpdateBusinessState) {
-          const _categories = [...business?.categories]
-          _categories.forEach(function iterate (category) {
-            if (category.id === productState.product?.category_id) {
-              const _products = category.products.filter(_product => _product.id !== productState.product.id)
-              category.products = [..._products]
-            }
-            Array.isArray(category?.subcategories) && category.subcategories.forEach(iterate)
-          })
-          handleUpdateBusinessState({ ...business, categories: _categories })
+        if (handleUpdateCategoryState) {
+          const updatedProducts = categoryState?.products?.filter(item => item.id !== productState.product.id)
+          handleUpdateCategoryState({ ...categoryState, products: updatedProducts })
         }
         showToast(ToastType.Success, t('PRODUCT_DELETED', 'Product deleted'))
         props.onClose && props.onClose()
@@ -348,6 +343,34 @@ export const ProductDetatils = (props) => {
     }
   }
 
+  /**
+   * Method to duplicate product from API
+   */
+  const handleDuplicateProduct = async () => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.token}`
+        },
+        body: JSON.stringify({ copy_options: 'ingredients,gallery,tags,extras,metafields' })
+      }
+      const response = await fetch(`${ordering.root}/business/${business?.id}/categories/${categoryId}/products/${productId}/duplicate`, requestOptions)
+      const content = await response.json()
+
+      if (!content.error) {
+        if (handleUpdateCategoryState) {
+          handleUpdateCategoryState({ ...categoryState, products: [...categoryState?.products, content.result] })
+        }
+        showToast(ToastType.Success, t('PRODUCT_DUPLICATED', 'Product duplicated'))
+      }
+    } catch (err) {
+      showToast(ToastType.Error, err.message)
+    }
+  }
+
   useEffect(() => {
     if (props.product) {
       setProductState({ ...productState, product: props.product })
@@ -377,6 +400,7 @@ export const ProductDetatils = (props) => {
           showProductOption={showProductOption}
           handleChangeFormState={handleChangeFormState}
           handleSuccessUpdate={handleSuccessUpdate}
+          handleDuplicateProduct={handleDuplicateProduct}
         />
       )}
     </>

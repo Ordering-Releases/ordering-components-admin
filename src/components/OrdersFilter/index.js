@@ -28,7 +28,8 @@ export const OrdersFilter = (props) => {
     countryCode: [],
     currency: [],
     metafield: [],
-    logisticStatus: null
+    logisticStatus: null,
+    assigned: null
   })
 
   /**
@@ -283,6 +284,7 @@ export const OrdersFilter = (props) => {
       deliveryFromDatetime: null,
       deliveryEndDatetime: null,
       logisticStatus: null,
+      assigned: null,
       businessIds: [],
       driverIds: [],
       cityIds: [],

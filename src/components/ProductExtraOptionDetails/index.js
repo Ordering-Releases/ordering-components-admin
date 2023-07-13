@@ -12,7 +12,9 @@ export const ProductExtraOptionDetails = (props) => {
     extra,
     option,
     handleUpdateBusinessState,
-    handleSucccessDeleteOption
+    handleSucccessDeleteOption,
+    parentExtraState,
+    setParentExtraState
   } = props
   const [ordering] = useApi()
   const [{ token }] = useSession()
@@ -444,6 +446,74 @@ export const ProductExtraOptionDetails = (props) => {
   }
 
   /**
+   * Method to duplicate option from API
+   */
+  const handleDuplicateOption = async () => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ copy_options: 'metafields,suboptions' })
+      }
+      const response = await fetch(`${ordering.root}/business/${business.id}/extras/${extra.id}/options/${option.id}/duplicate`, requestOptions)
+      const content = await response.json()
+
+      if (!content.error) {
+        let options
+        if (parentExtraState.extra.options) options = [...parentExtraState.extra.options, content.result]
+        else options = [{ ...content.result }]
+        const updatedExtra = { ...parentExtraState.extra, options: options }
+        setParentExtraState({ ...parentExtraState, extra: updatedExtra })
+        handleSuccessUpdateBusiness(updatedExtra)
+        showToast(ToastType.Success, t('OPTION_DUPLICATED', 'Option duplicated'))
+      }
+    } catch (err) {
+      showToast(ToastType.Error, err.message)
+    }
+  }
+
+  /**
+   * Method to duplicate sub option from API
+   */
+  const handleDuplicateSubOption = async (id) => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ copy_options: 'metafields' })
+      }
+      const response = await fetch(`${ordering.root}/business/${business.id}/extras/${extra.id}/options/${option.id}/suboptions/${id}/duplicate`, requestOptions)
+      const content = await response.json()
+
+      if (!content.error) {
+        const subOptions = [...optionState.option.suboptions, content.result]
+        const updatedOption = { ...optionState.option, suboptions: subOptions }
+        setOptionState({ ...optionState, option: updatedOption, loading: false })
+        const options = extra.options.filter(option => {
+          if (option.id === updatedOption.id) {
+            Object.assign(option, updatedOption)
+          }
+          return true
+        })
+        const updatedExtra = { ...extra, options: options }
+        setExtraState(updatedExtra)
+        handleSuccessUpdateBusiness(updatedExtra)
+        showToast(ToastType.Success, t('SUBOPTION_DUPLICATED', 'Suboption duplicated'))
+      }
+    } catch (err) {
+      showToast(ToastType.Error, err.message)
+    }
+  }
+
+  /**
    * Method to change the conditional option
    * @param {Number} optionId
    */
@@ -567,6 +637,9 @@ export const ProductExtraOptionDetails = (props) => {
           handleUpdateOption={handleUpdateOption}
           isAddForm={isAddForm}
           setIsAddForm={setIsAddForm}
+          handleDuplicateOption={handleDuplicateOption}
+          handleDuplicateSubOption={handleDuplicateSubOption}
+
           dragoverSubOptionId={dragoverSubOptionId}
           isSubOptionsBottom={isSubOptionsBottom}
           handleDragStart={handleDragStart}

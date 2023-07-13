@@ -4,6 +4,7 @@ import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
 import { useWebsocket } from '../../contexts/WebsocketContext'
 import { useEvent } from '../../contexts/EventContext'
+import moment from 'moment'
 
 export const DashboardOrdersList = (props) => {
   const {
@@ -204,6 +205,38 @@ export const DashboardOrdersList = (props) => {
             }
           }
         )
+        searchConditions.push(
+          {
+            attribute: 'external_id',
+            value: {
+              condition: 'ilike',
+              value: encodeURI(`%${searchValue}%`)
+            }
+          }
+        )
+        searchConditions.push(
+          {
+            attribute: 'customer',
+            conditions: [
+              {
+                attribute: 'name',
+                value: {
+                  condition: 'ilike',
+                  value: encodeURI(`%${searchValue}%`)
+                }
+              }
+            ]
+          }
+        )
+        searchConditions.push(
+          {
+            attribute: 'cellphone',
+            value: {
+              condition: 'ilike',
+              value: encodeURI(`%${searchValue}%`)
+            }
+          }
+        )
       }
       if (isSearchByCustomerEmail) {
         searchConditions.push(
@@ -299,6 +332,27 @@ export const DashboardOrdersList = (props) => {
             value: filterValues?.logisticStatus
           }
         )
+      }
+      if (filterValues?.assigned !== null) {
+        if (filterValues?.assigned === 0) {
+          filterConditons.push(
+            {
+              attribute: 'driver_id',
+              value: {
+                condition: '>=',
+                value: 0
+              }
+            }
+          )
+        }
+        if (filterValues?.assigned === 1) {
+          filterConditons.push(
+            {
+              attribute: 'driver_id',
+              value: null
+            }
+          )
+        }
       }
       if (filterValues?.externalId) {
         filterConditons.push(
@@ -459,15 +513,69 @@ export const DashboardOrdersList = (props) => {
    * Method to detect if incoming order and update order belong to filter.
    * @param {Object} order incoming order and update order
    */
-  const isFilteredOrder = (order) => {
+  const isFilteredOrder = (order, lastHistoryData) => {
     let filterCheck = true
+    if (searchValue) {
+      let searchCheck = false
+      const lowerCaseSearchValue = searchValue.toLowerCase()
+      if (isSearchByOrderId) {
+        if ((order?.id?.toString() || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true
+      }
+      if (isSearchByCustomerEmail) {
+        if ((order?.customer?.email || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true
+      }
+
+      if (isSearchByCustomerPhone) {
+        if ((order?.customer?.cellphone || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true
+      }
+
+      if (isSearchByBusinessName) {
+        if ((order?.business?.name || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true
+      }
+
+      if (isSearchByDriverName) {
+        if ((order?.driver?.name || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true
+      }
+      if (!searchCheck) filterCheck = false
+    }
+
+    if (orderStatus !== undefined && orderStatus.length > 0) {
+      const lastStatus = lastHistoryData?.find(item => item.attribute === 'status')?.old
+      if (!orderStatus.includes(parseInt(order.status)) && !orderStatus.includes(parseInt(lastStatus))) {
+        filterCheck = false
+      }
+    }
+
+    if (filterValues?.orderId) {
+      if (!order?.id?.toString().includes(filterValues?.orderId)) filterCheck = false
+    }
+    if (filterValues?.externalId) {
+      if (!order?.external_id?.toString().includes(filterValues?.externalId)) filterCheck = false
+    }
+    if (filterValues?.deliveryFromDatetime) {
+      const isBefore = moment(order?.delivery_datetime).isBefore(filterValues?.deliveryFromDatetime, 'second')
+      if (isBefore) filterCheck = false
+    }
+    if (filterValues.deliveryEndDatetime) {
+      const isAfter = moment(order?.delivery_datetime).isAfter(filterValues?.deliveryEndDatetime, 'second')
+      if (isAfter) filterCheck = false
+    }
     if (filterValues.businessIds !== undefined && filterValues.businessIds.length > 0) {
       if (!filterValues.businessIds.includes(order.business_id)) {
         filterCheck = false
       }
     }
+    if (filterValues?.countryCode?.length > 0) {
+      if (!filterValues.countryCode.includes(order?.country_code)) filterCheck = false
+    }
+    if (filterValues?.cityIds?.length > 0) {
+      if (!filterValues.cityIds.includes(order.city_id)) {
+        filterCheck = false
+      }
+    }
     if (filterValues.driverIds !== undefined && filterValues.driverIds.length > 0) {
-      if (!filterValues.driverIds.includes(order.driver_id)) {
+      const lastDriverId = lastHistoryData?.find(item => item.attribute === 'driver_id')?.old
+      if (!filterValues.driverIds.includes(order.driver_id) && !filterValues.driverIds.includes(lastDriverId)) {
         filterCheck = false
       }
     }
@@ -481,10 +589,26 @@ export const DashboardOrdersList = (props) => {
         filterCheck = false
       }
     }
-    if (filterValues.statuses !== undefined && filterValues.statuses.length > 0) {
-      if (!filterValues.statuses.includes(parseInt(order.status))) {
+    if (filterValues?.driverGroupIds?.length > 0) {
+      const lastDriverId = lastHistoryData?.find(item => item.attribute === 'driver_id')?.old
+      if (!filterValues.driverGroupIds.includes(order.driver_id) && !filterValues.driverGroupIds.includes(lastDriverId)) {
         filterCheck = false
       }
+    }
+    if (filterValues?.currency?.length > 0) {
+      if (!filterValues.currency.includes(order?.currency)) filterCheck = false
+    }
+    if (filterValues?.logisticStatus) {
+      const lastLogisticStatus = lastHistoryData?.find(item => item.attribute === 'logistic_status')?.old
+      if (order?.logistic_status !== parseInt(filterValues?.logisticStatus) && lastLogisticStatus !== parseInt(filterValues?.logisticStatus)) filterCheck = false
+    }
+    if (filterValues?.metafield?.length > 0) {
+      filterValues.metafield.forEach(item => {
+        const found = order?.metafields?.find(meta => meta.key === item.key && meta.value.includes(item.value))
+        if (!found) {
+          filterCheck = false
+        }
+      })
     }
     return filterCheck
   }
@@ -681,141 +805,122 @@ export const DashboardOrdersList = (props) => {
     }
   }, [session, searchValue, orderBy, filterValues, isOnlyDelivery, driverId, customerId, businessId, orders, orderStatus, timeStatus])
 
+  const handleUpdateOrder = (order) => {
+    if (order?.products?.[0]?.type === 'gift_card') return
+    if (customerId && order?.customer_id !== customerId) return
+    if (driverId && order?.driver_id !== driverId) return
+    if (isOnlyDelivery && order?.delivery_type !== 1) return
+    if (typeof order.status === 'undefined') return
+    if (!isFilteredOrder(order)) {
+      const length = order?.history?.length
+      const lastHistoryData = order?.history[length - 1]?.data
+      if (isFilteredOrder(order, lastHistoryData)) {
+        setPagination(prevPagination => ({ ...prevPagination, total: prevPagination.total - 1 }))
+      }
+      setOrderList(prevState => {
+        const updatedOrders = prevState.orders.filter(_order => _order?.id !== order?.id)
+        return { ...prevState, orders: updatedOrders }
+      })
+      return
+    }
+
+    let updatedOrder = { ...order }
+    if (!order?.driver && order?.driver_id) {
+      const updatedDriver = driversList?.drivers.find(driver => driver.id === order?.driver_id)
+      if (updatedDriver) {
+        updatedOrder.driver = { ...updatedDriver }
+      }
+    }
+    const found = orderList.orders.find(_order => _order?.id === updatedOrder?.id)
+    if (found) {
+      const updatedOrders = orderList.orders.map(_order => {
+        if (_order?.id === order?.id) {
+          updatedOrder = { ..._order, ...updatedOrder }
+          return updatedOrder
+        }
+        return _order
+      })
+      const _orders = sortOrdersArray(orderBy, updatedOrders.filter(Boolean))
+      setOrderList(prevState => ({
+        ...prevState,
+        orders: _orders
+      }))
+    } else {
+      const statusChange = order?.history?.[order?.history?.length - 1]?.data?.find(({ attribute }) => attribute === 'status')
+      const updatedOrders = [...orderList.orders, order]
+      const _orders = sortOrdersArray(orderBy, updatedOrders.filter(Boolean))
+      setOrderList(prevState => ({
+        ...prevState,
+        orders: _orders.slice(0, pagination.pageSize)
+      }))
+      if (statusChange) {
+        const from = parseInt(statusChange.old)
+        if (!orderStatus.includes(from)) {
+          setPagination(prevPagination => ({ ...prevPagination, total: prevPagination.total + 1 }))
+        }
+      }
+    }
+  }
+
+  const handleRegisterOrder = (order) => {
+    if (order?.products?.[0]?.type === 'gift_card') return
+    if (customerId && order?.customer_id !== customerId) return
+    if (driverId && order?.driver_id !== driverId) return
+    if (isOnlyDelivery && order?.delivery_type !== 1) return
+    const found = orderList.orders.find(_order => _order?.id === order?.id)
+    if (found) return
+    if (isFilteredOrder(order)) {
+      if ((orderStatus.includes(0) && order.status === 0) || (orderStatus.includes(13) && order.status === 13)) {
+        setPagination(prevPagination => ({ ...prevPagination, total: prevPagination.total + 1 }))
+        setOrderList(prevState => {
+          const orders = [order, ...prevState.orders]
+          const _orders = sortOrdersArray(orderBy, orders)
+          return { ...prevState, orders: _orders.slice(0, pagination.pageSize) }
+        })
+      }
+    }
+  }
+
+  const handleNewMessage = (message) => {
+    if (orderList.orders.length === 0) return
+    const found = orderList.orders.find(order => order?.id === message.order?.id)
+    if (found) {
+      const _orders = orderList.orders.filter(order => {
+        if (order?.id === message.order?.id) {
+          if (order.last_message_at !== message.created_at) {
+            if (message.type === 1) {
+              order.last_general_message_at = message.created_at
+              if (message.author.level !== 0) {
+                order.unread_general_count = order.unread_general_count + 1
+              }
+            } else {
+              order.last_direct_message_at = message.created_at
+              if (message.author.level !== 0) {
+                order.unread_direct_count = order.unread_direct_count + 1
+              }
+            }
+            order.last_message_at = message.created_at
+            if (message.author.level !== 0) {
+              order.unread_count = order.unread_count + 1
+            }
+          }
+        }
+        return true
+      })
+      const _sortedOrders = sortOrdersArray(orderBy, _orders)
+      setOrderList({ ...orderList, orders: _sortedOrders })
+    }
+  }
+
   useEffect(() => {
     if (orderList.loading) return
-    const handleUpdateOrder = (order) => {
-      if (customerId && order?.customer_id !== customerId) return
-      if (isOnlyDelivery && order?.delivery_type !== 1) return
-      if (!order?.driver && order?.driver_id) {
-        const updatedDriver = driversList?.drivers.find(driver => driver.id === order.driver_id)
-        if (updatedDriver) {
-          order.driver = { ...updatedDriver }
+    if (pagination?.currentPage !== 0 && pagination?.total !== 0) {
+      if (Math.ceil(pagination?.total / pagination.pageSize) >= pagination?.currentPage) {
+        if (orderList.orders.length === 0) {
+          getPageOrders(pagination.pageSize, pagination.currentPage)
         }
-      }
-      const found = orderList.orders.find(_order => _order?.id === order?.id)
-      let orders = []
-      if (found) {
-        orders = orderList.orders.filter(_order => {
-          let valid = true
-          if (_order?.id === order?.id) {
-            delete order.total
-            delete order.subtotal
-            Object.assign(_order, order)
-            valid = (orderStatus.length === 0 || orderStatus.includes(parseInt(_order.status))) && isFilteredOrder(order)
-            if (!valid) {
-              pagination.total--
-              setPagination({
-                ...pagination
-              })
-            }
-          }
-          return valid
-        })
-        const _orders = sortOrdersArray(orderBy, orders)
-        setOrderList({
-          ...orderList,
-          orders: _orders
-        })
       } else {
-        let statusChange = null
-        if (order?.history) {
-          const length = order?.history?.length
-          const lastHistoryData = order?.history[length - 1]?.data
-          statusChange = lastHistoryData?.find(({ attribute }) => (attribute === 'status'))
-        }
-        const isOrderStatus = orderStatus.includes(parseInt(order.status))
-        if (isOrderStatus) {
-          orders = [...orderList.orders, order]
-          const _orders = sortOrdersArray(orderBy, orders)
-          if (statusChange && isFilteredOrder(order)) {
-            const from = parseInt(statusChange.old)
-            if (!orderStatus.includes(from)) {
-              pagination.total++
-              setPagination({
-                ...pagination
-              })
-            }
-          }
-          setOrderList({
-            ...orderList,
-            orders: _orders.slice(0, pagination.pageSize)
-          })
-        } else {
-          if (statusChange) {
-            const from = parseInt(statusChange.old)
-            if (orderStatus.includes(from)) {
-              pagination.total--
-              setPagination({
-                ...pagination
-              })
-            }
-          }
-        }
-      }
-    }
-    const handleRegisterOrder = (order) => {
-      if (order?.products?.[0]?.type === 'gift_card') return
-      if (customerId && order?.customer_id !== customerId) return
-      if (isOnlyDelivery && order?.delivery_type !== 1) return
-      const found = orderList.orders.find(_order => _order?.id === order?.id)
-      if (found) return
-      let orders = []
-      if (isFilteredOrder(order)) {
-        if ((orderStatus.includes(0) && order.status === 0) || (orderStatus.includes(13) && order.status === 13)) {
-          orders = [order, ...orderList.orders]
-          const _orders = sortOrdersArray(orderBy, orders)
-          pagination.total++
-          setPagination({
-            ...pagination
-          })
-          setOrderList({
-            ...orderList,
-            orders: _orders.slice(0, pagination.pageSize)
-          })
-        }
-      }
-    }
-
-    const handleNewMessage = (message) => {
-      if (orderList.orders.length === 0) return
-      const found = orderList.orders.find(order => order?.id === message.order?.id)
-      if (found) {
-        const _orders = orderList.orders.filter(order => {
-          if (order?.id === message.order?.id) {
-            if (order.last_message_at !== message.created_at) {
-              if (message.type === 1) {
-                order.last_general_message_at = message.created_at
-                if (message.author.level !== 0) {
-                  order.unread_general_count = order.unread_general_count + 1
-                }
-              } else {
-                order.last_direct_message_at = message.created_at
-                if (message.author.level !== 0) {
-                  order.unread_direct_count = order.unread_direct_count + 1
-                }
-              }
-              order.last_message_at = message.created_at
-              if (message.author.level !== 0) {
-                order.unread_count = order.unread_count + 1
-              }
-            }
-          }
-          return true
-        })
-        const _sortedOrders = sortOrdersArray(orderBy, _orders)
-        setOrderList({ ...orderList, orders: _sortedOrders })
-      }
-    }
-
-    if (!orderList.loading) {
-      if (pagination?.currentPage !== 0 && pagination?.total !== 0) {
-        if (Math.ceil(pagination?.total / pagination.pageSize) >= pagination?.currentPage) {
-          if (orderList.orders.length === 0) {
-            getPageOrders(pagination.pageSize, pagination.currentPage)
-          }
-        } else {
-          getPageOrders(pagination.pageSize, pagination.currentPage - 1)
-        }
+        getPageOrders(pagination.pageSize, pagination.currentPage - 1)
       }
     }
     socket.on('update_order', handleUpdateOrder)
@@ -826,7 +931,7 @@ export const DashboardOrdersList = (props) => {
       socket.off('orders_register', handleRegisterOrder)
       socket.off('message', handleNewMessage)
     }
-  }, [orderList.orders, pagination, orderBy, socket, driversList, customerId])
+  }, [orderList.orders, pagination, orderBy, socket, driversList, customerId, driverId])
 
   // Listening for customer rating
   useEffect(() => {

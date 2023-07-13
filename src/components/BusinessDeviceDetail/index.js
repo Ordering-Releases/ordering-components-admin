@@ -94,7 +94,8 @@ export const BusinessDeviceDetail = (props) => {
           result: content.result,
           loading: false
         })
-        const updatedDevices = [...devices, content?.result]
+        const business = businessList?.businesses?.find(item => item?.id === content?.result?.business_id)
+        const updatedDevices = [...devices, { ...content?.result, business }]
         handleUpdateDeviceList && handleUpdateDeviceList(updatedDevices)
         showToast(ToastType.Success, t('DEVICE_CREATED', 'Device created'))
         onClose && onClose()

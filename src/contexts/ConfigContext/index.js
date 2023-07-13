@@ -74,11 +74,12 @@ export const ConfigProvider = ({ children }) => {
       }
       const configsResult = {
         ...customConfigs,
+        ...result,
         default_country_code: {
-          value: (data && data?.country_code) || 'US',
-          calling_number: (data && data?.country_calling_code) || '+1'
-        },
-        ...result
+          ...result?.default_country_code,
+          value: result?.default_country_code?.value || (data && data?.country_code) || 'US',
+          calling_number: result?.default_country_code?.calling_number || (data && data?.country_calling_code) || '+1'
+        }
       }
       setState(prevState => ({
         ...prevState,
