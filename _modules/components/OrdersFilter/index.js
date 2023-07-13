@@ -52,7 +52,8 @@ var OrdersFilter = function OrdersFilter(props) {
       countryCode: [],
       currency: [],
       metafield: [],
-      logisticStatus: null
+      logisticStatus: null,
+      assigned: null
     }),
     _useState2 = _slicedToArray(_useState, 2),
     filterValues = _useState2[0],
@@ -381,6 +382,7 @@ var OrdersFilter = function OrdersFilter(props) {
       deliveryFromDatetime: null,
       deliveryEndDatetime: null,
       logisticStatus: null,
+      assigned: null,
       businessIds: [],
       driverIds: [],
       cityIds: [],

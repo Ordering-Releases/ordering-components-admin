@@ -148,7 +148,7 @@ var BusinessDeviceDetail = function BusinessDeviceDetail(props) {
    */
   var addDevice = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var requestOptions, response, content, updatedDevices;
+      var requestOptions, response, content, _businessList$busines, business, updatedDevices;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -178,7 +178,13 @@ var BusinessDeviceDetail = function BusinessDeviceDetail(props) {
                 result: content.result,
                 loading: false
               }));
-              updatedDevices = [].concat(_toConsumableArray(devices), [content === null || content === void 0 ? void 0 : content.result]);
+              business = businessList === null || businessList === void 0 ? void 0 : (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.find(function (item) {
+                var _content$result;
+                return (item === null || item === void 0 ? void 0 : item.id) === (content === null || content === void 0 ? void 0 : (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.business_id);
+              });
+              updatedDevices = [].concat(_toConsumableArray(devices), [_objectSpread(_objectSpread({}, content === null || content === void 0 ? void 0 : content.result), {}, {
+                business: business
+              })]);
               handleUpdateDeviceList && handleUpdateDeviceList(updatedDevices);
               showToast(_ToastContext.ToastType.Success, t('DEVICE_CREATED', 'Device created'));
               onClose && onClose();

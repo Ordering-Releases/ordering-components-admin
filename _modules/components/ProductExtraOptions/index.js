@@ -40,7 +40,9 @@ var ProductExtraOptions = function ProductExtraOptions(props) {
   var UIComponent = props.UIComponent,
     business = props.business,
     extra = props.extra,
-    handleUpdateBusinessState = props.handleUpdateBusinessState;
+    handleUpdateBusinessState = props.handleUpdateBusinessState,
+    extrasState = props.extrasState,
+    setExtrasState = props.setExtrasState;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -693,6 +695,66 @@ var ProductExtraOptions = function ProductExtraOptions(props) {
       return _ref5.apply(this, arguments);
     };
   }();
+
+  /**
+   * Method to duplicate extra from API
+   */
+  var handleDuplicateExtra = /*#__PURE__*/function () {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+      var requestOptions, response, content, clonedExtra, extras, updatedBusiness;
+      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        while (1) switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.prev = 0;
+            showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+            requestOptions = {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token)
+              },
+              body: JSON.stringify({
+                copy_options: 'metafields,options,suboptions,products'
+              })
+            };
+            _context6.next = 5;
+            return fetch("".concat(ordering.root, "/business/").concat(business.id, "/extras/").concat(extra.id, "/duplicate"), requestOptions);
+          case 5:
+            response = _context6.sent;
+            _context6.next = 8;
+            return response.json();
+          case 8:
+            content = _context6.sent;
+            if (!content.error) {
+              clonedExtra = JSON.parse(JSON.stringify(extra));
+              extras = [].concat(_toConsumableArray(extrasState.extras), [_objectSpread(_objectSpread({}, clonedExtra), content.result)]);
+              setExtrasState(_objectSpread(_objectSpread({}, extrasState), {}, {
+                extras: extras
+              }));
+              if (handleUpdateBusinessState) {
+                updatedBusiness = _objectSpread(_objectSpread({}, business), {}, {
+                  extras: extras
+                });
+                handleUpdateBusinessState(updatedBusiness);
+              }
+              showToast(_ToastContext.ToastType.Success, t('EXTRA_DUPLICATED', 'Extra duplicated'));
+            }
+            _context6.next = 15;
+            break;
+          case 12:
+            _context6.prev = 12;
+            _context6.t0 = _context6["catch"](0);
+            showToast(_ToastContext.ToastType.Error, _context6.t0.message);
+          case 15:
+          case "end":
+            return _context6.stop();
+        }
+      }, _callee6, null, [[0, 12]]);
+    }));
+    return function handleDuplicateExtra() {
+      return _ref6.apply(this, arguments);
+    };
+  }();
   (0, _react.useEffect)(function () {
     setChangesState({
       changes: {},
@@ -738,7 +800,9 @@ var ProductExtraOptions = function ProductExtraOptions(props) {
     handleDragStart: handleDragStart,
     hanldeDragOver: hanldeDragOver,
     handleDrop: handleDrop,
-    handleDragEnd: handleDragEnd
+    handleDragEnd: handleDragEnd,
+    handleDuplicateExtra: handleDuplicateExtra,
+    setExtraState: setExtraState
   })));
 };
 exports.ProductExtraOptions = ProductExtraOptions;

@@ -58,7 +58,7 @@ var AddressList = function AddressList(props) {
     throw new Error('`accessToken` must provide from props or use SessionProviver to wrappe the app.');
   }
   var _useState = (0, _react.useState)({
-      loading: false,
+      loading: true,
       error: null,
       addresses: []
     }),
@@ -125,6 +125,7 @@ var AddressList = function AddressList(props) {
   (0, _react.useEffect)(function () {
     if (props !== null && props !== void 0 && props.addresses) {
       setAddressList(_objectSpread(_objectSpread({}, addressList), {}, {
+        loading: false,
         addresses: props.addresses
       }));
       return;

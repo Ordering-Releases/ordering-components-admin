@@ -11,6 +11,8 @@ var _SessionContext = require("../../contexts/SessionContext");
 var _ApiContext = require("../../contexts/ApiContext");
 var _WebsocketContext = require("../../contexts/WebsocketContext");
 var _EventContext = require("../../contexts/EventContext");
+var _moment = _interopRequireDefault(require("moment"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -284,6 +286,30 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
                     value: encodeURI("%".concat(searchValue, "%"))
                   }
                 });
+                searchConditions.push({
+                  attribute: 'external_id',
+                  value: {
+                    condition: 'ilike',
+                    value: encodeURI("%".concat(searchValue, "%"))
+                  }
+                });
+                searchConditions.push({
+                  attribute: 'customer',
+                  conditions: [{
+                    attribute: 'name',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI("%".concat(searchValue, "%"))
+                    }
+                  }]
+                });
+                searchConditions.push({
+                  attribute: 'cellphone',
+                  value: {
+                    condition: 'ilike',
+                    value: encodeURI("%".concat(searchValue, "%"))
+                  }
+                });
               }
               if (isSearchByCustomerEmail) {
                 searchConditions.push({
@@ -354,6 +380,23 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
                   attribute: 'logistic_status',
                   value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.logisticStatus
                 });
+              }
+              if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.assigned) !== null) {
+                if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.assigned) === 0) {
+                  filterConditons.push({
+                    attribute: 'driver_id',
+                    value: {
+                      condition: '>=',
+                      value: 0
+                    }
+                  });
+                }
+                if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.assigned) === 1) {
+                  filterConditons.push({
+                    attribute: 'driver_id',
+                    value: null
+                  });
+                }
               }
               if (filterValues !== null && filterValues !== void 0 && filterValues.externalId) {
                 filterConditons.push({
@@ -495,15 +538,78 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
    * Method to detect if incoming order and update order belong to filter.
    * @param {Object} order incoming order and update order
    */
-  var isFilteredOrder = function isFilteredOrder(order) {
+  var isFilteredOrder = function isFilteredOrder(order, lastHistoryData) {
+    var _filterValues$country, _filterValues$cityIds, _filterValues$driverG, _filterValues$currenc, _filterValues$metafie2;
     var filterCheck = true;
+    if (searchValue) {
+      var searchCheck = false;
+      var lowerCaseSearchValue = searchValue.toLowerCase();
+      if (isSearchByOrderId) {
+        var _order$id;
+        if (((order === null || order === void 0 ? void 0 : (_order$id = order.id) === null || _order$id === void 0 ? void 0 : _order$id.toString()) || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true;
+      }
+      if (isSearchByCustomerEmail) {
+        var _order$customer;
+        if (((order === null || order === void 0 ? void 0 : (_order$customer = order.customer) === null || _order$customer === void 0 ? void 0 : _order$customer.email) || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true;
+      }
+      if (isSearchByCustomerPhone) {
+        var _order$customer2;
+        if (((order === null || order === void 0 ? void 0 : (_order$customer2 = order.customer) === null || _order$customer2 === void 0 ? void 0 : _order$customer2.cellphone) || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true;
+      }
+      if (isSearchByBusinessName) {
+        var _order$business;
+        if (((order === null || order === void 0 ? void 0 : (_order$business = order.business) === null || _order$business === void 0 ? void 0 : _order$business.name) || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true;
+      }
+      if (isSearchByDriverName) {
+        var _order$driver;
+        if (((order === null || order === void 0 ? void 0 : (_order$driver = order.driver) === null || _order$driver === void 0 ? void 0 : _order$driver.name) || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true;
+      }
+      if (!searchCheck) filterCheck = false;
+    }
+    if (orderStatus !== undefined && orderStatus.length > 0) {
+      var _lastHistoryData$find;
+      var lastStatus = lastHistoryData === null || lastHistoryData === void 0 ? void 0 : (_lastHistoryData$find = lastHistoryData.find(function (item) {
+        return item.attribute === 'status';
+      })) === null || _lastHistoryData$find === void 0 ? void 0 : _lastHistoryData$find.old;
+      if (!orderStatus.includes(parseInt(order.status)) && !orderStatus.includes(parseInt(lastStatus))) {
+        filterCheck = false;
+      }
+    }
+    if (filterValues !== null && filterValues !== void 0 && filterValues.orderId) {
+      var _order$id2;
+      if (!(order !== null && order !== void 0 && (_order$id2 = order.id) !== null && _order$id2 !== void 0 && _order$id2.toString().includes(filterValues === null || filterValues === void 0 ? void 0 : filterValues.orderId))) filterCheck = false;
+    }
+    if (filterValues !== null && filterValues !== void 0 && filterValues.externalId) {
+      var _order$external_id;
+      if (!(order !== null && order !== void 0 && (_order$external_id = order.external_id) !== null && _order$external_id !== void 0 && _order$external_id.toString().includes(filterValues === null || filterValues === void 0 ? void 0 : filterValues.externalId))) filterCheck = false;
+    }
+    if (filterValues !== null && filterValues !== void 0 && filterValues.deliveryFromDatetime) {
+      var isBefore = (0, _moment.default)(order === null || order === void 0 ? void 0 : order.delivery_datetime).isBefore(filterValues === null || filterValues === void 0 ? void 0 : filterValues.deliveryFromDatetime, 'second');
+      if (isBefore) filterCheck = false;
+    }
+    if (filterValues.deliveryEndDatetime) {
+      var isAfter = (0, _moment.default)(order === null || order === void 0 ? void 0 : order.delivery_datetime).isAfter(filterValues === null || filterValues === void 0 ? void 0 : filterValues.deliveryEndDatetime, 'second');
+      if (isAfter) filterCheck = false;
+    }
     if (filterValues.businessIds !== undefined && filterValues.businessIds.length > 0) {
       if (!filterValues.businessIds.includes(order.business_id)) {
         filterCheck = false;
       }
     }
+    if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$country = filterValues.countryCode) === null || _filterValues$country === void 0 ? void 0 : _filterValues$country.length) > 0) {
+      if (!filterValues.countryCode.includes(order === null || order === void 0 ? void 0 : order.country_code)) filterCheck = false;
+    }
+    if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$cityIds = filterValues.cityIds) === null || _filterValues$cityIds === void 0 ? void 0 : _filterValues$cityIds.length) > 0) {
+      if (!filterValues.cityIds.includes(order.city_id)) {
+        filterCheck = false;
+      }
+    }
     if (filterValues.driverIds !== undefined && filterValues.driverIds.length > 0) {
-      if (!filterValues.driverIds.includes(order.driver_id)) {
+      var _lastHistoryData$find2;
+      var lastDriverId = lastHistoryData === null || lastHistoryData === void 0 ? void 0 : (_lastHistoryData$find2 = lastHistoryData.find(function (item) {
+        return item.attribute === 'driver_id';
+      })) === null || _lastHistoryData$find2 === void 0 ? void 0 : _lastHistoryData$find2.old;
+      if (!filterValues.driverIds.includes(order.driver_id) && !filterValues.driverIds.includes(lastDriverId)) {
         filterCheck = false;
       }
     }
@@ -517,10 +623,35 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
         filterCheck = false;
       }
     }
-    if (filterValues.statuses !== undefined && filterValues.statuses.length > 0) {
-      if (!filterValues.statuses.includes(parseInt(order.status))) {
+    if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$driverG = filterValues.driverGroupIds) === null || _filterValues$driverG === void 0 ? void 0 : _filterValues$driverG.length) > 0) {
+      var _lastHistoryData$find3;
+      var _lastDriverId = lastHistoryData === null || lastHistoryData === void 0 ? void 0 : (_lastHistoryData$find3 = lastHistoryData.find(function (item) {
+        return item.attribute === 'driver_id';
+      })) === null || _lastHistoryData$find3 === void 0 ? void 0 : _lastHistoryData$find3.old;
+      if (!filterValues.driverGroupIds.includes(order.driver_id) && !filterValues.driverGroupIds.includes(_lastDriverId)) {
         filterCheck = false;
       }
+    }
+    if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$currenc = filterValues.currency) === null || _filterValues$currenc === void 0 ? void 0 : _filterValues$currenc.length) > 0) {
+      if (!filterValues.currency.includes(order === null || order === void 0 ? void 0 : order.currency)) filterCheck = false;
+    }
+    if (filterValues !== null && filterValues !== void 0 && filterValues.logisticStatus) {
+      var _lastHistoryData$find4;
+      var lastLogisticStatus = lastHistoryData === null || lastHistoryData === void 0 ? void 0 : (_lastHistoryData$find4 = lastHistoryData.find(function (item) {
+        return item.attribute === 'logistic_status';
+      })) === null || _lastHistoryData$find4 === void 0 ? void 0 : _lastHistoryData$find4.old;
+      if ((order === null || order === void 0 ? void 0 : order.logistic_status) !== parseInt(filterValues === null || filterValues === void 0 ? void 0 : filterValues.logisticStatus) && lastLogisticStatus !== parseInt(filterValues === null || filterValues === void 0 ? void 0 : filterValues.logisticStatus)) filterCheck = false;
+    }
+    if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$metafie2 = filterValues.metafield) === null || _filterValues$metafie2 === void 0 ? void 0 : _filterValues$metafie2.length) > 0) {
+      filterValues.metafield.forEach(function (item) {
+        var _order$metafields;
+        var found = order === null || order === void 0 ? void 0 : (_order$metafields = order.metafields) === null || _order$metafields === void 0 ? void 0 : _order$metafields.find(function (meta) {
+          return meta.key === item.key && meta.value.includes(item.value);
+        });
+        if (!found) {
+          filterCheck = false;
+        }
+      });
     }
     return filterCheck;
   };
@@ -828,145 +959,158 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       }
     };
   }, [session, searchValue, orderBy, filterValues, isOnlyDelivery, driverId, customerId, businessId, orders, orderStatus, timeStatus]);
-  (0, _react.useEffect)(function () {
-    if (orderList.loading) return;
-    var handleUpdateOrder = function handleUpdateOrder(order) {
-      if (customerId && (order === null || order === void 0 ? void 0 : order.customer_id) !== customerId) return;
-      if (isOnlyDelivery && (order === null || order === void 0 ? void 0 : order.delivery_type) !== 1) return;
-      if (!(order !== null && order !== void 0 && order.driver) && order !== null && order !== void 0 && order.driver_id) {
-        var updatedDriver = driversList === null || driversList === void 0 ? void 0 : driversList.drivers.find(function (driver) {
-          return driver.id === order.driver_id;
+  var handleUpdateOrder = function handleUpdateOrder(order) {
+    var _order$products, _order$products$;
+    if ((order === null || order === void 0 ? void 0 : (_order$products = order.products) === null || _order$products === void 0 ? void 0 : (_order$products$ = _order$products[0]) === null || _order$products$ === void 0 ? void 0 : _order$products$.type) === 'gift_card') return;
+    if (customerId && (order === null || order === void 0 ? void 0 : order.customer_id) !== customerId) return;
+    if (driverId && (order === null || order === void 0 ? void 0 : order.driver_id) !== driverId) return;
+    if (isOnlyDelivery && (order === null || order === void 0 ? void 0 : order.delivery_type) !== 1) return;
+    if (typeof order.status === 'undefined') return;
+    if (!isFilteredOrder(order)) {
+      var _order$history, _order$history2;
+      var length = order === null || order === void 0 ? void 0 : (_order$history = order.history) === null || _order$history === void 0 ? void 0 : _order$history.length;
+      var lastHistoryData = order === null || order === void 0 ? void 0 : (_order$history2 = order.history[length - 1]) === null || _order$history2 === void 0 ? void 0 : _order$history2.data;
+      if (isFilteredOrder(order, lastHistoryData)) {
+        setPagination(function (prevPagination) {
+          return _objectSpread(_objectSpread({}, prevPagination), {}, {
+            total: prevPagination.total - 1
+          });
         });
-        if (updatedDriver) {
-          order.driver = _objectSpread({}, updatedDriver);
-        }
       }
-      var found = orderList.orders.find(function (_order) {
-        return (_order === null || _order === void 0 ? void 0 : _order.id) === (order === null || order === void 0 ? void 0 : order.id);
-      });
-      var orders = [];
-      if (found) {
-        orders = orderList.orders.filter(function (_order) {
-          var valid = true;
-          if ((_order === null || _order === void 0 ? void 0 : _order.id) === (order === null || order === void 0 ? void 0 : order.id)) {
-            delete order.total;
-            delete order.subtotal;
-            Object.assign(_order, order);
-            valid = (orderStatus.length === 0 || orderStatus.includes(parseInt(_order.status))) && isFilteredOrder(order);
-            if (!valid) {
-              pagination.total--;
-              setPagination(_objectSpread({}, pagination));
-            }
-          }
-          return valid;
+      setOrderList(function (prevState) {
+        var updatedOrders = prevState.orders.filter(function (_order) {
+          return (_order === null || _order === void 0 ? void 0 : _order.id) !== (order === null || order === void 0 ? void 0 : order.id);
         });
-        var _orders = sortOrdersArray(orderBy, orders);
-        setOrderList(_objectSpread(_objectSpread({}, orderList), {}, {
+        return _objectSpread(_objectSpread({}, prevState), {}, {
+          orders: updatedOrders
+        });
+      });
+      return;
+    }
+    var updatedOrder = _objectSpread({}, order);
+    if (!(order !== null && order !== void 0 && order.driver) && order !== null && order !== void 0 && order.driver_id) {
+      var updatedDriver = driversList === null || driversList === void 0 ? void 0 : driversList.drivers.find(function (driver) {
+        return driver.id === (order === null || order === void 0 ? void 0 : order.driver_id);
+      });
+      if (updatedDriver) {
+        updatedOrder.driver = _objectSpread({}, updatedDriver);
+      }
+    }
+    var found = orderList.orders.find(function (_order) {
+      var _updatedOrder;
+      return (_order === null || _order === void 0 ? void 0 : _order.id) === ((_updatedOrder = updatedOrder) === null || _updatedOrder === void 0 ? void 0 : _updatedOrder.id);
+    });
+    if (found) {
+      var updatedOrders = orderList.orders.map(function (_order) {
+        if ((_order === null || _order === void 0 ? void 0 : _order.id) === (order === null || order === void 0 ? void 0 : order.id)) {
+          updatedOrder = _objectSpread(_objectSpread({}, _order), updatedOrder);
+          return updatedOrder;
+        }
+        return _order;
+      });
+      var _orders = sortOrdersArray(orderBy, updatedOrders.filter(Boolean));
+      setOrderList(function (prevState) {
+        return _objectSpread(_objectSpread({}, prevState), {}, {
           orders: _orders
-        }));
-      } else {
-        var statusChange = null;
-        if (order !== null && order !== void 0 && order.history) {
-          var _order$history, _order$history2;
-          var length = order === null || order === void 0 ? void 0 : (_order$history = order.history) === null || _order$history === void 0 ? void 0 : _order$history.length;
-          var lastHistoryData = order === null || order === void 0 ? void 0 : (_order$history2 = order.history[length - 1]) === null || _order$history2 === void 0 ? void 0 : _order$history2.data;
-          statusChange = lastHistoryData === null || lastHistoryData === void 0 ? void 0 : lastHistoryData.find(function (_ref9) {
-            var attribute = _ref9.attribute;
-            return attribute === 'status';
+        });
+      });
+    } else {
+      var _order$history3, _order$history4, _order$history4$data, _order$history5;
+      var statusChange = order === null || order === void 0 ? void 0 : (_order$history3 = order.history) === null || _order$history3 === void 0 ? void 0 : (_order$history4 = _order$history3[(order === null || order === void 0 ? void 0 : (_order$history5 = order.history) === null || _order$history5 === void 0 ? void 0 : _order$history5.length) - 1]) === null || _order$history4 === void 0 ? void 0 : (_order$history4$data = _order$history4.data) === null || _order$history4$data === void 0 ? void 0 : _order$history4$data.find(function (_ref9) {
+        var attribute = _ref9.attribute;
+        return attribute === 'status';
+      });
+      var _updatedOrders = [].concat(_toConsumableArray(orderList.orders), [order]);
+      var _orders3 = sortOrdersArray(orderBy, _updatedOrders.filter(Boolean));
+      setOrderList(function (prevState) {
+        return _objectSpread(_objectSpread({}, prevState), {}, {
+          orders: _orders3.slice(0, pagination.pageSize)
+        });
+      });
+      if (statusChange) {
+        var from = parseInt(statusChange.old);
+        if (!orderStatus.includes(from)) {
+          setPagination(function (prevPagination) {
+            return _objectSpread(_objectSpread({}, prevPagination), {}, {
+              total: prevPagination.total + 1
+            });
           });
         }
-        var isOrderStatus = orderStatus.includes(parseInt(order.status));
-        if (isOrderStatus) {
-          orders = [].concat(_toConsumableArray(orderList.orders), [order]);
-          var _orders3 = sortOrdersArray(orderBy, orders);
-          if (statusChange && isFilteredOrder(order)) {
-            var from = parseInt(statusChange.old);
-            if (!orderStatus.includes(from)) {
-              pagination.total++;
-              setPagination(_objectSpread({}, pagination));
-            }
-          }
-          setOrderList(_objectSpread(_objectSpread({}, orderList), {}, {
-            orders: _orders3.slice(0, pagination.pageSize)
-          }));
-        } else {
-          if (statusChange) {
-            var _from = parseInt(statusChange.old);
-            if (orderStatus.includes(_from)) {
-              pagination.total--;
-              setPagination(_objectSpread({}, pagination));
-            }
-          }
-        }
       }
-    };
-    var handleRegisterOrder = function handleRegisterOrder(order) {
-      var _order$products, _order$products$;
-      if ((order === null || order === void 0 ? void 0 : (_order$products = order.products) === null || _order$products === void 0 ? void 0 : (_order$products$ = _order$products[0]) === null || _order$products$ === void 0 ? void 0 : _order$products$.type) === 'gift_card') return;
-      if (customerId && (order === null || order === void 0 ? void 0 : order.customer_id) !== customerId) return;
-      if (isOnlyDelivery && (order === null || order === void 0 ? void 0 : order.delivery_type) !== 1) return;
-      var found = orderList.orders.find(function (_order) {
-        return (_order === null || _order === void 0 ? void 0 : _order.id) === (order === null || order === void 0 ? void 0 : order.id);
-      });
-      if (found) return;
-      var orders = [];
-      if (isFilteredOrder(order)) {
-        if (orderStatus.includes(0) && order.status === 0 || orderStatus.includes(13) && order.status === 13) {
-          orders = [order].concat(_toConsumableArray(orderList.orders));
-          var _orders = sortOrdersArray(orderBy, orders);
-          pagination.total++;
-          setPagination(_objectSpread({}, pagination));
-          setOrderList(_objectSpread(_objectSpread({}, orderList), {}, {
-            orders: _orders.slice(0, pagination.pageSize)
-          }));
-        }
-      }
-    };
-    var handleNewMessage = function handleNewMessage(message) {
-      if (orderList.orders.length === 0) return;
-      var found = orderList.orders.find(function (order) {
-        var _message$order;
-        return (order === null || order === void 0 ? void 0 : order.id) === ((_message$order = message.order) === null || _message$order === void 0 ? void 0 : _message$order.id);
-      });
-      if (found) {
-        var _orders = orderList.orders.filter(function (order) {
-          var _message$order2;
-          if ((order === null || order === void 0 ? void 0 : order.id) === ((_message$order2 = message.order) === null || _message$order2 === void 0 ? void 0 : _message$order2.id)) {
-            if (order.last_message_at !== message.created_at) {
-              if (message.type === 1) {
-                order.last_general_message_at = message.created_at;
-                if (message.author.level !== 0) {
-                  order.unread_general_count = order.unread_general_count + 1;
-                }
-              } else {
-                order.last_direct_message_at = message.created_at;
-                if (message.author.level !== 0) {
-                  order.unread_direct_count = order.unread_direct_count + 1;
-                }
-              }
-              order.last_message_at = message.created_at;
-              if (message.author.level !== 0) {
-                order.unread_count = order.unread_count + 1;
-              }
-            }
-          }
-          return true;
+    }
+  };
+  var handleRegisterOrder = function handleRegisterOrder(order) {
+    var _order$products2, _order$products2$;
+    if ((order === null || order === void 0 ? void 0 : (_order$products2 = order.products) === null || _order$products2 === void 0 ? void 0 : (_order$products2$ = _order$products2[0]) === null || _order$products2$ === void 0 ? void 0 : _order$products2$.type) === 'gift_card') return;
+    if (customerId && (order === null || order === void 0 ? void 0 : order.customer_id) !== customerId) return;
+    if (driverId && (order === null || order === void 0 ? void 0 : order.driver_id) !== driverId) return;
+    if (isOnlyDelivery && (order === null || order === void 0 ? void 0 : order.delivery_type) !== 1) return;
+    var found = orderList.orders.find(function (_order) {
+      return (_order === null || _order === void 0 ? void 0 : _order.id) === (order === null || order === void 0 ? void 0 : order.id);
+    });
+    if (found) return;
+    if (isFilteredOrder(order)) {
+      if (orderStatus.includes(0) && order.status === 0 || orderStatus.includes(13) && order.status === 13) {
+        setPagination(function (prevPagination) {
+          return _objectSpread(_objectSpread({}, prevPagination), {}, {
+            total: prevPagination.total + 1
+          });
         });
-        var _sortedOrders = sortOrdersArray(orderBy, _orders);
-        setOrderList(_objectSpread(_objectSpread({}, orderList), {}, {
-          orders: _sortedOrders
-        }));
+        setOrderList(function (prevState) {
+          var orders = [order].concat(_toConsumableArray(prevState.orders));
+          var _orders = sortOrdersArray(orderBy, orders);
+          return _objectSpread(_objectSpread({}, prevState), {}, {
+            orders: _orders.slice(0, pagination.pageSize)
+          });
+        });
       }
-    };
-    if (!orderList.loading) {
-      if ((pagination === null || pagination === void 0 ? void 0 : pagination.currentPage) !== 0 && (pagination === null || pagination === void 0 ? void 0 : pagination.total) !== 0) {
-        if (Math.ceil((pagination === null || pagination === void 0 ? void 0 : pagination.total) / pagination.pageSize) >= (pagination === null || pagination === void 0 ? void 0 : pagination.currentPage)) {
-          if (orderList.orders.length === 0) {
-            getPageOrders(pagination.pageSize, pagination.currentPage);
+    }
+  };
+  var handleNewMessage = function handleNewMessage(message) {
+    if (orderList.orders.length === 0) return;
+    var found = orderList.orders.find(function (order) {
+      var _message$order;
+      return (order === null || order === void 0 ? void 0 : order.id) === ((_message$order = message.order) === null || _message$order === void 0 ? void 0 : _message$order.id);
+    });
+    if (found) {
+      var _orders = orderList.orders.filter(function (order) {
+        var _message$order2;
+        if ((order === null || order === void 0 ? void 0 : order.id) === ((_message$order2 = message.order) === null || _message$order2 === void 0 ? void 0 : _message$order2.id)) {
+          if (order.last_message_at !== message.created_at) {
+            if (message.type === 1) {
+              order.last_general_message_at = message.created_at;
+              if (message.author.level !== 0) {
+                order.unread_general_count = order.unread_general_count + 1;
+              }
+            } else {
+              order.last_direct_message_at = message.created_at;
+              if (message.author.level !== 0) {
+                order.unread_direct_count = order.unread_direct_count + 1;
+              }
+            }
+            order.last_message_at = message.created_at;
+            if (message.author.level !== 0) {
+              order.unread_count = order.unread_count + 1;
+            }
           }
-        } else {
-          getPageOrders(pagination.pageSize, pagination.currentPage - 1);
         }
+        return true;
+      });
+      var _sortedOrders = sortOrdersArray(orderBy, _orders);
+      setOrderList(_objectSpread(_objectSpread({}, orderList), {}, {
+        orders: _sortedOrders
+      }));
+    }
+  };
+  (0, _react.useEffect)(function () {
+    if (orderList.loading) return;
+    if ((pagination === null || pagination === void 0 ? void 0 : pagination.currentPage) !== 0 && (pagination === null || pagination === void 0 ? void 0 : pagination.total) !== 0) {
+      if (Math.ceil((pagination === null || pagination === void 0 ? void 0 : pagination.total) / pagination.pageSize) >= (pagination === null || pagination === void 0 ? void 0 : pagination.currentPage)) {
+        if (orderList.orders.length === 0) {
+          getPageOrders(pagination.pageSize, pagination.currentPage);
+        }
+      } else {
+        getPageOrders(pagination.pageSize, pagination.currentPage - 1);
       }
     }
     socket.on('update_order', handleUpdateOrder);
@@ -977,7 +1121,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       socket.off('orders_register', handleRegisterOrder);
       socket.off('message', handleNewMessage);
     };
-  }, [orderList.orders, pagination, orderBy, socket, driversList, customerId]);
+  }, [orderList.orders, pagination, orderBy, socket, driversList, customerId, driverId]);
 
   // Listening for customer rating
   (0, _react.useEffect)(function () {

@@ -48,7 +48,8 @@ var Checkout = function Checkout(props) {
     onPlaceOrderClick = props.onPlaceOrderClick,
     UIComponent = props.UIComponent,
     isApp = props.isApp,
-    isKiosk = props.isKiosk;
+    isKiosk = props.isKiosk,
+    extraFields = props.extraFields;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -263,10 +264,12 @@ var Checkout = function Checkout(props) {
                 source_id: paymethodSelected === null || paymethodSelected === void 0 ? void 0 : (_paymethodSelected$da = paymethodSelected.data) === null || _paymethodSelected$da === void 0 ? void 0 : _paymethodSelected$da.id
               };
             }
-            payload = {
+            payload = _objectSpread({
               offer_id: cart === null || cart === void 0 ? void 0 : cart.offer_id,
               amount: (_cart$balance = cart === null || cart === void 0 ? void 0 : cart.balance) !== null && _cart$balance !== void 0 ? _cart$balance : cart === null || cart === void 0 ? void 0 : cart.total
-            };
+            }, (extraFields === null || extraFields === void 0 ? void 0 : extraFields.external_id) && {
+              external_id: extraFields === null || extraFields === void 0 ? void 0 : extraFields.external_id
+            });
             if (paymethodSelected !== null && paymethodSelected !== void 0 && paymethodSelected.paymethod) {
               payload = _objectSpread(_objectSpread({}, payload), {}, {
                 paymethod_id: paymethodSelected === null || paymethodSelected === void 0 ? void 0 : paymethodSelected.paymethodId,

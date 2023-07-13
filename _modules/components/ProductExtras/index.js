@@ -577,7 +577,8 @@ var ProductExtras = function ProductExtras(props) {
     hanldeDragOver: hanldeDragOver,
     handleDrop: handleDrop,
     handleDragEnd: handleDragEnd,
-    handleUpdateExtraState: handleUpdateExtraState
+    handleUpdateExtraState: handleUpdateExtraState,
+    setExtrasState: setExtrasState
   })));
 };
 exports.ProductExtras = ProductExtras;

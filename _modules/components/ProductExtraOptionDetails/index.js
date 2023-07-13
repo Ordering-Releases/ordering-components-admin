@@ -40,7 +40,9 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
     extra = props.extra,
     option = props.option,
     handleUpdateBusinessState = props.handleUpdateBusinessState,
-    handleSucccessDeleteOption = props.handleSucccessDeleteOption;
+    handleSucccessDeleteOption = props.handleSucccessDeleteOption,
+    parentExtraState = props.parentExtraState,
+    setParentExtraState = props.setParentExtraState;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -766,6 +768,131 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
   }();
 
   /**
+   * Method to duplicate option from API
+   */
+  var handleDuplicateOption = /*#__PURE__*/function () {
+    var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+      var requestOptions, response, content, options, updatedExtra;
+      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+        while (1) switch (_context7.prev = _context7.next) {
+          case 0:
+            _context7.prev = 0;
+            showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+            requestOptions = {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token)
+              },
+              body: JSON.stringify({
+                copy_options: 'metafields,suboptions'
+              })
+            };
+            _context7.next = 5;
+            return fetch("".concat(ordering.root, "/business/").concat(business.id, "/extras/").concat(extra.id, "/options/").concat(option.id, "/duplicate"), requestOptions);
+          case 5:
+            response = _context7.sent;
+            _context7.next = 8;
+            return response.json();
+          case 8:
+            content = _context7.sent;
+            if (!content.error) {
+              if (parentExtraState.extra.options) options = [].concat(_toConsumableArray(parentExtraState.extra.options), [content.result]);else options = [_objectSpread({}, content.result)];
+              updatedExtra = _objectSpread(_objectSpread({}, parentExtraState.extra), {}, {
+                options: options
+              });
+              setParentExtraState(_objectSpread(_objectSpread({}, parentExtraState), {}, {
+                extra: updatedExtra
+              }));
+              handleSuccessUpdateBusiness(updatedExtra);
+              showToast(_ToastContext.ToastType.Success, t('OPTION_DUPLICATED', 'Option duplicated'));
+            }
+            _context7.next = 15;
+            break;
+          case 12:
+            _context7.prev = 12;
+            _context7.t0 = _context7["catch"](0);
+            showToast(_ToastContext.ToastType.Error, _context7.t0.message);
+          case 15:
+          case "end":
+            return _context7.stop();
+        }
+      }, _callee7, null, [[0, 12]]);
+    }));
+    return function handleDuplicateOption() {
+      return _ref7.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Method to duplicate sub option from API
+   */
+  var handleDuplicateSubOption = /*#__PURE__*/function () {
+    var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(id) {
+      var requestOptions, response, content, subOptions, updatedOption, options, updatedExtra;
+      return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+        while (1) switch (_context8.prev = _context8.next) {
+          case 0:
+            _context8.prev = 0;
+            showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+            requestOptions = {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token)
+              },
+              body: JSON.stringify({
+                copy_options: 'metafields'
+              })
+            };
+            _context8.next = 5;
+            return fetch("".concat(ordering.root, "/business/").concat(business.id, "/extras/").concat(extra.id, "/options/").concat(option.id, "/suboptions/").concat(id, "/duplicate"), requestOptions);
+          case 5:
+            response = _context8.sent;
+            _context8.next = 8;
+            return response.json();
+          case 8:
+            content = _context8.sent;
+            if (!content.error) {
+              subOptions = [].concat(_toConsumableArray(optionState.option.suboptions), [content.result]);
+              updatedOption = _objectSpread(_objectSpread({}, optionState.option), {}, {
+                suboptions: subOptions
+              });
+              setOptionState(_objectSpread(_objectSpread({}, optionState), {}, {
+                option: updatedOption,
+                loading: false
+              }));
+              options = extra.options.filter(function (option) {
+                if (option.id === updatedOption.id) {
+                  Object.assign(option, updatedOption);
+                }
+                return true;
+              });
+              updatedExtra = _objectSpread(_objectSpread({}, extra), {}, {
+                options: options
+              });
+              setExtraState(updatedExtra);
+              handleSuccessUpdateBusiness(updatedExtra);
+              showToast(_ToastContext.ToastType.Success, t('SUBOPTION_DUPLICATED', 'Suboption duplicated'));
+            }
+            _context8.next = 15;
+            break;
+          case 12:
+            _context8.prev = 12;
+            _context8.t0 = _context8["catch"](0);
+            showToast(_ToastContext.ToastType.Error, _context8.t0.message);
+          case 15:
+          case "end":
+            return _context8.stop();
+        }
+      }, _callee8, null, [[0, 12]]);
+    }));
+    return function handleDuplicateSubOption(_x8) {
+      return _ref8.apply(this, arguments);
+    };
+  }();
+
+  /**
    * Method to change the conditional option
    * @param {Number} optionId
    */
@@ -891,6 +1018,8 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
     handleUpdateOption: handleUpdateOption,
     isAddForm: isAddForm,
     setIsAddForm: setIsAddForm,
+    handleDuplicateOption: handleDuplicateOption,
+    handleDuplicateSubOption: handleDuplicateSubOption,
     dragoverSubOptionId: dragoverSubOptionId,
     isSubOptionsBottom: isSubOptionsBottom,
     handleDragStart: handleDragStart,

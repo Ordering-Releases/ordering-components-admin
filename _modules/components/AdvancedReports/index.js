@@ -74,7 +74,8 @@ var AdvancedReports = function AdvancedReports(props) {
       driver_companies_ids: null,
       driver_groups_ids: null,
       delivery_types_ids: null,
-      app_ids: null
+      app_ids: null,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
     }),
     _useState8 = _slicedToArray(_useState7, 2),
     filterList = _useState8[0],
@@ -109,8 +110,8 @@ var AdvancedReports = function AdvancedReports(props) {
                 Authorization: "Bearer ".concat(token)
               }
             };
-            params = '';
-            if ((filterList === null || filterList === void 0 ? void 0 : filterList.from) !== '' && (filterList === null || filterList === void 0 ? void 0 : filterList.to) !== '') params = "from=".concat((0, _dayjs.default)(filterList === null || filterList === void 0 ? void 0 : filterList.from).format('YYYY-MM-DD'), " 00:00:00&to=").concat((0, _dayjs.default)(filterList === null || filterList === void 0 ? void 0 : filterList.to).format('YYYY-MM-DD'), " 23:59:59");
+            params = "timezone=".concat(filterList === null || filterList === void 0 ? void 0 : filterList.timeZone);
+            if ((filterList === null || filterList === void 0 ? void 0 : filterList.from) !== '' && (filterList === null || filterList === void 0 ? void 0 : filterList.to) !== '') params = "".concat(params, "&from=").concat((0, _dayjs.default)(filterList === null || filterList === void 0 ? void 0 : filterList.from).format('YYYY-MM-DD'), " 00:00:00&to=").concat((0, _dayjs.default)(filterList === null || filterList === void 0 ? void 0 : filterList.to).format('YYYY-MM-DD'), " 23:59:59");
             if (filterList !== null && filterList !== void 0 && filterList.businessIds && (filterList === null || filterList === void 0 ? void 0 : filterList.businessIds.length) > 0) params = "".concat(params, "&businesses_ids=").concat(JSON.stringify(filterList === null || filterList === void 0 ? void 0 : filterList.businessIds));
             if (filterList !== null && filterList !== void 0 && filterList.drivers_ids && (filterList === null || filterList === void 0 ? void 0 : filterList.drivers_ids.length) > 0) params = "".concat(params, "&drivers_ids=").concat(JSON.stringify(filterList === null || filterList === void 0 ? void 0 : filterList.drivers_ids));
             if (filterList !== null && filterList !== void 0 && filterList.franchises_id && (filterList === null || filterList === void 0 ? void 0 : filterList.franchises_id.length) > 0) params = "".concat(params, "&franchises_id=").concat(JSON.stringify(filterList === null || filterList === void 0 ? void 0 : filterList.franchises_id));

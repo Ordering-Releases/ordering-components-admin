@@ -44,7 +44,8 @@ var BusinessAnalytics = function BusinessAnalytics(props) {
       lapse: 'today',
       businessIds: null,
       app_id: 'all',
-      franchises_id: null
+      franchises_id: null,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
     }),
     _useState2 = _slicedToArray(_useState, 2),
     filterList = _useState2[0],
@@ -146,7 +147,7 @@ var BusinessAnalytics = function BusinessAnalytics(props) {
       var today = (0, _dayjs.default)().format('YYYY-MM-DD');
       lapse = "".concat(formattedDate, ",").concat(today);
     }
-    var params = "lapse=".concat(lapse);
+    var params = "lapse=".concat(lapse, "&timezone=").concat(filterList === null || filterList === void 0 ? void 0 : filterList.timeZone);
     if (filterList !== null && filterList !== void 0 && filterList.businessIds && (filterList === null || filterList === void 0 ? void 0 : filterList.businessIds.length) > 0) params = "".concat(params, "&businesses=").concat(filterList === null || filterList === void 0 ? void 0 : (_filterList$businessI = filterList.businessIds) === null || _filterList$businessI === void 0 ? void 0 : _filterList$businessI.toString());
     if (filterList !== null && filterList !== void 0 && filterList.app_id && filterList.app_id !== 'all') params = "".concat(params, "&app_id=").concat(filterList === null || filterList === void 0 ? void 0 : filterList.app_id);
     if (filterList !== null && filterList !== void 0 && filterList.franchises_id && (filterList === null || filterList === void 0 ? void 0 : filterList.franchises_id.length) > 0) params = "".concat(params, "&franchises_id=").concat(JSON.stringify(filterList === null || filterList === void 0 ? void 0 : filterList.franchises_id));

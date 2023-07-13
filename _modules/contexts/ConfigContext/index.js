@@ -96,7 +96,7 @@ var ConfigProvider = function ConfigProvider(_ref) {
   };
   var refreshConfigs = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var _data, _data2, _ref3, _ref3$content, error, result, data, response, configsResult;
+      var _result$default_count, _data, _result$default_count2, _data2, _ref3, _ref3$content, error, result, data, response, configsResult;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -141,12 +141,12 @@ var ConfigProvider = function ConfigProvider(_ref) {
             _context.t1 = _context["catch"](16);
             data = null;
           case 28:
-            configsResult = _objectSpread(_objectSpread({}, customConfigs), {}, {
-              default_country_code: {
-                value: data && ((_data = data) === null || _data === void 0 ? void 0 : _data.country_code) || 'US',
-                calling_number: data && ((_data2 = data) === null || _data2 === void 0 ? void 0 : _data2.country_calling_code) || '+1'
-              }
-            }, result);
+            configsResult = _objectSpread(_objectSpread(_objectSpread({}, customConfigs), result), {}, {
+              default_country_code: _objectSpread(_objectSpread({}, result === null || result === void 0 ? void 0 : result.default_country_code), {}, {
+                value: (result === null || result === void 0 ? void 0 : (_result$default_count = result.default_country_code) === null || _result$default_count === void 0 ? void 0 : _result$default_count.value) || data && ((_data = data) === null || _data === void 0 ? void 0 : _data.country_code) || 'US',
+                calling_number: (result === null || result === void 0 ? void 0 : (_result$default_count2 = result.default_country_code) === null || _result$default_count2 === void 0 ? void 0 : _result$default_count2.calling_number) || data && ((_data2 = data) === null || _data2 === void 0 ? void 0 : _data2.country_calling_code) || '+1'
+              })
+            });
             setState(function (prevState) {
               return _objectSpread(_objectSpread({}, prevState), {}, {
                 loading: false,

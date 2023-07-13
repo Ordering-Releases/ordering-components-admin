@@ -236,7 +236,10 @@ var PaymentOptionWallet = function PaymentOptionWallet(props) {
                 Authorization: "Bearer ".concat(token),
                 'X-App-X': ordering.appId,
                 'X-Socket-Id-X': socket === null || socket === void 0 ? void 0 : socket.getId()
-              }
+              },
+              body: JSON.stringify({
+                user_id: user.id
+              })
             });
           case 3:
             response = _context3.sent;

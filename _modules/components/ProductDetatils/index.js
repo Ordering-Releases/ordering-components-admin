@@ -41,7 +41,9 @@ var ProductDetatils = function ProductDetatils(props) {
     UIComponent = props.UIComponent,
     productId = props.productId,
     categoryId = props.categoryId,
-    handleUpdateBusinessState = props.handleUpdateBusinessState;
+    handleUpdateBusinessState = props.handleUpdateBusinessState,
+    categoryState = props.categoryState,
+    handleUpdateCategoryState = props.handleUpdateCategoryState;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -228,7 +230,7 @@ var ProductDetatils = function ProductDetatils(props) {
   */
   var handleDeleteProduct = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var _productState$product5, _productState$product6, _yield$ordering$busin6, _yield$ordering$busin7, error, result, _categories;
+      var _productState$product5, _productState$product6, _yield$ordering$busin6, _yield$ordering$busin7, error, result, _categoryState$produc, updatedProducts;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
@@ -252,20 +254,12 @@ var ProductDetatils = function ProductDetatils(props) {
                   result: result
                 }
               }));
-              if (handleUpdateBusinessState) {
-                _categories = _toConsumableArray(business === null || business === void 0 ? void 0 : business.categories);
-                _categories.forEach(function iterate(category) {
-                  var _productState$product7;
-                  if (category.id === ((_productState$product7 = productState.product) === null || _productState$product7 === void 0 ? void 0 : _productState$product7.category_id)) {
-                    var _products = category.products.filter(function (_product) {
-                      return _product.id !== productState.product.id;
-                    });
-                    category.products = _toConsumableArray(_products);
-                  }
-                  Array.isArray(category === null || category === void 0 ? void 0 : category.subcategories) && category.subcategories.forEach(iterate);
+              if (handleUpdateCategoryState) {
+                updatedProducts = categoryState === null || categoryState === void 0 ? void 0 : (_categoryState$produc = categoryState.products) === null || _categoryState$produc === void 0 ? void 0 : _categoryState$produc.filter(function (item) {
+                  return item.id !== productState.product.id;
                 });
-                handleUpdateBusinessState(_objectSpread(_objectSpread({}, business), {}, {
-                  categories: _categories
+                handleUpdateCategoryState(_objectSpread(_objectSpread({}, categoryState), {}, {
+                  products: updatedProducts
                 }));
               }
               showToast(_ToastContext.ToastType.Success, t('PRODUCT_DELETED', 'Product deleted'));
@@ -306,9 +300,9 @@ var ProductDetatils = function ProductDetatils(props) {
    * Method to change the product enabled state
    */
   var handleChangeProductActiveState = function handleChangeProductActiveState() {
-    var _productState$product8;
+    var _productState$product7;
     var params = {
-      enabled: !(productState !== null && productState !== void 0 && (_productState$product8 = productState.product) !== null && _productState$product8 !== void 0 && _productState$product8.enabled)
+      enabled: !(productState !== null && productState !== void 0 && (_productState$product7 = productState.product) !== null && _productState$product7 !== void 0 && _productState$product7.enabled)
     };
     handleUpdateClick(params);
   };
@@ -457,8 +451,8 @@ var ProductDetatils = function ProductDetatils(props) {
     if (handleUpdateBusinessState) {
       var _categories = _toConsumableArray(business === null || business === void 0 ? void 0 : business.categories);
       _categories.forEach(function iterate(category) {
-        var _productState$product9;
-        if (category.id === ((_productState$product9 = productState.product) === null || _productState$product9 === void 0 ? void 0 : _productState$product9.category_id)) {
+        var _productState$product8;
+        if (category.id === ((_productState$product8 = productState.product) === null || _productState$product8 === void 0 ? void 0 : _productState$product8.category_id)) {
           var _products = category.products.map(function (_product) {
             if (_product.id === productState.product.id) {
               return _objectSpread(_objectSpread({}, _product), updatedProduct);
@@ -475,6 +469,60 @@ var ProductDetatils = function ProductDetatils(props) {
       handleUpdateBusinessState(updatedBusiness);
     }
   };
+
+  /**
+   * Method to duplicate product from API
+   */
+  var handleDuplicateProduct = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      var requestOptions, response, content;
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.prev = 0;
+            showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+            requestOptions = {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(session.token)
+              },
+              body: JSON.stringify({
+                copy_options: 'ingredients,gallery,tags,extras,metafields'
+              })
+            };
+            _context4.next = 5;
+            return fetch("".concat(ordering.root, "/business/").concat(business === null || business === void 0 ? void 0 : business.id, "/categories/").concat(categoryId, "/products/").concat(productId, "/duplicate"), requestOptions);
+          case 5:
+            response = _context4.sent;
+            _context4.next = 8;
+            return response.json();
+          case 8:
+            content = _context4.sent;
+            if (!content.error) {
+              if (handleUpdateCategoryState) {
+                handleUpdateCategoryState(_objectSpread(_objectSpread({}, categoryState), {}, {
+                  products: [].concat(_toConsumableArray(categoryState === null || categoryState === void 0 ? void 0 : categoryState.products), [content.result])
+                }));
+              }
+              showToast(_ToastContext.ToastType.Success, t('PRODUCT_DUPLICATED', 'Product duplicated'));
+            }
+            _context4.next = 15;
+            break;
+          case 12:
+            _context4.prev = 12;
+            _context4.t0 = _context4["catch"](0);
+            showToast(_ToastContext.ToastType.Error, _context4.t0.message);
+          case 15:
+          case "end":
+            return _context4.stop();
+        }
+      }, _callee4, null, [[0, 12]]);
+    }));
+    return function handleDuplicateProduct() {
+      return _ref4.apply(this, arguments);
+    };
+  }();
   (0, _react.useEffect)(function () {
     if (props.product) {
       setProductState(_objectSpread(_objectSpread({}, productState), {}, {
@@ -500,7 +548,8 @@ var ProductDetatils = function ProductDetatils(props) {
     handleDeleteProduct: handleDeleteProduct,
     showProductOption: showProductOption,
     handleChangeFormState: handleChangeFormState,
-    handleSuccessUpdate: handleSuccessUpdate
+    handleSuccessUpdate: handleSuccessUpdate,
+    handleDuplicateProduct: handleDuplicateProduct
   })));
 };
 exports.ProductDetatils = ProductDetatils;
