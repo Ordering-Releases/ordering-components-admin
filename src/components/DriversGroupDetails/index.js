@@ -99,12 +99,13 @@ export const DriversGroupDetails = (props) => {
         },
         body: JSON.stringify(changes)
       }
-      const response = await fetch(`${ordering.root}/drivergroups/${curDriversGroup.id}`, requestOptions)
+      const groupId = curDriversGroup?.id || driversGroupId
+      const response = await fetch(`${ordering.root}/drivergroups/${groupId}`, requestOptions)
       const content = await response.json()
       if (!content.error) {
         setActionState({ error: null, loading: false })
         const groups = driversGroupsState.groups.filter(group => {
-          if (group.id === curDriversGroup.id) {
+          if (group.id === groupId) {
             Object.assign(group, content.result)
           }
           return true
