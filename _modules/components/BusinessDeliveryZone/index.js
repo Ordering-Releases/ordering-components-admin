@@ -426,74 +426,93 @@ var BusinessDeliveryZone = function BusinessDeliveryZone(props) {
     }
   };
   var extractGoogleCoords = function extractGoogleCoords(plainText) {
-    var parser = new DOMParser();
-    var xmlDoc = parser.parseFromString(plainText, 'text/xml');
-    var googlePolygons = [];
-    var placeMarkName = '';
-    if (xmlDoc.documentElement.nodeName === 'kml') {
-      var _iterator = _createForOfIteratorHelper(xmlDoc.getElementsByTagName('Placemark')),
-        _step;
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var item = _step.value;
-          placeMarkName = item.getElementsByTagName('name')[0].childNodes[0].nodeValue.trim();
-          var polygons = item.getElementsByTagName('Polygon');
-          var _iterator2 = _createForOfIteratorHelper(polygons),
-            _step2;
-          try {
-            for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-              var polygon = _step2.value;
-              var coords = polygon.getElementsByTagName('coordinates')[0].childNodes[0].nodeValue.trim();
-              coords = coords.replace(/\n/g, ' ').replace(/\s+/g, ' ');
-              var points = coords.split(' ');
-              var googlePolygonsPaths = [];
-              var _iterator3 = _createForOfIteratorHelper(points),
-                _step3;
-              try {
-                for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-                  var point = _step3.value;
-                  var coord = point.split(',');
-                  googlePolygonsPaths.push({
-                    lat: +coord[1],
-                    lng: +coord[0]
-                  });
+    try {
+      setFormState(function (prevState) {
+        return _objectSpread(_objectSpread({}, prevState), {}, {
+          error: null
+        });
+      });
+      var parser = new DOMParser();
+      var xmlDoc = parser.parseFromString(plainText, 'text/xml');
+      var googlePolygons = [];
+      var placeMarkName = '';
+      if (xmlDoc.documentElement.nodeName === 'kml') {
+        placeMarkName = xmlDoc.getElementsByTagName('name')[0].childNodes[0].nodeValue.trim();
+        var _iterator = _createForOfIteratorHelper(xmlDoc.getElementsByTagName('Placemark')),
+          _step;
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var item = _step.value;
+            var polygons = item.getElementsByTagName('Polygon');
+            var _iterator2 = _createForOfIteratorHelper(polygons),
+              _step2;
+            try {
+              for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+                var polygon = _step2.value;
+                var coords = polygon.getElementsByTagName('coordinates')[0].childNodes[0].nodeValue.trim();
+                coords = coords.replace(/\n/g, ' ').replace(/\s+/g, ' ');
+                var points = coords.split(' ');
+                var googlePolygonsPaths = [];
+                var _iterator3 = _createForOfIteratorHelper(points),
+                  _step3;
+                try {
+                  for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+                    var point = _step3.value;
+                    var coord = point.split(',');
+                    googlePolygonsPaths.push({
+                      lat: +coord[1],
+                      lng: +coord[0]
+                    });
+                  }
+                } catch (err) {
+                  _iterator3.e(err);
+                } finally {
+                  _iterator3.f();
                 }
-              } catch (err) {
-                _iterator3.e(err);
-              } finally {
-                _iterator3.f();
+                googlePolygons.push(googlePolygonsPaths);
               }
-              googlePolygons.push(googlePolygonsPaths);
+            } catch (err) {
+              _iterator2.e(err);
+            } finally {
+              _iterator2.f();
             }
-          } catch (err) {
-            _iterator2.e(err);
-          } finally {
-            _iterator2.f();
           }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
         }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
+      } else {
+        setFormState(function (prevState) {
+          return _objectSpread(_objectSpread({}, prevState), {}, {
+            error: t('INVALID_KML_FILE', 'Invalid KML file')
+          });
+        });
       }
-    } else {
-      setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-        error: t('INVALID_KML_FILE', 'Invalid KML file')
-      }));
-    }
-    if (googlePolygons.length === 1) {
-      setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-        changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
-          type: 2,
-          name: placeMarkName,
-          data: googlePolygons[0]
-        })
-      }));
-      setKmlData(googlePolygons[0]);
-    } else {
-      setFormState(_objectSpread(_objectSpread({}, formState), {}, {
-        error: t('INVALID_KML_FILE', 'Invalid KML file')
-      }));
+      if (googlePolygons.length === 1) {
+        setFormState(function (prevState) {
+          return _objectSpread(_objectSpread({}, prevState), {}, {
+            changes: _objectSpread(_objectSpread({}, prevState.changes), {}, {
+              type: 2,
+              name: placeMarkName,
+              data: googlePolygons[0]
+            })
+          });
+        });
+        setKmlData(googlePolygons[0]);
+      } else {
+        setFormState(function (prevState) {
+          return _objectSpread(_objectSpread({}, prevState), {}, {
+            error: t('INVALID_KML_FILE', 'Invalid KML file')
+          });
+        });
+      }
+    } catch (error) {
+      setFormState(function (prevState) {
+        return _objectSpread(_objectSpread({}, prevState), {}, {
+          error: t('INVALID_KML_FILE', 'Invalid KML file')
+        });
+      });
     }
   };
   (0, _react.useEffect)(function () {
