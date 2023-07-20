@@ -242,51 +242,50 @@ export const BusinessDeliveryZone = (props) => {
   }
 
   const extractGoogleCoords = (plainText) => {
-    const parser = new DOMParser()
-    const xmlDoc = parser.parseFromString(plainText, 'text/xml')
-    const googlePolygons = []
-    let placeMarkName = ''
+    try {
+      setFormState(prevState => ({ ...prevState, error: null }))
+      const parser = new DOMParser()
+      const xmlDoc = parser.parseFromString(plainText, 'text/xml')
+      const googlePolygons = []
+      let placeMarkName = ''
 
-    if (xmlDoc.documentElement.nodeName === 'kml') {
-      for (const item of xmlDoc.getElementsByTagName('Placemark')) {
-        placeMarkName = item.getElementsByTagName('name')[0].childNodes[0].nodeValue.trim()
-        const polygons = item.getElementsByTagName('Polygon')
-
-        for (const polygon of polygons) {
-          let coords = polygon.getElementsByTagName('coordinates')[0].childNodes[0].nodeValue.trim()
-          coords = coords.replace(/\n/g, ' ').replace(/\s+/g, ' ')
-          const points = coords.split(' ')
-          const googlePolygonsPaths = []
-          for (const point of points) {
-            const coord = point.split(',')
-            googlePolygonsPaths.push({ lat: +coord[1], lng: +coord[0] })
+      if (xmlDoc.documentElement.nodeName === 'kml') {
+        placeMarkName = xmlDoc.getElementsByTagName('name')[0].childNodes[0].nodeValue.trim()
+        for (const item of xmlDoc.getElementsByTagName('Placemark')) {
+          const polygons = item.getElementsByTagName('Polygon')
+          for (const polygon of polygons) {
+            let coords = polygon.getElementsByTagName('coordinates')[0].childNodes[0].nodeValue.trim()
+            coords = coords.replace(/\n/g, ' ').replace(/\s+/g, ' ')
+            const points = coords.split(' ')
+            const googlePolygonsPaths = []
+            for (const point of points) {
+              const coord = point.split(',')
+              googlePolygonsPaths.push({ lat: +coord[1], lng: +coord[0] })
+            }
+            googlePolygons.push(googlePolygonsPaths)
           }
-          googlePolygons.push(googlePolygonsPaths)
         }
+      } else {
+        setFormState(prevState => ({ ...prevState, error: t('INVALID_KML_FILE', 'Invalid KML file') }))
       }
-    } else {
-      setFormState({
-        ...formState,
-        error: t('INVALID_KML_FILE', 'Invalid KML file')
-      })
-    }
-
-    if (googlePolygons.length === 1) {
-      setFormState({
-        ...formState,
-        changes: {
-          ...formState.changes,
-          type: 2,
-          name: placeMarkName,
-          data: googlePolygons[0]
-        }
-      })
-      setKmlData(googlePolygons[0])
-    } else {
-      setFormState({
-        ...formState,
-        error: t('INVALID_KML_FILE', 'Invalid KML file')
-      })
+      if (googlePolygons.length === 1) {
+        setFormState(prevState => {
+          return {
+            ...prevState,
+            changes: {
+              ...prevState.changes,
+              type: 2,
+              name: placeMarkName,
+              data: googlePolygons[0]
+            }
+          }
+        })
+        setKmlData(googlePolygons[0])
+      } else {
+        setFormState(prevState => ({ ...prevState, error: t('INVALID_KML_FILE', 'Invalid KML file') }))
+      }
+    } catch (error) {
+      setFormState(prevState => ({ ...prevState, error: t('INVALID_KML_FILE', 'Invalid KML file') }))
     }
   }
 
