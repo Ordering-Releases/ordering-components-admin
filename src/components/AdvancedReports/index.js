@@ -25,7 +25,7 @@ export const AdvancedReports = (props) => {
 
   const [filterList, setFilterList] = useState(
     {
-      from: dayjs(last7day),
+      from: endpoint === 'drivers_operation_events' ? now : dayjs(last7day),
       to: now,
       businessIds: null,
       drivers_ids: null,
