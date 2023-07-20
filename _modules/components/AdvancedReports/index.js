@@ -66,7 +66,7 @@ var AdvancedReports = function AdvancedReports(props) {
   var now = (0, _dayjs.default)();
   var last7day = now.subtract('7', 'day').format('YYYY-MM-DD');
   var _useState7 = (0, _react.useState)({
-      from: (0, _dayjs.default)(last7day),
+      from: endpoint === 'drivers_operation_events' ? now : (0, _dayjs.default)(last7day),
       to: now,
       businessIds: null,
       drivers_ids: null,
