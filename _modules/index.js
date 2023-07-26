@@ -813,6 +813,12 @@ Object.defineProperty(exports, "GpsButton", {
     return _GpsButton.GpsButton;
   }
 });
+Object.defineProperty(exports, "GuestCheckoutFieldsSetting", {
+  enumerable: true,
+  get: function get() {
+    return _GuestCheckoutFieldsSetting.GuestCheckoutFieldsSetting;
+  }
+});
 Object.defineProperty(exports, "Home", {
   enumerable: true,
   get: function get() {
@@ -1910,6 +1916,7 @@ var _GoogleMaps = require("./components/GoogleMaps");
 var _GoogleMapsApiKeySetting = require("./components/GoogleMapsApiKeySetting");
 var _GpsButton = require("./components/GpsButton");
 var _GoogleTagManager = require("./components/GoogleTagManager");
+var _GuestCheckoutFieldsSetting = require("./components/GuestCheckoutFieldsSetting");
 var _Home = require("./components/Home");
 var _HtmlEditor = require("./components/HtmlEditor");
 var _ImporterForm = require("./components/ImporterForm");

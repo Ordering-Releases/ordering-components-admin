@@ -35,7 +35,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  */
 var CustomOrderDetails = function CustomOrderDetails(props) {
   var UIComponent = props.UIComponent,
-    businessPropsToFetch = props.businessPropsToFetch;
+    businessPropsToFetch = props.businessPropsToFetch,
+    onClose = props.onClose,
+    handleOpenOrderDetail = props.handleOpenOrderDetail;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -390,6 +392,8 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
                 loading: false,
                 error: null
               }));
+              onClose && onClose();
+              handleOpenOrderDetail && handleOpenOrderDetail(content.result);
             } else {
               setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
                 loading: false,

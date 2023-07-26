@@ -468,6 +468,19 @@ var ProductDetatils = function ProductDetatils(props) {
       });
       handleUpdateBusinessState(updatedBusiness);
     }
+    if (handleUpdateCategoryState) {
+      var _categoryState$produc2;
+      var updatedProducts = categoryState === null || categoryState === void 0 ? void 0 : (_categoryState$produc2 = categoryState.products) === null || _categoryState$produc2 === void 0 ? void 0 : _categoryState$produc2.map(function (item) {
+        var _productState$product9;
+        if ((item === null || item === void 0 ? void 0 : item.id) === (productState === null || productState === void 0 ? void 0 : (_productState$product9 = productState.product) === null || _productState$product9 === void 0 ? void 0 : _productState$product9.id)) {
+          return _objectSpread(_objectSpread({}, productState.product), updatedProduct);
+        }
+        return item;
+      });
+      handleUpdateCategoryState(_objectSpread(_objectSpread({}, categoryState), {}, {
+        products: updatedProducts
+      }));
+    }
   };
 
   /**

@@ -140,14 +140,7 @@ var BusinessAnalytics = function BusinessAnalytics(props) {
   var paramsForAPI = function paramsForAPI(type) {
     var _filterList$businessI;
     var rootUrl = "".concat(ordering.root, "/reports/").concat(type);
-    var lapse = filterList === null || filterList === void 0 ? void 0 : filterList.lapse;
-    if ((filterList === null || filterList === void 0 ? void 0 : filterList.lapse) === 'today' || (filterList === null || filterList === void 0 ? void 0 : filterList.lapse) === 'yesterday' || (filterList === null || filterList === void 0 ? void 0 : filterList.lapse) === 'last_7_days' || (filterList === null || filterList === void 0 ? void 0 : filterList.lapse) === 'last_30_days') {
-      var dayCount = (filterList === null || filterList === void 0 ? void 0 : filterList.lapse) === 'today' ? 0 : (filterList === null || filterList === void 0 ? void 0 : filterList.lapse) === 'yesterday' ? -1 : (filterList === null || filterList === void 0 ? void 0 : filterList.lapse) === 'last_7_days' ? -7 : -30;
-      var formattedDate = (0, _dayjs.default)().add(dayCount, 'day').format('YYYY-MM-DD');
-      var today = (0, _dayjs.default)().format('YYYY-MM-DD');
-      lapse = "".concat(formattedDate, ",").concat(today);
-    }
-    var params = "lapse=".concat(lapse, "&timezone=").concat(filterList === null || filterList === void 0 ? void 0 : filterList.timeZone);
+    var params = "lapse=".concat(filterList === null || filterList === void 0 ? void 0 : filterList.lapse, "&timezone=").concat(filterList === null || filterList === void 0 ? void 0 : filterList.timeZone);
     if (filterList !== null && filterList !== void 0 && filterList.businessIds && (filterList === null || filterList === void 0 ? void 0 : filterList.businessIds.length) > 0) params = "".concat(params, "&businesses=").concat(filterList === null || filterList === void 0 ? void 0 : (_filterList$businessI = filterList.businessIds) === null || _filterList$businessI === void 0 ? void 0 : _filterList$businessI.toString());
     if (filterList !== null && filterList !== void 0 && filterList.app_id && filterList.app_id !== 'all') params = "".concat(params, "&app_id=").concat(filterList === null || filterList === void 0 ? void 0 : filterList.app_id);
     if (filterList !== null && filterList !== void 0 && filterList.franchises_id && (filterList === null || filterList === void 0 ? void 0 : filterList.franchises_id.length) > 0) params = "".concat(params, "&franchises_id=").concat(JSON.stringify(filterList === null || filterList === void 0 ? void 0 : filterList.franchises_id));

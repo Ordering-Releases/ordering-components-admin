@@ -37,6 +37,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  * Component to manage product ingredient behavior without UI component
  */
 var ProductIngredient = function ProductIngredient(props) {
+  var _props$state;
   var business = props.business,
     product = props.product,
     ingredient = props.ingredient,
@@ -48,9 +49,9 @@ var ProductIngredient = function ProductIngredient(props) {
    * Set current state
    */
   var state = {
-    id: ingredient.id,
-    name: ingredient.name,
-    selected: props.state.selected
+    id: ingredient === null || ingredient === void 0 ? void 0 : ingredient.id,
+    name: ingredient === null || ingredient === void 0 ? void 0 : ingredient.name,
+    selected: props === null || props === void 0 ? void 0 : (_props$state = props.state) === null || _props$state === void 0 ? void 0 : _props$state.selected
   };
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
