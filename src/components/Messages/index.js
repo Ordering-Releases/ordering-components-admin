@@ -22,7 +22,7 @@ export const Messages = (props) => {
   const [, t] = useLanguage()
   const [ordering] = useApi()
   const [configState] = useConfig()
-  const [{ getOrderState }] = useUtils()
+  const [{ getOrderState, parsePrice }] = useUtils()
   const [{ user, token }] = useSession()
   const accessToken = props.accessToken || token
 
@@ -118,6 +118,8 @@ export const Messages = (props) => {
     } else if (changeAttribute === 'reject_reason') {
       comment = t('ORDER_REJECT_REASON_IS', 'Order <b>reject reason</b> is _reject_reason_.')
         .replace('_reject_reason_', '<b>' + t(`REJECT_REASON_${message.change.new.toUpperCase()}`) + '</b>')
+    } else if (changeAttribute === 'summary.refunded') {
+      comment = t('REFUNDED') + '<strong>' + parsePrice(message.change?.new) + '</strong>'
     } else if (changeAttribute !== 'comment') {
       if (message.change.old) {
         comment = t('ORDER_ATTRIBUTE_CHANGED_FROM_TO')
@@ -278,7 +280,7 @@ export const Messages = (props) => {
   useEffect(() => {
     if (messages.loading || (orderMessages && setOrderMessages)) return
     const handleNewMessage = (message) => {
-      if (message.order?.id === orderId) {
+      if (message.order?.id === orderId || message?.order_id === orderId) {
         const found = messages.messages.find(_message => _message.id === message.id)
         if (!found) {
           setMessages(prevState => ({

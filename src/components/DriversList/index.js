@@ -14,7 +14,8 @@ export const DriversList = (props) => {
     isSearchByName,
     isSearchByCellphone,
     isOrderDrivers,
-    orderId
+    orderId,
+    setIsCommentPopup
   } = props
 
   const [ordering] = useApi()
@@ -93,6 +94,7 @@ export const DriversList = (props) => {
       if (!content.error) {
         if (assign.driverId) {
           showToast(ToastType.Success, t('ORDER_DRIVER_ASSIGNED', 'Driver assigned to order'))
+          setIsCommentPopup && setIsCommentPopup(true)
         } else {
           showToast(ToastType.Success, t('ORDER_DRIVER_REMOVED', 'Driver removed from the order'))
         }

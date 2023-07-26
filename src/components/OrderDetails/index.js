@@ -30,6 +30,8 @@ export const OrderDetails = (props) => {
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
   const [messages, setMessages] = useState({ loading: true, error: null, messages: [] })
   const [messagesReadList, setMessagesReadList] = useState(false)
+  const [customerInfoState, setCustomerInfoState] = useState({ error: null, customer: {}, loading: false })
+  const [addressState, setAddressState] = useState({})
 
   const socket = useWebsocket()
 
@@ -65,6 +67,52 @@ export const OrderDetails = (props) => {
       }
     } catch (error) {
       setMessages({ ...messages, loading: false, error: [error.Messages] })
+    }
+  }
+
+  /**
+   * Method to update customer info to order from API
+   */
+  const handleUpdateCustomerInfo = async () => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      const customer = { ...orderState?.order?.customer, ...customerInfoState?.customer, ...addressState }
+
+      const { content } = await ordering.setAccessToken(token).orders(orderId).save({ customer })
+
+      if (!content.error) {
+        showToast(ToastType.Success, t('CUSTOMER_INFO_UPDATED', 'Customer info updated'))
+        const updatedOrder = { ...orderState?.order, ...content?.result }
+        setOrderState({
+          ...orderState,
+          loading: false,
+          order: updatedOrder
+        })
+      } else {
+        showToast(ToastType.Error, content?.result)
+      }
+    } catch (err) {
+      showToast(ToastType.Error, err.message)
+    }
+  }
+
+  /**
+   * Method to update assigmentComment to order from API
+   * @param {object} comment assigned order id and driver id
+   */
+  const handleUpdateComment = async (comment) => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+
+      const { content } = await ordering.setAccessToken(token).orders(orderId).save({ manual_driver_assignment_comment: comment, driver_id: orderState?.order?.driver_id })
+
+      if (!content.error) {
+        showToast(ToastType.Success, t('COMMENT_UPDATED', 'Comment updated'))
+      } else {
+        showToast(ToastType.Error, content?.result)
+      }
+    } catch (err) {
+      showToast(ToastType.Error, err.message)
     }
   }
 
@@ -278,6 +326,16 @@ export const OrderDetails = (props) => {
     }
   }
 
+  const handleChangeCustomerInfoState = (changes) => {
+    setCustomerInfoState({
+      ...customerInfoState,
+      customer: {
+        ...customerInfoState?.customer,
+        ...changes
+      }
+    })
+  }
+
   useEffect(() => {
     if (props.order) {
       setOrderState({
@@ -337,6 +395,8 @@ export const OrderDetails = (props) => {
         <UIComponent
           {...props}
           order={orderState}
+          customerInfoState={customerInfoState}
+          handleChangeCustomerInfoState={handleChangeCustomerInfoState}
           messageErrors={messageErrors}
           actionStatus={actionStatus}
           formatPrice={formatPrice}
@@ -348,6 +408,10 @@ export const OrderDetails = (props) => {
           readMessages={readMessages}
           handleRefundPaymentsStripe={handleRefundPaymentsStripe}
           handleOrderRefund={handleOrderRefund}
+          handleUpdateCustomerInfo={handleUpdateCustomerInfo}
+          handleUpdateComment={handleUpdateComment}
+          addressState={addressState}
+          setAddressState={setAddressState}
         />
       )}
     </>

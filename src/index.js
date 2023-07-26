@@ -117,6 +117,7 @@ import { GoogleMaps, GoogleMapsMap } from './components/GoogleMaps'
 import { GoogleMapsApiKeySetting } from './components/GoogleMapsApiKeySetting'
 import { GpsButton, GoogleGpsButton } from './components/GpsButton'
 import { GoogleTagManager } from './components/GoogleTagManager'
+import { GuestCheckoutFieldsSetting } from './components/GuestCheckoutFieldsSetting'
 import { Home } from './components/Home'
 import { HtmlEditor } from './components/HtmlEditor'
 import { ImporterForm } from './components/ImporterForm'
@@ -390,6 +391,7 @@ export {
   GpsButton,
   GoogleGpsButton,
   GoogleTagManager,
+  GuestCheckoutFieldsSetting,
   Home,
   HtmlEditor,
   ImporterForm,

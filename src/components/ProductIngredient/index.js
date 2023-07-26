@@ -21,7 +21,7 @@ export const ProductIngredient = (props) => {
   /**
    * Set current state
    */
-  const state = { id: ingredient.id, name: ingredient.name, selected: props.state.selected }
+  const state = { id: ingredient?.id, name: ingredient?.name, selected: props?.state?.selected }
 
   const [ordering] = useApi()
   const [{ token }] = useSession()

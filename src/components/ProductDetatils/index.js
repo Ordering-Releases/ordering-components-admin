@@ -341,6 +341,19 @@ export const ProductDetatils = (props) => {
       const updatedBusiness = { ...business, categories: _categories }
       handleUpdateBusinessState(updatedBusiness)
     }
+
+    if (handleUpdateCategoryState) {
+      const updatedProducts = categoryState?.products?.map(item => {
+        if (item?.id === productState?.product?.id) {
+          return {
+            ...productState.product,
+            ...updatedProduct
+          }
+        }
+        return item
+      })
+      handleUpdateCategoryState({ ...categoryState, products: updatedProducts })
+    }
   }
 
   /**

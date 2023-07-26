@@ -12,7 +12,9 @@ import { useLanguage } from '../../contexts/LanguageContext'
 export const CustomOrderDetails = (props) => {
   const {
     UIComponent,
-    businessPropsToFetch
+    businessPropsToFetch,
+    onClose,
+    handleOpenOrderDetail
   } = props
 
   const [ordering] = useApi()
@@ -231,6 +233,8 @@ export const CustomOrderDetails = (props) => {
       if (!content.error) {
         showToast(ToastType.Success, t('CUSTOM_ORDER_CREATED', 'Custom order created'))
         setActionState({ ...actionState, loading: false, error: null })
+        onClose && onClose()
+        handleOpenOrderDetail && handleOpenOrderDetail(content.result)
       } else {
         setActionState({ ...actionState, loading: false, error: content.result })
       }

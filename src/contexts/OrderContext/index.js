@@ -114,7 +114,7 @@ export const OrderProvider = ({ Alert, children, strategy, isAlsea, franchiseId,
           await updateOrderOptions({ country_code: options?.address?.country_code })
         }
       }
-      if (error) {
+      if (error && session?.user?.level !== 8) {
         setAlert({ show: true, content: result })
         if (res?.status === 401) {
           session.auth && logout()
