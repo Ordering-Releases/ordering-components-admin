@@ -195,7 +195,7 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
               loading: true
             }));
             parameters = {
-              location: location,
+              location: "".concat(location.lat, ",").concat(location.lng),
               type: ((_orderState$options = orderState.options) === null || _orderState$options === void 0 ? void 0 : _orderState$options.type) || 1
             };
             conditions = {
@@ -205,7 +205,7 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
                 value: encodeURI(true)
               }]
             };
-            fetchEndpoint = ordering.businesses().where(conditions).asDashboard().select(businessPropsToFetch).parameters(parameters);
+            fetchEndpoint = ordering.businesses().where(conditions).select(businessPropsToFetch).parameters(parameters);
             _context2.next = 7;
             return fetchEndpoint.get();
           case 7:
@@ -420,6 +420,10 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
     };
   }();
   (0, _react.useEffect)(function () {
+    if (!(customerAddress !== null && customerAddress !== void 0 && customerAddress.location) || orderState !== null && orderState !== void 0 && orderState.loading) return;
+    getBusinessList(customerAddress.location);
+  }, [customerAddress === null || customerAddress === void 0 ? void 0 : customerAddress.location, orderState]);
+  (0, _react.useEffect)(function () {
     if (phone && phone.length >= 7) {
       getUsers();
     }
@@ -472,7 +476,8 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
     handlePlaceOrderByTotal: handlePlaceOrderByTotal,
     setExtraFields: setExtraFields,
     extraFields: extraFields,
-    actionState: actionState
+    actionState: actionState,
+    customerAddress: customerAddress
   })));
 };
 exports.CustomOrderDetails = CustomOrderDetails;

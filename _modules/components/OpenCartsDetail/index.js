@@ -9,6 +9,8 @@ var _react = _interopRequireWildcard(require("react"));
 var _propTypes = _interopRequireDefault(require("prop-types"));
 var _SessionContext = require("../../contexts/SessionContext");
 var _ApiContext = require("../../contexts/ApiContext");
+var _ToastContext = require("../../contexts/ToastContext");
+var _LanguageContext = require("../../contexts/LanguageContext");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -29,13 +31,20 @@ function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefine
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var OpenCartsDetail = function OpenCartsDetail(props) {
   var cart = props.cart,
-    UIComponent = props.UIComponent;
+    UIComponent = props.UIComponent,
+    handleSuccessDeleteCart = props.handleSuccessDeleteCart;
+  var _useLanguage = (0, _LanguageContext.useLanguage)(),
+    _useLanguage2 = _slicedToArray(_useLanguage, 2),
+    t = _useLanguage2[1];
   var _useSession = (0, _SessionContext.useSession)(),
     _useSession2 = _slicedToArray(_useSession, 1),
     token = _useSession2[0].token;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
+  var _useToast = (0, _ToastContext.useToast)(),
+    _useToast2 = _slicedToArray(_useToast, 2),
+    showToast = _useToast2[1].showToast;
   var _useState = (0, _react.useState)({
       cart: null,
       loading: false,
@@ -44,6 +53,13 @@ var OpenCartsDetail = function OpenCartsDetail(props) {
     _useState2 = _slicedToArray(_useState, 2),
     cartState = _useState2[0],
     setCartState = _useState2[1];
+  var _useState3 = (0, _react.useState)({
+      loading: false,
+      error: null
+    }),
+    _useState4 = _slicedToArray(_useState3, 2),
+    actionStatus = _useState4[0],
+    setActionStatus = _useState4[1];
   var getCartList = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
       var requestOptions, fetchEndpoint, response, content, _cart$address, _cart;
@@ -74,7 +90,7 @@ var OpenCartsDetail = function OpenCartsDetail(props) {
               _cart = _objectSpread(_objectSpread({}, content.result), {}, {
                 id: cart === null || cart === void 0 ? void 0 : cart.id,
                 business: _objectSpread(_objectSpread({}, content.result.business), cart === null || cart === void 0 ? void 0 : cart.business),
-                user: _objectSpread(_objectSpread({}, cart === null || cart === void 0 ? void 0 : cart.user), (cart === null || cart === void 0 ? void 0 : (_cart$address = cart.address) === null || _cart$address === void 0 ? void 0 : _cart$address.address) && {
+                user: _objectSpread(_objectSpread({}, cart === null || cart === void 0 ? void 0 : cart.user), (cart === null || cart === void 0 || (_cart$address = cart.address) === null || _cart$address === void 0 ? void 0 : _cart$address.address) && {
                   address: cart.address.address
                 }),
                 updated_at: cart === null || cart === void 0 ? void 0 : cart.updated_at
@@ -109,12 +125,76 @@ var OpenCartsDetail = function OpenCartsDetail(props) {
       return _ref.apply(this, arguments);
     };
   }();
+
+  /**
+   * Method to delete order from API
+   */
+  var handleDeleteCart = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(cart) {
+      var requestOptions, response, content;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.prev = 0;
+            showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+            setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
+              loading: true
+            }));
+            requestOptions = {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token)
+              },
+              body: JSON.stringify({
+                user_id: cart.user_id,
+                uuid: cart.uuid
+              })
+            };
+            _context2.next = 6;
+            return fetch("".concat(ordering.root, "/carts/clear"), requestOptions);
+          case 6:
+            response = _context2.sent;
+            _context2.next = 9;
+            return response.json();
+          case 9:
+            content = _context2.sent;
+            if (!content.error) {
+              showToast(_ToastContext.ToastType.Success, t('CART_DELETED', 'Cart deleted'));
+              handleSuccessDeleteCart && handleSuccessDeleteCart(cartState.cart);
+              props.onClose && props.onClose();
+            }
+            setActionStatus({
+              loading: false,
+              error: content.error ? content.result : null
+            });
+            _context2.next = 17;
+            break;
+          case 14:
+            _context2.prev = 14;
+            _context2.t0 = _context2["catch"](0);
+            setActionStatus({
+              loading: false,
+              error: [_context2.t0.message]
+            });
+          case 17:
+          case "end":
+            return _context2.stop();
+        }
+      }, _callee2, null, [[0, 14]]);
+    }));
+    return function handleDeleteCart(_x2) {
+      return _ref2.apply(this, arguments);
+    };
+  }();
   (0, _react.useEffect)(function () {
     if (!cart) return;
     getCartList();
   }, [cart]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
-    cartState: cartState
+    actionStatus: actionStatus,
+    cartState: cartState,
+    handleDeleteCart: handleDeleteCart
   })));
 };
 exports.OpenCartsDetail = OpenCartsDetail;

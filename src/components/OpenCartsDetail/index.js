@@ -2,17 +2,23 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
+import { useToast, ToastType } from '../../contexts/ToastContext'
+import { useLanguage } from '../../contexts/LanguageContext'
 
 export const OpenCartsDetail = (props) => {
   const {
     cart,
-    UIComponent
+    UIComponent,
+    handleSuccessDeleteCart
   } = props
 
+  const [, t] = useLanguage()
   const [{ token }] = useSession()
   const [ordering] = useApi()
+  const [, { showToast }] = useToast()
 
   const [cartState, setCartState] = useState({ cart: null, loading: false, error: null })
+  const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
 
   const getCartList = async () => {
     try {
@@ -58,6 +64,42 @@ export const OpenCartsDetail = (props) => {
     }
   }
 
+  /**
+   * Method to delete order from API
+   */
+  const handleDeleteCart = async (cart) => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setActionStatus({ ...actionStatus, loading: true })
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          user_id: cart.user_id,
+          uuid: cart.uuid
+        })
+      }
+
+      const response = await fetch(`${ordering.root}/carts/clear`, requestOptions)
+      const content = await response.json()
+
+      if (!content.error) {
+        showToast(ToastType.Success, t('CART_DELETED', 'Cart deleted'))
+        handleSuccessDeleteCart && handleSuccessDeleteCart(cartState.cart)
+        props.onClose && props.onClose()
+      }
+      setActionStatus({
+        loading: false,
+        error: content.error ? content.result : null
+      })
+    } catch (err) {
+      setActionStatus({ loading: false, error: [err.message] })
+    }
+  }
+
   useEffect(() => {
     if (!cart) return
     getCartList()
@@ -68,7 +110,9 @@ export const OpenCartsDetail = (props) => {
       {UIComponent && (
         <UIComponent
           {...props}
+          actionStatus={actionStatus}
           cartState={cartState}
+          handleDeleteCart={handleDeleteCart}
         />
       )}
     </>

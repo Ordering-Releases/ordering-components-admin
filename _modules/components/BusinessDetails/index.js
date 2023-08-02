@@ -357,7 +357,7 @@ var BusinessDetails = function BusinessDetails(props) {
               error: error ? result : null
             }));
             if (!error) {
-              _owners = businessState === null || businessState === void 0 ? void 0 : (_businessState$busine = businessState.business) === null || _businessState$busine === void 0 ? void 0 : _businessState$busine.owners.filter(function (owner) {
+              _owners = businessState === null || businessState === void 0 || (_businessState$busine = businessState.business) === null || _businessState$busine === void 0 ? void 0 : _businessState$busine.owners.filter(function (owner) {
                 return owners.includes(owner.id);
               });
               _business = _objectSpread(_objectSpread({}, businessState === null || businessState === void 0 ? void 0 : businessState.business), {}, {
@@ -416,7 +416,7 @@ var BusinessDetails = function BusinessDetails(props) {
               error: error ? result : null
             }));
             if (!error) {
-              _owners = [].concat(_toConsumableArray(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine2 = businessState.business) === null || _businessState$busine2 === void 0 ? void 0 : _businessState$busine2.owners), [newOwner]);
+              _owners = [].concat(_toConsumableArray(businessState === null || businessState === void 0 || (_businessState$busine2 = businessState.business) === null || _businessState$busine2 === void 0 ? void 0 : _businessState$busine2.owners), [newOwner]);
               _business = _objectSpread(_objectSpread({}, businessState === null || businessState === void 0 ? void 0 : businessState.business), {}, {
                 owners: _owners
               });

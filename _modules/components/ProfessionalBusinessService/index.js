@@ -258,7 +258,7 @@ var ProfessionalBusinessService = function ProfessionalBusinessService(props) {
   (0, _react.useEffect)(function () {
     var _businessList$busines, _userServiceList$serv;
     if (businessIds !== undefined) return;
-    if ((businessList === null || businessList === void 0 ? void 0 : (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.length) > 0 && (userServiceList === null || userServiceList === void 0 ? void 0 : (_userServiceList$serv = userServiceList.services) === null || _userServiceList$serv === void 0 ? void 0 : _userServiceList$serv.length) > 0) {
+    if ((businessList === null || businessList === void 0 || (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.length) > 0 && (userServiceList === null || userServiceList === void 0 || (_userServiceList$serv = userServiceList.services) === null || _userServiceList$serv === void 0 ? void 0 : _userServiceList$serv.length) > 0) {
       var _businessIds = [];
       businessList.businesses.forEach(function (business) {
         if (userServiceList !== null && userServiceList !== void 0 && userServiceList.services.reduce(function (prev, current) {
@@ -273,7 +273,7 @@ var ProfessionalBusinessService = function ProfessionalBusinessService(props) {
   (0, _react.useEffect)(function () {
     var _businessList$busines2, _userServiceList$serv2;
     if (businessIds === undefined) return;
-    if ((businessList === null || businessList === void 0 ? void 0 : (_businessList$busines2 = businessList.businesses) === null || _businessList$busines2 === void 0 ? void 0 : _businessList$busines2.length) > 0 && (userServiceList === null || userServiceList === void 0 ? void 0 : (_userServiceList$serv2 = userServiceList.services) === null || _userServiceList$serv2 === void 0 ? void 0 : _userServiceList$serv2.length) > 0) {
+    if ((businessList === null || businessList === void 0 || (_businessList$busines2 = businessList.businesses) === null || _businessList$busines2 === void 0 ? void 0 : _businessList$busines2.length) > 0 && (userServiceList === null || userServiceList === void 0 || (_userServiceList$serv2 = userServiceList.services) === null || _userServiceList$serv2 === void 0 ? void 0 : _userServiceList$serv2.length) > 0) {
       var _businessIds = [];
       businessList.businesses.forEach(function (business) {
         if (userServiceList !== null && userServiceList !== void 0 && userServiceList.services.reduce(function (prev, current) {

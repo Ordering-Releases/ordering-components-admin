@@ -218,13 +218,13 @@ var RecoveryActionDetail = function RecoveryActionDetail(props) {
             changes = _objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes);
             channelBody = {
               enabled: true,
-              channel: formState === null || formState === void 0 ? void 0 : (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.channel,
-              body: formState === null || formState === void 0 ? void 0 : (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.body,
-              title: formState === null || formState === void 0 ? void 0 : (_formState$changes3 = formState.changes) === null || _formState$changes3 === void 0 ? void 0 : _formState$changes3.title
+              channel: formState === null || formState === void 0 || (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.channel,
+              body: formState === null || formState === void 0 || (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.body,
+              title: formState === null || formState === void 0 || (_formState$changes3 = formState.changes) === null || _formState$changes3 === void 0 ? void 0 : _formState$changes3.title
             };
-            changes === null || changes === void 0 ? true : delete changes.channel;
-            changes === null || changes === void 0 ? true : delete changes.body;
-            changes === null || changes === void 0 ? true : delete changes.title;
+            changes === null || changes === void 0 || delete changes.channel;
+            changes === null || changes === void 0 || delete changes.body;
+            changes === null || changes === void 0 || delete changes.title;
             eventRuleRequestOptions = {
               method: 'POST',
               headers: {
@@ -255,7 +255,7 @@ var RecoveryActionDetail = function RecoveryActionDetail(props) {
               body: JSON.stringify(channelBody)
             };
             _context2.next = 20;
-            return fetch("".concat(ordering.root, "/event_rules/").concat(eventContent === null || eventContent === void 0 ? void 0 : (_eventContent$result = eventContent.result) === null || _eventContent$result === void 0 ? void 0 : _eventContent$result.id, "/channels"), channelRequestOptions);
+            return fetch("".concat(ordering.root, "/event_rules/").concat(eventContent === null || eventContent === void 0 || (_eventContent$result = eventContent.result) === null || _eventContent$result === void 0 ? void 0 : _eventContent$result.id, "/channels"), channelRequestOptions);
           case 20:
             response = _context2.sent;
             _context2.next = 23;

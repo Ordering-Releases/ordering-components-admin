@@ -29,22 +29,39 @@ export const WebsocketStatus = (props) => {
     }
   }
 
+  const connectListener = () => {
+    if (socket.socket.connected) {
+      setReconnectAttemptCount(0)
+      setSocketStatus(1)
+      setConnectedDate(new Date())
+    }
+  }
+
+  const disconnectListener = () => {
+    setSocketStatus(2)
+  }
+
+  const reconnectAttemptListener = () => {
+    setReconnectAttemptCount(prev => prev + 1)
+    setSocketStatus(0)
+  }
+  const connectionErrorListner = () => {
+    setSocketStatus(2)
+  }
+
   useEffect(() => {
     if (socket?.socket) {
-      socket.socket.on('connect', () => {
-        setReconnectAttemptCount(0)
-        setSocketStatus(1)
-        setConnectedDate(new Date())
-      })
+      socket.socket.on('connect', connectListener)
+      socket.socket.on('disconnect', disconnectListener)
+      socket.socket.on('reconnect_attempt', reconnectAttemptListener)
+      socket.socket.on('connect_error', connectionErrorListner)
+    }
 
-      socket.socket.on('disconnect', (reason) => {
-        setSocketStatus(2)
-      })
-
-      socket.socket.on('reconnect_attempt', () => {
-        setReconnectAttemptCount(prev => prev + 1)
-        setSocketStatus(0)
-      })
+    return () => {
+      socket.socket.off('connect', connectListener)
+      socket.socket.off('disconnect', disconnectListener)
+      socket.socket.off('reconnect_attempt', reconnectAttemptListener)
+      socket.socket.off('connect_error', connectionErrorListner)
     }
   }, [socket?.socket])
 

@@ -56,7 +56,7 @@ var BusinessPromotionForm = function BusinessPromotionForm(props) {
   var _useConfig = (0, _ConfigContext.useConfig)(),
     _useConfig2 = _slicedToArray(_useConfig, 1),
     configs = _useConfig2[0].configs;
-  var isAdvancedOffersActivated = configs === null || configs === void 0 ? void 0 : (_configs$advanced_off = configs.advanced_offers_module) === null || _configs$advanced_off === void 0 ? void 0 : _configs$advanced_off.value;
+  var isAdvancedOffersActivated = configs === null || configs === void 0 || (_configs$advanced_off = configs.advanced_offers_module) === null || _configs$advanced_off === void 0 ? void 0 : _configs$advanced_off.value;
   var _useState = (0, _react.useState)({
       promotion: promotion,
       loading: false,
@@ -86,7 +86,7 @@ var BusinessPromotionForm = function BusinessPromotionForm(props) {
    */
   var handleChangeInput = function handleChangeInput(e) {
     var _formState$changes, _formState$changes2, _promotionState$promo;
-    if (e.target.name === 'coupon' && ((formState === null || formState === void 0 ? void 0 : (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.type) === 2 || !(formState !== null && formState !== void 0 && (_formState$changes2 = formState.changes) !== null && _formState$changes2 !== void 0 && _formState$changes2.type) && (promotionState === null || promotionState === void 0 ? void 0 : (_promotionState$promo = promotionState.promotion) === null || _promotionState$promo === void 0 ? void 0 : _promotionState$promo.type) === 2)) {
+    if (e.target.name === 'coupon' && ((formState === null || formState === void 0 || (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.type) === 2 || !(formState !== null && formState !== void 0 && (_formState$changes2 = formState.changes) !== null && _formState$changes2 !== void 0 && _formState$changes2.type) && (promotionState === null || promotionState === void 0 || (_promotionState$promo = promotionState.promotion) === null || _promotionState$promo === void 0 ? void 0 : _promotionState$promo.type) === 2)) {
       setFormState(_objectSpread(_objectSpread({}, formState), {}, {
         changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
           coupon: e.target.value.replace(/\s/g, '')

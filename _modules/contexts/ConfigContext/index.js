@@ -143,8 +143,8 @@ var ConfigProvider = function ConfigProvider(_ref) {
           case 28:
             configsResult = _objectSpread(_objectSpread(_objectSpread({}, customConfigs), result), {}, {
               default_country_code: _objectSpread(_objectSpread({}, result === null || result === void 0 ? void 0 : result.default_country_code), {}, {
-                value: (result === null || result === void 0 ? void 0 : (_result$default_count = result.default_country_code) === null || _result$default_count === void 0 ? void 0 : _result$default_count.value) || data && ((_data = data) === null || _data === void 0 ? void 0 : _data.country_code) || 'US',
-                calling_number: (result === null || result === void 0 ? void 0 : (_result$default_count2 = result.default_country_code) === null || _result$default_count2 === void 0 ? void 0 : _result$default_count2.calling_number) || data && ((_data2 = data) === null || _data2 === void 0 ? void 0 : _data2.country_calling_code) || '+1'
+                value: (result === null || result === void 0 || (_result$default_count = result.default_country_code) === null || _result$default_count === void 0 ? void 0 : _result$default_count.value) || data && ((_data = data) === null || _data === void 0 ? void 0 : _data.country_code) || 'US',
+                calling_number: (result === null || result === void 0 || (_result$default_count2 = result.default_country_code) === null || _result$default_count2 === void 0 ? void 0 : _result$default_count2.calling_number) || data && ((_data2 = data) === null || _data2 === void 0 ? void 0 : _data2.country_calling_code) || '+1'
               })
             });
             setState(function (prevState) {

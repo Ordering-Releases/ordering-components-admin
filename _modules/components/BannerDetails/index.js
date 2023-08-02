@@ -138,7 +138,7 @@ var BannerDetails = function BannerDetails(props) {
     } else {
       if (banner !== null && banner !== void 0 && banner.sites) {
         var _banner$sites;
-        sites = banner === null || banner === void 0 ? void 0 : (_banner$sites = banner.sites) === null || _banner$sites === void 0 ? void 0 : _banner$sites.reduce(function (ids, site) {
+        sites = banner === null || banner === void 0 || (_banner$sites = banner.sites) === null || _banner$sites === void 0 ? void 0 : _banner$sites.reduce(function (ids, site) {
           return [].concat(_toConsumableArray(ids), [site.id]);
         }, []);
       }
@@ -785,7 +785,7 @@ var BannerDetails = function BannerDetails(props) {
   };
   var handleSelectAllBusiness = function handleSelectAllBusiness(isAll) {
     var _businessList$busines;
-    var businessIds = businessList === null || businessList === void 0 ? void 0 : (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.reduce(function (ids, business) {
+    var businessIds = businessList === null || businessList === void 0 || (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.reduce(function (ids, business) {
       return [].concat(_toConsumableArray(ids), [business.id]);
     }, []);
     var filteredIds = [];
@@ -849,14 +849,14 @@ var BannerDetails = function BannerDetails(props) {
         images: images,
         videos: videos
       }));
-      var sitesIds = banner === null || banner === void 0 ? void 0 : (_banner$sites2 = banner.sites) === null || _banner$sites2 === void 0 ? void 0 : _banner$sites2.reduce(function (ids, site) {
+      var sitesIds = banner === null || banner === void 0 || (_banner$sites2 = banner.sites) === null || _banner$sites2 === void 0 ? void 0 : _banner$sites2.reduce(function (ids, site) {
         return [].concat(_toConsumableArray(ids), [site.id]);
       }, []);
       setSelectedSitesIds(sitesIds || []);
       setBannerState(_objectSpread(_objectSpread({}, bannerState), {}, {
         banner: banner
       }));
-      var businessIds = banner === null || banner === void 0 ? void 0 : (_banner$business = banner.business) === null || _banner$business === void 0 ? void 0 : _banner$business.reduce(function (ids, business) {
+      var businessIds = banner === null || banner === void 0 || (_banner$business = banner.business) === null || _banner$business === void 0 ? void 0 : _banner$business.reduce(function (ids, business) {
         return [].concat(_toConsumableArray(ids), [business.id]);
       }, []);
       setSelectedBusinessIds(businessIds);

@@ -1259,9 +1259,7 @@ export const OrderProvider = ({ Alert, children, strategy, isAlsea, franchiseId,
     }
   }, [state, socket, isDisableToast])
 
-  const handleJoinRooms = () => {
-    socket.join(`carts_${customerState?.user?.id || session?.user?.id}`)
-    socket.join(`orderoptions_${customerState?.user?.id || session?.user?.id}`)
+  const handleJoinMainRooms = () => {
     socket.join('drivers')
     socket.join({
       room: 'orders',
@@ -1277,33 +1275,57 @@ export const OrderProvider = ({ Alert, children, strategy, isAlsea, franchiseId,
     }
   }
 
+  const handleLeaveMainRooms = () => {
+    socket.leave('drivers')
+    socket.leave({
+      room: 'orders',
+      user_id: session?.user?.id,
+      role: 'manager'
+    })
+    if (session?.user?.level === 0) {
+      socket.leave('orders')
+      socket.leave('messages_orders')
+    } else {
+      socket.leave(`orders_${session?.user?.id}`)
+      socket.leave(`messages_orders_${session?.user?.id}`)
+    }
+  }
+
+  useEffect(() => {
+    if (!socket?.socket) return
+    handleJoinMainRooms()
+    socket.socket.on('connect', handleJoinMainRooms)
+    socket.socket.on('disconnect', handleLeaveMainRooms)
+
+    return () => {
+      handleJoinMainRooms()
+      socket.socket.off('connect', handleJoinMainRooms)
+      socket.socket.off('disconnect', handleLeaveMainRooms)
+    }
+  }, [socket?.socket])
+
+  const handleJoinCartRooms = () => {
+    socket.join(`carts_${customerState?.user?.id || session?.user?.id}`)
+    socket.join(`orderoptions_${customerState?.user?.id || session?.user?.id}`)
+  }
+
+  const handleLeaveCartRooms = () => {
+    socket.leave(`carts_${customerState?.user?.id || session?.user?.id}`)
+    socket.leave(`orderoptions_${customerState?.user?.id || session?.user?.id}`)
+  }
+
   /**
    * Join to carts room
    */
   useEffect(() => {
     if (!session.auth || session.loading || !socket?.socket) return
-
-    handleJoinRooms()
-    socket.socket.on('connect', () => {
-      handleJoinRooms()
-    })
-
+    handleJoinCartRooms()
+    socket.socket.on('connect', handleJoinCartRooms)
+    socket.socket.on('disconnect', handleLeaveCartRooms)
     return () => {
-      socket.leave(`carts_${customerState?.user?.id || session?.user?.id}`)
-      socket.leave(`orderoptions_${customerState?.user?.id || session?.user?.id}`)
-      socket.leave('drivers')
-      socket.leave({
-        room: 'orders',
-        user_id: session?.user?.id,
-        role: 'manager'
-      })
-      if (session?.user?.level === 0) {
-        socket.leave('orders')
-        socket.leave('messages_orders')
-      } else {
-        socket.leave(`orders_${session?.user?.id}`)
-        socket.leave(`messages_orders_${session?.user?.id}`)
-      }
+      handleLeaveCartRooms()
+      socket.socket.off('connect', handleJoinCartRooms)
+      socket.socket.off('disconnect', handleLeaveCartRooms)
     }
   }, [socket?.socket, session, customerState?.user?.id])
 

@@ -128,7 +128,7 @@ var CampaignDetailContent = function CampaignDetailContent(props) {
               if (_typeof(changes[key]) === 'object' && changes[key] !== null || Array.isArray(changes[key])) {
                 changes[key] = JSON.stringify(changes[key]);
               }
-              changes === null || changes === void 0 ? true : delete changes.contact_type;
+              changes === null || changes === void 0 || delete changes.contact_type;
             }
             requestOptions = {
               method: 'PUT',
@@ -139,7 +139,7 @@ var CampaignDetailContent = function CampaignDetailContent(props) {
               body: JSON.stringify(changes)
             };
             _context.next = 8;
-            return fetch("".concat(ordering.root, "/marketing_campaigns/").concat(campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai = campaignState.campaign) === null || _campaignState$campai === void 0 ? void 0 : _campaignState$campai.id), requestOptions);
+            return fetch("".concat(ordering.root, "/marketing_campaigns/").concat(campaignState === null || campaignState === void 0 || (_campaignState$campai = campaignState.campaign) === null || _campaignState$campai === void 0 ? void 0 : _campaignState$campai.id), requestOptions);
           case 8:
             response = _context.sent;
             _context.next = 11;
@@ -154,7 +154,7 @@ var CampaignDetailContent = function CampaignDetailContent(props) {
               if (handleSuccessUpdateCampaign) {
                 updatedCampaigns = campaignList === null || campaignList === void 0 ? void 0 : campaignList.campaigns.filter(function (_campaign) {
                   var _campaignState$campai2;
-                  if (_campaign.id === (campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai2 = campaignState.campaign) === null || _campaignState$campai2 === void 0 ? void 0 : _campaignState$campai2.id)) {
+                  if (_campaign.id === (campaignState === null || campaignState === void 0 || (_campaignState$campai2 = campaignState.campaign) === null || _campaignState$campai2 === void 0 ? void 0 : _campaignState$campai2.id)) {
                     Object.assign(_campaign, content.result);
                   }
                   return true;
@@ -193,8 +193,8 @@ var CampaignDetailContent = function CampaignDetailContent(props) {
       var _campaignState$campai3, _campaignState$campai4;
       setFormState(_objectSpread(_objectSpread({}, formState), {}, {
         changes: {
-          contact_type: (campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai3 = campaignState.campaign) === null || _campaignState$campai3 === void 0 ? void 0 : _campaignState$campai3.contact_type) || '',
-          contact_data: (campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai4 = campaignState.campaign) === null || _campaignState$campai4 === void 0 ? void 0 : _campaignState$campai4.contact_data) || {}
+          contact_type: (campaignState === null || campaignState === void 0 || (_campaignState$campai3 = campaignState.campaign) === null || _campaignState$campai3 === void 0 ? void 0 : _campaignState$campai3.contact_type) || '',
+          contact_data: (campaignState === null || campaignState === void 0 || (_campaignState$campai4 = campaignState.campaign) === null || _campaignState$campai4 === void 0 ? void 0 : _campaignState$campai4.contact_data) || {}
         }
       }));
     }
@@ -205,8 +205,8 @@ var CampaignDetailContent = function CampaignDetailContent(props) {
       var _campaignFormState$ch, _campaignFormState$ch2;
       setFormState(_objectSpread(_objectSpread({}, formState), {}, {
         changes: {
-          contact_type: (campaignFormState === null || campaignFormState === void 0 ? void 0 : (_campaignFormState$ch = campaignFormState.changes) === null || _campaignFormState$ch === void 0 ? void 0 : _campaignFormState$ch.contact_type) || '',
-          contact_data: (campaignFormState === null || campaignFormState === void 0 ? void 0 : (_campaignFormState$ch2 = campaignFormState.changes) === null || _campaignFormState$ch2 === void 0 ? void 0 : _campaignFormState$ch2.contact_data) || {}
+          contact_type: (campaignFormState === null || campaignFormState === void 0 || (_campaignFormState$ch = campaignFormState.changes) === null || _campaignFormState$ch === void 0 ? void 0 : _campaignFormState$ch.contact_type) || '',
+          contact_data: (campaignFormState === null || campaignFormState === void 0 || (_campaignFormState$ch2 = campaignFormState.changes) === null || _campaignFormState$ch2 === void 0 ? void 0 : _campaignFormState$ch2.contact_data) || {}
         }
       }));
     }

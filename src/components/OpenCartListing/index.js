@@ -317,6 +317,17 @@ export const OpenCartListing = (props) => {
     }
   }
 
+  const handleSuccessDeleteCart = (cart) => {
+    setCartList({
+      ...cartList,
+      carts: cartList.carts.filter(_cart => _cart.id !== cart.id)
+    })
+    setPagination({
+      ...pagination,
+      total: pagination?.total - 1
+    })
+  }
+
   /**
   * Listening mulit carts delete action start
   */
@@ -366,6 +377,7 @@ export const OpenCartListing = (props) => {
           getCartList={getCartList}
           pagination={pagination}
           cartList={cartList}
+          handleSuccessDeleteCart={handleSuccessDeleteCart}
         />
       )}
     </>

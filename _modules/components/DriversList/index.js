@@ -446,7 +446,7 @@ var DriversList = function DriversList(props) {
             _yield$response$json2 = _context4.sent;
             error = _yield$response$json2.error;
             result = _yield$response$json2.result;
-            _drivers2 = result === null || result === void 0 ? void 0 : (_result$drivers = result.drivers) === null || _result$drivers === void 0 ? void 0 : _result$drivers.map(function (driver) {
+            _drivers2 = result === null || result === void 0 || (_result$drivers = result.drivers) === null || _result$drivers === void 0 ? void 0 : _result$drivers.map(function (driver) {
               return _objectSpread(_objectSpread({}, driver), {}, {
                 enabled: true
               });

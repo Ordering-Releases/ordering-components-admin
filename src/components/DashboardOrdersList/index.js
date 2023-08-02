@@ -869,16 +869,19 @@ export const DashboardOrdersList = (props) => {
     if (isOnlyDelivery && order?.delivery_type !== 1) return
     const found = orderList.orders.find(_order => _order?.id === order?.id)
     if (found) return
-    if (isFilteredOrder(order)) {
-      if ((orderStatus.includes(0) && order.status === 0) || (orderStatus.includes(13) && order.status === 13)) {
-        setPagination(prevPagination => ({ ...prevPagination, total: prevPagination.total + 1 }))
-        setOrderList(prevState => {
-          const orders = [order, ...prevState.orders]
-          const _orders = sortOrdersArray(orderBy, orders)
-          return { ...prevState, orders: _orders.slice(0, pagination.pageSize) }
-        })
+    if (!isFilteredOrder(order)) return
+    setPagination(prevPagination => ({ ...prevPagination, total: prevPagination.total + 1 }))
+    setOrderList(prevState => {
+      const found = prevState.orders.find(_order => _order?.id === order?.id)
+      if (found) return prevState
+      const updatedOrders = [order, ...prevState.orders]
+      const sortedOrders = sortOrdersArray(orderBy, updatedOrders)
+
+      return {
+        ...prevState,
+        orders: sortedOrders.slice(0, pagination.pageSize)
       }
-    }
+    })
   }
 
   const handleNewMessage = (message) => {

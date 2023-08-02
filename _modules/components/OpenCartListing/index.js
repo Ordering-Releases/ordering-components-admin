@@ -442,6 +442,16 @@ var OpenCartListing = function OpenCartListing(props) {
       return _ref3.apply(this, arguments);
     };
   }();
+  var handleSuccessDeleteCart = function handleSuccessDeleteCart(cart) {
+    setCartList(_objectSpread(_objectSpread({}, cartList), {}, {
+      carts: cartList.carts.filter(function (_cart) {
+        return _cart.id !== cart.id;
+      })
+    }));
+    setPagination(_objectSpread(_objectSpread({}, pagination), {}, {
+      total: (pagination === null || pagination === void 0 ? void 0 : pagination.total) - 1
+    }));
+  };
 
   /**
   * Listening mulit carts delete action start
@@ -482,7 +492,8 @@ var OpenCartListing = function OpenCartListing(props) {
     setSelectedCartIds: setSelectedCartIds,
     getCartList: getCartList,
     pagination: pagination,
-    cartList: cartList
+    cartList: cartList,
+    handleSuccessDeleteCart: handleSuccessDeleteCart
   })));
 };
 exports.OpenCartListing = OpenCartListing;

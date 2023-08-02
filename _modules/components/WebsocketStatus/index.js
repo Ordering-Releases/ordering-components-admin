@@ -51,23 +51,38 @@ var WebsocketStatus = function WebsocketStatus(props) {
         return t('DISCONNECTED', 'Disconnected');
     }
   };
+  var connectListener = function connectListener() {
+    if (socket.socket.connected) {
+      setReconnectAttemptCount(0);
+      setSocketStatus(1);
+      setConnectedDate(new Date());
+    }
+  };
+  var disconnectListener = function disconnectListener() {
+    setSocketStatus(2);
+  };
+  var reconnectAttemptListener = function reconnectAttemptListener() {
+    setReconnectAttemptCount(function (prev) {
+      return prev + 1;
+    });
+    setSocketStatus(0);
+  };
+  var connectionErrorListner = function connectionErrorListner() {
+    setSocketStatus(2);
+  };
   (0, _react.useEffect)(function () {
     if (socket !== null && socket !== void 0 && socket.socket) {
-      socket.socket.on('connect', function () {
-        setReconnectAttemptCount(0);
-        setSocketStatus(1);
-        setConnectedDate(new Date());
-      });
-      socket.socket.on('disconnect', function (reason) {
-        setSocketStatus(2);
-      });
-      socket.socket.on('reconnect_attempt', function () {
-        setReconnectAttemptCount(function (prev) {
-          return prev + 1;
-        });
-        setSocketStatus(0);
-      });
+      socket.socket.on('connect', connectListener);
+      socket.socket.on('disconnect', disconnectListener);
+      socket.socket.on('reconnect_attempt', reconnectAttemptListener);
+      socket.socket.on('connect_error', connectionErrorListner);
     }
+    return function () {
+      socket.socket.off('connect', connectListener);
+      socket.socket.off('disconnect', disconnectListener);
+      socket.socket.off('reconnect_attempt', reconnectAttemptListener);
+      socket.socket.off('connect_error', connectionErrorListner);
+    };
   }, [socket === null || socket === void 0 ? void 0 : socket.socket]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     socketStatus: socketStatus,

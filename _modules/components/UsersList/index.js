@@ -12,6 +12,7 @@ var _SessionContext = require("../../contexts/SessionContext");
 var _ToastContext = require("../../contexts/ToastContext");
 var _LanguageContext = require("../../contexts/LanguageContext");
 var _EventContext = require("../../contexts/EventContext");
+var _WebsocketContext = require("../../contexts/WebsocketContext");
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -63,6 +64,7 @@ var UsersList = function UsersList(props) {
   var _useEvent = (0, _EventContext.useEvent)(),
     _useEvent2 = _slicedToArray(_useEvent, 1),
     events = _useEvent2[0];
+  var socket = (0, _WebsocketContext.useWebsocket)();
   var _useState = (0, _react.useState)({
       users: [],
       loading: false,
@@ -281,12 +283,12 @@ var UsersList = function UsersList(props) {
             }
             if (Object.keys(filterValues.changes).length) {
               filterConditions = [];
-              if (filterValues !== null && filterValues !== void 0 && (_filterValues$changes = filterValues.changes) !== null && _filterValues$changes !== void 0 && _filterValues$changes.name && (filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$changes2 = filterValues.changes) === null || _filterValues$changes2 === void 0 ? void 0 : _filterValues$changes2.name) !== null) {
+              if (filterValues !== null && filterValues !== void 0 && (_filterValues$changes = filterValues.changes) !== null && _filterValues$changes !== void 0 && _filterValues$changes.name && (filterValues === null || filterValues === void 0 || (_filterValues$changes2 = filterValues.changes) === null || _filterValues$changes2 === void 0 ? void 0 : _filterValues$changes2.name) !== null) {
                 filterConditions.push({
                   attribute: 'name',
                   value: {
                     condition: 'ilike',
-                    value: encodeURI("%".concat(filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$changes3 = filterValues.changes) === null || _filterValues$changes3 === void 0 ? void 0 : _filterValues$changes3.name, "%"))
+                    value: encodeURI("%".concat(filterValues === null || filterValues === void 0 || (_filterValues$changes3 = filterValues.changes) === null || _filterValues$changes3 === void 0 ? void 0 : _filterValues$changes3.name, "%"))
                   }
                 });
               }
@@ -401,10 +403,10 @@ var UsersList = function UsersList(props) {
                   value: multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.phoneVerified
                 });
               }
-              if ((multiFilterValues === null || multiFilterValues === void 0 ? void 0 : (_multiFilterValues$or = multiFilterValues.ordersCount) === null || _multiFilterValues$or === void 0 ? void 0 : _multiFilterValues$or.value) !== '') {
+              if ((multiFilterValues === null || multiFilterValues === void 0 || (_multiFilterValues$or = multiFilterValues.ordersCount) === null || _multiFilterValues$or === void 0 ? void 0 : _multiFilterValues$or.value) !== '') {
                 parameters = _objectSpread(_objectSpread({}, parameters), {}, {
-                  orders_count_condition: multiFilterValues === null || multiFilterValues === void 0 ? void 0 : (_multiFilterValues$or2 = multiFilterValues.ordersCount) === null || _multiFilterValues$or2 === void 0 ? void 0 : _multiFilterValues$or2.condition,
-                  orders_count_value: multiFilterValues === null || multiFilterValues === void 0 ? void 0 : (_multiFilterValues$or3 = multiFilterValues.ordersCount) === null || _multiFilterValues$or3 === void 0 ? void 0 : _multiFilterValues$or3.value
+                  orders_count_condition: multiFilterValues === null || multiFilterValues === void 0 || (_multiFilterValues$or2 = multiFilterValues.ordersCount) === null || _multiFilterValues$or2 === void 0 ? void 0 : _multiFilterValues$or2.condition,
+                  orders_count_value: multiFilterValues === null || multiFilterValues === void 0 || (_multiFilterValues$or3 = multiFilterValues.ordersCount) === null || _multiFilterValues$or3 === void 0 ? void 0 : _multiFilterValues$or3.value
                 });
               }
               if ((multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.emailVerified) !== null) {
@@ -1085,12 +1087,12 @@ var UsersList = function UsersList(props) {
             if (!content.error) {
               found = content.result.find(function (group) {
                 var _session$user2;
-                return (group === null || group === void 0 ? void 0 : group.administrator_id) === (session === null || session === void 0 ? void 0 : (_session$user2 = session.user) === null || _session$user2 === void 0 ? void 0 : _session$user2.id);
+                return (group === null || group === void 0 ? void 0 : group.administrator_id) === (session === null || session === void 0 || (_session$user2 = session.user) === null || _session$user2 === void 0 ? void 0 : _session$user2.id);
               });
               if (found) setActionDisabled(false);else setActionDisabled(true);
               driverManagerGroups = (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.filter(function (group) {
                 var _session$user3;
-                return group.administrator_id === (session === null || session === void 0 ? void 0 : (_session$user3 = session.user) === null || _session$user3 === void 0 ? void 0 : _session$user3.id);
+                return group.administrator_id === (session === null || session === void 0 || (_session$user3 = session.user) === null || _session$user3 === void 0 ? void 0 : _session$user3.id);
               });
               setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
                 groups: driverManagerGroups,
@@ -1118,7 +1120,7 @@ var UsersList = function UsersList(props) {
   }();
   (0, _react.useEffect)(function () {
     var _session$user4;
-    if ((session === null || session === void 0 ? void 0 : (_session$user4 = session.user) === null || _session$user4 === void 0 ? void 0 : _session$user4.level) === 5) {
+    if ((session === null || session === void 0 || (_session$user4 = session.user) === null || _session$user4 === void 0 ? void 0 : _session$user4.level) === 5) {
       getDriversGroups();
     } else {
       setActionDisabled(false);
@@ -1152,6 +1154,32 @@ var UsersList = function UsersList(props) {
       events.off('occupations_update');
     };
   }, [events]);
+  (0, _react.useEffect)(function () {
+    var handleUpdateDriver = function handleUpdateDriver(driver) {
+      var _usersList$users;
+      var selectedUser = usersList === null || usersList === void 0 || (_usersList$users = usersList.users) === null || _usersList$users === void 0 ? void 0 : _usersList$users.find(function (item) {
+        return (item === null || item === void 0 ? void 0 : item.id) === (driver === null || driver === void 0 ? void 0 : driver.id);
+      });
+      if (selectedUser && ((driver === null || driver === void 0 ? void 0 : driver.enabled) !== (selectedUser === null || selectedUser === void 0 ? void 0 : selectedUser.enabled) || (driver === null || driver === void 0 ? void 0 : driver.available) !== (selectedUser === null || selectedUser === void 0 ? void 0 : selectedUser.available))) {
+        var updatedUserList = usersList === null || usersList === void 0 ? void 0 : usersList.users.map(function (item) {
+          if (item.id === (driver === null || driver === void 0 ? void 0 : driver.id)) {
+            return _objectSpread(_objectSpread({}, item), {}, {
+              enabled: driver === null || driver === void 0 ? void 0 : driver.enabled,
+              available: driver === null || driver === void 0 ? void 0 : driver.available
+            });
+          }
+          return item;
+        });
+        setUsersList(_objectSpread(_objectSpread({}, usersList), {}, {
+          users: updatedUserList
+        }));
+      }
+    };
+    socket.on('drivers_update', handleUpdateDriver);
+    return function () {
+      socket.off('drivers_update', handleUpdateDriver);
+    };
+  }, [socket, usersList === null || usersList === void 0 ? void 0 : usersList.users]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     actionStatus: actionStatus,
     usersList: usersList,
@@ -1219,7 +1247,7 @@ UsersList.propTypes = {
   propsToFetch: _propTypes.default.arrayOf(_propTypes.string)
 };
 UsersList.defaultProps = {
-  propsToFetch: ['name', 'lastname', 'email', 'phone', 'photo', 'cellphone', 'schedule', 'external_id', 'country_phone_code', 'city_id', 'city', 'address', 'addresses', 'max_days_in_future', 'push_tokens', 'address_notes', 'driver_zone_restriction', 'dropdown_option_id', 'dropdown_option', 'location', 'available', 'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups', 'created_at', 'timezone'],
+  propsToFetch: ['name', 'lastname', 'email', 'phone', 'photo', 'cellphone', 'schedule', 'external_id', 'country_phone_code', 'city_id', 'city', 'address', 'addresses', 'max_days_in_future', 'push_tokens', 'address_notes', 'driver_zone_restriction', 'mono_session', 'dropdown_option_id', 'dropdown_option', 'location', 'available', 'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups', 'created_at', 'timezone'],
   paginationSettings: {
     initialPage: 1,
     pageSize: 10,
