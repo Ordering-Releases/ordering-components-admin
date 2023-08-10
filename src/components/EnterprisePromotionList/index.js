@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import PropTypes, { string } from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
@@ -19,11 +19,13 @@ export const EnterprisePromotionList = (props) => {
   const [, t] = useLanguage()
   const [, { showToast }] = useToast()
 
+  const firstRender = useRef(true)
+
   const [promotionListState, setPromotionListState] = useState({ promotions: [], loading: false, error: null })
   const [actionState, setActionState] = useState({ loading: false, error: null })
   const [searchValue, setSearchValue] = useState(null)
   const [paginationProps, setPaginationProps] = useState({
-    currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage - 1 : 0,
+    currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage : 1,
     pageSize: paginationSettings.pageSize ?? 10,
     totalItems: null,
     totalPages: null
@@ -110,6 +112,7 @@ export const EnterprisePromotionList = (props) => {
           error: content.result
         })
       }
+      firstRender.current = false
     } catch (err) {
       setPromotionListState({
         ...promotionListState,
@@ -367,7 +370,7 @@ export const EnterprisePromotionList = (props) => {
 
   useEffect(() => {
     if (promotionListState.loading) return
-    getPromotions(1, paginationProps.pageSize)
+    getPromotions(firstRender.current ? paginationProps.currentPage : 1, paginationProps.pageSize)
   }, [searchValue])
 
   useEffect(() => {

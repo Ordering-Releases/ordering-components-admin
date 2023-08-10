@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import PropTypes, { string, object, number } from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
@@ -40,7 +40,7 @@ export const DashboardOrdersList = (props) => {
   const [events] = useEvent()
   const [orderList, setOrderList] = useState({ loading: !orders, error: null, orders: [] })
   const [pagination, setPagination] = useState({
-    currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage - 1 : 0,
+    currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage : 1,
     pageSize: paginationSettings.pageSize ?? 10
   })
   const [session] = useSession()
@@ -49,6 +49,7 @@ export const DashboardOrdersList = (props) => {
 
   const requestsState = {}
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
+  const firstRender = useRef(true)
 
   const sortOrdersArray = (option, array) => {
     if (option === 'id') {
@@ -617,13 +618,7 @@ export const DashboardOrdersList = (props) => {
     if (!session.token) return
     try {
       setOrderList({ ...orderList, loading: true })
-      const response = await getOrders(pagination.pageSize, 1)
-
-      setOrderList({
-        loading: false,
-        orders: response.content.error ? [] : response.content.result,
-        error: response.content.error ? response.content.result : null
-      })
+      const response = await getOrders(pagination.pageSize, firstRender.current ? pagination.currentPage : 1)
 
       if (!response.content.error) {
         setPagination({
@@ -635,6 +630,13 @@ export const DashboardOrdersList = (props) => {
           to: response.content.pagination.to
         })
       }
+
+      setOrderList({
+        loading: false,
+        orders: response.content.error ? [] : response.content.result,
+        error: response.content.error ? response.content.result : null
+      })
+      firstRender.current = false
     } catch (err) {
       if (err.constructor.name !== 'Cancel') {
         setOrderList({ ...orderList, loading: false, error: [err.message] })
@@ -782,20 +784,6 @@ export const DashboardOrdersList = (props) => {
         orders
       })
     } else {
-      // if (Object.keys(filterValues).length > 0) {
-      //   const checkInnerContain = filterValues.statuses.every((el) => {
-      //     return orderStatus.indexOf(el) !== -1
-      //   })
-
-      //   const checkOutContain = orderStatus.every((el) => {
-      //     return filterValues.statuses.indexOf(el) !== -1
-      //   })
-
-      //   if (!checkInnerContain && !checkOutContain) {
-      //     setOrderList({ loading: false, orders: [], error: null })
-      //     return
-      //   }
-      // }
       loadOrders()
     }
     return () => {

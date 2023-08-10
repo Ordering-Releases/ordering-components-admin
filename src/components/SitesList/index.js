@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import PropTypes, { string } from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
@@ -14,9 +14,10 @@ export const SitesList = (props) => {
   const [ordering] = useApi()
   const [{ token }] = useSession()
 
+  const firstRender = useRef(true)
   const [sitesListState, setSitesListState] = useState({ loading: false, sites: [], error: null })
   const [paginationProps, setPaginationProps] = useState({
-    currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage - 1 : 0,
+    currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage : 1,
     pageSize: paginationSettings.pageSize ?? 10,
     totalItems: null,
     totalPages: null
@@ -101,6 +102,7 @@ export const SitesList = (props) => {
           error: content.result
         })
       }
+      firstRender.current = false
     } catch (err) {
       setSitesListState({
         ...sitesListState,
@@ -122,7 +124,7 @@ export const SitesList = (props) => {
 
   useEffect(() => {
     if (sitesListState.loading) return
-    getSites(1, paginationProps.pageSize)
+    getSites(firstRender.current ? paginationProps.currentPage : 1, paginationProps.pageSize)
   }, [searchValue])
 
   return (

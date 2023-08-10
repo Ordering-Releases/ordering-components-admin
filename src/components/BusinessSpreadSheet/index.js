@@ -13,7 +13,8 @@ export const BusinessSpreadSheet = (props) => {
     business,
     handleUpdateBusinessState,
     categoryId,
-    categorySelected
+    categorySelected,
+    handleUpdateCategoryState
   } = props
 
   const [, t] = useLanguage()
@@ -277,6 +278,9 @@ export const BusinessSpreadSheet = (props) => {
             return item
           })
           handleUpdateBusinessState({ ...business, categories: _categories })
+        }
+        if (handleUpdateCategoryState) {
+          handleUpdateCategoryState({ ...categoryState, products: result })
         }
         setFormState({
           ...formState,

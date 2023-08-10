@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { useApi } from '../../contexts/ApiContext'
 import { useSession } from '../../contexts/SessionContext'
@@ -13,20 +13,22 @@ export const GiftCardsList = (props) => {
     isSearchById,
     isSearchByAuthorName,
     isSearchByAuthorEmail,
-    isSearchByAuthorPhone
+    isSearchByAuthorPhone,
+    defaultStatus
   } = props
 
   const [ordering] = useApi()
   const [{ token }] = useSession()
   const [giftCards, setGiftCards] = useState({ loading: true, list: [], error: null })
   const [paginationProps, setPaginationProps] = useState({
-    currentPage: (paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage - 1 : 0,
+    currentPage: (paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage : 1,
     pageSize: paginationSettings.pageSize ?? 10,
     totalItems: null,
     totalPages: null
   })
-  const [activeStatus, setActiveStatus] = useState('pending')
+  const [activeStatus, setActiveStatus] = useState(defaultStatus ?? 'pending')
   const [searchValue, setSearchValue] = useState(null)
+  const firstRender = useRef(true)
 
   /**
    * Method to get the gift cards from API
@@ -148,6 +150,7 @@ export const GiftCardsList = (props) => {
         list: error ? [] : result,
         error: error ? result : null
       })
+      firstRender.current = false
     } catch (err) {
       setGiftCards({
         ...giftCards,
@@ -158,7 +161,7 @@ export const GiftCardsList = (props) => {
   }
 
   useEffect(() => {
-    getGiftCards(0, paginationProps.pageSize)
+    getGiftCards(firstRender.current ? paginationProps.currentPage : 1, paginationProps.pageSize)
   }, [activeStatus, searchValue])
 
   return (

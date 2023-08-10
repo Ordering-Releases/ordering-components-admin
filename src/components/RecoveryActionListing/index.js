@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
@@ -18,11 +18,12 @@ export const RecoveryActionListing = (props) => {
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
 
+  const firstRender = useRef(true)
   const [searchValue, setSearchValue] = useState(null)
   const [recoveryActionList, setRecoveryActionList] = useState({ actions: [], loading: false, error: null })
   const [filterValues, setFilterValues] = useState({ clear: false, changes: {} })
   const [paginationProps, setPaginationProps] = useState({
-    currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage - 1 : 0,
+    currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage : 1,
     pageSize: paginationSettings.pageSize ?? 10,
     totalItems: null,
     totalPages: null
@@ -115,6 +116,7 @@ export const RecoveryActionListing = (props) => {
           error: content.result
         })
       }
+      firstRender.current = false
     } catch (err) {
       setRecoveryActionList({
         ...recoveryActionList,
@@ -206,7 +208,7 @@ export const RecoveryActionListing = (props) => {
 
   useEffect(() => {
     if (recoveryActionList.loading) return
-    getRecoveryList(1, paginationProps.pageSize)
+    getRecoveryList(firstRender.current ? paginationProps.currentPage : 1, paginationProps.pageSize)
   }, [searchValue])
 
   useEffect(() => {

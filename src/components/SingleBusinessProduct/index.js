@@ -16,7 +16,8 @@ export const SingleBusinessProduct = (props) => {
     product,
     handleUpdateBusinessState,
     businessState,
-    setDataSelected
+    setDataSelected,
+    handleUpdateCategoryState
   } = props
 
   const [{ loading }] = useSession()
@@ -296,6 +297,18 @@ export const SingleBusinessProduct = (props) => {
             Array.isArray(category?.subcategories) && category.subcategories.forEach(iterate)
           })
           handleUpdateBusinessState({ ...business, categories: _categories })
+        }
+        if (handleUpdateCategoryState) {
+          const updateProducts = category?.products.map(item => {
+            if (item.id === result.id) {
+              return {
+                ...item,
+                ...result
+              }
+            }
+            return item
+          })
+          handleUpdateCategoryState({ ...category, products: updateProducts })
         }
         showToast(ToastType.Success, t('PRODUCT_UPDATED', 'Product updated'))
       } else {

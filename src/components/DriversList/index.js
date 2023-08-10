@@ -15,7 +15,7 @@ export const DriversList = (props) => {
     isSearchByCellphone,
     isOrderDrivers,
     orderId,
-    setIsCommentPopup
+    setCommentInfostate
   } = props
 
   const [ordering] = useApi()
@@ -24,6 +24,11 @@ export const DriversList = (props) => {
   const requestsState = {}
   const [driverActionStatus, setDriverActionStatus] = useState({ loading: true, error: null })
   const [companyActionStatus, setCompanyActionStatus] = useState({ loading: true, error: null })
+  const [selectedDriver, setSelectedDriver] = useState(null)
+  const [assignedOrders, setAssignedOrders] = useState({ loading: false, error: null, orders: [] })
+
+  const activeOrderStatuses = [0, 13, 7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23]
+
   const socket = useWebsocket()
 
   /**
@@ -94,7 +99,6 @@ export const DriversList = (props) => {
       if (!content.error) {
         if (assign.driverId) {
           showToast(ToastType.Success, t('ORDER_DRIVER_ASSIGNED', 'Driver assigned to order'))
-          setIsCommentPopup && setIsCommentPopup(true)
         } else {
           showToast(ToastType.Success, t('ORDER_DRIVER_REMOVED', 'Driver removed from the order'))
         }
@@ -306,6 +310,83 @@ export const DriversList = (props) => {
     }
   }
 
+  const getOrders = async () => {
+    let options = null
+    let where = []
+    const conditions = []
+    options = {
+      query: {
+        orderBy: '-id'
+      }
+    }
+
+    conditions.push({
+      attribute: 'products',
+      conditions: [{
+        attribute: 'type',
+        value: {
+          condition: '=',
+          value: 'item'
+        }
+      }]
+    })
+    conditions.push({ attribute: 'status', value: activeOrderStatuses })
+    conditions.push(
+      {
+        attribute: 'delivery_type',
+        value: 1
+      }
+    )
+    conditions.push(
+      {
+        attribute: 'driver_id',
+        value: selectedDriver?.id
+      }
+    )
+
+    if (conditions.length) {
+      where = {
+        conditions,
+        conector: 'AND'
+      }
+    }
+
+    const source = {}
+    requestsState.orders = source
+    options.cancelToken = source
+    const functionFetch = ordering.setAccessToken(session.token).orders().asDashboard().select(['business', 'customer']).where(where)
+    return await functionFetch.get(options)
+  }
+
+  /**
+   * Method to get the orders assigned to the driver
+   */
+  const loadAssignedOrders = async () => {
+    try {
+      setAssignedOrders({ ...assignedOrders, loading: true })
+      const response = await getOrders()
+      setAssignedOrders({
+        loading: false,
+        orders: response.content.error ? [] : response.content.result,
+        error: response.content.error ? response.content.result : null
+      })
+    } catch (err) {
+      setAssignedOrders({ ...assignedOrders, loading: false, error: [err.message] })
+    }
+  }
+
+  useEffect(() => {
+    if (selectedDriver?.id) {
+      loadAssignedOrders()
+    } else {
+      setAssignedOrders({
+        loading: false,
+        orders: [],
+        error: null
+      })
+    }
+  }, [selectedDriver?.id])
+
   /**
    * listen for busy/not busy filter
    */
@@ -407,6 +488,9 @@ export const DriversList = (props) => {
           handleChangeDriverIsOnline={handleChangeDriverIsOnline}
           handleChangeDriversSubFilter={handleChangeDriversSubFilter}
           handleAssignDriver={handleAssignDriver}
+          selectedDriver={selectedDriver}
+          setSelectedDriver={setSelectedDriver}
+          assignedOrders={assignedOrders}
         />
       )}
     </>

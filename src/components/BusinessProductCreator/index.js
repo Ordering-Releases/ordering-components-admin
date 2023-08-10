@@ -16,7 +16,9 @@ export const BusinessProductCreator = (props) => {
     handleUpdateBusinessState,
     setIsAddProduct,
     categorySelected,
-    handleParentProductAdd
+    handleParentProductAdd,
+    handleUpdateCategoryState,
+    categoryState
   } = props
 
   const [{ loading }] = useSession()
@@ -124,6 +126,9 @@ export const BusinessProductCreator = (props) => {
             Array.isArray(category?.subcategories) && category.subcategories.forEach(iterate)
           })
           handleUpdateBusinessState({ ...business, categories: _categories })
+        }
+        if (handleUpdateCategoryState) {
+          handleUpdateCategoryState({ ...categoryState, products: [...categoryState?.products, content.result] })
         }
         setIsAddProduct(false)
         handleParentProductAdd && handleParentProductAdd(false)

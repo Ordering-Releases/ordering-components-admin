@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import PropTypes, { string } from 'prop-types'
 import { useApi } from '../../contexts/ApiContext'
 import { useSession } from '../../contexts/SessionContext'
@@ -31,13 +31,15 @@ export const UsersList = (props) => {
   const [events] = useEvent()
   const socket = useWebsocket()
 
+  const firstRender = useRef(true)
+
   const [usersList, setUsersList] = useState({ users: [], loading: false, error: null })
   const [filterValues, setFilterValues] = useState({ clear: false, changes: {} })
   const [searchValue, setSearchValue] = useState(null)
   const [isVerified, setIsVerified] = useState(false)
   const [userTypesSelected, setUserTypesSelected] = useState(defaultUserTypesSelected)
   const [paginationProps, setPaginationProps] = useState({
-    currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage - 1 : 0,
+    currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage : 1,
     pageSize: paginationSettings.pageSize ?? 10,
     totalItems: null,
     totalPages: null
@@ -471,6 +473,7 @@ export const UsersList = (props) => {
         })
         setPaginationDetail({ ...pagination })
       }
+      firstRender.current = false
     } catch (err) {
       if (err.constructor.name !== 'Cancel') {
         setUsersList({
@@ -858,20 +861,12 @@ export const UsersList = (props) => {
 
   useEffect(() => {
     if (usersList.loading) return
-    getUsers(1, null)
-  }, [userTypesSelected, selectedUserActiveState, searchValue, isVerified, selectedOccupation])
+    getUsers(firstRender.current ? paginationProps.currentPage : 1, null)
+  }, [userTypesSelected, selectedUserActiveState, searchValue, isVerified, selectedOccupation, multiFilterValues, orderFilterValue])
 
   useEffect(() => {
     if ((Object.keys(filterValues?.changes).length > 0 || filterValues.clear) && !usersList.loading) getUsers(1, null)
   }, [filterValues])
-
-  useEffect(() => {
-    getUsers(1, null)
-  }, [multiFilterValues])
-
-  useEffect(() => {
-    if (!usersList.loading) getUsers(1, null)
-  }, [orderFilterValue])
 
   useEffect(() => {
     if (isProfessional) {

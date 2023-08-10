@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import PropTypes, { string } from 'prop-types'
 import { useApi } from '../../contexts/ApiContext'
 import { useSession } from '../../contexts/SessionContext'
@@ -17,7 +17,8 @@ export const DashboardBusinessList = (props) => {
     isSearchByBusinessName,
     isSearchByBusinessEmail,
     isSearchByBusinessPhone,
-    noActiveStatusCondition
+    noActiveStatusCondition,
+    defaultActive
   } = props
 
   const [ordering] = useApi()
@@ -31,16 +32,17 @@ export const DashboardBusinessList = (props) => {
   const [countriesState, setCountriesState] = useState({ countries: [], loading: true, error: null, enabled: false })
   const [citiesList, setCitiesList] = useState([])
   const [pagination, setPagination] = useState({
-    currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage - 1 : 0,
+    currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage : 1,
     pageSize: paginationSettings.pageSize ?? 10
   })
 
   const [searchValue, setSearchValue] = useState(null)
-  const [selectedBusinessActiveState, setSelectedBusinessActiveState] = useState(true)
+  const [selectedBusinessActiveState, setSelectedBusinessActiveState] = useState(defaultActive ?? true)
   const [businessTypeSelected, setBusinessTypeSelected] = useState(null)
   const [businessIds, setBusinessIds] = useState([])
   const [filterValues, setFilterValues] = useState({})
   const [inActiveBusinesses, setInActiveBusinesses] = useState([])
+  const firstRender = useRef(true)
 
   /**
    * Save filter type values
@@ -251,7 +253,7 @@ export const DashboardBusinessList = (props) => {
     if (!session.token) return
     try {
       setBusinessList({ ...businessList, loading: true })
-      const response = await getBusinesses((initialPageSize || pagination.pageSize), 1)
+      const response = await getBusinesses((initialPageSize || pagination.pageSize), firstRender.current ? pagination.currentPage : 1)
 
       setBusinessList({
         loading: false,
@@ -269,6 +271,7 @@ export const DashboardBusinessList = (props) => {
           to: response.content.pagination.to
         })
       }
+      firstRender.current = false
     } catch (err) {
       if (err?.constructor?.name !== 'Cancel') {
         setBusinessList({ ...businessList, loading: false, error: [err.message] })
@@ -425,8 +428,8 @@ export const DashboardBusinessList = (props) => {
   /**
    * Method to change user active state for filter
    */
-  const handleChangeBusinessActiveState = () => {
-    setSelectedBusinessActiveState(!selectedBusinessActiveState)
+  const handleChangeBusinessActiveState = (active) => {
+    setSelectedBusinessActiveState(active)
   }
 
   /**
@@ -511,7 +514,7 @@ export const DashboardBusinessList = (props) => {
   }
 
   useEffect(() => {
-    if (businessList.loading || businessList.businesses.length > 0) return
+    if (businessList.loading || businessList.businesses.length > 0 || firstRender.current) return
     if (pagination?.currentPage !== 0 && pagination?.total !== 0) {
       if (Math.ceil(pagination?.total / pagination.pageSize) >= pagination?.currentPage) {
         getPageBusinesses(pagination.pageSize, pagination.currentPage)

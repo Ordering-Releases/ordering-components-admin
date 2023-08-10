@@ -6,11 +6,14 @@ import { useSession } from '../../contexts/SessionContext'
 export const ExportCSV = (props) => {
   const {
     UIComponent,
-    filterValues
+    filterValues,
+    ordersStatusGroup,
+    selectedSubOrderStatus
   } = props
   const [ordering] = useApi()
   const [{ token, loading }] = useSession()
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null, result: null })
+  console.log(filterValues, 'filterValues')
 
   /**
    * Method to get csv from API
@@ -35,7 +38,7 @@ export const ExportCSV = (props) => {
             if (filterValues.statuses.length > 0) {
               filterConditons.push({ attribute: 'status', value: filterValues.statuses })
             } else {
-              filterConditons.push({ attribute: 'status', value: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] })
+              filterConditons.push({ attribute: 'status', value: selectedSubOrderStatus[ordersStatusGroup] || [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] })
             }
           }
           if (filterValues.deliveryFromDatetime !== undefined) {

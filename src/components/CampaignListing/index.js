@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
@@ -21,11 +21,12 @@ export const CampaignListing = (props) => {
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
 
+  const firstRender = useRef(true)
   const [searchValue, setSearchValue] = useState(null)
   const [campaignList, setCampaignList] = useState({ campaigns: [], loading: false, error: null })
   const [filterValues, setFilterValues] = useState({ clear: false, changes: {} })
   const [paginationProps, setPaginationProps] = useState({
-    currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage - 1 : 0,
+    currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage : 1,
     pageSize: paginationSettings.pageSize ?? 10,
     totalItems: null,
     totalPages: null
@@ -118,6 +119,7 @@ export const CampaignListing = (props) => {
           error: content.result
         })
       }
+      firstRender.current = false
     } catch (err) {
       setCampaignList({
         ...campaignList,
@@ -200,7 +202,7 @@ export const CampaignListing = (props) => {
 
   useEffect(() => {
     if (campaignList.loading) return
-    getCampaignList(1, paginationProps.pageSize)
+    getCampaignList(firstRender.current ? paginationProps.currentPage : 1, paginationProps.pageSize)
   }, [searchValue])
 
   useEffect(() => {

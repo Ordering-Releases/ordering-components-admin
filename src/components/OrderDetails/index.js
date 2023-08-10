@@ -98,16 +98,16 @@ export const OrderDetails = (props) => {
 
   /**
    * Method to update assigmentComment to order from API
-   * @param {object} comment assigned order id and driver id
+   * @param {object} commentInfo assigned comment and driver id
    */
-  const handleUpdateComment = async (comment) => {
+  const handleUpdateComment = async (commentInfo) => {
     try {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
 
-      const { content } = await ordering.setAccessToken(token).orders(orderId).save({ manual_driver_assignment_comment: comment, driver_id: orderState?.order?.driver_id })
+      const { content } = await ordering.setAccessToken(token).orders(orderId).save({ manual_driver_assignment_comment: commentInfo?.comment, driver_id: commentInfo?.driverId })
 
       if (!content.error) {
-        showToast(ToastType.Success, t('COMMENT_UPDATED', 'Comment updated'))
+        showToast(ToastType.Success, t('ORDER_DRIVER_ASSIGNED', 'Driver assigned to order'))
       } else {
         showToast(ToastType.Error, content?.result)
       }
