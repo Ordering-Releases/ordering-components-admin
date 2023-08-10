@@ -43,7 +43,8 @@ var SingleBusinessProduct = function SingleBusinessProduct(props) {
     product = props.product,
     handleUpdateBusinessState = props.handleUpdateBusinessState,
     businessState = props.businessState,
-    setDataSelected = props.setDataSelected;
+    setDataSelected = props.setDataSelected,
+    handleUpdateCategoryState = props.handleUpdateCategoryState;
   var _useSession = (0, _SessionContext.useSession)(),
     _useSession2 = _slicedToArray(_useSession, 1),
     loading = _useSession2[0].loading;
@@ -124,12 +125,12 @@ var SingleBusinessProduct = function SingleBusinessProduct(props) {
   var handleUpdateClick = function handleUpdateClick() {
     var _formState$changes, _formState$changes2, _formState$changes3, _formState$changes4, _formState$changes5, _formState$changes6;
     var params = {
-      images: formState === null || formState === void 0 || (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.images,
-      name: formState === null || formState === void 0 || (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.name,
-      description: formState === null || formState === void 0 || (_formState$changes3 = formState.changes) === null || _formState$changes3 === void 0 ? void 0 : _formState$changes3.description,
-      price: formState === null || formState === void 0 || (_formState$changes4 = formState.changes) === null || _formState$changes4 === void 0 ? void 0 : _formState$changes4.price,
-      fee_fixed: formState === null || formState === void 0 || (_formState$changes5 = formState.changes) === null || _formState$changes5 === void 0 ? void 0 : _formState$changes5.fee_fixed,
-      fee_percentage: formState === null || formState === void 0 || (_formState$changes6 = formState.changes) === null || _formState$changes6 === void 0 ? void 0 : _formState$changes6.fee_percentage
+      images: formState === null || formState === void 0 ? void 0 : (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.images,
+      name: formState === null || formState === void 0 ? void 0 : (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.name,
+      description: formState === null || formState === void 0 ? void 0 : (_formState$changes3 = formState.changes) === null || _formState$changes3 === void 0 ? void 0 : _formState$changes3.description,
+      price: formState === null || formState === void 0 ? void 0 : (_formState$changes4 = formState.changes) === null || _formState$changes4 === void 0 ? void 0 : _formState$changes4.price,
+      fee_fixed: formState === null || formState === void 0 ? void 0 : (_formState$changes5 = formState.changes) === null || _formState$changes5 === void 0 ? void 0 : _formState$changes5.fee_fixed,
+      fee_percentage: formState === null || formState === void 0 ? void 0 : (_formState$changes6 = formState.changes) === null || _formState$changes6 === void 0 ? void 0 : _formState$changes6.fee_percentage
     };
     for (var key in params) {
       if (params[key] === null) {
@@ -379,7 +380,7 @@ var SingleBusinessProduct = function SingleBusinessProduct(props) {
    */
   var handleChangeProductRank = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(transferProductId, params) {
-      var _yield$ordering$busin5, _yield$ordering$busin6, error, result, _categories;
+      var _yield$ordering$busin5, _yield$ordering$busin6, error, result, _categories, updateProducts;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
@@ -417,6 +418,17 @@ var SingleBusinessProduct = function SingleBusinessProduct(props) {
                 });
                 handleUpdateBusinessState(_objectSpread(_objectSpread({}, business), {}, {
                   categories: _categories
+                }));
+              }
+              if (handleUpdateCategoryState) {
+                updateProducts = category === null || category === void 0 ? void 0 : category.products.map(function (item) {
+                  if (item.id === result.id) {
+                    return _objectSpread(_objectSpread({}, item), result);
+                  }
+                  return item;
+                });
+                handleUpdateCategoryState(_objectSpread(_objectSpread({}, category), {}, {
+                  products: updateProducts
                 }));
               }
               showToast(_ToastContext.ToastType.Success, t('PRODUCT_UPDATED', 'Product updated'));

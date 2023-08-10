@@ -222,7 +222,7 @@ var DriverGroupDeliveryDetails = function DriverGroupDeliveryDetails(props) {
                 while (1) switch (_context3.prev = _context3.next) {
                   case 0:
                     zoneId = parseInt(key);
-                    foundZone = zoneList === null || zoneList === void 0 || (_zoneList$zones = zoneList.zones) === null || _zoneList$zones === void 0 ? void 0 : _zoneList$zones.find(function (zone) {
+                    foundZone = zoneList === null || zoneList === void 0 ? void 0 : (_zoneList$zones = zoneList.zones) === null || _zoneList$zones === void 0 ? void 0 : _zoneList$zones.find(function (zone) {
                       return zone.id === zoneId;
                     });
                     if (!((foundZone === null || foundZone === void 0 ? void 0 : foundZone.enabled) !== zoneListState.changes[key])) {
@@ -310,7 +310,7 @@ var DriverGroupDeliveryDetails = function DriverGroupDeliveryDetails(props) {
   }, [zoneListState.changes]);
   (0, _react.useEffect)(function () {
     var _zoneList$zones2;
-    var zoneListFilter = (zoneList === null || zoneList === void 0 || (_zoneList$zones2 = zoneList.zones) === null || _zoneList$zones2 === void 0 ? void 0 : _zoneList$zones2.filter(function (zone) {
+    var zoneListFilter = (zoneList === null || zoneList === void 0 ? void 0 : (_zoneList$zones2 = zoneList.zones) === null || _zoneList$zones2 === void 0 ? void 0 : _zoneList$zones2.filter(function (zone) {
       return (zone === null || zone === void 0 ? void 0 : zone.type) !== 3;
     })) || [];
     var zoneChanges = {};

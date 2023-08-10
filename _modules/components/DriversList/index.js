@@ -41,7 +41,7 @@ var DriversList = function DriversList(props) {
     isSearchByCellphone = props.isSearchByCellphone,
     isOrderDrivers = props.isOrderDrivers,
     orderId = props.orderId,
-    setIsCommentPopup = props.setIsCommentPopup;
+    setCommentInfostate = props.setCommentInfostate;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -66,6 +66,19 @@ var DriversList = function DriversList(props) {
     _useState4 = _slicedToArray(_useState3, 2),
     companyActionStatus = _useState4[0],
     setCompanyActionStatus = _useState4[1];
+  var _useState5 = (0, _react.useState)(null),
+    _useState6 = _slicedToArray(_useState5, 2),
+    selectedDriver = _useState6[0],
+    setSelectedDriver = _useState6[1];
+  var _useState7 = (0, _react.useState)({
+      loading: false,
+      error: null,
+      orders: []
+    }),
+    _useState8 = _slicedToArray(_useState7, 2),
+    assignedOrders = _useState8[0],
+    setAssignedOrders = _useState8[1];
+  var activeOrderStatuses = [0, 13, 7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23];
   var socket = (0, _WebsocketContext.useWebsocket)();
 
   /**
@@ -78,63 +91,63 @@ var DriversList = function DriversList(props) {
   /**
    * Array to save drivers
    */
-  var _useState5 = (0, _react.useState)({
+  var _useState9 = (0, _react.useState)({
       drivers: [],
       loading: true,
       error: null
     }),
-    _useState6 = _slicedToArray(_useState5, 2),
-    driversList = _useState6[0],
-    setDriversList = _useState6[1];
+    _useState10 = _slicedToArray(_useState9, 2),
+    driversList = _useState10[0],
+    setDriversList = _useState10[1];
   /**
    * Array to save companys
    */
-  var _useState7 = (0, _react.useState)({
+  var _useState11 = (0, _react.useState)({
       companys: [],
       loading: true,
       error: null
     }),
-    _useState8 = _slicedToArray(_useState7, 2),
-    companysList = _useState8[0],
-    setCompanysList = _useState8[1];
+    _useState12 = _slicedToArray(_useState11, 2),
+    companysList = _useState12[0],
+    setCompanysList = _useState12[1];
   /**
    * Array to save online drivers
    */
-  var _useState9 = (0, _react.useState)([]),
-    _useState10 = _slicedToArray(_useState9, 2),
-    onlineDrivers = _useState10[0],
-    setOnlineDrivers = _useState10[1];
+  var _useState13 = (0, _react.useState)([]),
+    _useState14 = _slicedToArray(_useState13, 2),
+    onlineDrivers = _useState14[0],
+    setOnlineDrivers = _useState14[1];
   /**
    * Array to save offline drivers
    */
-  var _useState11 = (0, _react.useState)([]),
-    _useState12 = _slicedToArray(_useState11, 2),
-    offlineDrivers = _useState12[0],
-    setOfflineDrivers = _useState12[1];
+  var _useState15 = (0, _react.useState)([]),
+    _useState16 = _slicedToArray(_useState15, 2),
+    offlineDrivers = _useState16[0],
+    setOfflineDrivers = _useState16[1];
   /**
    * state for drivers online / offline filter
    */
-  var _useState13 = (0, _react.useState)(true),
-    _useState14 = _slicedToArray(_useState13, 2),
-    driversIsOnline = _useState14[0],
-    setDriversIsOnline = _useState14[1];
+  var _useState17 = (0, _react.useState)(true),
+    _useState18 = _slicedToArray(_useState17, 2),
+    driversIsOnline = _useState18[0],
+    setDriversIsOnline = _useState18[1];
   /**
    * state for drivers busy / not busy sub filter
    */
-  var _useState15 = (0, _react.useState)({
+  var _useState19 = (0, _react.useState)({
       busy: true,
       notBusy: true
     }),
-    _useState16 = _slicedToArray(_useState15, 2),
-    driversSubfilter = _useState16[0],
-    setDriversSubfilter = _useState16[1];
+    _useState20 = _slicedToArray(_useState19, 2),
+    driversSubfilter = _useState20[0],
+    setDriversSubfilter = _useState20[1];
   /**
    * search value
    */
-  var _useState17 = (0, _react.useState)(null),
-    _useState18 = _slicedToArray(_useState17, 2),
-    searchValue = _useState18[0],
-    setSearchValue = _useState18[1];
+  var _useState21 = (0, _react.useState)(null),
+    _useState22 = _slicedToArray(_useState21, 2),
+    searchValue = _useState22[0],
+    setSearchValue = _useState22[1];
 
   /**
    * Change text to search
@@ -179,7 +192,6 @@ var DriversList = function DriversList(props) {
             if (!content.error) {
               if (assign.driverId) {
                 showToast(_ToastContext.ToastType.Success, t('ORDER_DRIVER_ASSIGNED', 'Driver assigned to order'));
-                setIsCommentPopup && setIsCommentPopup(true);
               } else {
                 showToast(_ToastContext.ToastType.Success, t('ORDER_DRIVER_REMOVED', 'Driver removed from the order'));
               }
@@ -446,7 +458,7 @@ var DriversList = function DriversList(props) {
             _yield$response$json2 = _context4.sent;
             error = _yield$response$json2.error;
             result = _yield$response$json2.result;
-            _drivers2 = result === null || result === void 0 || (_result$drivers = result.drivers) === null || _result$drivers === void 0 ? void 0 : _result$drivers.map(function (driver) {
+            _drivers2 = result === null || result === void 0 ? void 0 : (_result$drivers = result.drivers) === null || _result$drivers === void 0 ? void 0 : _result$drivers.map(function (driver) {
               return _objectSpread(_objectSpread({}, driver), {}, {
                 enabled: true
               });
@@ -484,6 +496,119 @@ var DriversList = function DriversList(props) {
       return _ref4.apply(this, arguments);
     };
   }();
+  var getOrders = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+      var options, where, conditions, source, functionFetch;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) switch (_context5.prev = _context5.next) {
+          case 0:
+            options = null;
+            where = [];
+            conditions = [];
+            options = {
+              query: {
+                orderBy: '-id'
+              }
+            };
+            conditions.push({
+              attribute: 'products',
+              conditions: [{
+                attribute: 'type',
+                value: {
+                  condition: '=',
+                  value: 'item'
+                }
+              }]
+            });
+            conditions.push({
+              attribute: 'status',
+              value: activeOrderStatuses
+            });
+            conditions.push({
+              attribute: 'delivery_type',
+              value: 1
+            });
+            conditions.push({
+              attribute: 'driver_id',
+              value: selectedDriver === null || selectedDriver === void 0 ? void 0 : selectedDriver.id
+            });
+            if (conditions.length) {
+              where = {
+                conditions: conditions,
+                conector: 'AND'
+              };
+            }
+            source = {};
+            requestsState.orders = source;
+            options.cancelToken = source;
+            functionFetch = ordering.setAccessToken(session.token).orders().asDashboard().select(['business', 'customer']).where(where);
+            _context5.next = 15;
+            return functionFetch.get(options);
+          case 15:
+            return _context5.abrupt("return", _context5.sent);
+          case 16:
+          case "end":
+            return _context5.stop();
+        }
+      }, _callee5);
+    }));
+    return function getOrders() {
+      return _ref5.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Method to get the orders assigned to the driver
+   */
+  var loadAssignedOrders = /*#__PURE__*/function () {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+      var response;
+      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        while (1) switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.prev = 0;
+            setAssignedOrders(_objectSpread(_objectSpread({}, assignedOrders), {}, {
+              loading: true
+            }));
+            _context6.next = 4;
+            return getOrders();
+          case 4:
+            response = _context6.sent;
+            setAssignedOrders({
+              loading: false,
+              orders: response.content.error ? [] : response.content.result,
+              error: response.content.error ? response.content.result : null
+            });
+            _context6.next = 11;
+            break;
+          case 8:
+            _context6.prev = 8;
+            _context6.t0 = _context6["catch"](0);
+            setAssignedOrders(_objectSpread(_objectSpread({}, assignedOrders), {}, {
+              loading: false,
+              error: [_context6.t0.message]
+            }));
+          case 11:
+          case "end":
+            return _context6.stop();
+        }
+      }, _callee6, null, [[0, 8]]);
+    }));
+    return function loadAssignedOrders() {
+      return _ref6.apply(this, arguments);
+    };
+  }();
+  (0, _react.useEffect)(function () {
+    if (selectedDriver !== null && selectedDriver !== void 0 && selectedDriver.id) {
+      loadAssignedOrders();
+    } else {
+      setAssignedOrders({
+        loading: false,
+        orders: [],
+        error: null
+      });
+    }
+  }, [selectedDriver === null || selectedDriver === void 0 ? void 0 : selectedDriver.id]);
 
   /**
    * listen for busy/not busy filter
@@ -583,7 +708,10 @@ var DriversList = function DriversList(props) {
     handleChangeSearch: handleChangeSearch,
     handleChangeDriverIsOnline: handleChangeDriverIsOnline,
     handleChangeDriversSubFilter: handleChangeDriversSubFilter,
-    handleAssignDriver: handleAssignDriver
+    handleAssignDriver: handleAssignDriver,
+    selectedDriver: selectedDriver,
+    setSelectedDriver: setSelectedDriver,
+    assignedOrders: assignedOrders
   })));
 };
 exports.DriversList = DriversList;

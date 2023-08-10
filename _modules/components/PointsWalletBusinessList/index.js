@@ -107,7 +107,7 @@ var PointsWalletBusinessList = function PointsWalletBusinessList(props) {
     }
     if (checked) {
       var _businessList$busines;
-      var selectedBusiness = businessList === null || businessList === void 0 || (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.find(function (business) {
+      var selectedBusiness = businessList === null || businessList === void 0 ? void 0 : (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.find(function (business) {
         return business.id === businessId;
       });
       if (selectedBusiness) {

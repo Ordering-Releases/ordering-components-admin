@@ -626,19 +626,19 @@ var OrderingWebsite = function OrderingWebsite(props) {
   (0, _react.useEffect)(function () {
     var _themesList$themes, _orderingTheme$themes4;
     if (orderingTheme !== null && orderingTheme !== void 0 && orderingTheme.siteId && (_themesList$themes = themesList.themes) !== null && _themesList$themes !== void 0 && _themesList$themes.length && !(orderingTheme !== null && orderingTheme !== void 0 && (_orderingTheme$themes4 = orderingTheme.themes) !== null && _orderingTheme$themes4 !== void 0 && _orderingTheme$themes4.length)) {
-      var _themesList$themes$, _valuesDefault$my_pro, _themesList$themes$2;
+      var _themesList$themes$, _valuesDefault$my_pro, _valuesDefault$my_pro2, _valuesDefault$my_pro3, _valuesDefault$my_pro4, _themesList$themes$2;
       var valuesDefault = JSON.parse(JSON.stringify((_themesList$themes$ = themesList.themes[0]) === null || _themesList$themes$ === void 0 ? void 0 : _themesList$themes$.values_default));
-      if (valuesDefault !== null && valuesDefault !== void 0 && (_valuesDefault$my_pro = valuesDefault.my_products) !== null && _valuesDefault$my_pro !== void 0 && (_valuesDefault$my_pro = _valuesDefault$my_pro.components) !== null && _valuesDefault$my_pro !== void 0 && (_valuesDefault$my_pro = _valuesDefault$my_pro.website_settings) !== null && _valuesDefault$my_pro !== void 0 && (_valuesDefault$my_pro = _valuesDefault$my_pro.components) !== null && _valuesDefault$my_pro !== void 0 && _valuesDefault$my_pro.values) {
+      if (valuesDefault !== null && valuesDefault !== void 0 && (_valuesDefault$my_pro = valuesDefault.my_products) !== null && _valuesDefault$my_pro !== void 0 && (_valuesDefault$my_pro2 = _valuesDefault$my_pro.components) !== null && _valuesDefault$my_pro2 !== void 0 && (_valuesDefault$my_pro3 = _valuesDefault$my_pro2.website_settings) !== null && _valuesDefault$my_pro3 !== void 0 && (_valuesDefault$my_pro4 = _valuesDefault$my_pro3.components) !== null && _valuesDefault$my_pro4 !== void 0 && _valuesDefault$my_pro4.values) {
         valuesDefault.my_products.components.website_settings.components.values.default_domain = "https://".concat(ordering.project, ".tryordering.com");
       }
       handleAssignTheme(valuesDefault, (_themesList$themes$2 = themesList.themes[0]) === null || _themesList$themes$2 === void 0 ? void 0 : _themesList$themes$2.id, orderingTheme === null || orderingTheme === void 0 ? void 0 : orderingTheme.siteId);
     }
   }, [JSON.stringify(themesList.themes), orderingTheme === null || orderingTheme === void 0 ? void 0 : orderingTheme.siteId]);
   (0, _react.useEffect)(function () {
-    var _orderingTheme$themes5, _orderingTheme$themes6, _orderingTheme$themes7;
+    var _orderingTheme$themes5, _orderingTheme$themes6, _orderingTheme$themes7, _orderingTheme$themes8, _orderingTheme$themes9;
     if (!((_orderingTheme$themes5 = orderingTheme.themes[0]) !== null && _orderingTheme$themes5 !== void 0 && _orderingTheme$themes5.values)) return;
     setAdvancedValues(JSON.parse(JSON.stringify((_orderingTheme$themes6 = orderingTheme.themes[0]) === null || _orderingTheme$themes6 === void 0 ? void 0 : _orderingTheme$themes6.values)));
-    var _themeValues = (_orderingTheme$themes7 = orderingTheme.themes[0]) === null || _orderingTheme$themes7 === void 0 || (_orderingTheme$themes7 = _orderingTheme$themes7.values) === null || _orderingTheme$themes7 === void 0 || (_orderingTheme$themes7 = _orderingTheme$themes7.my_products) === null || _orderingTheme$themes7 === void 0 ? void 0 : _orderingTheme$themes7.components;
+    var _themeValues = (_orderingTheme$themes7 = orderingTheme.themes[0]) === null || _orderingTheme$themes7 === void 0 ? void 0 : (_orderingTheme$themes8 = _orderingTheme$themes7.values) === null || _orderingTheme$themes8 === void 0 ? void 0 : (_orderingTheme$themes9 = _orderingTheme$themes8.my_products) === null || _orderingTheme$themes9 === void 0 ? void 0 : _orderingTheme$themes9.components;
     if (!_themeValues) return;
     setThemeValues(JSON.parse(JSON.stringify(_themeValues)));
   }, [orderingTheme === null || orderingTheme === void 0 ? void 0 : orderingTheme.themes]);

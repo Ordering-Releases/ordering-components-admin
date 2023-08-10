@@ -51,6 +51,7 @@ var RecoveryActionListing = function RecoveryActionListing(props) {
   var _useLanguage = (0, _LanguageContext.useLanguage)(),
     _useLanguage2 = _slicedToArray(_useLanguage, 2),
     t = _useLanguage2[1];
+  var firstRender = (0, _react.useRef)(true);
   var _useState = (0, _react.useState)(null),
     _useState2 = _slicedToArray(_useState, 2),
     searchValue = _useState2[0],
@@ -71,7 +72,7 @@ var RecoveryActionListing = function RecoveryActionListing(props) {
     filterValues = _useState6[0],
     setFilterValues = _useState6[1];
   var _useState7 = (0, _react.useState)({
-      currentPage: paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1 ? paginationSettings.initialPage - 1 : 0,
+      currentPage: paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1 ? paginationSettings.initialPage : 1,
       pageSize: (_paginationSettings$p = paginationSettings.pageSize) !== null && _paginationSettings$p !== void 0 ? _paginationSettings$p : 10,
       totalItems: null,
       totalPages: null
@@ -169,20 +170,21 @@ var RecoveryActionListing = function RecoveryActionListing(props) {
                 error: content.result
               }));
             }
-            _context.next = 20;
+            firstRender.current = false;
+            _context.next = 21;
             break;
-          case 17:
-            _context.prev = 17;
+          case 18:
+            _context.prev = 18;
             _context.t0 = _context["catch"](0);
             setRecoveryActionList(_objectSpread(_objectSpread({}, recoveryActionList), {}, {
               loading: false,
               error: [_context.t0.message]
             }));
-          case 20:
+          case 21:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 17]]);
+      }, _callee, null, [[0, 18]]);
     }));
     return function getRecoveryList(_x2, _x3) {
       return _ref.apply(this, arguments);
@@ -292,7 +294,7 @@ var RecoveryActionListing = function RecoveryActionListing(props) {
   };
   (0, _react.useEffect)(function () {
     if (recoveryActionList.loading) return;
-    getRecoveryList(1, paginationProps.pageSize);
+    getRecoveryList(firstRender.current ? paginationProps.currentPage : 1, paginationProps.pageSize);
   }, [searchValue]);
   (0, _react.useEffect)(function () {
     if ((Object.keys(filterValues === null || filterValues === void 0 ? void 0 : filterValues.changes).length > 0 || filterValues.clear) && !recoveryActionList.loading) getRecoveryList(1, paginationProps.pageSize);

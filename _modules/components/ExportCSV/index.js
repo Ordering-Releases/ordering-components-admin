@@ -29,7 +29,9 @@ function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefine
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var ExportCSV = function ExportCSV(props) {
   var UIComponent = props.UIComponent,
-    filterValues = props.filterValues;
+    filterValues = props.filterValues,
+    ordersStatusGroup = props.ordersStatusGroup,
+    selectedSubOrderStatus = props.selectedSubOrderStatus;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -46,6 +48,7 @@ var ExportCSV = function ExportCSV(props) {
     _useState2 = _slicedToArray(_useState, 2),
     actionStatus = _useState2[0],
     setActionStatus = _useState2[1];
+  console.log(filterValues, 'filterValues');
 
   /**
    * Method to get csv from API
@@ -85,7 +88,7 @@ var ExportCSV = function ExportCSV(props) {
                   } else {
                     filterConditons.push({
                       attribute: 'status',
-                      value: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+                      value: selectedSubOrderStatus[ordersStatusGroup] || [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
                     });
                   }
                 }

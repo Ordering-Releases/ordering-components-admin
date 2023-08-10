@@ -38,6 +38,7 @@ var SitesList = function SitesList(props) {
   var _useSession = (0, _SessionContext.useSession)(),
     _useSession2 = _slicedToArray(_useSession, 1),
     token = _useSession2[0].token;
+  var firstRender = (0, _react.useRef)(true);
   var _useState = (0, _react.useState)({
       loading: false,
       sites: [],
@@ -47,7 +48,7 @@ var SitesList = function SitesList(props) {
     sitesListState = _useState2[0],
     setSitesListState = _useState2[1];
   var _useState3 = (0, _react.useState)({
-      currentPage: paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1 ? paginationSettings.initialPage - 1 : 0,
+      currentPage: paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1 ? paginationSettings.initialPage : 1,
       pageSize: (_paginationSettings$p = paginationSettings.pageSize) !== null && _paginationSettings$p !== void 0 ? _paginationSettings$p : 10,
       totalItems: null,
       totalPages: null
@@ -141,20 +142,21 @@ var SitesList = function SitesList(props) {
                 error: content.result
               }));
             }
-            _context.next = 20;
+            firstRender.current = false;
+            _context.next = 21;
             break;
-          case 17:
-            _context.prev = 17;
+          case 18:
+            _context.prev = 18;
             _context.t0 = _context["catch"](0);
             setSitesListState(_objectSpread(_objectSpread({}, sitesListState), {}, {
               loading: false,
               error: [_context.t0.message]
             }));
-          case 20:
+          case 21:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 17]]);
+      }, _callee, null, [[0, 18]]);
     }));
     return function getSites(_x2, _x3) {
       return _ref.apply(this, arguments);
@@ -171,7 +173,7 @@ var SitesList = function SitesList(props) {
   };
   (0, _react.useEffect)(function () {
     if (sitesListState.loading) return;
-    getSites(1, paginationProps.pageSize);
+    getSites(firstRender.current ? paginationProps.currentPage : 1, paginationProps.pageSize);
   }, [searchValue]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     paginationProps: paginationProps,

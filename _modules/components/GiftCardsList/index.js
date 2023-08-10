@@ -37,7 +37,8 @@ var GiftCardsList = function GiftCardsList(props) {
     isSearchById = props.isSearchById,
     isSearchByAuthorName = props.isSearchByAuthorName,
     isSearchByAuthorEmail = props.isSearchByAuthorEmail,
-    isSearchByAuthorPhone = props.isSearchByAuthorPhone;
+    isSearchByAuthorPhone = props.isSearchByAuthorPhone,
+    defaultStatus = props.defaultStatus;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -53,7 +54,7 @@ var GiftCardsList = function GiftCardsList(props) {
     giftCards = _useState2[0],
     setGiftCards = _useState2[1];
   var _useState3 = (0, _react.useState)({
-      currentPage: paginationSettings.initialPage && paginationSettings.initialPage >= 1 ? paginationSettings.initialPage - 1 : 0,
+      currentPage: paginationSettings.initialPage && paginationSettings.initialPage >= 1 ? paginationSettings.initialPage : 1,
       pageSize: (_paginationSettings$p = paginationSettings.pageSize) !== null && _paginationSettings$p !== void 0 ? _paginationSettings$p : 10,
       totalItems: null,
       totalPages: null
@@ -61,7 +62,7 @@ var GiftCardsList = function GiftCardsList(props) {
     _useState4 = _slicedToArray(_useState3, 2),
     paginationProps = _useState4[0],
     setPaginationProps = _useState4[1];
-  var _useState5 = (0, _react.useState)('pending'),
+  var _useState5 = (0, _react.useState)(defaultStatus !== null && defaultStatus !== void 0 ? defaultStatus : 'pending'),
     _useState6 = _slicedToArray(_useState5, 2),
     activeStatus = _useState6[0],
     setActiveStatus = _useState6[1];
@@ -69,6 +70,7 @@ var GiftCardsList = function GiftCardsList(props) {
     _useState8 = _slicedToArray(_useState7, 2),
     searchValue = _useState8[0],
     setSearchValue = _useState8[1];
+  var firstRender = (0, _react.useRef)(true);
 
   /**
    * Method to get the gift cards from API
@@ -183,27 +185,28 @@ var GiftCardsList = function GiftCardsList(props) {
               list: error ? [] : result,
               error: error ? result : null
             });
-            _context.next = 25;
+            firstRender.current = false;
+            _context.next = 26;
             break;
-          case 22:
-            _context.prev = 22;
+          case 23:
+            _context.prev = 23;
             _context.t0 = _context["catch"](0);
             setGiftCards(_objectSpread(_objectSpread({}, giftCards), {}, {
               loading: false,
               error: [_context.t0.message]
             }));
-          case 25:
+          case 26:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 22]]);
+      }, _callee, null, [[0, 23]]);
     }));
     return function getGiftCards(_x2, _x3) {
       return _ref.apply(this, arguments);
     };
   }();
   (0, _react.useEffect)(function () {
-    getGiftCards(0, paginationProps.pageSize);
+    getGiftCards(firstRender.current ? paginationProps.currentPage : 1, paginationProps.pageSize);
   }, [activeStatus, searchValue]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     giftCards: giftCards,

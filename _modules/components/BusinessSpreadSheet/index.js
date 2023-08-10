@@ -37,7 +37,8 @@ var BusinessSpreadSheet = function BusinessSpreadSheet(props) {
     business = props.business,
     handleUpdateBusinessState = props.handleUpdateBusinessState,
     categoryId = props.categoryId,
-    categorySelected = props.categorySelected;
+    categorySelected = props.categorySelected,
+    handleUpdateCategoryState = props.handleUpdateCategoryState;
   var _useLanguage = (0, _LanguageContext.useLanguage)(),
     _useLanguage2 = _slicedToArray(_useLanguage, 2),
     t = _useLanguage2[1];
@@ -375,6 +376,11 @@ var BusinessSpreadSheet = function BusinessSpreadSheet(props) {
                 });
                 handleUpdateBusinessState(_objectSpread(_objectSpread({}, business), {}, {
                   categories: _categories
+                }));
+              }
+              if (handleUpdateCategoryState) {
+                handleUpdateCategoryState(_objectSpread(_objectSpread({}, categoryState), {}, {
+                  products: result
                 }));
               }
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {

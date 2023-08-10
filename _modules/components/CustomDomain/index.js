@@ -66,7 +66,7 @@ var CustomDomain = function CustomDomain(props) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return ordering.setAccessToken(token).configs(configs === null || configs === void 0 || (_configs$google_maps_ = configs.google_maps_api_key) === null || _configs$google_maps_ === void 0 ? void 0 : _configs$google_maps_.id).save(changes);
+            return ordering.setAccessToken(token).configs(configs === null || configs === void 0 ? void 0 : (_configs$google_maps_ = configs.google_maps_api_key) === null || _configs$google_maps_ === void 0 ? void 0 : _configs$google_maps_.id).save(changes);
           case 2:
             _yield$ordering$setAc = _context.sent;
             _yield$ordering$setAc2 = _yield$ordering$setAc.content;
@@ -143,7 +143,7 @@ var CustomDomain = function CustomDomain(props) {
               break;
             }
             mapApiKeyChanges = {
-              key: configs === null || configs === void 0 || (_configs$google_maps_2 = configs.google_maps_api_key) === null || _configs$google_maps_2 === void 0 ? void 0 : _configs$google_maps_2.key,
+              key: configs === null || configs === void 0 ? void 0 : (_configs$google_maps_2 = configs.google_maps_api_key) === null || _configs$google_maps_2 === void 0 ? void 0 : _configs$google_maps_2.key,
               value: mapKey
             };
             _context3.next = 6;
@@ -173,7 +173,7 @@ var CustomDomain = function CustomDomain(props) {
             if (!error) {
               showToast(_ToastContext.ToastType.Success, t('DOMAIN_IS_CHANGED', 'The domain is changed'));
               setSite(_objectSpread(_objectSpread({}, site), {}, {
-                domain: formState === null || formState === void 0 || (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.domain,
+                domain: formState === null || formState === void 0 ? void 0 : (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.domain,
                 ssl_process_status: 'pending'
               }));
               onClose && onClose();

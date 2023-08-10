@@ -45,7 +45,8 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
     isSearchByBusinessName = props.isSearchByBusinessName,
     isSearchByBusinessEmail = props.isSearchByBusinessEmail,
     isSearchByBusinessPhone = props.isSearchByBusinessPhone,
-    noActiveStatusCondition = props.noActiveStatusCondition;
+    noActiveStatusCondition = props.noActiveStatusCondition,
+    defaultActive = props.defaultActive;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -81,7 +82,7 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
     citiesList = _useState6[0],
     setCitiesList = _useState6[1];
   var _useState7 = (0, _react.useState)({
-      currentPage: paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1 ? paginationSettings.initialPage - 1 : 0,
+      currentPage: paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1 ? paginationSettings.initialPage : 1,
       pageSize: (_paginationSettings$p = paginationSettings.pageSize) !== null && _paginationSettings$p !== void 0 ? _paginationSettings$p : 10
     }),
     _useState8 = _slicedToArray(_useState7, 2),
@@ -91,7 +92,7 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
     _useState10 = _slicedToArray(_useState9, 2),
     searchValue = _useState10[0],
     setSearchValue = _useState10[1];
-  var _useState11 = (0, _react.useState)(true),
+  var _useState11 = (0, _react.useState)(defaultActive !== null && defaultActive !== void 0 ? defaultActive : true),
     _useState12 = _slicedToArray(_useState11, 2),
     selectedBusinessActiveState = _useState12[0],
     setSelectedBusinessActiveState = _useState12[1];
@@ -111,6 +112,7 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
     _useState20 = _slicedToArray(_useState19, 2),
     inActiveBusinesses = _useState20[0],
     setInActiveBusinesses = _useState20[1];
+  var firstRender = (0, _react.useRef)(true);
 
   /**
    * Save filter type values
@@ -207,21 +209,21 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
                   }
                 });
               }
-              if ((filterValues === null || filterValues === void 0 || (_filterValues$availab = filterValues.availableMenus) === null || _filterValues$availab === void 0 ? void 0 : _filterValues$availab.value) !== '') {
+              if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$availab = filterValues.availableMenus) === null || _filterValues$availab === void 0 ? void 0 : _filterValues$availab.value) !== '') {
                 filterConditons.push({
                   attribute: 'available_menus_count',
                   value: {
-                    condition: filterValues === null || filterValues === void 0 || (_filterValues$availab2 = filterValues.availableMenus) === null || _filterValues$availab2 === void 0 ? void 0 : _filterValues$availab2.condition,
-                    value: filterValues === null || filterValues === void 0 || (_filterValues$availab3 = filterValues.availableMenus) === null || _filterValues$availab3 === void 0 ? void 0 : _filterValues$availab3.value
+                    condition: filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$availab2 = filterValues.availableMenus) === null || _filterValues$availab2 === void 0 ? void 0 : _filterValues$availab2.condition,
+                    value: filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$availab3 = filterValues.availableMenus) === null || _filterValues$availab3 === void 0 ? void 0 : _filterValues$availab3.value
                   }
                 });
               }
-              if ((filterValues === null || filterValues === void 0 || (_filterValues$menus = filterValues.menus) === null || _filterValues$menus === void 0 ? void 0 : _filterValues$menus.value) !== '') {
+              if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$menus = filterValues.menus) === null || _filterValues$menus === void 0 ? void 0 : _filterValues$menus.value) !== '') {
                 filterConditons.push({
                   attribute: 'menus_count',
                   value: {
-                    condition: filterValues === null || filterValues === void 0 || (_filterValues$menus2 = filterValues.menus) === null || _filterValues$menus2 === void 0 ? void 0 : _filterValues$menus2.condition,
-                    value: filterValues === null || filterValues === void 0 || (_filterValues$menus3 = filterValues.menus) === null || _filterValues$menus3 === void 0 ? void 0 : _filterValues$menus3.value
+                    condition: filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$menus2 = filterValues.menus) === null || _filterValues$menus2 === void 0 ? void 0 : _filterValues$menus2.condition,
+                    value: filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$menus3 = filterValues.menus) === null || _filterValues$menus3 === void 0 ? void 0 : _filterValues$menus3.value
                   }
                 });
               }
@@ -297,7 +299,7 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
                 return country === null || country === void 0 ? void 0 : country.enabled;
               }).some(function (country) {
                 var _country$code, _country$name;
-                return allowCodes.includes(country === null || country === void 0 || (_country$code = country.code) === null || _country$code === void 0 ? void 0 : _country$code.toLowerCase()) || allowCodes.includes(country === null || country === void 0 || (_country$name = country.name) === null || _country$name === void 0 ? void 0 : _country$name.toLowerCase());
+                return allowCodes.includes(country === null || country === void 0 ? void 0 : (_country$code = country.code) === null || _country$code === void 0 ? void 0 : _country$code.toLowerCase()) || allowCodes.includes(country === null || country === void 0 ? void 0 : (_country$name = country.name) === null || _country$name === void 0 ? void 0 : _country$name.toLowerCase());
               });
               setCountriesState(_objectSpread(_objectSpread({}, countriesState), {}, {
                 loading: false,
@@ -365,7 +367,7 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
               loading: true
             }));
             _context3.next = 6;
-            return getBusinesses(initialPageSize || pagination.pageSize, 1);
+            return getBusinesses(initialPageSize || pagination.pageSize, firstRender.current ? pagination.currentPage : 1);
           case 6:
             response = _context3.sent;
             setBusinessList({
@@ -383,22 +385,23 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
                 to: response.content.pagination.to
               });
             }
-            _context3.next = 14;
+            firstRender.current = false;
+            _context3.next = 15;
             break;
-          case 11:
-            _context3.prev = 11;
+          case 12:
+            _context3.prev = 12;
             _context3.t0 = _context3["catch"](2);
-            if ((_context3.t0 === null || _context3.t0 === void 0 || (_err$constructor = _context3.t0.constructor) === null || _err$constructor === void 0 ? void 0 : _err$constructor.name) !== 'Cancel') {
+            if ((_context3.t0 === null || _context3.t0 === void 0 ? void 0 : (_err$constructor = _context3.t0.constructor) === null || _err$constructor === void 0 ? void 0 : _err$constructor.name) !== 'Cancel') {
               setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
                 loading: false,
                 error: [_context3.t0.message]
               }));
             }
-          case 14:
+          case 15:
           case "end":
             return _context3.stop();
         }
-      }, _callee3, null, [[2, 11]]);
+      }, _callee3, null, [[2, 12]]);
     }));
     return function loadBusinesses() {
       return _ref3.apply(this, arguments);
@@ -426,7 +429,7 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
           case 5:
             response = _context4.sent;
             if (!response.content.error) {
-              setInActiveBusinesses(response === null || response === void 0 || (_response$content = response.content) === null || _response$content === void 0 ? void 0 : _response$content.result);
+              setInActiveBusinesses(response === null || response === void 0 ? void 0 : (_response$content = response.content) === null || _response$content === void 0 ? void 0 : _response$content.result);
             }
             _context4.next = 12;
             break;
@@ -690,8 +693,8 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
   /**
    * Method to change user active state for filter
    */
-  var handleChangeBusinessActiveState = function handleChangeBusinessActiveState() {
-    setSelectedBusinessActiveState(!selectedBusinessActiveState);
+  var handleChangeBusinessActiveState = function handleChangeBusinessActiveState(active) {
+    setSelectedBusinessActiveState(active);
   };
 
   /**
@@ -782,7 +785,7 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
     setBusinessIds(updatedBusinessIds);
   };
   (0, _react.useEffect)(function () {
-    if (businessList.loading || businessList.businesses.length > 0) return;
+    if (businessList.loading || businessList.businesses.length > 0 || firstRender.current) return;
     if ((pagination === null || pagination === void 0 ? void 0 : pagination.currentPage) !== 0 && (pagination === null || pagination === void 0 ? void 0 : pagination.total) !== 0) {
       if (Math.ceil((pagination === null || pagination === void 0 ? void 0 : pagination.total) / pagination.pageSize) >= (pagination === null || pagination === void 0 ? void 0 : pagination.currentPage)) {
         getPageBusinesses(pagination.pageSize, pagination.currentPage);
@@ -809,7 +812,7 @@ var DashboardBusinessList = function DashboardBusinessList(props) {
   }, []);
   (0, _react.useEffect)(function () {
     getInActiveBusinesses();
-  }, [businessList === null || businessList === void 0 || (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.length]);
+  }, [businessList === null || businessList === void 0 ? void 0 : (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.length]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     pagination: pagination,
     searchValue: searchValue,

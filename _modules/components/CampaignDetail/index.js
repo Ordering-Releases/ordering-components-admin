@@ -445,9 +445,9 @@ var CampaignDetail = function CampaignDetail(props) {
                 });
                 handleSuccessUpdateCampaign(updatedCampaigns);
               }
-              updatedConditions = campaignState === null || campaignState === void 0 || (_campaignState$campai = campaignState.campaign) === null || _campaignState$campai === void 0 ? void 0 : _campaignState$campai.conditions.filter(function (item) {
+              updatedConditions = campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai = campaignState.campaign) === null || _campaignState$campai === void 0 ? void 0 : _campaignState$campai.conditions.filter(function (item) {
                 var _content$result;
-                return item.type !== (content === null || content === void 0 || (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.type);
+                return item.type !== (content === null || content === void 0 ? void 0 : (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.type);
               });
               setCampaignState(_objectSpread(_objectSpread({}, campaignState), {}, {
                 campaign: _objectSpread(_objectSpread({}, campaignState === null || campaignState === void 0 ? void 0 : campaignState.campaign), {}, {
@@ -792,14 +792,14 @@ var CampaignDetail = function CampaignDetail(props) {
   }, [campaign, campaignId]);
   (0, _react.useEffect)(function () {
     var _campaignState$campai2, _campaignState$campai3;
-    getAudience(campaignState === null || campaignState === void 0 || (_campaignState$campai2 = campaignState.campaign) === null || _campaignState$campai2 === void 0 ? void 0 : _campaignState$campai2.conditions, campaignState === null || campaignState === void 0 || (_campaignState$campai3 = campaignState.campaign) === null || _campaignState$campai3 === void 0 ? void 0 : _campaignState$campai3.contact_type);
-  }, [JSON.stringify(campaignState === null || campaignState === void 0 || (_campaignState$campai4 = campaignState.campaign) === null || _campaignState$campai4 === void 0 ? void 0 : _campaignState$campai4.conditions)]);
+    getAudience(campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai2 = campaignState.campaign) === null || _campaignState$campai2 === void 0 ? void 0 : _campaignState$campai2.conditions, campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai3 = campaignState.campaign) === null || _campaignState$campai3 === void 0 ? void 0 : _campaignState$campai3.contact_type);
+  }, [JSON.stringify(campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai4 = campaignState.campaign) === null || _campaignState$campai4 === void 0 ? void 0 : _campaignState$campai4.conditions)]);
   (0, _react.useEffect)(function () {
-    var _formState$changes5, _formState$changes6, _campaignState$campai5, _formState$changes7, _formState$changes8;
+    var _formState$changes5, _formState$changes6, _campaignState$campai5, _formState$changes7, _formState$changes7$c, _formState$changes8;
     if (!isAddMode || !(formState !== null && formState !== void 0 && (_formState$changes5 = formState.changes) !== null && _formState$changes5 !== void 0 && _formState$changes5.conditions)) return;
-    var contactType = (formState === null || formState === void 0 || (_formState$changes6 = formState.changes) === null || _formState$changes6 === void 0 ? void 0 : _formState$changes6.contact_type) || (campaignState === null || campaignState === void 0 || (_campaignState$campai5 = campaignState.campaign) === null || _campaignState$campai5 === void 0 ? void 0 : _campaignState$campai5.contact_type);
-    if ((formState === null || formState === void 0 || (_formState$changes7 = formState.changes) === null || _formState$changes7 === void 0 || (_formState$changes7 = _formState$changes7.conditions) === null || _formState$changes7 === void 0 ? void 0 : _formState$changes7.length) > 0 && contactType) getAudience(formState === null || formState === void 0 || (_formState$changes8 = formState.changes) === null || _formState$changes8 === void 0 ? void 0 : _formState$changes8.conditions, contactType);
-  }, [JSON.stringify(formState === null || formState === void 0 || (_formState$changes9 = formState.changes) === null || _formState$changes9 === void 0 ? void 0 : _formState$changes9.conditions)]);
+    var contactType = (formState === null || formState === void 0 ? void 0 : (_formState$changes6 = formState.changes) === null || _formState$changes6 === void 0 ? void 0 : _formState$changes6.contact_type) || (campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai5 = campaignState.campaign) === null || _campaignState$campai5 === void 0 ? void 0 : _campaignState$campai5.contact_type);
+    if ((formState === null || formState === void 0 ? void 0 : (_formState$changes7 = formState.changes) === null || _formState$changes7 === void 0 ? void 0 : (_formState$changes7$c = _formState$changes7.conditions) === null || _formState$changes7$c === void 0 ? void 0 : _formState$changes7$c.length) > 0 && contactType) getAudience(formState === null || formState === void 0 ? void 0 : (_formState$changes8 = formState.changes) === null || _formState$changes8 === void 0 ? void 0 : _formState$changes8.conditions, contactType);
+  }, [JSON.stringify(formState === null || formState === void 0 ? void 0 : (_formState$changes9 = formState.changes) === null || _formState$changes9 === void 0 ? void 0 : _formState$changes9.conditions)]);
   (0, _react.useEffect)(function () {
     getParentCategory();
   }, []);

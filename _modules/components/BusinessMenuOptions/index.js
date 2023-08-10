@@ -391,7 +391,7 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
   };
   var handleChangeMenuSite = function handleChangeMenuSite(site) {
     var _menu$sites;
-    var sites = [].concat(_toConsumableArray(menu === null || menu === void 0 || (_menu$sites = menu.sites) === null || _menu$sites === void 0 ? void 0 : _menu$sites.map(function (s) {
+    var sites = [].concat(_toConsumableArray(menu === null || menu === void 0 ? void 0 : (_menu$sites = menu.sites) === null || _menu$sites === void 0 ? void 0 : _menu$sites.map(function (s) {
       return s.id;
     }).filter(function (s) {
       var _formState$changes$si;

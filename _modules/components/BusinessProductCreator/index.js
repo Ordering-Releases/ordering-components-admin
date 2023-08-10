@@ -43,7 +43,9 @@ var BusinessProductCreator = function BusinessProductCreator(props) {
     handleUpdateBusinessState = props.handleUpdateBusinessState,
     setIsAddProduct = props.setIsAddProduct,
     categorySelected = props.categorySelected,
-    handleParentProductAdd = props.handleParentProductAdd;
+    handleParentProductAdd = props.handleParentProductAdd,
+    handleUpdateCategoryState = props.handleUpdateCategoryState,
+    categoryState = props.categoryState;
   var _useSession = (0, _SessionContext.useSession)(),
     _useSession2 = _slicedToArray(_useSession, 1),
     loading = _useSession2[0].loading;
@@ -174,6 +176,11 @@ var BusinessProductCreator = function BusinessProductCreator(props) {
                 });
                 handleUpdateBusinessState(_objectSpread(_objectSpread({}, business), {}, {
                   categories: _categories
+                }));
+              }
+              if (handleUpdateCategoryState) {
+                handleUpdateCategoryState(_objectSpread(_objectSpread({}, categoryState), {}, {
+                  products: [].concat(_toConsumableArray(categoryState === null || categoryState === void 0 ? void 0 : categoryState.products), [content.result])
                 }));
               }
               setIsAddProduct(false);
