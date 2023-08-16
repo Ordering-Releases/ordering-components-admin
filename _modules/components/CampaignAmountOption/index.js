@@ -267,7 +267,7 @@ var CampaignAmountOption = function CampaignAmountOption(props) {
   (0, _react.useEffect)(function () {
     if (!isAddMode) {
       var _campaignState$campai;
-      var selectedRule = campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai = campaignState.campaign) === null || _campaignState$campai === void 0 ? void 0 : _campaignState$campai.conditions.find(function (item) {
+      var selectedRule = campaignState === null || campaignState === void 0 || (_campaignState$campai = campaignState.campaign) === null || _campaignState$campai === void 0 ? void 0 : _campaignState$campai.conditions.find(function (item) {
         return item.type === type;
       });
       setRuleFormState(_objectSpread(_objectSpread({}, ruleFormState), {}, {
@@ -283,7 +283,7 @@ var CampaignAmountOption = function CampaignAmountOption(props) {
       }));
     } else {
       var _formState$changes;
-      var _selectedRule = formState === null || formState === void 0 ? void 0 : (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.conditions.find(function (item) {
+      var _selectedRule = formState === null || formState === void 0 || (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.conditions.find(function (item) {
         return item.type === type;
       });
       setRuleFormState(_objectSpread(_objectSpread({}, ruleFormState), {}, {

@@ -85,7 +85,7 @@ var BusinessPlaceGroupList = function BusinessPlaceGroupList(props) {
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
-            updatedPlaceList = placeGroupList === null || placeGroupList === void 0 ? void 0 : (_placeGroupList$place = placeGroupList.placeGroups) === null || _placeGroupList$place === void 0 ? void 0 : _placeGroupList$place.map(function (placeGroup) {
+            updatedPlaceList = placeGroupList === null || placeGroupList === void 0 || (_placeGroupList$place = placeGroupList.placeGroups) === null || _placeGroupList$place === void 0 ? void 0 : _placeGroupList$place.map(function (placeGroup) {
               if ((result === null || result === void 0 ? void 0 : result.id) === (placeGroup === null || placeGroup === void 0 ? void 0 : placeGroup.id)) {
                 return _objectSpread(_objectSpread({}, placeGroup), result);
               }
@@ -110,7 +110,7 @@ var BusinessPlaceGroupList = function BusinessPlaceGroupList(props) {
    */
   var handleSuccessDeletePlaceGroup = function handleSuccessDeletePlaceGroup(placeId) {
     var _placeGroupList$place2;
-    var updatedPlaceList = placeGroupList === null || placeGroupList === void 0 ? void 0 : (_placeGroupList$place2 = placeGroupList.placeGroups) === null || _placeGroupList$place2 === void 0 ? void 0 : _placeGroupList$place2.filter(function (place) {
+    var updatedPlaceList = placeGroupList === null || placeGroupList === void 0 || (_placeGroupList$place2 = placeGroupList.placeGroups) === null || _placeGroupList$place2 === void 0 ? void 0 : _placeGroupList$place2.filter(function (place) {
       return place.id !== placeId;
     });
     setPlaceGroupList(_objectSpread(_objectSpread({}, placeGroupList), {}, {
@@ -261,7 +261,7 @@ var BusinessPlaceGroupList = function BusinessPlaceGroupList(props) {
             _context4.next = 5;
             return Promise.all(allPromise);
           case 5:
-            updatedPlaceList = placeGroupList === null || placeGroupList === void 0 ? void 0 : (_placeGroupList$place3 = placeGroupList.placeGroups) === null || _placeGroupList$place3 === void 0 ? void 0 : _placeGroupList$place3.map(function (placeGroup) {
+            updatedPlaceList = placeGroupList === null || placeGroupList === void 0 || (_placeGroupList$place3 = placeGroupList.placeGroups) === null || _placeGroupList$place3 === void 0 ? void 0 : _placeGroupList$place3.map(function (placeGroup) {
               return _objectSpread(_objectSpread({}, placeGroup), {}, {
                 enabled: !isChecked
               });

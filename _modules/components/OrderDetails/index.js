@@ -192,7 +192,7 @@ var OrderDetails = function OrderDetails(props) {
           case 0:
             _context2.prev = 0;
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-            customer = _objectSpread(_objectSpread(_objectSpread({}, orderState === null || orderState === void 0 ? void 0 : (_orderState$order = orderState.order) === null || _orderState$order === void 0 ? void 0 : _orderState$order.customer), customerInfoState === null || customerInfoState === void 0 ? void 0 : customerInfoState.customer), addressState);
+            customer = _objectSpread(_objectSpread(_objectSpread({}, orderState === null || orderState === void 0 || (_orderState$order = orderState.order) === null || _orderState$order === void 0 ? void 0 : _orderState$order.customer), customerInfoState === null || customerInfoState === void 0 ? void 0 : customerInfoState.customer), addressState);
             _context2.next = 5;
             return ordering.setAccessToken(token).orders(orderId).save({
               customer: customer
@@ -452,7 +452,7 @@ var OrderDetails = function OrderDetails(props) {
       return _regeneratorRuntime().wrap(function _callee7$(_context7) {
         while (1) switch (_context7.prev = _context7.next) {
           case 0:
-            messageId = messages === null || messages === void 0 ? void 0 : (_messages$messages = messages.messages[(messages === null || messages === void 0 ? void 0 : (_messages$messages2 = messages.messages) === null || _messages$messages2 === void 0 ? void 0 : _messages$messages2.length) - 1]) === null || _messages$messages === void 0 ? void 0 : _messages$messages.id;
+            messageId = messages === null || messages === void 0 || (_messages$messages = messages.messages[(messages === null || messages === void 0 || (_messages$messages2 = messages.messages) === null || _messages$messages2 === void 0 ? void 0 : _messages$messages2.length) - 1]) === null || _messages$messages === void 0 ? void 0 : _messages$messages.id;
             _context7.prev = 1;
             _context7.next = 4;
             return fetch("".concat(ordering.root, "/orders/").concat(orderId, "/messages/").concat(messageId, "/read"), {
@@ -488,7 +488,7 @@ var OrderDetails = function OrderDetails(props) {
   }();
   var handleRefundPaymentsStripe = /*#__PURE__*/function () {
     var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
-      var _orderState$order2, _orderState$order3, _orderState$order4, _orderState$order4$pa, requestOption, response, content;
+      var _orderState$order2, _orderState$order3, _orderState$order4, requestOption, response, content;
       return _regeneratorRuntime().wrap(function _callee8$(_context8) {
         while (1) switch (_context8.prev = _context8.next) {
           case 0:
@@ -506,7 +506,7 @@ var OrderDetails = function OrderDetails(props) {
               body: JSON.stringify({
                 order_id: (_orderState$order2 = orderState.order) === null || _orderState$order2 === void 0 ? void 0 : _orderState$order2.id,
                 business_id: (_orderState$order3 = orderState.order) === null || _orderState$order3 === void 0 ? void 0 : _orderState$order3.business_id,
-                gateway: (_orderState$order4 = orderState.order) === null || _orderState$order4 === void 0 ? void 0 : (_orderState$order4$pa = _orderState$order4.paymethod) === null || _orderState$order4$pa === void 0 ? void 0 : _orderState$order4$pa.gateway
+                gateway: (_orderState$order4 = orderState.order) === null || _orderState$order4 === void 0 || (_orderState$order4 = _orderState$order4.paymethod) === null || _orderState$order4 === void 0 ? void 0 : _orderState$order4.gateway
               })
             };
             _context8.next = 6;
@@ -550,7 +550,7 @@ var OrderDetails = function OrderDetails(props) {
   }();
   var handleOrderRefund = /*#__PURE__*/function () {
     var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(data) {
-      var _orderState$order5, requestOption, response, content, _orderState$order7, refundData, _orderState$order6, _orderState$order6$pa, stripeEvent, updatedPaymentEvents;
+      var _orderState$order5, requestOption, response, content, _orderState$order7, refundData, _orderState$order6, stripeEvent, updatedPaymentEvents;
       return _regeneratorRuntime().wrap(function _callee9$(_context9) {
         while (1) switch (_context9.prev = _context9.next) {
           case 0:
@@ -582,7 +582,7 @@ var OrderDetails = function OrderDetails(props) {
             if (!content.error) {
               refundData = _toConsumableArray(content.result);
               if (data !== null && data !== void 0 && data.order_payment_event_id) {
-                stripeEvent = orderState === null || orderState === void 0 ? void 0 : (_orderState$order6 = orderState.order) === null || _orderState$order6 === void 0 ? void 0 : (_orderState$order6$pa = _orderState$order6.payment_events) === null || _orderState$order6$pa === void 0 ? void 0 : _orderState$order6$pa.find(function (event) {
+                stripeEvent = orderState === null || orderState === void 0 || (_orderState$order6 = orderState.order) === null || _orderState$order6 === void 0 || (_orderState$order6 = _orderState$order6.payment_events) === null || _orderState$order6 === void 0 ? void 0 : _orderState$order6.find(function (event) {
                   return (event === null || event === void 0 ? void 0 : event.id) === data.order_payment_event_id;
                 });
                 if (stripeEvent) {
@@ -639,7 +639,7 @@ var OrderDetails = function OrderDetails(props) {
     if (orderState.loading || loading) return;
     var handleUpdateOrder = function handleUpdateOrder(order) {
       var _orderState$order8;
-      if ((order === null || order === void 0 ? void 0 : order.id) !== (orderState === null || orderState === void 0 ? void 0 : (_orderState$order8 = orderState.order) === null || _orderState$order8 === void 0 ? void 0 : _orderState$order8.id)) return;
+      if ((order === null || order === void 0 ? void 0 : order.id) !== (orderState === null || orderState === void 0 || (_orderState$order8 = orderState.order) === null || _orderState$order8 === void 0 ? void 0 : _orderState$order8.id)) return;
       delete order.total;
       delete order.subtotal;
       if (!(order !== null && order !== void 0 && order.driver) && order !== null && order !== void 0 && order.driver_id) {

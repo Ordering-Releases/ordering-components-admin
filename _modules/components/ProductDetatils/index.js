@@ -158,7 +158,7 @@ var ProductDetatils = function ProductDetatils(props) {
             changes = params ? _objectSpread({}, params) : _objectSpread({}, formState.changes);
             originalChanges = params ? _objectSpread({}, params) : _objectSpread({}, formState.changes);
             _context2.next = 7;
-            return ordering.businesses(business === null || business === void 0 ? void 0 : business.id).categories(productState === null || productState === void 0 ? void 0 : (_productState$product = productState.product) === null || _productState$product === void 0 ? void 0 : _productState$product.category_id).products(productState === null || productState === void 0 ? void 0 : (_productState$product2 = productState.product) === null || _productState$product2 === void 0 ? void 0 : _productState$product2.id).save(changes, {
+            return ordering.businesses(business === null || business === void 0 ? void 0 : business.id).categories(productState === null || productState === void 0 || (_productState$product = productState.product) === null || _productState$product === void 0 ? void 0 : _productState$product.category_id).products(productState === null || productState === void 0 || (_productState$product2 = productState.product) === null || _productState$product2 === void 0 ? void 0 : _productState$product2.id).save(changes, {
               accessToken: session.token
             });
           case 7:
@@ -178,7 +178,7 @@ var ProductDetatils = function ProductDetatils(props) {
               _context2.next = 24;
               break;
             }
-            if (!(typeof (originalChanges === null || originalChanges === void 0 ? void 0 : (_originalChanges$ribb = originalChanges.ribbon) === null || _originalChanges$ribb === void 0 ? void 0 : _originalChanges$ribb.enabled) !== 'undefined' && !(originalChanges !== null && originalChanges !== void 0 && (_originalChanges$ribb2 = originalChanges.ribbon) !== null && _originalChanges$ribb2 !== void 0 && _originalChanges$ribb2.enabled) && result !== null && result !== void 0 && (_result$ribbon = result.ribbon) !== null && _result$ribbon !== void 0 && _result$ribbon.enabled)) {
+            if (!(typeof (originalChanges === null || originalChanges === void 0 || (_originalChanges$ribb = originalChanges.ribbon) === null || _originalChanges$ribb === void 0 ? void 0 : _originalChanges$ribb.enabled) !== 'undefined' && !(originalChanges !== null && originalChanges !== void 0 && (_originalChanges$ribb2 = originalChanges.ribbon) !== null && _originalChanges$ribb2 !== void 0 && _originalChanges$ribb2.enabled) && result !== null && result !== void 0 && (_result$ribbon = result.ribbon) !== null && _result$ribbon !== void 0 && _result$ribbon.enabled)) {
               _context2.next = 22;
               break;
             }
@@ -188,7 +188,7 @@ var ProductDetatils = function ProductDetatils(props) {
               }
             };
             _context2.next = 17;
-            return ordering.businesses(business === null || business === void 0 ? void 0 : business.id).categories(productState === null || productState === void 0 ? void 0 : (_productState$product3 = productState.product) === null || _productState$product3 === void 0 ? void 0 : _productState$product3.category_id).products(productState === null || productState === void 0 ? void 0 : (_productState$product4 = productState.product) === null || _productState$product4 === void 0 ? void 0 : _productState$product4.id).save(updatedChanges, {
+            return ordering.businesses(business === null || business === void 0 ? void 0 : business.id).categories(productState === null || productState === void 0 || (_productState$product3 = productState.product) === null || _productState$product3 === void 0 ? void 0 : _productState$product3.category_id).products(productState === null || productState === void 0 || (_productState$product4 = productState.product) === null || _productState$product4 === void 0 ? void 0 : _productState$product4.id).save(updatedChanges, {
               accessToken: session.token
             });
           case 17:
@@ -255,7 +255,7 @@ var ProductDetatils = function ProductDetatils(props) {
                 }
               }));
               if (handleUpdateCategoryState) {
-                updatedProducts = categoryState === null || categoryState === void 0 ? void 0 : (_categoryState$produc = categoryState.products) === null || _categoryState$produc === void 0 ? void 0 : _categoryState$produc.filter(function (item) {
+                updatedProducts = categoryState === null || categoryState === void 0 || (_categoryState$produc = categoryState.products) === null || _categoryState$produc === void 0 ? void 0 : _categoryState$produc.filter(function (item) {
                   return item.id !== productState.product.id;
                 });
                 handleUpdateCategoryState(_objectSpread(_objectSpread({}, categoryState), {}, {
@@ -333,7 +333,7 @@ var ProductDetatils = function ProductDetatils(props) {
    */
   var handleChangeRibbon = function handleChangeRibbon(changes) {
     var _formState$changes, _formState$changes2;
-    var ribbonChanges = formState !== null && formState !== void 0 && (_formState$changes = formState.changes) !== null && _formState$changes !== void 0 && _formState$changes.ribbon ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.ribbon), changes) : _objectSpread({}, changes);
+    var ribbonChanges = formState !== null && formState !== void 0 && (_formState$changes = formState.changes) !== null && _formState$changes !== void 0 && _formState$changes.ribbon ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 || (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.ribbon), changes) : _objectSpread({}, changes);
     var currentChanges = _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), {}, {
       ribbon: ribbonChanges
     });
@@ -397,16 +397,16 @@ var ProductDetatils = function ProductDetatils(props) {
   var getUnitTotal = function getUnitTotal(productCart) {
     var _props$product3;
     var subtotal = 0;
-    for (var i = 0; i < ((_props$product = props.product) === null || _props$product === void 0 ? void 0 : (_props$product$extras = _props$product.extras) === null || _props$product$extras === void 0 ? void 0 : _props$product$extras.length); i++) {
-      var _props$product, _props$product$extras, _props$product2;
+    for (var i = 0; i < ((_props$product = props.product) === null || _props$product === void 0 || (_props$product = _props$product.extras) === null || _props$product === void 0 ? void 0 : _props$product.length); i++) {
+      var _props$product, _props$product2;
       var extra = (_props$product2 = props.product) === null || _props$product2 === void 0 ? void 0 : _props$product2.extras[i];
       for (var j = 0; j < ((_extra$options = extra.options) === null || _extra$options === void 0 ? void 0 : _extra$options.length); j++) {
         var _extra$options;
         var option = extra.options[j];
         for (var k = 0; k < ((_option$suboptions = option.suboptions) === null || _option$suboptions === void 0 ? void 0 : _option$suboptions.length); k++) {
-          var _option$suboptions, _productCart$options, _productCart$options$;
+          var _option$suboptions, _productCart$options;
           var suboption = option.suboptions[k];
-          if ((_productCart$options = productCart.options["id:".concat(option.id)]) !== null && _productCart$options !== void 0 && (_productCart$options$ = _productCart$options.suboptions["id:".concat(suboption.id)]) !== null && _productCart$options$ !== void 0 && _productCart$options$.selected) {
+          if ((_productCart$options = productCart.options["id:".concat(option.id)]) !== null && _productCart$options !== void 0 && (_productCart$options = _productCart$options.suboptions["id:".concat(suboption.id)]) !== null && _productCart$options !== void 0 && _productCart$options.selected) {
             var suboptionState = productCart.options["id:".concat(option.id)].suboptions["id:".concat(suboption.id)];
             var quantity = option.allow_suboption_quantity ? suboptionState.quantity : 1;
             var price = option.with_half_option && suboption.half_price && suboptionState.position !== 'whole' ? suboption.half_price : suboption.price;
@@ -470,9 +470,9 @@ var ProductDetatils = function ProductDetatils(props) {
     }
     if (handleUpdateCategoryState) {
       var _categoryState$produc2;
-      var updatedProducts = categoryState === null || categoryState === void 0 ? void 0 : (_categoryState$produc2 = categoryState.products) === null || _categoryState$produc2 === void 0 ? void 0 : _categoryState$produc2.map(function (item) {
+      var updatedProducts = categoryState === null || categoryState === void 0 || (_categoryState$produc2 = categoryState.products) === null || _categoryState$produc2 === void 0 ? void 0 : _categoryState$produc2.map(function (item) {
         var _productState$product9;
-        if ((item === null || item === void 0 ? void 0 : item.id) === (productState === null || productState === void 0 ? void 0 : (_productState$product9 = productState.product) === null || _productState$product9 === void 0 ? void 0 : _productState$product9.id)) {
+        if ((item === null || item === void 0 ? void 0 : item.id) === (productState === null || productState === void 0 || (_productState$product9 = productState.product) === null || _productState$product9 === void 0 ? void 0 : _productState$product9.id)) {
           return _objectSpread(_objectSpread({}, productState.product), updatedProduct);
         }
         return item;

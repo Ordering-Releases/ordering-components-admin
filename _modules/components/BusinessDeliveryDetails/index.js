@@ -190,7 +190,7 @@ var BusinessDeliveryDetails = function BusinessDeliveryDetails(props) {
                 while (1) switch (_context3.prev = _context3.next) {
                   case 0:
                     zoneId = parseInt(key);
-                    foundZone = business === null || business === void 0 ? void 0 : (_business$zones = business.zones) === null || _business$zones === void 0 ? void 0 : _business$zones.find(function (zone) {
+                    foundZone = business === null || business === void 0 || (_business$zones = business.zones) === null || _business$zones === void 0 ? void 0 : _business$zones.find(function (zone) {
                       return zone.id === zoneId;
                     });
                     if (!((foundZone === null || foundZone === void 0 ? void 0 : foundZone.enabled) !== zoneListState.changes[key])) {
@@ -301,7 +301,7 @@ var BusinessDeliveryDetails = function BusinessDeliveryDetails(props) {
   }, [zoneListState.changes]);
   (0, _react.useEffect)(function () {
     var _business$zones2;
-    var zoneList = (business === null || business === void 0 ? void 0 : (_business$zones2 = business.zones) === null || _business$zones2 === void 0 ? void 0 : _business$zones2.filter(function (zone) {
+    var zoneList = (business === null || business === void 0 || (_business$zones2 = business.zones) === null || _business$zones2 === void 0 ? void 0 : _business$zones2.filter(function (zone) {
       return (zone === null || zone === void 0 ? void 0 : zone.type) !== 3;
     })) || [];
     var zoneChanges = {};

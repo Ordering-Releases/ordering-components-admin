@@ -172,12 +172,12 @@ var ImporterForm = function ImporterForm(props) {
   var handleEditState = function handleEditState(seletedImpoter) {
     var _seletedImpoter$mappi, _seletedImpoter$mappi2;
     var _metafieldList = {};
-    _metafieldList = seletedImpoter === null || seletedImpoter === void 0 ? void 0 : (_seletedImpoter$mappi = seletedImpoter.mapping) === null || _seletedImpoter$mappi === void 0 ? void 0 : _seletedImpoter$mappi.metafields;
+    _metafieldList = seletedImpoter === null || seletedImpoter === void 0 || (_seletedImpoter$mappi = seletedImpoter.mapping) === null || _seletedImpoter$mappi === void 0 ? void 0 : _seletedImpoter$mappi.metafields;
     if (_typeof(_metafieldList) === 'object' && _metafieldList !== null) {
       setMetaFieldList(_metafieldList);
     }
     var _fieldList = {};
-    _fieldList = seletedImpoter === null || seletedImpoter === void 0 ? void 0 : (_seletedImpoter$mappi2 = seletedImpoter.mapping) === null || _seletedImpoter$mappi2 === void 0 ? void 0 : _seletedImpoter$mappi2.fields;
+    _fieldList = seletedImpoter === null || seletedImpoter === void 0 || (_seletedImpoter$mappi2 = seletedImpoter.mapping) === null || _seletedImpoter$mappi2 === void 0 ? void 0 : _seletedImpoter$mappi2.fields;
     if (_typeof(_fieldList) === 'object' && _fieldList !== null) {
       setFieldList(_fieldList);
     }

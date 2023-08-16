@@ -127,7 +127,7 @@ var BusinessTypeDetail = function BusinessTypeDetail(props) {
               body: JSON.stringify(formState.changes)
             };
             _context.next = 6;
-            return fetch("".concat(ordering.root, "/business_types/").concat(businessTypeState === null || businessTypeState === void 0 ? void 0 : (_businessTypeState$bu = businessTypeState.businessType) === null || _businessTypeState$bu === void 0 ? void 0 : _businessTypeState$bu.id), requestOptions);
+            return fetch("".concat(ordering.root, "/business_types/").concat(businessTypeState === null || businessTypeState === void 0 || (_businessTypeState$bu = businessTypeState.businessType) === null || _businessTypeState$bu === void 0 ? void 0 : _businessTypeState$bu.id), requestOptions);
           case 6:
             response = _context.sent;
             _context.next = 9;
@@ -146,7 +146,7 @@ var BusinessTypeDetail = function BusinessTypeDetail(props) {
               if (setBusinessTypes) {
                 updatedBusinessTypes = businessTypes.map(function (type) {
                   var _content$result;
-                  if (type.id === (content === null || content === void 0 ? void 0 : (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.id)) {
+                  if (type.id === (content === null || content === void 0 || (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.id)) {
                     return _objectSpread(_objectSpread({}, type), content === null || content === void 0 ? void 0 : content.result);
                   }
                   return type;

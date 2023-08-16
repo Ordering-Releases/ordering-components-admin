@@ -23,8 +23,8 @@ export const WebsocketProvider = ({ settings, children }) => {
 
   useEffect(() => {
     if (session.loading) return
-    if (session.auth && settings.url && settings.project) {
-      const _socket = new Socket({ ...settings, accessToken: session.token })
+    if (session.auth && settings.project) {
+      const _socket = new Socket({ ...settings, accessToken: session.token, url: 'https://socket-v3.ordering.co' })
       setSocket(_socket)
     }
     if (!session.auth) {
@@ -39,7 +39,7 @@ export const WebsocketProvider = ({ settings, children }) => {
     return () => {
       socket && socket.close()
     }
-  }, [socket])
+  }, [socket, session?.user?.id])
 
   useEffect(() => {
     if (socket?.socket) {

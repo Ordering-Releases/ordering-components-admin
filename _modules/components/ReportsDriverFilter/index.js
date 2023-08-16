@@ -234,11 +234,11 @@ var ReportsDriverFilter = function ReportsDriverFilter(props) {
   }, [searchValue]);
   (0, _react.useEffect)(function () {
     var _driverList$drivers, _driverList$drivers2, _filterList$drivers_i;
-    if ((driverList === null || driverList === void 0 ? void 0 : (_driverList$drivers = driverList.drivers) === null || _driverList$drivers === void 0 ? void 0 : _driverList$drivers.length) === 0) return;
-    var _driverIds = driverList === null || driverList === void 0 ? void 0 : (_driverList$drivers2 = driverList.drivers) === null || _driverList$drivers2 === void 0 ? void 0 : _driverList$drivers2.reduce(function (prev, cur) {
+    if ((driverList === null || driverList === void 0 || (_driverList$drivers = driverList.drivers) === null || _driverList$drivers === void 0 ? void 0 : _driverList$drivers.length) === 0) return;
+    var _driverIds = driverList === null || driverList === void 0 || (_driverList$drivers2 = driverList.drivers) === null || _driverList$drivers2 === void 0 ? void 0 : _driverList$drivers2.reduce(function (prev, cur) {
       return [].concat(_toConsumableArray(prev), [cur.id]);
     }, []);
-    var filterDriverIds = (filterList === null || filterList === void 0 ? void 0 : (_filterList$drivers_i = filterList.drivers_ids) === null || _filterList$drivers_i === void 0 ? void 0 : _filterList$drivers_i.length) > 0 ? filterList === null || filterList === void 0 ? void 0 : filterList.drivers_ids.filter(function (driverId) {
+    var filterDriverIds = (filterList === null || filterList === void 0 || (_filterList$drivers_i = filterList.drivers_ids) === null || _filterList$drivers_i === void 0 ? void 0 : _filterList$drivers_i.length) > 0 ? filterList === null || filterList === void 0 ? void 0 : filterList.drivers_ids.filter(function (driverId) {
       return _driverIds.includes(driverId);
     }) : _driverIds;
     setDriverIds(_toConsumableArray(filterDriverIds));

@@ -112,8 +112,8 @@ var PhoneAutocomplete = function PhoneAutocomplete(props) {
    * Validate input that only numbers can be inserted
    */
   var onChangeNumber = function onChangeNumber(e) {
-    var _e$target, _e$target$validity, _e$target2;
-    setPhone((_e$target = e.target) !== null && _e$target !== void 0 && (_e$target$validity = _e$target.validity) !== null && _e$target$validity !== void 0 && _e$target$validity.valid ? (_e$target2 = e.target) === null || _e$target2 === void 0 ? void 0 : _e$target2.value : phone);
+    var _e$target, _e$target2;
+    setPhone((_e$target = e.target) !== null && _e$target !== void 0 && (_e$target = _e$target.validity) !== null && _e$target !== void 0 && _e$target.valid ? (_e$target2 = e.target) === null || _e$target2 === void 0 ? void 0 : _e$target2.value : phone);
   };
 
   /**
@@ -183,9 +183,9 @@ var PhoneAutocomplete = function PhoneAutocomplete(props) {
       this.parentNode.appendChild(a);
       /* for each item in the array... */
       for (i = 0; i < (arr === null || arr === void 0 ? void 0 : arr.length); i++) {
-        var _arr$i, _arr$i$cellphone, _arr$i$cellphone$subs;
+        var _arr$i;
         /* check if the item starts with the same letters as the text field value: */
-        if (((_arr$i = arr[i]) === null || _arr$i === void 0 ? void 0 : (_arr$i$cellphone = _arr$i.cellphone) === null || _arr$i$cellphone === void 0 ? void 0 : (_arr$i$cellphone$subs = _arr$i$cellphone.substr(0, val === null || val === void 0 ? void 0 : val.length)) === null || _arr$i$cellphone$subs === void 0 ? void 0 : _arr$i$cellphone$subs.toUpperCase()) === (val === null || val === void 0 ? void 0 : val.toUpperCase())) {
+        if (((_arr$i = arr[i]) === null || _arr$i === void 0 || (_arr$i = _arr$i.cellphone) === null || _arr$i === void 0 || (_arr$i = _arr$i.substr(0, val === null || val === void 0 ? void 0 : val.length)) === null || _arr$i === void 0 ? void 0 : _arr$i.toUpperCase()) === (val === null || val === void 0 ? void 0 : val.toUpperCase())) {
           var _arr$i2, _arr$i3;
           var cellphone = (_arr$i2 = arr[i]) === null || _arr$i2 === void 0 ? void 0 : _arr$i2.cellphone;
           /* create a DIV element for each matching element: */
