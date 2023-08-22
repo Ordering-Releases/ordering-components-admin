@@ -37,7 +37,7 @@ function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefine
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var paymethodsNotAllowed = ['paypal_express', 'authorize', 'microsoft_pay'];
 var BusinessPaymethods = function BusinessPaymethods(props) {
-  var _configState$configs, _configState$configs2, _configState$configs3;
+  var _configState$configs, _configState$configs$, _configState$configs2, _configState$configs3, _configState$configs4, _configState$configs5;
   var business = props.business,
     UIComponent = props.UIComponent,
     defaultSandboxRequiredGateways = props.defaultSandboxRequiredGateways,
@@ -74,36 +74,44 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
     sitesState = _useState4[0],
     setSitesState = _useState4[1];
   var _useState5 = (0, _react.useState)({
-      paymethods: [],
+      devices: [],
       loading: true,
       error: null
     }),
     _useState6 = _slicedToArray(_useState5, 2),
-    paymethodsList = _useState6[0],
-    setPaymethodsList = _useState6[1];
-  var sandboxRequiredGateways = defaultSandboxRequiredGateways || ['paypal', 'stripe_direct', 'paypal_express', 'stripe_connect', 'stripe_redirect', 'carlos_payment', 'ivr'];
+    deviceState = _useState6[0],
+    setDeviceState = _useState6[1];
   var _useState7 = (0, _react.useState)({
+      paymethods: [],
+      loading: true,
+      error: null
+    }),
+    _useState8 = _slicedToArray(_useState7, 2),
+    paymethodsList = _useState8[0],
+    setPaymethodsList = _useState8[1];
+  var sandboxRequiredGateways = defaultSandboxRequiredGateways || ['paypal', 'stripe_direct', 'paypal_express', 'stripe_connect', 'stripe_redirect', 'carlos_payment', 'ivr'];
+  var _useState9 = (0, _react.useState)({
       loading: false,
       result: {
         error: false
       }
     }),
-    _useState8 = _slicedToArray(_useState7, 2),
-    actionState = _useState8[0],
-    setActionState = _useState8[1];
-  var _useState9 = (0, _react.useState)({}),
     _useState10 = _slicedToArray(_useState9, 2),
-    changesState = _useState10[0],
-    setChangesState = _useState10[1];
+    actionState = _useState10[0],
+    setActionState = _useState10[1];
   var _useState11 = (0, _react.useState)({}),
     _useState12 = _slicedToArray(_useState11, 2),
-    stripeConnectData = _useState12[0],
-    setStripeConnectData = _useState12[1];
-  var _useState13 = (0, _react.useState)(false),
+    changesState = _useState12[0],
+    setChangesState = _useState12[1];
+  var _useState13 = (0, _react.useState)({}),
     _useState14 = _slicedToArray(_useState13, 2),
-    isSuccessDeleted = _useState14[0],
-    setIsSuccessDeleted = _useState14[1];
-  var stripeClientId = (configState === null || configState === void 0 || (_configState$configs = configState.configs) === null || _configState$configs === void 0 || (_configState$configs = _configState$configs.stripe_connect_sandbox) === null || _configState$configs === void 0 ? void 0 : _configState$configs.value) === '1' ? configState === null || configState === void 0 || (_configState$configs2 = configState.configs) === null || _configState$configs2 === void 0 || (_configState$configs2 = _configState$configs2.stripe_connect_client_id_sandbox) === null || _configState$configs2 === void 0 ? void 0 : _configState$configs2.value : configState === null || configState === void 0 || (_configState$configs3 = configState.configs) === null || _configState$configs3 === void 0 || (_configState$configs3 = _configState$configs3.stripe_connect_client_id) === null || _configState$configs3 === void 0 ? void 0 : _configState$configs3.value;
+    stripeConnectData = _useState14[0],
+    setStripeConnectData = _useState14[1];
+  var _useState15 = (0, _react.useState)(false),
+    _useState16 = _slicedToArray(_useState15, 2),
+    isSuccessDeleted = _useState16[0],
+    setIsSuccessDeleted = _useState16[1];
+  var stripeClientId = (configState === null || configState === void 0 ? void 0 : (_configState$configs = configState.configs) === null || _configState$configs === void 0 ? void 0 : (_configState$configs$ = _configState$configs.stripe_connect_sandbox) === null || _configState$configs$ === void 0 ? void 0 : _configState$configs$.value) === '1' ? configState === null || configState === void 0 ? void 0 : (_configState$configs2 = configState.configs) === null || _configState$configs2 === void 0 ? void 0 : (_configState$configs3 = _configState$configs2.stripe_connect_client_id_sandbox) === null || _configState$configs3 === void 0 ? void 0 : _configState$configs3.value : configState === null || configState === void 0 ? void 0 : (_configState$configs4 = configState.configs) === null || _configState$configs4 === void 0 ? void 0 : (_configState$configs5 = _configState$configs4.stripe_connect_client_id) === null || _configState$configs5 === void 0 ? void 0 : _configState$configs5.value;
 
   /**
    * Clean formState
@@ -129,7 +137,7 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
           case 0:
             _context.prev = 0;
             _context.next = 3;
-            return fetch("".concat(ordering.root, "/business/").concat(business.id, "/paymethods?params=sites"), {
+            return fetch("".concat(ordering.root, "/business/").concat(business.id, "/paymethods?params=sites,devices"), {
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json',
@@ -200,22 +208,21 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
   }();
 
   /**
-   * Method to get paymethods from API
+   * Method to get devices from API
    */
-  var getAllPaymethods = /*#__PURE__*/function () {
+  var getDevices = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var response, _yield$response$json2, result;
+      var response, _yield$response$json2, result, devices;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
             _context2.prev = 0;
             _context2.next = 3;
-            return fetch("".concat(ordering.root, "/paymethods?where=[{%22attribute%22:%22enabled%22,%22value%22:true}]"), {
+            return fetch("".concat(ordering.root, "/devices"), {
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: "Bearer ".concat(token),
-                'x-app-x': ordering === null || ordering === void 0 ? void 0 : ordering.appId
+                Authorization: "Bearer ".concat(token)
               }
             });
           case 3:
@@ -225,27 +232,80 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
           case 6:
             _yield$response$json2 = _context2.sent;
             result = _yield$response$json2.result;
+            devices = result.filter(function (item) {
+              return item.business_id === (business === null || business === void 0 ? void 0 : business.id);
+            });
+            setDeviceState(_objectSpread(_objectSpread({}, deviceState), {}, {
+              loading: false,
+              devices: devices
+            }));
+            _context2.next = 15;
+            break;
+          case 12:
+            _context2.prev = 12;
+            _context2.t0 = _context2["catch"](0);
+            setDeviceState(_objectSpread(_objectSpread({}, deviceState), {}, {
+              loading: false,
+              error: _context2.t0.message
+            }));
+          case 15:
+          case "end":
+            return _context2.stop();
+        }
+      }, _callee2, null, [[0, 12]]);
+    }));
+    return function getDevices() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Method to get paymethods from API
+   */
+  var getAllPaymethods = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var response, _yield$response$json3, result;
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.prev = 0;
+            _context3.next = 3;
+            return fetch("".concat(ordering.root, "/paymethods?where=[{%22attribute%22:%22enabled%22,%22value%22:true}]"), {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token),
+                'x-app-x': ordering === null || ordering === void 0 ? void 0 : ordering.appId
+              }
+            });
+          case 3:
+            response = _context3.sent;
+            _context3.next = 6;
+            return response.json();
+          case 6:
+            _yield$response$json3 = _context3.sent;
+            result = _yield$response$json3.result;
             setPaymethodsList(_objectSpread(_objectSpread({}, paymethodsList), {}, {
               loading: false,
               paymethods: parsePaymethods(result)
             }));
-            _context2.next = 14;
+            _context3.next = 14;
             break;
           case 11:
-            _context2.prev = 11;
-            _context2.t0 = _context2["catch"](0);
+            _context3.prev = 11;
+            _context3.t0 = _context3["catch"](0);
             setPaymethodsList(_objectSpread(_objectSpread({}, paymethodsList), {}, {
               loading: false,
-              error: _context2.t0.message
+              error: _context3.t0.message
             }));
           case 14:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
-      }, _callee2, null, [[0, 11]]);
+      }, _callee3, null, [[0, 11]]);
     }));
     return function getAllPaymethods() {
-      return _ref2.apply(this, arguments);
+      return _ref3.apply(this, arguments);
     };
   }();
 
@@ -254,10 +314,10 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
    * @param {*} paymethodId paymethod id to create
    */
   var handleCreateBusinessPaymentOption = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(paymethodId) {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(paymethodId) {
       var paymethod, params, requestOptions, response, content;
-      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-        while (1) switch (_context3.prev = _context3.next) {
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) switch (_context4.prev = _context4.next) {
           case 0:
             paymethod = paymethodsList.paymethods.find(function (_paymethod) {
               return _paymethod.id === paymethodId;
@@ -267,7 +327,7 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
               paymethod_id: paymethodId,
               sandbox: sandboxRequiredGateways.includes(paymethod.gateway)
             };
-            _context3.prev = 2;
+            _context4.prev = 2;
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
             setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
               loading: true
@@ -281,14 +341,14 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
               },
               body: JSON.stringify(params)
             };
-            _context3.next = 8;
+            _context4.next = 8;
             return fetch("".concat(ordering.root, "/business/").concat(business.id, "/paymethods"), requestOptions);
           case 8:
-            response = _context3.sent;
-            _context3.next = 11;
+            response = _context4.sent;
+            _context4.next = 11;
             return response.json();
           case 11:
-            content = _context3.sent;
+            content = _context4.sent;
             if (!content.error) {
               setBusinessPaymethodsState(function (prevState) {
                 return _objectSpread(_objectSpread({}, prevState), {}, {
@@ -305,26 +365,26 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
               });
               showToast(_ToastContext.ToastType.Success, t('PAYMETHOD_SAVED', 'Payment method saved'));
             }
-            _context3.next = 18;
+            _context4.next = 18;
             break;
           case 15:
-            _context3.prev = 15;
-            _context3.t0 = _context3["catch"](2);
+            _context4.prev = 15;
+            _context4.t0 = _context4["catch"](2);
             setActionState({
               result: {
                 error: true,
-                result: _context3.t0.message
+                result: _context4.t0.message
               },
               loading: false
             });
           case 18:
           case "end":
-            return _context3.stop();
+            return _context4.stop();
         }
-      }, _callee3, null, [[2, 15]]);
+      }, _callee4, null, [[2, 15]]);
     }));
     return function handleCreateBusinessPaymentOption(_x2) {
-      return _ref3.apply(this, arguments);
+      return _ref4.apply(this, arguments);
     };
   }();
 
@@ -334,12 +394,12 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
    * @param {Object} options parameters to update
    */
   var handleUpdateBusinessPaymethodOpton = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(paymethodId, options) {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(paymethodId, options) {
       var requestOptions, response, content;
-      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-        while (1) switch (_context4.prev = _context4.next) {
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) switch (_context5.prev = _context5.next) {
           case 0:
-            _context4.prev = 0;
+            _context5.prev = 0;
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
             setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
               loading: true
@@ -353,14 +413,14 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
               },
               body: JSON.stringify(options)
             };
-            _context4.next = 6;
+            _context5.next = 6;
             return fetch("".concat(ordering.root, "/business/").concat(business.id, "/paymethods/").concat(paymethodId), requestOptions);
           case 6:
-            response = _context4.sent;
-            _context4.next = 9;
+            response = _context5.sent;
+            _context5.next = 9;
             return response.json();
           case 9:
-            content = _context4.sent;
+            content = _context5.sent;
             setChangesState(content.error ? changesState : {});
             if (!content.error) {
               setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
@@ -377,67 +437,6 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
                 });
               });
               showToast(_ToastContext.ToastType.Success, t('PAYMETHOD_SAVED', 'Payment method saved'));
-            }
-            _context4.next = 17;
-            break;
-          case 14:
-            _context4.prev = 14;
-            _context4.t0 = _context4["catch"](0);
-            setActionState({
-              result: {
-                error: true,
-                result: _context4.t0.message
-              },
-              loading: false
-            });
-          case 17:
-          case "end":
-            return _context4.stop();
-        }
-      }, _callee4, null, [[0, 14]]);
-    }));
-    return function handleUpdateBusinessPaymethodOpton(_x3, _x4) {
-      return _ref4.apply(this, arguments);
-    };
-  }();
-
-  /**
-   * Method to update the business paymethod option
-   */
-  var handleUpdateBusiness = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-      var requestOptions, response, content;
-      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-        while (1) switch (_context5.prev = _context5.next) {
-          case 0:
-            _context5.prev = 0;
-            showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
-            setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
-              loading: true
-            }));
-            requestOptions = {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: "Bearer ".concat(token),
-                'x-app-x': ordering === null || ordering === void 0 ? void 0 : ordering.appId
-              },
-              body: JSON.stringify(changesState)
-            };
-            _context5.next = 6;
-            return fetch("".concat(ordering.root, "/business/").concat(business.id), requestOptions);
-          case 6:
-            response = _context5.sent;
-            _context5.next = 9;
-            return response.json();
-          case 9:
-            content = _context5.sent;
-            setChangesState(content.error ? changesState : {});
-            if (!content.error) {
-              setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
-                loading: false
-              }));
-              handleSuccessUpdate && handleSuccessUpdate(content.result);
             }
             _context5.next = 17;
             break;
@@ -457,8 +456,69 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
         }
       }, _callee5, null, [[0, 14]]);
     }));
-    return function handleUpdateBusiness() {
+    return function handleUpdateBusinessPaymethodOpton(_x3, _x4) {
       return _ref5.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Method to update the business paymethod option
+   */
+  var handleUpdateBusiness = /*#__PURE__*/function () {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+      var requestOptions, response, content;
+      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        while (1) switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.prev = 0;
+            showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+            setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
+              loading: true
+            }));
+            requestOptions = {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token),
+                'x-app-x': ordering === null || ordering === void 0 ? void 0 : ordering.appId
+              },
+              body: JSON.stringify(changesState)
+            };
+            _context6.next = 6;
+            return fetch("".concat(ordering.root, "/business/").concat(business.id), requestOptions);
+          case 6:
+            response = _context6.sent;
+            _context6.next = 9;
+            return response.json();
+          case 9:
+            content = _context6.sent;
+            setChangesState(content.error ? changesState : {});
+            if (!content.error) {
+              setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
+                loading: false
+              }));
+              handleSuccessUpdate && handleSuccessUpdate(content.result);
+            }
+            _context6.next = 17;
+            break;
+          case 14:
+            _context6.prev = 14;
+            _context6.t0 = _context6["catch"](0);
+            setActionState({
+              result: {
+                error: true,
+                result: _context6.t0.message
+              },
+              loading: false
+            });
+          case 17:
+          case "end":
+            return _context6.stop();
+        }
+      }, _callee6, null, [[0, 14]]);
+    }));
+    return function handleUpdateBusiness() {
+      return _ref6.apply(this, arguments);
     };
   }();
 
@@ -467,15 +527,15 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
    * @param {Number} paymethodId id to delete the business paymethod
    */
   var handleDeleteBusinessPaymethodOption = /*#__PURE__*/function () {
-    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(paymethodId) {
+    var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(paymethodId) {
       var businessPaymethodId, requestOptions, response, content, updatedPaymethods;
-      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
-        while (1) switch (_context6.prev = _context6.next) {
+      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+        while (1) switch (_context7.prev = _context7.next) {
           case 0:
             businessPaymethodId = businessPaymethodsState.paymethods.find(function (paymethod) {
               return paymethod.paymethod_id === paymethodId;
             }).id;
-            _context6.prev = 1;
+            _context7.prev = 1;
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
             setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
               loading: true
@@ -488,14 +548,14 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
                 'x-app-x': ordering === null || ordering === void 0 ? void 0 : ordering.appId
               }
             };
-            _context6.next = 7;
+            _context7.next = 7;
             return fetch("".concat(ordering.root, "/business/").concat(business.id, "/paymethods/").concat(businessPaymethodId), requestOptions);
           case 7:
-            response = _context6.sent;
-            _context6.next = 10;
+            response = _context7.sent;
+            _context7.next = 10;
             return response.json();
           case 10:
-            content = _context6.sent;
+            content = _context7.sent;
             if (!content.error) {
               setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
                 loading: false
@@ -509,26 +569,26 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
               showToast(_ToastContext.ToastType.Success, t('PAYMETHOD_DELETED', 'Payment method deleted'));
               setIsSuccessDeleted(true);
             }
-            _context6.next = 17;
+            _context7.next = 17;
             break;
           case 14:
-            _context6.prev = 14;
-            _context6.t0 = _context6["catch"](1);
+            _context7.prev = 14;
+            _context7.t0 = _context7["catch"](1);
             setActionState({
               result: {
                 error: true,
-                result: _context6.t0.message
+                result: _context7.t0.message
               },
               loading: false
             });
           case 17:
           case "end":
-            return _context6.stop();
+            return _context7.stop();
         }
-      }, _callee6, null, [[1, 14]]);
+      }, _callee7, null, [[1, 14]]);
     }));
     return function handleDeleteBusinessPaymethodOption(_x5) {
-      return _ref6.apply(this, arguments);
+      return _ref7.apply(this, arguments);
     };
   }();
 
@@ -675,7 +735,7 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
    * @param {Number} paymethodId id of payment method
    */
   var handleStripeSave = function handleStripeSave(paymethodId) {
-    var _requestionOptions, _requestionOptions2;
+    var _requestionOptions, _requestionOptions2, _requestionOptions3;
     var requestionOptions = _objectSpread(_objectSpread({}, stripeConnectData), {}, {
       sandbox: stripeConnectData === null || stripeConnectData === void 0 ? void 0 : stripeConnectData.sandbox,
       data: JSON.stringify(stripeConnectData === null || stripeConnectData === void 0 ? void 0 : stripeConnectData.data),
@@ -689,6 +749,11 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
     if ((_requestionOptions2 = requestionOptions) !== null && _requestionOptions2 !== void 0 && _requestionOptions2.sites) {
       requestionOptions = _objectSpread(_objectSpread({}, requestionOptions), {}, {
         sites: JSON.stringify(requestionOptions.sites)
+      });
+    }
+    if ((_requestionOptions3 = requestionOptions) !== null && _requestionOptions3 !== void 0 && _requestionOptions3.devices) {
+      requestionOptions = _objectSpread(_objectSpread({}, requestionOptions), {}, {
+        devices: JSON.stringify(requestionOptions.devices)
       });
     }
     if (Object.keys(stripeConnectData).length) {
@@ -716,7 +781,7 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
    * @param {Number} paymethodId id to save the change state
    */
   var handleSaveClick = function handleSaveClick(paymethodId) {
-    var _changes, _changes2, _changes3, _changes4;
+    var _changes, _changes2, _changes3, _changes4, _changes5;
     var changes = _objectSpread({}, changesState);
     if ((_changes = changes) !== null && _changes !== void 0 && _changes.data) {
       changes = _objectSpread(_objectSpread({}, changes), {}, {
@@ -738,6 +803,11 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
         sites: JSON.stringify(changes.sites)
       });
     }
+    if ((_changes5 = changes) !== null && _changes5 !== void 0 && _changes5.devices) {
+      changes = _objectSpread(_objectSpread({}, changes), {}, {
+        devices: JSON.stringify(changes.devices)
+      });
+    }
     handleUpdateBusinessPaymethodOpton(paymethodId, changes);
   };
   var handleSuccessPaymethodUpdate = function handleSuccessPaymethodUpdate(updatedPaymethods) {
@@ -748,6 +818,7 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
   (0, _react.useEffect)(function () {
     getAllPaymethods();
     getBusinessPaymethods();
+    getDevices();
   }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     businessPaymethodsState: businessPaymethodsState,
@@ -769,6 +840,7 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
     handleStripeSave: handleStripeSave,
     isSuccessDeleted: isSuccessDeleted,
     setIsSuccessDeleted: setIsSuccessDeleted,
+    deviceState: deviceState,
     handleSelectAllPaymethods: handleSelectAllPaymethods,
     handleSelectNonePaymethods: handleSelectNonePaymethods,
     handleSuccessPaymethodUpdate: handleSuccessPaymethodUpdate

@@ -248,12 +248,12 @@ var ReportsDriverGroupFilter = function ReportsDriverGroupFilter(props) {
   }, []);
   (0, _react.useEffect)(function () {
     var _driverGroupList$driv, _driverGroupList$driv2, _filterList$driver_gr;
-    if ((driverGroupList === null || driverGroupList === void 0 || (_driverGroupList$driv = driverGroupList.driverGroups) === null || _driverGroupList$driv === void 0 ? void 0 : _driverGroupList$driv.length) === 0) return;
-    var _groupIds = driverGroupList === null || driverGroupList === void 0 || (_driverGroupList$driv2 = driverGroupList.driverGroups) === null || _driverGroupList$driv2 === void 0 ? void 0 : _driverGroupList$driv2.reduce(function (prev, cur) {
+    if ((driverGroupList === null || driverGroupList === void 0 ? void 0 : (_driverGroupList$driv = driverGroupList.driverGroups) === null || _driverGroupList$driv === void 0 ? void 0 : _driverGroupList$driv.length) === 0) return;
+    var _groupIds = driverGroupList === null || driverGroupList === void 0 ? void 0 : (_driverGroupList$driv2 = driverGroupList.driverGroups) === null || _driverGroupList$driv2 === void 0 ? void 0 : _driverGroupList$driv2.reduce(function (prev, cur) {
       return [].concat(_toConsumableArray(prev), [cur.id]);
     }, []);
     setDriverGroupIds(_toConsumableArray((filterList === null || filterList === void 0 ? void 0 : filterList.driver_groups_ids) || _groupIds));
-    if (!(filterList !== null && filterList !== void 0 && filterList.driver_groups_ids) || (filterList === null || filterList === void 0 || (_filterList$driver_gr = filterList.driver_groups_ids) === null || _filterList$driver_gr === void 0 ? void 0 : _filterList$driver_gr.length) === (driverGroupList === null || driverGroupList === void 0 ? void 0 : driverGroupList.driverGroups.length)) setIsAllCheck(true);
+    if (!(filterList !== null && filterList !== void 0 && filterList.driver_groups_ids) || (filterList === null || filterList === void 0 ? void 0 : (_filterList$driver_gr = filterList.driver_groups_ids) === null || _filterList$driver_gr === void 0 ? void 0 : _filterList$driver_gr.length) === (driverGroupList === null || driverGroupList === void 0 ? void 0 : driverGroupList.driverGroups.length)) setIsAllCheck(true);
   }, [driverGroupList === null || driverGroupList === void 0 ? void 0 : driverGroupList.driverGroups]);
   (0, _react.useEffect)(function () {
     var controller = new AbortController();

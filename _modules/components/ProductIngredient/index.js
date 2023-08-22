@@ -51,7 +51,7 @@ var ProductIngredient = function ProductIngredient(props) {
   var state = {
     id: ingredient === null || ingredient === void 0 ? void 0 : ingredient.id,
     name: ingredient === null || ingredient === void 0 ? void 0 : ingredient.name,
-    selected: props === null || props === void 0 || (_props$state = props.state) === null || _props$state === void 0 ? void 0 : _props$state.selected
+    selected: props === null || props === void 0 ? void 0 : (_props$state = props.state) === null || _props$state === void 0 ? void 0 : _props$state.selected
   };
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),

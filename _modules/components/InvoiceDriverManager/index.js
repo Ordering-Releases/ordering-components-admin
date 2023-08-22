@@ -331,7 +331,7 @@ var InvoiceDriverManager = function InvoiceDriverManager(props) {
       date = new Date(date[0].split('-')[0], date[0].split('-')[1] - 1, date[0].split('-')[2], 0, 0, 0, 0);
       var orderPaymethodIds = order.payment_events.reduce(function (ids, event) {
         var _event$paymethod;
-        return [].concat(_toConsumableArray(ids), [event === null || event === void 0 || (_event$paymethod = event.paymethod) === null || _event$paymethod === void 0 ? void 0 : _event$paymethod.id]);
+        return [].concat(_toConsumableArray(ids), [event === null || event === void 0 ? void 0 : (_event$paymethod = event.paymethod) === null || _event$paymethod === void 0 ? void 0 : _event$paymethod.id]);
       }, []);
       orderPaymethodIds.push(order.paymethod_id);
       if (!orderPaymethodIds.some(function (id) {
@@ -432,7 +432,7 @@ var InvoiceDriverManager = function InvoiceDriverManager(props) {
       var fixOrderSummary = true;
       if (configs !== null && configs !== void 0 && configs.project_fix_order_summary) {
         var _configs$project_fix_;
-        fixOrderSummary = (configs === null || configs === void 0 || (_configs$project_fix_ = configs.project_fix_order_summary) === null || _configs$project_fix_ === void 0 ? void 0 : _configs$project_fix_.value) === '1';
+        fixOrderSummary = (configs === null || configs === void 0 ? void 0 : (_configs$project_fix_ = configs.project_fix_order_summary) === null || _configs$project_fix_ === void 0 ? void 0 : _configs$project_fix_.value) === '1';
       }
       if (order.tax_type === 1 && !fixOrderSummary) {
         return order.summary.subtotal + order.summary.tax;
@@ -469,7 +469,7 @@ var InvoiceDriverManager = function InvoiceDriverManager(props) {
    */
   var roundPrice = function roundPrice(value) {
     var _configs$format_numbe;
-    var power = Math.pow(10, configs === null || configs === void 0 || (_configs$format_numbe = configs.format_number_decimal_length) === null || _configs$format_numbe === void 0 ? void 0 : _configs$format_numbe.value);
+    var power = Math.pow(10, configs === null || configs === void 0 ? void 0 : (_configs$format_numbe = configs.format_number_decimal_length) === null || _configs$format_numbe === void 0 ? void 0 : _configs$format_numbe.value);
     var poweredVal = Math.round(value * power);
     return poweredVal / power;
   };

@@ -90,9 +90,9 @@ var ProfessionalServices = function ProfessionalServices(props) {
    * @param {Array} _selectedProductsIds array of product id
    */
   var handleSetSubCategoryList = function handleSetSubCategoryList(_selectedProductsIds) {
-    var _businessState$busine;
-    if (businessState !== null && businessState !== void 0 && (_businessState$busine = businessState.business) !== null && _businessState$busine !== void 0 && (_businessState$busine = _businessState$busine.categories) !== null && _businessState$busine !== void 0 && _businessState$busine.length) {
-      var _businessState$busine2;
+    var _businessState$busine, _businessState$busine2;
+    if (businessState !== null && businessState !== void 0 && (_businessState$busine = businessState.business) !== null && _businessState$busine !== void 0 && (_businessState$busine2 = _businessState$busine.categories) !== null && _businessState$busine2 !== void 0 && _businessState$busine2.length) {
+      var _businessState$busine3;
       var _subCategoriesList = [];
       var iterateCategories = function iterateCategories(categories) {
         return (categories === null || categories === void 0 ? void 0 : categories.length) > 0 && (categories === null || categories === void 0 ? void 0 : categories.forEach(function (category) {
@@ -124,7 +124,7 @@ var ProfessionalServices = function ProfessionalServices(props) {
         }));
       };
       setSubCategoriesList(_subCategoriesList);
-      iterateCategories(businessState === null || businessState === void 0 || (_businessState$busine2 = businessState.business) === null || _businessState$busine2 === void 0 ? void 0 : _businessState$busine2.categories);
+      iterateCategories(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine3 = businessState.business) === null || _businessState$busine3 === void 0 ? void 0 : _businessState$busine3.categories);
     }
   };
 

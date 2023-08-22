@@ -181,7 +181,7 @@ var AnalyticsBusinessFilter = function AnalyticsBusinessFilter(props) {
             pagination = _yield$fetchEndpoint$2.pagination;
             if (!error) {
               _businessList = [];
-              if (isFranchise && (filterList === null || filterList === void 0 || (_filterList$franchise = filterList.franchises_id) === null || _filterList$franchise === void 0 ? void 0 : _filterList$franchise.length) > 0) {
+              if (isFranchise && (filterList === null || filterList === void 0 ? void 0 : (_filterList$franchise = filterList.franchises_id) === null || _filterList$franchise === void 0 ? void 0 : _filterList$franchise.length) > 0) {
                 _businessList = result.filter(function (business) {
                   return filterList === null || filterList === void 0 ? void 0 : filterList.franchises_id.includes(business.franchise_id);
                 });
@@ -225,11 +225,11 @@ var AnalyticsBusinessFilter = function AnalyticsBusinessFilter(props) {
   }, [searchValue]);
   (0, _react.useEffect)(function () {
     var _businessList$busines, _businessList$busines2, _filterList$businessI;
-    if ((businessList === null || businessList === void 0 || (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.length) === 0) return;
+    if ((businessList === null || businessList === void 0 ? void 0 : (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.length) === 0) return;
     var _businessIds = (_businessList$busines2 = businessList.businesses) === null || _businessList$busines2 === void 0 ? void 0 : _businessList$busines2.reduce(function (prev, cur) {
       return [].concat(_toConsumableArray(prev), [cur.id]);
     }, []);
-    var filterBusinessIds = (filterList === null || filterList === void 0 || (_filterList$businessI = filterList.businessIds) === null || _filterList$businessI === void 0 ? void 0 : _filterList$businessI.length) > 0 ? filterList === null || filterList === void 0 ? void 0 : filterList.businessIds.filter(function (businessId) {
+    var filterBusinessIds = (filterList === null || filterList === void 0 ? void 0 : (_filterList$businessI = filterList.businessIds) === null || _filterList$businessI === void 0 ? void 0 : _filterList$businessI.length) > 0 ? filterList === null || filterList === void 0 ? void 0 : filterList.businessIds.filter(function (businessId) {
       return _businessIds.includes(businessId);
     }) : _businessIds;
     setBusinessIds(_toConsumableArray(filterBusinessIds));

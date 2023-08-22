@@ -70,9 +70,9 @@ var UploadMenu = function UploadMenu(props) {
             _context.prev = 0;
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
             changes = formState !== null && formState !== void 0 && (_formState$changes = formState.changes) !== null && _formState$changes !== void 0 && _formState$changes.file ? {
-              file: formState === null || formState === void 0 || (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.file
+              file: formState === null || formState === void 0 ? void 0 : (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.file
             } : {
-              url: formState === null || formState === void 0 || (_formState$changes3 = formState.changes) === null || _formState$changes3 === void 0 ? void 0 : _formState$changes3.url
+              url: formState === null || formState === void 0 ? void 0 : (_formState$changes3 = formState.changes) === null || _formState$changes3 === void 0 ? void 0 : _formState$changes3.url
             };
             requestOptions = {
               method: 'POST',

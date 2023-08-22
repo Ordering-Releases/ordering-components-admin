@@ -52,10 +52,9 @@ var WebsocketProvider = function WebsocketProvider(_ref) {
     setSocket = _useState2[1];
   (0, _react.useEffect)(function () {
     if (session.loading) return;
-    if (session.auth && settings.project) {
+    if (session.auth && settings.project && settings.url) {
       var _socket = new _socket2.Socket(_objectSpread(_objectSpread({}, settings), {}, {
-        accessToken: session.token,
-        url: 'https://socket-v3.ordering.co'
+        accessToken: session.token
       }));
       setSocket(_socket);
     }
@@ -70,24 +69,29 @@ var WebsocketProvider = function WebsocketProvider(_ref) {
     return function () {
       socket && socket.close();
     };
-  }, [socket, session === null || session === void 0 || (_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.id]);
+  }, [socket, session === null || session === void 0 ? void 0 : (_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.id]);
   (0, _react.useEffect)(function () {
-    if (socket !== null && socket !== void 0 && socket.socket) {
-      socket.socket.on('connect', function () {
-        window.localStorage.setItem('websocket-connected-date', new Date());
-        events.emit('websocket_connected');
-      });
-      socket.socket.on('disconnect', function (reason) {
-        if (reason === 'io server disconnect' && session.auth) {
-          window.setTimeout(socket.socket.connect(), 1000);
-        }
-      });
-      socket.socket.on('connect_error', function () {
-        if (session.auth) {
-          window.setTimeout(socket.socket.connect(), 1000);
-        }
-      });
-    }
+    if (!(socket !== null && socket !== void 0 && socket.socket)) return;
+    var disconnectTimeout = null;
+    var connectionErrorTimeout = null;
+    socket.socket.on('connect', function () {
+      window.localStorage.setItem('websocket-connected-date', new Date());
+      events.emit('websocket_connected');
+    });
+    socket.socket.on('disconnect', function () {
+      disconnectTimeout = setTimeout(function () {
+        return socket.socket.connect();
+      }, 1000);
+    });
+    socket.socket.on('connect_error', function () {
+      connectionErrorTimeout = setTimeout(function () {
+        return socket.socket.connect();
+      }, 1000);
+    });
+    return function () {
+      clearInterval(disconnectTimeout);
+      clearInterval(connectionErrorTimeout);
+    };
   }, [socket === null || socket === void 0 ? void 0 : socket.socket, session]);
   return /*#__PURE__*/_react.default.createElement(WebsocketContext.Provider, {
     value: socket

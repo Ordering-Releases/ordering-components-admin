@@ -95,16 +95,16 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
     setSelectedDriversCompanyIds = _useState14[1];
   var initSet = function initSet(driversGroup) {
     var _driversGroup$busines, _driversGroup$drivers, _driversGroup$driver_;
-    var businessIds = driversGroup === null || driversGroup === void 0 || (_driversGroup$busines = driversGroup.business) === null || _driversGroup$busines === void 0 ? void 0 : _driversGroup$busines.reduce(function (ids, business) {
+    var businessIds = driversGroup === null || driversGroup === void 0 ? void 0 : (_driversGroup$busines = driversGroup.business) === null || _driversGroup$busines === void 0 ? void 0 : _driversGroup$busines.reduce(function (ids, business) {
       return [].concat(_toConsumableArray(ids), [business.id]);
     }, []);
     setSelectedBusinessIds(businessIds);
     setSelectedPaymethodIds((driversGroup === null || driversGroup === void 0 ? void 0 : driversGroup.allowed_paymethods) || []);
-    var drivers = driversGroup === null || driversGroup === void 0 || (_driversGroup$drivers = driversGroup.drivers) === null || _driversGroup$drivers === void 0 ? void 0 : _driversGroup$drivers.reduce(function (ids, driver) {
+    var drivers = driversGroup === null || driversGroup === void 0 ? void 0 : (_driversGroup$drivers = driversGroup.drivers) === null || _driversGroup$drivers === void 0 ? void 0 : _driversGroup$drivers.reduce(function (ids, driver) {
       return [].concat(_toConsumableArray(ids), [driver.id]);
     }, []);
     setSelectedDriverIds(drivers);
-    var companyIds = driversGroup === null || driversGroup === void 0 || (_driversGroup$driver_ = driversGroup.driver_companies) === null || _driversGroup$driver_ === void 0 ? void 0 : _driversGroup$driver_.reduce(function (ids, company) {
+    var companyIds = driversGroup === null || driversGroup === void 0 ? void 0 : (_driversGroup$driver_ = driversGroup.driver_companies) === null || _driversGroup$driver_ === void 0 ? void 0 : _driversGroup$driver_.reduce(function (ids, company) {
       return [].concat(_toConsumableArray(ids), [company.id]);
     }, []);
     setSelectedDriversCompanyIds(companyIds);

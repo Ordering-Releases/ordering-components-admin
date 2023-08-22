@@ -67,7 +67,7 @@ var UploadAudio = function UploadAudio(props) {
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
             payload = {
               type: 2,
-              source: (_formState$changes$fi = formState === null || formState === void 0 || (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.file) !== null && _formState$changes$fi !== void 0 ? _formState$changes$fi : formState === null || formState === void 0 || (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.url
+              source: (_formState$changes$fi = formState === null || formState === void 0 ? void 0 : (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.file) !== null && _formState$changes$fi !== void 0 ? _formState$changes$fi : formState === null || formState === void 0 ? void 0 : (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.url
             };
             requestOptions = {
               method: 'POST',

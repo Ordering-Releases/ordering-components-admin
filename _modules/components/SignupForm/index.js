@@ -245,7 +245,7 @@ var SignupForm = function SignupForm(props) {
    */
   var checkVerifyPhoneCode = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(values) {
-      var _res$result, response, res, _res$result2;
+      var _res$result, response, res, _res$result2, _res$result2$session;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
@@ -270,7 +270,7 @@ var SignupForm = function SignupForm(props) {
             if (!(res !== null && res !== void 0 && res.error) && res !== null && res !== void 0 && (_res$result = res.result) !== null && _res$result !== void 0 && _res$result.id) {
               login({
                 user: res === null || res === void 0 ? void 0 : res.result,
-                token: res === null || res === void 0 || (_res$result2 = res.result) === null || _res$result2 === void 0 || (_res$result2 = _res$result2.session) === null || _res$result2 === void 0 ? void 0 : _res$result2.access_token
+                token: res === null || res === void 0 ? void 0 : (_res$result2 = res.result) === null || _res$result2 === void 0 ? void 0 : (_res$result2$session = _res$result2.session) === null || _res$result2$session === void 0 ? void 0 : _res$result2$session.access_token
               });
               if (handleSuccessSignup) {
                 handleSuccessSignup(res === null || res === void 0 ? void 0 : res.result);

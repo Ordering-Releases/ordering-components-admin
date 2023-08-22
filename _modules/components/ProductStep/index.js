@@ -91,8 +91,8 @@ var ProductStep = function ProductStep(props) {
                 Authorization: "Bearer ".concat(session.token)
               }
             };
-            lat = ad === null || ad === void 0 || (_ad$location = ad.location) === null || _ad$location === void 0 ? void 0 : _ad$location.lat;
-            lng = ad === null || ad === void 0 || (_ad$location2 = ad.location) === null || _ad$location2 === void 0 ? void 0 : _ad$location2.lng;
+            lat = ad === null || ad === void 0 ? void 0 : (_ad$location = ad.location) === null || _ad$location === void 0 ? void 0 : _ad$location.lat;
+            lng = ad === null || ad === void 0 ? void 0 : (_ad$location2 = ad.location) === null || _ad$location2 === void 0 ? void 0 : _ad$location2.lng;
             url = "https://integrations.ordering.co/network/search.php?latitude=".concat(lat, "&longitude=").concat(lng, "&project=").concat(ordering.project);
             _context.next = 8;
             return fetch(url, requestOptions);
@@ -107,7 +107,7 @@ var ProductStep = function ProductStep(props) {
             if (!error) {
               sortedBusinessList = result.sort(function (a, b) {
                 var _a$address, _b$address;
-                return (0, _utils.getDistance)(a === null || a === void 0 || (_a$address = a.address) === null || _a$address === void 0 ? void 0 : _a$address.lat, a === null || a === void 0 ? void 0 : a.address.lon, lat, lng) - (0, _utils.getDistance)(b === null || b === void 0 || (_b$address = b.address) === null || _b$address === void 0 ? void 0 : _b$address.lat, b === null || b === void 0 ? void 0 : b.address.lon, lat, lng);
+                return (0, _utils.getDistance)(a === null || a === void 0 ? void 0 : (_a$address = a.address) === null || _a$address === void 0 ? void 0 : _a$address.lat, a === null || a === void 0 ? void 0 : a.address.lon, lat, lng) - (0, _utils.getDistance)(b === null || b === void 0 ? void 0 : (_b$address = b.address) === null || _b$address === void 0 ? void 0 : _b$address.lat, b === null || b === void 0 ? void 0 : b.address.lon, lat, lng);
               });
               setBusinessListState({
                 loading: false,
@@ -274,7 +274,7 @@ var ProductStep = function ProductStep(props) {
                 return country === null || country === void 0 ? void 0 : country.enabled;
               }).some(function (country) {
                 var _country$code, _country$name;
-                return allowCodes.includes(country === null || country === void 0 || (_country$code = country.code) === null || _country$code === void 0 ? void 0 : _country$code.toLowerCase()) || allowCodes.includes(country === null || country === void 0 || (_country$name = country.name) === null || _country$name === void 0 ? void 0 : _country$name.toLowerCase());
+                return allowCodes.includes(country === null || country === void 0 ? void 0 : (_country$code = country.code) === null || _country$code === void 0 ? void 0 : _country$code.toLowerCase()) || allowCodes.includes(country === null || country === void 0 ? void 0 : (_country$name = country.name) === null || _country$name === void 0 ? void 0 : _country$name.toLowerCase());
               });
               setCountriesState(_objectSpread(_objectSpread({}, countriesState), {}, {
                 loading: false,
