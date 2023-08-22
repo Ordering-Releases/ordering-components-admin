@@ -461,7 +461,7 @@ export const EnterprisePromotionDetails = (props) => {
       initSetting(promotion)
     }
     setPromotionState({ ...promotionState, promotion: promotion })
-  }, [promotion, promotionId])
+  }, [JSON.stringify(promotion || {}), promotionId])
 
   return (
     <>

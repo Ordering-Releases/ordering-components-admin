@@ -23,8 +23,8 @@ export const WebsocketProvider = ({ settings, children }) => {
 
   useEffect(() => {
     if (session.loading) return
-    if (session.auth && settings.project) {
-      const _socket = new Socket({ ...settings, accessToken: session.token, url: 'https://socket-v3.ordering.co' })
+    if (session.auth && settings.project && settings.url) {
+      const _socket = new Socket({ ...settings, accessToken: session.token })
       setSocket(_socket)
     }
     if (!session.auth) {
@@ -42,23 +42,26 @@ export const WebsocketProvider = ({ settings, children }) => {
   }, [socket, session?.user?.id])
 
   useEffect(() => {
-    if (socket?.socket) {
-      socket.socket.on('connect', () => {
-        window.localStorage.setItem('websocket-connected-date', new Date())
-        events.emit('websocket_connected')
-      })
+    if (!socket?.socket) return
+    let disconnectTimeout = null
+    let connectionErrorTimeout = null
 
-      socket.socket.on('disconnect', (reason) => {
-        if (reason === 'io server disconnect' && session.auth) {
-          window.setTimeout(socket.socket.connect(), 1000)
-        }
-      })
+    socket.socket.on('connect', () => {
+      window.localStorage.setItem('websocket-connected-date', new Date())
+      events.emit('websocket_connected')
+    })
 
-      socket.socket.on('connect_error', () => {
-        if (session.auth) {
-          window.setTimeout(socket.socket.connect(), 1000)
-        }
-      })
+    socket.socket.on('disconnect', () => {
+      disconnectTimeout = setTimeout(() => socket.socket.connect(), 1000)
+    })
+
+    socket.socket.on('connect_error', () => {
+      connectionErrorTimeout = setTimeout(() => socket.socket.connect(), 1000)
+    })
+
+    return () => {
+      clearInterval(disconnectTimeout)
+      clearInterval(connectionErrorTimeout)
     }
   }, [socket?.socket, session])
 

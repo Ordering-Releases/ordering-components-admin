@@ -39,6 +39,7 @@ export const CampaignDetail = (props) => {
   const [isAddMode, setIsAddMode] = useState(false)
   const [audienceState, setAudienceState] = useState({ loading: false, audience: 0, error: null })
   const [categoryList, setCategoryList] = useState({ loading: false, categories: [], error: null })
+  const [contactState, setContactState] = useState({ loading: false, changes: {}, error: null })
 
   /**
    * Clean formState
@@ -99,6 +100,20 @@ export const CampaignDetail = (props) => {
       ...formState,
       changes: changes
     })
+  }
+
+  /**
+   * Update parameter data
+   * @param {string} name parameters to change
+   * @param {string} value parameters to change
+   */
+  const handleChangeType = (name, value) => {
+    const changes = { ...contactState?.changes, [name]: value }
+    setContactState({ ...contactState, changes: changes })
+
+    if (isAddMode) {
+      handleChangeItem && handleChangeItem(name, value)
+    }
   }
 
   /**
@@ -510,6 +525,92 @@ export const CampaignDetail = (props) => {
     }
   }
 
+  /**
+   * Update credential data
+   * @param {EventTarget} e Related HTML event
+   */
+  const handleChangeData = (e) => {
+    const contactData = { ...contactState.changes?.contact_data, [e.target.name]: e.target.value }
+    setContactState({
+      ...contactState,
+      changes: { ...contactState.changes, contact_data: contactData }
+    })
+
+    if (isAddMode) {
+      handleChangeContactData && handleChangeContactData(e)
+    }
+  }
+
+  /**
+ * Update credential data
+ */
+  const handleChangeContact = (name, value) => {
+    const contactData = { ...formState.changes?.contact_data, [name]: value }
+    setFormState({
+      ...formState,
+      changes: { ...formState.changes, contact_data: contactData }
+    })
+
+    if (isAddMode) {
+      handleChangeParentContact && handleChangeParentContact(name, value)
+    }
+  }
+
+  /**
+   * Default fuction for recovery action workflow
+   */
+  const handleUpdateContact = async () => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setContactState({ ...contactState, loading: true, error: null })
+
+      const changes = { ...formState?.changes }
+      for (const key in changes) {
+        if ((typeof changes[key] === 'object' && changes[key] !== null) || Array.isArray(changes[key])) {
+          changes[key] = JSON.stringify(changes[key])
+        }
+        delete changes?.contact_type
+      }
+      const requestOptions = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(changes)
+      }
+
+      const response = await fetch(`${ordering.root}/marketing_campaigns/${campaignState?.campaign?.id}`, requestOptions)
+      const content = await response.json()
+
+      if (!content.error) {
+        setContactState({ ...contactState, loading: false, error: null })
+        if (handleSuccessUpdateCampaign) {
+          const updatedCampaigns = campaignList?.campaigns.filter(_campaign => {
+            if (_campaign.id === campaignState?.campaign?.id) {
+              Object.assign(_campaign, content.result)
+            }
+            return true
+          })
+          handleSuccessUpdateCampaign(updatedCampaigns)
+        }
+        showToast(ToastType.Success, t('CAMPAIGN_SAVED', 'Campaign saved'))
+      } else {
+        setContactState({
+          ...contactState,
+          loading: false,
+          error: content.result
+        })
+      }
+    } catch (err) {
+      setContactState({
+        ...contactState,
+        loading: false,
+        error: err.message
+      })
+    }
+  }
+
   useEffect(() => {
     if (Object.keys(campaign).length === 0) {
       if (campaignId) {
@@ -556,6 +657,34 @@ export const CampaignDetail = (props) => {
     getParentCategory()
   }, [])
 
+  useEffect(() => {
+    if (isAddMode) return
+
+    if (campaignState?.campaign && Object.keys(campaignState?.campaign).length > 0) {
+      setContactState({
+        ...contactState,
+        changes: {
+          contact_type: campaignState?.campaign?.contact_type || '',
+          contact_data: campaignState?.campaign?.contact_data || {}
+        }
+      })
+    }
+  }, [campaignState?.campaign])
+
+  useEffect(() => {
+    if (!isAddMode) return
+
+    if (formState?.changes && Object.keys(formState?.changes).length > 0) {
+      setContactState({
+        ...contactState,
+        changes: {
+          contact_type: formState?.changes?.contact_type || '',
+          contact_data: formState?.changes?.contact_data || {}
+        }
+      })
+    }
+  }, [formState?.changes])
+
   return (
     <>
       {
@@ -565,8 +694,13 @@ export const CampaignDetail = (props) => {
             isAddMode={isAddMode}
             audienceState={audienceState}
             campaignState={campaignState}
+            contactState={contactState}
             formState={formState}
             handleChangeItem={handleChangeItem}
+            handleChangeType={handleChangeType}
+            handleChangeData={handleChangeData}
+            handleChangeContact={handleChangeContact}
+            handleUpdateContact={handleUpdateContact}
             handleChangeInput={handleChangeInput}
             handleAddCampaign={handleAddCampaign}
             handleDeleteCampaign={handleDeleteCampaign}

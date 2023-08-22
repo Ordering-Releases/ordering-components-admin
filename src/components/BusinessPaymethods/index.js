@@ -23,6 +23,7 @@ export const BusinessPaymethods = (props) => {
 
   const [businessPaymethodsState, setBusinessPaymethodsState] = useState({ paymethods: [], loading: true, error: null })
   const [sitesState, setSitesState] = useState({ sites: [], loading: true, error: null })
+  const [deviceState, setDeviceState] = useState({ devices: [], loading: true, error: null })
   const [paymethodsList, setPaymethodsList] = useState({ paymethods: [], loading: true, error: null })
   const sandboxRequiredGateways = defaultSandboxRequiredGateways || ['paypal', 'stripe_direct', 'paypal_express', 'stripe_connect', 'stripe_redirect', 'carlos_payment', 'ivr']
   const [actionState, setActionState] = useState({ loading: false, result: { error: false } })
@@ -48,7 +49,7 @@ export const BusinessPaymethods = (props) => {
    */
   const getBusinessPaymethods = async () => {
     try {
-      const response = await fetch(`${ordering.root}/business/${business.id}/paymethods?params=sites`,
+      const response = await fetch(`${ordering.root}/business/${business.id}/paymethods?params=sites,devices`,
         {
           method: 'GET',
           headers: {
@@ -78,6 +79,28 @@ export const BusinessPaymethods = (props) => {
       setBusinessPaymethodsState({ ...paymethodsList, loading: false, paymethods: result })
     } catch (err) {
       setBusinessPaymethodsState({ ...paymethodsList, loading: false, error: err.message })
+    }
+  }
+
+  /**
+   * Method to get devices from API
+   */
+  const getDevices = async () => {
+    try {
+      const response = await fetch(`${ordering.root}/devices`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+      const { result } = await response.json()
+      const devices = result.filter(item => item.business_id === business?.id)
+      setDeviceState({ ...deviceState, loading: false, devices })
+    } catch (err) {
+      setDeviceState({ ...deviceState, loading: false, error: err.message })
     }
   }
 
@@ -382,6 +405,12 @@ export const BusinessPaymethods = (props) => {
         sites: JSON.stringify(requestionOptions.sites)
       }
     }
+    if (requestionOptions?.devices) {
+      requestionOptions = {
+        ...requestionOptions,
+        devices: JSON.stringify(requestionOptions.devices)
+      }
+    }
     if (Object.keys(stripeConnectData).length) {
       handleUpdateBusinessPaymethodOpton(paymethodId, requestionOptions)
     }
@@ -433,6 +462,12 @@ export const BusinessPaymethods = (props) => {
         sites: JSON.stringify(changes.sites)
       }
     }
+    if (changes?.devices) {
+      changes = {
+        ...changes,
+        devices: JSON.stringify(changes.devices)
+      }
+    }
     handleUpdateBusinessPaymethodOpton(paymethodId, changes)
   }
 
@@ -446,6 +481,7 @@ export const BusinessPaymethods = (props) => {
   useEffect(() => {
     getAllPaymethods()
     getBusinessPaymethods()
+    getDevices()
   }, [])
 
   return (
@@ -472,6 +508,7 @@ export const BusinessPaymethods = (props) => {
           handleStripeSave={handleStripeSave}
           isSuccessDeleted={isSuccessDeleted}
           setIsSuccessDeleted={setIsSuccessDeleted}
+          deviceState={deviceState}
           handleSelectAllPaymethods={handleSelectAllPaymethods}
           handleSelectNonePaymethods={handleSelectNonePaymethods}
           handleSuccessPaymethodUpdate={handleSuccessPaymethodUpdate}
