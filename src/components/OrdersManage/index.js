@@ -24,7 +24,7 @@ export const OrdersManage = (props) => {
   const requestsState = {}
   const orderStatuesList = {
     pending: [0, 13],
-    inProgress: [7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23],
+    inProgress: [7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23, 24, 25],
     completed: [1, 11, 15],
     cancelled: [2, 5, 6, 10, 12, 16, 17]
   }
