@@ -275,6 +275,10 @@ var UtilsProviders = function UtilsProviders(_ref) {
         return t('ORDER_LOOKING_FOR_DRIVER', 'Looking for driver');
       case 23:
         return t('ORDER_DRIVER_ON_WAY', 'Driver on way');
+      case 24:
+        return t('ORDER_STATUS_DRIVER_WAITING_FOR_ORDER', 'Driver waiting for order');
+      case 25:
+        return t('ORDER_STATUS_ACCEPTED_BY_DRIVER_COMPANY', 'Accepted by driver company');
       default:
         return 'N/A';
     }
