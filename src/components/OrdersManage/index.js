@@ -11,7 +11,8 @@ export const OrdersManage = (props) => {
   const {
     UIComponent,
     statusGroup,
-    driversPropsToFetch
+    driversPropsToFetch,
+    disableSocketRoomDriver
   } = props
 
   const [ordering] = useApi()
@@ -326,11 +327,15 @@ export const OrdersManage = (props) => {
         return { ...prevState, drivers: updatedDrivers }
       })
     }
-    socket.on('drivers_update', handleUpdateDriver)
-    socket.on('tracking_driver', handleTrackingDriver)
+    if (!disableSocketRoomDriver) {
+      socket.on('drivers_update', handleUpdateDriver)
+      socket.on('tracking_driver', handleTrackingDriver)
+    }
     return () => {
-      socket.off('drivers_update', handleUpdateDriver)
-      socket.off('tracking_driver', handleTrackingDriver)
+      if (!disableSocketRoomDriver) {
+        socket.off('drivers_update', handleUpdateDriver)
+        socket.off('tracking_driver', handleTrackingDriver)
+      }
     }
   }, [socket, loading, driversList.drivers])
 
