@@ -38,7 +38,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var OrdersManage = function OrdersManage(props) {
   var UIComponent = props.UIComponent,
     statusGroup = props.statusGroup,
-    driversPropsToFetch = props.driversPropsToFetch;
+    driversPropsToFetch = props.driversPropsToFetch,
+    disableSocketRoomDriver = props.disableSocketRoomDriver;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -642,11 +643,15 @@ var OrdersManage = function OrdersManage(props) {
         });
       });
     };
-    socket.on('drivers_update', handleUpdateDriver);
-    socket.on('tracking_driver', handleTrackingDriver);
+    if (!disableSocketRoomDriver) {
+      socket.on('drivers_update', handleUpdateDriver);
+      socket.on('tracking_driver', handleTrackingDriver);
+    }
     return function () {
-      socket.off('drivers_update', handleUpdateDriver);
-      socket.off('tracking_driver', handleTrackingDriver);
+      if (!disableSocketRoomDriver) {
+        socket.off('drivers_update', handleUpdateDriver);
+        socket.off('tracking_driver', handleTrackingDriver);
+      }
     };
   }, [socket, loading, driversList.drivers]);
 
