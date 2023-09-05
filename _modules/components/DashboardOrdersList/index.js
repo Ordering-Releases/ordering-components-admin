@@ -11,6 +11,7 @@ var _SessionContext = require("../../contexts/SessionContext");
 var _ApiContext = require("../../contexts/ApiContext");
 var _WebsocketContext = require("../../contexts/WebsocketContext");
 var _EventContext = require("../../contexts/EventContext");
+var _ConfigContext = require("../../contexts/ConfigContext");
 var _moment = _interopRequireDefault(require("moment"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -68,6 +69,9 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
   var _useEvent = (0, _EventContext.useEvent)(),
     _useEvent2 = _slicedToArray(_useEvent, 1),
     events = _useEvent2[0];
+  var _useConfig = (0, _ConfigContext.useConfig)(),
+    _useConfig2 = _slicedToArray(_useConfig, 1),
+    configState = _useConfig2[0];
   var _useState = (0, _react.useState)({
       loading: !orders,
       error: null,
@@ -933,7 +937,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
    * Listening sesssion and filter values change
    */
   (0, _react.useEffect)(function () {
-    if (session !== null && session !== void 0 && session.loading) return;
+    if (session !== null && session !== void 0 && session.loading || configState.loading) return;
     if (orders) {
       setOrderList(_objectSpread(_objectSpread({}, orderList), {}, {
         orders: orders
@@ -946,7 +950,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
         requestsState.orders.cancel();
       }
     };
-  }, [session, searchValue, orderBy, filterValues, isOnlyDelivery, driverId, customerId, businessId, orders, orderStatus, timeStatus]);
+  }, [session, searchValue, orderBy, filterValues, isOnlyDelivery, driverId, customerId, businessId, orders, orderStatus, timeStatus, configState.loading]);
   var handleUpdateOrder = function handleUpdateOrder(order) {
     var _order$products, _order$products$;
     if ((order === null || order === void 0 ? void 0 : (_order$products = order.products) === null || _order$products === void 0 ? void 0 : (_order$products$ = _order$products[0]) === null || _order$products$ === void 0 ? void 0 : _order$products$.type) === 'gift_card') return;
