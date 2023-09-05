@@ -4,6 +4,7 @@ import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
 import { useWebsocket } from '../../contexts/WebsocketContext'
 import { useEvent } from '../../contexts/EventContext'
+import { useConfig } from '../../contexts/ConfigContext'
 import moment from 'moment'
 
 export const DashboardOrdersList = (props) => {
@@ -38,6 +39,8 @@ export const DashboardOrdersList = (props) => {
 
   const [ordering] = useApi()
   const [events] = useEvent()
+  const [configState] = useConfig()
+
   const [orderList, setOrderList] = useState({ loading: !orders, error: null, orders: [] })
   const [pagination, setPagination] = useState({
     currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage : 1,
@@ -777,7 +780,7 @@ export const DashboardOrdersList = (props) => {
    * Listening sesssion and filter values change
    */
   useEffect(() => {
-    if (session?.loading) return
+    if (session?.loading || configState.loading) return
     if (orders) {
       setOrderList({
         ...orderList,
@@ -791,7 +794,7 @@ export const DashboardOrdersList = (props) => {
         requestsState.orders.cancel()
       }
     }
-  }, [session, searchValue, orderBy, filterValues, isOnlyDelivery, driverId, customerId, businessId, orders, orderStatus, timeStatus])
+  }, [session, searchValue, orderBy, filterValues, isOnlyDelivery, driverId, customerId, businessId, orders, orderStatus, timeStatus, configState.loading])
 
   const handleUpdateOrder = (order) => {
     if (order?.products?.[0]?.type === 'gift_card') return
