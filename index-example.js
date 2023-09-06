@@ -21,7 +21,7 @@ const configFile = {
 Sentry.init({
   environment: process.env.NODE_ENV,
   dsn: "https://35896d739f80421c9da71bf33f00e5fe@o460529.ingest.sentry.io/6302996",
-  release: process.env.npm_package_version ? 'ordering-components-admin-release@' + process.env.npm_package_version : 'ordering-components-admin-release@' + '1.0.7',
+  release: process.env.npm_package_version ? 'ordering-components-admin-release@' + process.env.npm_package_version : 'ordering-components-admin-release@' + '1.0.8',
   // We recommend adjusting this value in production, or using tracesSampler
   // for finer control
   tracesSampleRate: 0.2,
