@@ -10,7 +10,8 @@ export const CountryList = (props) => {
     filterList,
     handleChangeFilterList,
     onClose,
-    handleChangeCode
+    handleChangeCode,
+    propsToFetch
   } = props
   const [ordering] = useApi()
 
@@ -39,9 +40,15 @@ export const CountryList = (props) => {
       return
     }
 
+    const options = {
+      headers: { 'X-Country-Code-X': code },
+      query: {
+        params: propsToFetch
+      }
+    }
     try {
       setActionState({ ...actionState, loading: true })
-      const { content: { error, result } } = await ordering.businesses().asDashboard().get({ headers: { 'X-Country-Code-X': code } })
+      const { content: { error, result } } = await ordering.businesses().asDashboard().get(options)
       if (!error) {
         const _businessIds = result.map(business => business.id)
         handleChangeFilterList({ ...filterList, businessIds: _businessIds })
@@ -158,5 +165,6 @@ CountryList.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: []
+  afterElements: [],
+  propsToFetch: ['id','name','slug','franchise_id']
 }
