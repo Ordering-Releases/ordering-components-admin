@@ -33,7 +33,8 @@ var CountryList = function CountryList(props) {
     filterList = props.filterList,
     handleChangeFilterList = props.handleChangeFilterList,
     onClose = props.onClose,
-    handleChangeCode = props.handleChangeCode;
+    handleChangeCode = props.handleChangeCode,
+    propsToFetch = props.propsToFetch;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -91,7 +92,7 @@ var CountryList = function CountryList(props) {
    */
   var getBusinessList = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var _yield$ordering$busin, _yield$ordering$busin2, error, result, _businessIds;
+      var options, _yield$ordering$busin, _yield$ordering$busin2, error, result, _businessIds;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -104,17 +105,21 @@ var CountryList = function CountryList(props) {
             }));
             return _context2.abrupt("return");
           case 3:
-            _context2.prev = 3;
+            options = {
+              headers: {
+                'X-Country-Code-X': code
+              },
+              query: {
+                params: propsToFetch
+              }
+            };
+            _context2.prev = 4;
             setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
               loading: true
             }));
-            _context2.next = 7;
-            return ordering.businesses().asDashboard().get({
-              headers: {
-                'X-Country-Code-X': code
-              }
-            });
-          case 7:
+            _context2.next = 8;
+            return ordering.businesses().asDashboard().get(options);
+          case 8:
             _yield$ordering$busin = _context2.sent;
             _yield$ordering$busin2 = _yield$ordering$busin.content;
             error = _yield$ordering$busin2.error;
@@ -131,20 +136,20 @@ var CountryList = function CountryList(props) {
               loading: false,
               error: error ? result : null
             });
-            _context2.next = 18;
+            _context2.next = 19;
             break;
-          case 15:
-            _context2.prev = 15;
-            _context2.t0 = _context2["catch"](3);
+          case 16:
+            _context2.prev = 16;
+            _context2.t0 = _context2["catch"](4);
             setActionState({
               loading: false,
               error: [_context2.t0.message]
             });
-          case 18:
+          case 19:
           case "end":
             return _context2.stop();
         }
-      }, _callee2, null, [[3, 15]]);
+      }, _callee2, null, [[4, 16]]);
     }));
     return function getBusinessList() {
       return _ref2.apply(this, arguments);
@@ -277,5 +282,6 @@ CountryList.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: []
+  afterElements: [],
+  propsToFetch: ['id', 'name', 'slug', 'franchise_id']
 };
