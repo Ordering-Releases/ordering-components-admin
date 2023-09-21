@@ -909,8 +909,8 @@ export const DashboardOrdersList = (props) => {
   useEffect(() => {
     if (orderList.loading) return
     if (pagination?.currentPage !== 0 && pagination?.total !== 0) {
-      if (orderList.orders.length === 0 && ((filterValues && Object.keys(filterValues).length > 0) || !!searchValue)) {
-        if (orderList.orders.length === 0) {
+      if (Math.ceil(pagination?.total / pagination.pageSize) >= pagination?.currentPage) {
+        if (orderList.orders.length === 0 && ((filterValues && Object.keys(filterValues).length > 0) || !!searchValue)) {
           getPageOrders(pagination.pageSize, pagination.currentPage)
         }
       } else {
