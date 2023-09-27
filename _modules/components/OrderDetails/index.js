@@ -397,7 +397,7 @@ var OrderDetails = function OrderDetails(props) {
    */
   var handleUpdateOrderStatus = /*#__PURE__*/function () {
     var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(order) {
-      var response, content;
+      var response, content, _orderState$order2, updatedDriver;
       return _regeneratorRuntime().wrap(function _callee6$(_context6) {
         while (1) switch (_context6.prev = _context6.next) {
           case 0:
@@ -422,24 +422,53 @@ var OrderDetails = function OrderDetails(props) {
             return response.json();
           case 7:
             content = _context6.sent;
-            setActionStatus({
-              loading: false,
-              error: content.error ? content.result : null
-            });
-            _context6.next = 14;
-            break;
+            if (content.error) {
+              _context6.next = 15;
+              break;
+            }
+            if (!((order === null || order === void 0 ? void 0 : order.id) !== (orderState === null || orderState === void 0 ? void 0 : (_orderState$order2 = orderState.order) === null || _orderState$order2 === void 0 ? void 0 : _orderState$order2.id))) {
+              _context6.next = 11;
+              break;
+            }
+            return _context6.abrupt("return");
           case 11:
-            _context6.prev = 11;
+            delete content.result.total;
+            delete content.result.subtotal;
+            if (!(order !== null && order !== void 0 && order.driver) && order !== null && order !== void 0 && order.driver_id) {
+              updatedDriver = drivers.find(function (driver) {
+                return driver.id === order.driver_id;
+              });
+              if (updatedDriver) {
+                order.driver = _objectSpread({}, updatedDriver);
+              }
+            }
+            setOrderState(_objectSpread(_objectSpread({}, orderState), {}, {
+              order: Object.assign(orderState.order, content.result)
+            }));
+          case 15:
+            if (content.error) {
+              setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
+                loading: false,
+                error: content.error ? content.result : null
+              }));
+            }
+            setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
+              loading: false
+            }));
+            _context6.next = 22;
+            break;
+          case 19:
+            _context6.prev = 19;
             _context6.t0 = _context6["catch"](0);
             setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
               loading: false,
               error: [_context6.t0.message]
             }));
-          case 14:
+          case 22:
           case "end":
             return _context6.stop();
         }
-      }, _callee6, null, [[0, 11]]);
+      }, _callee6, null, [[0, 19]]);
     }));
     return function handleUpdateOrderStatus(_x4) {
       return _ref7.apply(this, arguments);
@@ -488,7 +517,7 @@ var OrderDetails = function OrderDetails(props) {
   }();
   var handleRefundPaymentsStripe = /*#__PURE__*/function () {
     var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
-      var _orderState$order2, _orderState$order3, _orderState$order4, _orderState$order4$pa, requestOption, response, content;
+      var _orderState$order3, _orderState$order4, _orderState$order5, _orderState$order5$pa, requestOption, response, content;
       return _regeneratorRuntime().wrap(function _callee8$(_context8) {
         while (1) switch (_context8.prev = _context8.next) {
           case 0:
@@ -504,9 +533,9 @@ var OrderDetails = function OrderDetails(props) {
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                order_id: (_orderState$order2 = orderState.order) === null || _orderState$order2 === void 0 ? void 0 : _orderState$order2.id,
-                business_id: (_orderState$order3 = orderState.order) === null || _orderState$order3 === void 0 ? void 0 : _orderState$order3.business_id,
-                gateway: (_orderState$order4 = orderState.order) === null || _orderState$order4 === void 0 ? void 0 : (_orderState$order4$pa = _orderState$order4.paymethod) === null || _orderState$order4$pa === void 0 ? void 0 : _orderState$order4$pa.gateway
+                order_id: (_orderState$order3 = orderState.order) === null || _orderState$order3 === void 0 ? void 0 : _orderState$order3.id,
+                business_id: (_orderState$order4 = orderState.order) === null || _orderState$order4 === void 0 ? void 0 : _orderState$order4.business_id,
+                gateway: (_orderState$order5 = orderState.order) === null || _orderState$order5 === void 0 ? void 0 : (_orderState$order5$pa = _orderState$order5.paymethod) === null || _orderState$order5$pa === void 0 ? void 0 : _orderState$order5$pa.gateway
               })
             };
             _context8.next = 6;
@@ -550,7 +579,7 @@ var OrderDetails = function OrderDetails(props) {
   }();
   var handleOrderRefund = /*#__PURE__*/function () {
     var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(data) {
-      var _orderState$order5, requestOption, response, content, _orderState$order7, refundData, _orderState$order6, _orderState$order6$pa, stripeEvent, updatedPaymentEvents;
+      var _orderState$order6, requestOption, response, content, _orderState$order8, refundData, _orderState$order7, _orderState$order7$pa, stripeEvent, updatedPaymentEvents;
       return _regeneratorRuntime().wrap(function _callee9$(_context9) {
         while (1) switch (_context9.prev = _context9.next) {
           case 0:
@@ -568,7 +597,7 @@ var OrderDetails = function OrderDetails(props) {
               body: JSON.stringify(data)
             };
             _context9.next = 6;
-            return fetch("".concat(ordering.root, "/orders/").concat((_orderState$order5 = orderState.order) === null || _orderState$order5 === void 0 ? void 0 : _orderState$order5.id, "/refund"), requestOption);
+            return fetch("".concat(ordering.root, "/orders/").concat((_orderState$order6 = orderState.order) === null || _orderState$order6 === void 0 ? void 0 : _orderState$order6.id, "/refund"), requestOption);
           case 6:
             response = _context9.sent;
             _context9.next = 9;
@@ -582,7 +611,7 @@ var OrderDetails = function OrderDetails(props) {
             if (!content.error) {
               refundData = _toConsumableArray(content.result);
               if (data !== null && data !== void 0 && data.order_payment_event_id) {
-                stripeEvent = orderState === null || orderState === void 0 ? void 0 : (_orderState$order6 = orderState.order) === null || _orderState$order6 === void 0 ? void 0 : (_orderState$order6$pa = _orderState$order6.payment_events) === null || _orderState$order6$pa === void 0 ? void 0 : _orderState$order6$pa.find(function (event) {
+                stripeEvent = orderState === null || orderState === void 0 ? void 0 : (_orderState$order7 = orderState.order) === null || _orderState$order7 === void 0 ? void 0 : (_orderState$order7$pa = _orderState$order7.payment_events) === null || _orderState$order7$pa === void 0 ? void 0 : _orderState$order7$pa.find(function (event) {
                   return (event === null || event === void 0 ? void 0 : event.id) === data.order_payment_event_id;
                 });
                 if (stripeEvent) {
@@ -594,7 +623,7 @@ var OrderDetails = function OrderDetails(props) {
                   });
                 }
               }
-              updatedPaymentEvents = [].concat(_toConsumableArray((_orderState$order7 = orderState.order) === null || _orderState$order7 === void 0 ? void 0 : _orderState$order7.payment_events), _toConsumableArray(refundData));
+              updatedPaymentEvents = [].concat(_toConsumableArray((_orderState$order8 = orderState.order) === null || _orderState$order8 === void 0 ? void 0 : _orderState$order8.payment_events), _toConsumableArray(refundData));
               setOrderState(_objectSpread(_objectSpread({}, orderState), {}, {
                 order: _objectSpread(_objectSpread({}, orderState.order), {}, {
                   payment_events: updatedPaymentEvents
@@ -638,8 +667,8 @@ var OrderDetails = function OrderDetails(props) {
   (0, _react.useEffect)(function () {
     if (orderState.loading || loading) return;
     var handleUpdateOrder = function handleUpdateOrder(order) {
-      var _orderState$order8;
-      if ((order === null || order === void 0 ? void 0 : order.id) !== (orderState === null || orderState === void 0 ? void 0 : (_orderState$order8 = orderState.order) === null || _orderState$order8 === void 0 ? void 0 : _orderState$order8.id)) return;
+      var _orderState$order9;
+      if ((order === null || order === void 0 ? void 0 : order.id) !== (orderState === null || orderState === void 0 ? void 0 : (_orderState$order9 = orderState.order) === null || _orderState$order9 === void 0 ? void 0 : _orderState$order9.id)) return;
       delete order.total;
       delete order.subtotal;
       if (!(order !== null && order !== void 0 && order.driver) && order !== null && order !== void 0 && order.driver_id) {
