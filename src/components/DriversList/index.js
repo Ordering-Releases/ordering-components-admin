@@ -15,12 +15,15 @@ export const DriversList = (props) => {
     isSearchByCellphone,
     isOrderDrivers,
     orderId,
-    setCommentInfostate
+    setCommentInfostate,
+    disableSocketRoomDriver,
+    useBatchSockets
   } = props
 
   const [ordering] = useApi()
   const [, { showToast }] = useToast()
   const [, t] = useLanguage()
+
   const requestsState = {}
   const [driverActionStatus, setDriverActionStatus] = useState({ loading: true, error: null })
   const [companyActionStatus, setCompanyActionStatus] = useState({ loading: true, error: null })
@@ -457,13 +460,107 @@ export const DriversList = (props) => {
       })
       setDriversList({ ...driversList, drivers: drivers })
     }
-    socket.on('drivers_update', handleUpdateDriver)
-    socket.on('tracking_driver', handleTrackingDriver)
+    const handleBatchDriverChanges = (changes) => {
+      setDriversList((prevState) => {
+        const updatedDrivers = prevState.drivers.map((driver) => {
+          const changeData = changes.find((change) => change.driver_id === driver.id)
+          if (changeData) {
+            const updatedDriver = { ...driver }
+            for (const change of changeData.changes) {
+              updatedDriver[change.attribute] = change.new
+            }
+            return updatedDriver
+          }
+          return driver
+        })
+        return { ...prevState, drivers: updatedDrivers }
+      })
+    }
+    const handleBatchDriverLocations = (locations) => {
+      setDriversList((prevState) => {
+        const updatedDrivers = prevState.drivers.map((driver) => {
+          const locationData = locations.find((location) => location.driver_id === driver.id)
+          if (locationData) {
+            const updatedDriver = { ...driver }
+            updatedDriver.location = locationData.location
+            return updatedDriver
+          }
+          return driver
+        })
+        return { ...prevState, drivers: updatedDrivers }
+      })
+    }
+
+    if (!disableSocketRoomDriver) {
+      if (!useBatchSockets) {
+        socket.on('drivers_update', handleUpdateDriver)
+        socket.on('tracking_driver', handleTrackingDriver)
+      } else {
+        socket.on('batch_driver_locations', handleBatchDriverLocations)
+        socket.on('batch_driver_changes', handleBatchDriverChanges)
+      }
+    }
     return () => {
-      socket.off('drivers_update', handleUpdateDriver)
-      socket.off('tracking_driver', handleTrackingDriver)
+      if (!disableSocketRoomDriver) {
+        if (!useBatchSockets) {
+          socket.off('drivers_update', handleUpdateDriver)
+          socket.off('tracking_driver', handleTrackingDriver)
+        } else {
+          socket.off('batch_driver_locations', handleBatchDriverLocations)
+          socket.off('batch_driver_changes', handleBatchDriverChanges)
+        }
+      }
     }
   }, [socket, session?.loading, driversList.drivers])
+
+  const handleJoinMainRooms = () => {
+    if (!useBatchSockets) {
+      socket.join('drivers')
+    } else {
+      socket.join({
+        room: 'driver_locations',
+        user_id: session?.user?.id,
+        role: 'manager'
+      })
+      socket.join({
+        room: 'drivers',
+        user_id: session?.user?.id,
+        role: 'manager'
+      })
+    }
+  }
+
+  const handleLeaveMainRooms = () => {
+    if (!useBatchSockets) {
+      socket.leave('drivers')
+    } else {
+      socket.leave({
+        room: 'driver_locations',
+        user_id: session?.user?.id,
+        role: 'manager'
+      })
+      socket.leave({
+        room: 'drivers',
+        user_id: session?.user?.id,
+        role: 'manager'
+      })
+    }
+  }
+
+  const handleSocketDisconnect = () => {
+    socket.socket.on('connect', handleJoinMainRooms)
+  }
+
+  useEffect(() => {
+    if (!session?.auth || session?.loading || !socket?.socket || disableSocketRoomDriver) return
+    handleJoinMainRooms()
+    socket.socket.on('disconnect', handleSocketDisconnect)
+
+    return () => {
+      handleLeaveMainRooms()
+      socket.socket.off('disconnect', handleSocketDisconnect)
+    }
+  }, [socket?.socket, session?.auth, session?.loading, disableSocketRoomDriver, useBatchSockets])
 
   useEffect(() => {
     getOnlineOfflineDrivers(driversList.drivers)

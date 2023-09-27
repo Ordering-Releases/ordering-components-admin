@@ -12,12 +12,13 @@ export const OrdersManage = (props) => {
     UIComponent,
     statusGroup,
     driversPropsToFetch,
-    disableSocketRoomDriver
+    disableSocketRoomDriver,
+    useBatchSockets
   } = props
 
   const [ordering] = useApi()
   const socket = useWebsocket()
-  const [{ user, token, loading }] = useSession()
+  const [{ auth, user, token, loading }] = useSession()
   const [configState] = useConfig()
   const [, t] = useLanguage()
   const [, { showToast }] = useToast()
@@ -288,6 +289,44 @@ export const OrdersManage = (props) => {
     }
   }
 
+  const handleJoinMainRooms = () => {
+    if (!useBatchSockets) {
+      socket.join('drivers')
+    } else {
+      socket.join({
+        room: 'driver_locations',
+        user_id: user?.id,
+        role: 'manager'
+      })
+      socket.join({
+        room: 'drivers',
+        user_id: user?.id,
+        role: 'manager'
+      })
+    }
+  }
+
+  const handleLeaveMainRooms = () => {
+    if (!useBatchSockets) {
+      socket.leave('drivers')
+    } else {
+      socket.leave({
+        room: 'driver_locations',
+        user_id: user?.id,
+        role: 'manager'
+      })
+      socket.leave({
+        room: 'drivers',
+        user_id: user?.id,
+        role: 'manager'
+      })
+    }
+  }
+
+  const handleSocketDisconnect = () => {
+    socket.socket.on('connect', handleJoinMainRooms)
+  }
+
   /**
    * Listening driver change
    */
@@ -327,17 +366,69 @@ export const OrdersManage = (props) => {
         return { ...prevState, drivers: updatedDrivers }
       })
     }
+    const handleBatchDriverChanges = (changes) => {
+      setDriversList((prevState) => {
+        const updatedDrivers = prevState.drivers.map((driver) => {
+          const changeData = changes.find((change) => change.driver_id === driver.id)
+          if (changeData) {
+            const updatedDriver = { ...driver }
+            for (const change of changeData.changes) {
+              updatedDriver[change.attribute] = change.new
+            }
+            return updatedDriver
+          }
+          return driver
+        })
+        return { ...prevState, drivers: updatedDrivers };
+      })
+    }
+    const handleBatchDriverLocations = (locations) => {
+      setDriversList((prevState) => {
+        const updatedDrivers = prevState.drivers.map((driver) => {
+          const locationData = locations.find((location) => location.driver_id === driver.id)
+          if (locationData) {
+            const updatedDriver = { ...driver }
+            updatedDriver.location = locationData.location
+            return updatedDriver
+          }
+          return driver
+        })
+        return { ...prevState, drivers: updatedDrivers }
+      })
+    }
+
     if (!disableSocketRoomDriver) {
-      socket.on('drivers_update', handleUpdateDriver)
-      socket.on('tracking_driver', handleTrackingDriver)
+      if (!useBatchSockets) {
+        socket.on('drivers_update', handleUpdateDriver)
+        socket.on('tracking_driver', handleTrackingDriver)
+      } else {
+        socket.on('batch_driver_locations', handleBatchDriverLocations)
+        socket.on('batch_driver_changes', handleBatchDriverChanges)
+      }
     }
     return () => {
       if (!disableSocketRoomDriver) {
-        socket.off('drivers_update', handleUpdateDriver)
-        socket.off('tracking_driver', handleTrackingDriver)
+        if (!useBatchSockets) {
+          socket.off('drivers_update', handleUpdateDriver)
+          socket.off('tracking_driver', handleTrackingDriver)
+        } else {
+          socket.off('batch_driver_locations', handleBatchDriverLocations)
+          socket.off('batch_driver_changes', handleBatchDriverChanges)
+        }
       }
     }
-  }, [socket, loading, driversList.drivers])
+  }, [socket, loading, driversList.drivers, useBatchSockets])
+
+  useEffect(() => {
+    if (!auth || loading || !socket?.socket || disableSocketRoomDriver) return
+    handleJoinMainRooms()
+    socket.socket.on('disconnect', handleSocketDisconnect)
+
+    return () => {
+      handleLeaveMainRooms()
+      socket.socket.off('disconnect', handleSocketDisconnect)
+    }
+  }, [socket?.socket, auth, loading, disableSocketRoomDriver, useBatchSockets])
 
   /**
    * Listening multi orders action start to change status
