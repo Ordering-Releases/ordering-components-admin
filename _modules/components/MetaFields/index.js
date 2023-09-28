@@ -254,7 +254,7 @@ var MetaFields = function MetaFields(props) {
   }();
   (0, _react.useEffect)(function () {
     getMetaFields();
-  }, []);
+  }, [orderId]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     metaFieldsList: metaFieldsList,
     actionState: actionState,

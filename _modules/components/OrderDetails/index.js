@@ -108,6 +108,7 @@ var OrderDetails = function OrderDetails(props) {
     _useState14 = _slicedToArray(_useState13, 2),
     addressState = _useState14[0],
     setAddressState = _useState14[1];
+  var requestsState = {};
   var socket = (0, _WebsocketContext.useWebsocket)();
   var accessToken = props.accessToken || token;
 
@@ -338,7 +339,7 @@ var OrderDetails = function OrderDetails(props) {
    */
   var getOrder = /*#__PURE__*/function () {
     var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-      var options, functionFetch, _yield$functionFetch$, result, order;
+      var options, functionFetch, source, _yield$functionFetch$, result, order;
       return _regeneratorRuntime().wrap(function _callee5$(_context5) {
         while (1) switch (_context5.prev = _context5.next) {
           case 0:
@@ -362,9 +363,13 @@ var OrderDetails = function OrderDetails(props) {
             } else {
               functionFetch = asDashboard ? ordering.setAccessToken(token).orders(orderId).asDashboard() : ordering.setAccessToken(token).orders(orderId);
             }
-            _context5.next = 8;
-            return functionFetch.get();
-          case 8:
+            source = {};
+            requestsState.page = source;
+            _context5.next = 10;
+            return functionFetch.get({
+              cancelToken: source
+            });
+          case 10:
             _yield$functionFetch$ = _context5.sent;
             result = _yield$functionFetch$.content.result;
             order = Array.isArray(result) ? null : result;
@@ -372,20 +377,20 @@ var OrderDetails = function OrderDetails(props) {
               loading: false,
               order: order
             }));
-            _context5.next = 17;
+            _context5.next = 19;
             break;
-          case 14:
-            _context5.prev = 14;
+          case 16:
+            _context5.prev = 16;
             _context5.t0 = _context5["catch"](3);
             setOrderState(_objectSpread(_objectSpread({}, orderState), {}, {
               loading: false,
               error: [_context5.t0.message]
             }));
-          case 17:
+          case 19:
           case "end":
             return _context5.stop();
         }
-      }, _callee5, null, [[3, 14]]);
+      }, _callee5, null, [[3, 16]]);
     }));
     return function getOrder() {
       return _ref6.apply(this, arguments);
@@ -662,6 +667,11 @@ var OrderDetails = function OrderDetails(props) {
       }));
     } else {
       getOrder();
+      return function () {
+        if (requestsState.page) {
+          requestsState.page.cancel();
+        }
+      };
     }
   }, [orderId]);
   (0, _react.useEffect)(function () {

@@ -531,7 +531,6 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
   }();
   var initSetting = function initSetting(promotion) {
     var _promotion$businesses, _promotion$sites2, _promotion$products, _promotion$categories, _promotion$users2, _promotion$loyalty_le2;
-    cleanFormState();
     var businessIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$businesses = promotion.businesses) === null || _promotion$businesses === void 0 ? void 0 : _promotion$businesses.reduce(function (ids, business) {
       return [].concat(_toConsumableArray(ids), [business.id]);
     }, []);

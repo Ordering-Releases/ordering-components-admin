@@ -81,6 +81,8 @@ var DriversList = function DriversList(props) {
     _useState8 = _slicedToArray(_useState7, 2),
     assignedOrders = _useState8[0],
     setAssignedOrders = _useState8[1];
+  var controller = new AbortController();
+  var signal = controller.signal;
   var activeOrderStatuses = [0, 13, 7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23];
   var socket = (0, _WebsocketContext.useWebsocket)();
 
@@ -449,7 +451,8 @@ var DriversList = function DriversList(props) {
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: "Bearer ".concat(session.token)
-              }
+              },
+              signal: signal
             };
             _context4.next = 6;
             return fetch("".concat(ordering.root, "/controls/orders/").concat(orderId), requestOptions);
@@ -636,6 +639,9 @@ var DriversList = function DriversList(props) {
     return function () {
       if (requestsState.drivers) {
         requestsState.drivers.cancel();
+      }
+      if (isOrderDrivers) {
+        controller === null || controller === void 0 ? void 0 : controller.abort();
       }
     };
   }, [drivers, searchValue, orderId]);
