@@ -372,7 +372,6 @@ export const EnterprisePromotionDetails = (props) => {
   }
 
   const initSetting = (promotion) => {
-    cleanFormState()
     const businessIds = promotion?.businesses?.reduce((ids, business) => [...ids, business.id], [])
     setSelectedBusinessIds(businessIds || [])
     const sitesIds = promotion?.sites?.reduce((ids, site) => [...ids, site.id], [])

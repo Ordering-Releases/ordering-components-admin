@@ -130,7 +130,7 @@ export const MetaFields = (props) => {
 
   useEffect(() => {
     getMetaFields()
-  }, [])
+  }, [orderId])
 
   return (
     <>

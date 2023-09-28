@@ -32,6 +32,7 @@ export const OrderDetails = (props) => {
   const [messagesReadList, setMessagesReadList] = useState(false)
   const [customerInfoState, setCustomerInfoState] = useState({ error: null, customer: {}, loading: false })
   const [addressState, setAddressState] = useState({})
+  const requestsState = {}
 
   const socket = useWebsocket()
 
@@ -191,7 +192,9 @@ export const OrderDetails = (props) => {
           ? ordering.setAccessToken(token).orders(orderId).asDashboard()
           : ordering.setAccessToken(token).orders(orderId)
       }
-      const { content: { result } } = await functionFetch.get()
+      const source = {}
+      requestsState.page = source
+      const { content: { result } } = await functionFetch.get({ cancelToken: source })
       const order = Array.isArray(result) ? null : result
       setOrderState({
         ...orderState,
@@ -366,6 +369,11 @@ export const OrderDetails = (props) => {
       })
     } else {
       getOrder()
+      return () => {
+        if (requestsState.page) {
+          requestsState.page.cancel()
+        }
+      }
     }
   }, [orderId])
 

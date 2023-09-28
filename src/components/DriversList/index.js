@@ -29,6 +29,8 @@ export const DriversList = (props) => {
   const [companyActionStatus, setCompanyActionStatus] = useState({ loading: true, error: null })
   const [selectedDriver, setSelectedDriver] = useState(null)
   const [assignedOrders, setAssignedOrders] = useState({ loading: false, error: null, orders: [] })
+  const controller = new AbortController();
+  const signal = controller.signal
 
   const activeOrderStatuses = [0, 13, 7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23]
 
@@ -283,7 +285,8 @@ export const DriversList = (props) => {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${session.token}`
-        }
+        },
+        signal
       }
       const response = await fetch(`${ordering.root}/controls/orders/${orderId}`, requestOptions)
       const { error, result } = await response.json()
@@ -412,6 +415,9 @@ export const DriversList = (props) => {
     return () => {
       if (requestsState.drivers) {
         requestsState.drivers.cancel()
+      }
+      if (isOrderDrivers) {
+        controller?.abort();
       }
     }
   }, [drivers, searchValue, orderId])
