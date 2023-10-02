@@ -37,7 +37,7 @@ var WebsocketContext = /*#__PURE__*/(0, _react.createContext)();
  */
 exports.WebsocketContext = WebsocketContext;
 var WebsocketProvider = function WebsocketProvider(_ref) {
-  var _session$user;
+  var _session$user2;
   var settings = _ref.settings,
     children = _ref.children;
   var _useSession = (0, _SessionContext.useSession)(),
@@ -63,13 +63,14 @@ var WebsocketProvider = function WebsocketProvider(_ref) {
     }
   }, [session]);
   (0, _react.useEffect)(function () {
-    if (socket) {
+    var _session$user;
+    if (socket && session !== null && session !== void 0 && (_session$user = session.user) !== null && _session$user !== void 0 && _session$user.id) {
       socket.connect();
     }
     return function () {
       socket && socket.close();
     };
-  }, [socket, session === null || session === void 0 ? void 0 : (_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.id]);
+  }, [socket, session === null || session === void 0 ? void 0 : (_session$user2 = session.user) === null || _session$user2 === void 0 ? void 0 : _session$user2.id]);
   (0, _react.useEffect)(function () {
     if (!(socket !== null && socket !== void 0 && socket.socket)) return;
     var disconnectTimeout = null;

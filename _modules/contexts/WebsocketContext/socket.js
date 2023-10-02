@@ -58,16 +58,15 @@ var Socket = /*#__PURE__*/function () {
   }, {
     key: "close",
     value: function close() {
-      var _this$socket2;
-      if ((_this$socket2 = this.socket) !== null && _this$socket2 !== void 0 && _this$socket2.connected) {
+      if (this.socket) {
         this.socket.close();
       }
     }
   }, {
     key: "join",
     value: function join(room) {
-      var _this$socket3;
-      if ((_this$socket3 = this.socket) !== null && _this$socket3 !== void 0 && _this$socket3.connected) {
+      var _this$socket2;
+      if ((_this$socket2 = this.socket) !== null && _this$socket2 !== void 0 && _this$socket2.connected) {
         var paramRoom = null;
         if (_typeof(room) === 'object') {
           room.project = this.project;
@@ -87,8 +86,8 @@ var Socket = /*#__PURE__*/function () {
   }, {
     key: "leave",
     value: function leave(room) {
-      var _this$socket4;
-      if ((_this$socket4 = this.socket) !== null && _this$socket4 !== void 0 && _this$socket4.connected) {
+      var _this$socket3;
+      if ((_this$socket3 = this.socket) !== null && _this$socket3 !== void 0 && _this$socket3.connected) {
         var paramRoom = null;
         if (_typeof(room) === 'object') {
           room.project = this.project;
@@ -108,9 +107,9 @@ var Socket = /*#__PURE__*/function () {
   }, {
     key: "on",
     value: function on(event) {
-      var _this$socket5;
+      var _this$socket4;
       var func = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
-      if ((_this$socket5 = this.socket) !== null && _this$socket5 !== void 0 && _this$socket5.connected) {
+      if ((_this$socket4 = this.socket) !== null && _this$socket4 !== void 0 && _this$socket4.connected) {
         this.socket.on(event, func);
       } else {
         this.queue.push({
@@ -124,9 +123,9 @@ var Socket = /*#__PURE__*/function () {
   }, {
     key: "off",
     value: function off(event) {
-      var _this$socket6;
+      var _this$socket5;
       var func = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
-      if ((_this$socket6 = this.socket) !== null && _this$socket6 !== void 0 && _this$socket6.connected) {
+      if ((_this$socket5 = this.socket) !== null && _this$socket5 !== void 0 && _this$socket5.connected) {
         this.socket.off(event, func);
       } else {
         this.queue.push({

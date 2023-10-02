@@ -48,7 +48,6 @@ var ExportCSV = function ExportCSV(props) {
     _useState2 = _slicedToArray(_useState, 2),
     actionStatus = _useState2[0],
     setActionStatus = _useState2[1];
-  console.log(filterValues, 'filterValues');
 
   /**
    * Method to get csv from API
