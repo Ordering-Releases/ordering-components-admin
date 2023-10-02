@@ -13,7 +13,6 @@ export const ExportCSV = (props) => {
   const [ordering] = useApi()
   const [{ token, loading }] = useSession()
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null, result: null })
-  console.log(filterValues, 'filterValues')
 
   /**
    * Method to get csv from API

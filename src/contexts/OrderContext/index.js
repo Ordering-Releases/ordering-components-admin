@@ -1297,19 +1297,21 @@ export const OrderProvider = ({ Alert, children, strategy, isAlsea, franchiseId,
     }
   }
 
+  const handleSocketDisconnect = () => {
+    socket.socket.on('connect', handleJoinMainRooms)
+  }
+
   /**
    * Join to main room
    */
   useEffect(() => {
     if (!session.auth || session?.loading || !socket?.socket || customerState?.loading) return
-    socket.socket.on('connect', handleJoinMainRooms)
-    socket.socket.on('disconnect', handleLeaveMainRooms)
+    handleJoinMainRooms()
+    socket.socket.on('disconnect', handleSocketDisconnect)
 
     return () => {
       handleLeaveMainRooms()
-      handleJoinMainRooms()
-      socket.socket.off('connect', handleJoinMainRooms)
-      socket.socket.off('disconnect', handleLeaveMainRooms)
+      socket.socket.off('disconnect', handleSocketDisconnect)
     }
   }, [socket?.socket, session?.auth, session?.loading, customerState?.loading, customerState?.user?.id])
 

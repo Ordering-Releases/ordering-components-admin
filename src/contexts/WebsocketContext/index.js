@@ -33,7 +33,7 @@ export const WebsocketProvider = ({ settings, children }) => {
   }, [session])
 
   useEffect(() => {
-    if (socket) {
+    if (socket && session?.user?.id) {
       socket.connect()
     }
     return () => {

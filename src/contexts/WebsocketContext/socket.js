@@ -37,7 +37,7 @@ export class Socket {
   }
 
   close () {
-    if (this.socket?.connected) {
+    if (this.socket) {
       this.socket.close()
     }
   }
