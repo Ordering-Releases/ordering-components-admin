@@ -41,7 +41,8 @@ var OrdersManage = function OrdersManage(props) {
     statusGroup = props.statusGroup,
     driversPropsToFetch = props.driversPropsToFetch,
     disableSocketRoomDriver = props.disableSocketRoomDriver,
-    useBatchSockets = props.useBatchSockets;
+    useBatchSockets = props.useBatchSockets,
+    useFranchiseImages = props.useFranchiseImages;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -222,79 +223,87 @@ var OrdersManage = function OrdersManage(props) {
     _useState18 = _slicedToArray(_useState17, 2),
     allowColumns = _useState18[0],
     setAllowColumns = _useState18[1];
+  var _useState19 = (0, _react.useState)({
+      loading: false,
+      franchises: [],
+      error: null
+    }),
+    _useState20 = _slicedToArray(_useState19, 2),
+    franchisesList = _useState20[0],
+    setFranchisesList = _useState20[1];
 
   /**
    * Object to save driver group list
    */
-  var _useState19 = (0, _react.useState)({
+  var _useState21 = (0, _react.useState)({
       groups: [],
       loading: false,
       error: null
     }),
-    _useState20 = _slicedToArray(_useState19, 2),
-    driverGroupList = _useState20[0],
-    setDriverGroupList = _useState20[1];
+    _useState22 = _slicedToArray(_useState21, 2),
+    driverGroupList = _useState22[0],
+    setDriverGroupList = _useState22[1];
   /**
    * Object to save drivers
    */
-  var _useState21 = (0, _react.useState)({
+  var _useState23 = (0, _react.useState)({
       drivers: [],
       loading: true,
       error: null
     }),
-    _useState22 = _slicedToArray(_useState21, 2),
-    driversList = _useState22[0],
-    setDriversList = _useState22[1];
+    _useState24 = _slicedToArray(_useState23, 2),
+    driversList = _useState24[0],
+    setDriversList = _useState24[1];
   /**
    * Object to save paymethods
    */
-  var _useState23 = (0, _react.useState)({
+  var _useState25 = (0, _react.useState)({
       paymethods: [],
       loading: true,
       error: null
     }),
-    _useState24 = _slicedToArray(_useState23, 2),
-    paymethodsList = _useState24[0],
-    setPaymethodsList = _useState24[1];
+    _useState26 = _slicedToArray(_useState25, 2),
+    paymethodsList = _useState26[0],
+    setPaymethodsList = _useState26[1];
   /**
    * Object to save businesses
    */
-  var _useState25 = (0, _react.useState)({
+  var _useState27 = (0, _react.useState)({
       businesses: [],
       loading: true,
       error: null
     }),
-    _useState26 = _slicedToArray(_useState25, 2),
-    businessesList = _useState26[0],
-    setBusinessesList = _useState26[1];
+    _useState28 = _slicedToArray(_useState27, 2),
+    businessesList = _useState28[0],
+    setBusinessesList = _useState28[1];
   /**
    * Array to save the cities
    */
-  var _useState27 = (0, _react.useState)([]),
-    _useState28 = _slicedToArray(_useState27, 2),
-    citiesList = _useState28[0],
-    setCitiesList = _useState28[1];
+  var _useState29 = (0, _react.useState)([]),
+    _useState30 = _slicedToArray(_useState29, 2),
+    citiesList = _useState30[0],
+    setCitiesList = _useState30[1];
 
   /**
    * Object to save selected order ids
    */
-  var _useState29 = (0, _react.useState)([]),
-    _useState30 = _slicedToArray(_useState29, 2),
-    selectedOrderIds = _useState30[0],
-    setSelectedOrderIds = _useState30[1];
+  var _useState31 = (0, _react.useState)([]),
+    _useState32 = _slicedToArray(_useState31, 2),
+    selectedOrderIds = _useState32[0],
+    setSelectedOrderIds = _useState32[1];
   /**
    * Object to save order substatuses
    */
-  var _useState31 = (0, _react.useState)({
+  var _useState33 = (0, _react.useState)({
       pending: orderStatuesList.pending,
       inProgress: orderStatuesList.inProgress,
       completed: orderStatuesList.completed,
       cancelled: orderStatuesList.cancelled,
       all: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
     }),
-    _useState32 = _slicedToArray(_useState31, 2),
-    selectedSubOrderStatus = _useState32[0],
-    setSelectedSubOrderStatus = _useState32[1];
+    _useState34 = _slicedToArray(_useState33, 2),
+    selectedSubOrderStatus = _useState34[0],
+    setSelectedSubOrderStatus = _useState34[1];
 
   /**
    * Save ids of orders selected
@@ -599,6 +608,76 @@ var OrdersManage = function OrdersManage(props) {
       return _ref4.apply(this, arguments);
     };
   }();
+  var getFranchises = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+      var where, conditions, requestOptions, functionFetch, response, _yield$response$json2, error, result;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.prev = 0;
+            setFranchisesList(_objectSpread(_objectSpread({}, franchisesList), {}, {
+              loading: true
+            }));
+            where = null;
+            conditions = [];
+            conditions.push({
+              attribute: 'enabled',
+              value: true
+            });
+            if (conditions.length) {
+              where = {
+                conditions: conditions,
+                conector: 'AND'
+              };
+            }
+            requestOptions = {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token)
+              }
+            };
+            functionFetch = "".concat(ordering.root, "/franchises?where=").concat(JSON.stringify(where));
+            _context5.next = 10;
+            return fetch(functionFetch, requestOptions);
+          case 10:
+            response = _context5.sent;
+            _context5.next = 13;
+            return response.json();
+          case 13:
+            _yield$response$json2 = _context5.sent;
+            error = _yield$response$json2.error;
+            result = _yield$response$json2.result;
+            if (!error) {
+              setFranchisesList(_objectSpread(_objectSpread({}, franchisesList), {}, {
+                loading: false,
+                franchises: result
+              }));
+            } else {
+              setFranchisesList(_objectSpread(_objectSpread({}, franchisesList), {}, {
+                loading: false,
+                error: result
+              }));
+            }
+            _context5.next = 22;
+            break;
+          case 19:
+            _context5.prev = 19;
+            _context5.t0 = _context5["catch"](0);
+            setFranchisesList(_objectSpread(_objectSpread({}, franchisesList), {}, {
+              loading: false,
+              error: _context5.t0
+            }));
+          case 22:
+          case "end":
+            return _context5.stop();
+        }
+      }, _callee5, null, [[0, 19]]);
+    }));
+    return function getFranchises() {
+      return _ref5.apply(this, arguments);
+    };
+  }();
   var handleJoinMainRooms = function handleJoinMainRooms() {
     if (!useBatchSockets) {
       socket.join('drivers');
@@ -781,23 +860,23 @@ var OrdersManage = function OrdersManage(props) {
   (0, _react.useEffect)(function () {
     if (!user.id || configState !== null && configState !== void 0 && configState.loading) return;
     var getUser = /*#__PURE__*/function () {
-      var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+      var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
         var _result$settings, _configState$configs, _configState$configs$, _configState$configs2, _configState$configs3, response, _response$content, error, result, _result$settings2, _configState$configs4, _configState$configs5, _configState$configs6, _configState$configs7;
-        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-          while (1) switch (_context5.prev = _context5.next) {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+          while (1) switch (_context6.prev = _context6.next) {
             case 0:
-              _context5.prev = 0;
-              _context5.next = 3;
+              _context6.prev = 0;
+              _context6.next = 3;
               return ordering.users(user.id).select(['settings']).get();
             case 3:
-              response = _context5.sent;
+              response = _context6.sent;
               _response$content = response.content, error = _response$content.error, result = _response$content.result;
               if (!(!error && (_result$settings = result.settings) !== null && _result$settings !== void 0 && _result$settings.orderColumns)) {
-                _context5.next = 8;
+                _context6.next = 8;
                 break;
               }
               setAllowColumns((_result$settings2 = result.settings) === null || _result$settings2 === void 0 ? void 0 : _result$settings2.orderColumns);
-              return _context5.abrupt("return");
+              return _context6.abrupt("return");
             case 8:
               setAllowColumns(_objectSpread(_objectSpread({}, allowColumnsModel), {}, {
                 slaBar: _objectSpread(_objectSpread({}, allowColumnsModel === null || allowColumnsModel === void 0 ? void 0 : allowColumnsModel.slaBar), {}, {
@@ -807,11 +886,11 @@ var OrdersManage = function OrdersManage(props) {
                   visable: (configState === null || configState === void 0 ? void 0 : (_configState$configs2 = configState.configs) === null || _configState$configs2 === void 0 ? void 0 : (_configState$configs3 = _configState$configs2.order_deadlines_enabled) === null || _configState$configs3 === void 0 ? void 0 : _configState$configs3.value) === '1'
                 })
               }));
-              _context5.next = 14;
+              _context6.next = 14;
               break;
             case 11:
-              _context5.prev = 11;
-              _context5.t0 = _context5["catch"](0);
+              _context6.prev = 11;
+              _context6.t0 = _context6["catch"](0);
               setAllowColumns(_objectSpread(_objectSpread({}, allowColumnsModel), {}, {
                 slaBar: _objectSpread(_objectSpread({}, allowColumnsModel === null || allowColumnsModel === void 0 ? void 0 : allowColumnsModel.slaBar), {}, {
                   visable: (configState === null || configState === void 0 ? void 0 : (_configState$configs4 = configState.configs) === null || _configState$configs4 === void 0 ? void 0 : (_configState$configs5 = _configState$configs4.order_deadlines_enabled) === null || _configState$configs5 === void 0 ? void 0 : _configState$configs5.value) === '1'
@@ -822,16 +901,20 @@ var OrdersManage = function OrdersManage(props) {
               }));
             case 14:
             case "end":
-              return _context5.stop();
+              return _context6.stop();
           }
-        }, _callee5, null, [[0, 11]]);
+        }, _callee6, null, [[0, 11]]);
       }));
       return function getUser() {
-        return _ref5.apply(this, arguments);
+        return _ref6.apply(this, arguments);
       };
     }();
     getUser();
   }, [user, configState]);
+  (0, _react.useEffect)(function () {
+    if (!ordering || !token || !useFranchiseImages) return;
+    getFranchises();
+  }, [ordering, token, useFranchiseImages]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     searchValue: searchValue,
     driverGroupList: driverGroupList,
@@ -858,7 +941,8 @@ var OrdersManage = function OrdersManage(props) {
     allowColumns: allowColumns,
     setAllowColumns: setAllowColumns,
     timeStatus: timeStatus,
-    setTimeStatus: setTimeStatus
+    setTimeStatus: setTimeStatus,
+    franchisesList: franchisesList
   })));
 };
 exports.OrdersManage = OrdersManage;
