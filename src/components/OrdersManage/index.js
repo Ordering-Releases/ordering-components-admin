@@ -13,7 +13,8 @@ export const OrdersManage = (props) => {
     statusGroup,
     driversPropsToFetch,
     disableSocketRoomDriver,
-    useBatchSockets
+    useBatchSockets,
+    useFranchiseImages
   } = props
 
   const [ordering] = useApi()
@@ -56,6 +57,7 @@ export const OrdersManage = (props) => {
     total: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 11 }
   }
   const [allowColumns, setAllowColumns] = useState(allowColumnsModel)
+  const [franchisesList, setFranchisesList] = useState({ loading: false, franchises: [], error: null })
 
   /**
    * Object to save driver group list
@@ -289,6 +291,53 @@ export const OrdersManage = (props) => {
     }
   }
 
+  const getFranchises = async () => {
+    try {
+      setFranchisesList({ ...franchisesList, loading: true })
+      let where = null
+      const conditions = []
+      conditions.push({
+        attribute: 'enabled',
+        value: true
+      })
+      if (conditions.length) {
+        where = {
+          conditions,
+          conector: 'AND'
+        }
+      }
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+      const functionFetch = `${ordering.root}/franchises?where=${JSON.stringify(where)}`
+      const response = await fetch(functionFetch, requestOptions)
+      const { error, result } = await response.json()
+      if (!error) {
+        setFranchisesList({
+          ...franchisesList,
+          loading: false,
+          franchises: result
+        })
+      } else {
+        setFranchisesList({
+          ...franchisesList,
+          loading: false,
+          error: result
+        })
+      }
+    } catch (err) {
+      setFranchisesList({
+        ...franchisesList,
+        loading: false,
+        error: err
+      })
+    }
+  }
+
   const handleJoinMainRooms = () => {
     if (!useBatchSockets) {
       socket.join('drivers')
@@ -479,6 +528,11 @@ export const OrdersManage = (props) => {
     getUser()
   }, [user, configState])
 
+  useEffect(() => {
+    if (!ordering || !token || !useFranchiseImages) return
+    getFranchises()
+  }, [ordering, token, useFranchiseImages])
+
   return (
     <>
       {UIComponent && (
@@ -510,6 +564,7 @@ export const OrdersManage = (props) => {
           setAllowColumns={setAllowColumns}
           timeStatus={timeStatus}
           setTimeStatus={setTimeStatus}
+          franchisesList={franchisesList}
         />
       )}
     </>
