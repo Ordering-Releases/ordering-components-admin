@@ -240,7 +240,7 @@ export const DashboardOrdersList = (props) => {
               value: encodeURI(`%${searchValue}%`)
             }
           }
-        )
+        ) 
       }
       if (isSearchByCustomerEmail) {
         searchConditions.push(

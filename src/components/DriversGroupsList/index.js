@@ -82,7 +82,7 @@ export const DriversGroupsList = (props) => {
    */
   const getBusinesses = async () => {
     try {
-      setBusinessesList({ ...businessesList, loading: false })
+      setBusinessesList({ ...businessesList, loading: true })
       const { content: { error, result } } = await ordering
         .setAccessToken(token)
         .businesses()

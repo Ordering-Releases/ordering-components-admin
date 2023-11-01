@@ -102,6 +102,7 @@ import { DriversGroupOrders } from './components/DriversGroupOrders'
 import { DriversGroupsList } from './components/DriversGroupsList'
 import { DriversGroupLogs } from './components/DriversGroupLogs'
 import { DriversLogs } from './components/DriversLogs'
+import { SettingsLogs } from './components/SettingsLogs'
 import { DriverTips } from './components/DriverTips'
 import { DriversList } from './components/DriversList'
 import { DriverAnalytics } from './components/DriverAnalytics'
@@ -505,6 +506,7 @@ export {
   CardForm,
   StripeRedirectForm,
   SettingsList,
+  SettingsLogs,
   CmsContent,
   FloatingButton,
   ResetPassword,

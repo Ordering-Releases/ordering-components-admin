@@ -74,7 +74,7 @@ export const EnterprisePromotionDetails = (props) => {
    * @param {changes} changes parameters to change
    */
   const handleChangeItem = (changes) => {
-    setFormState({
+        setFormState({
       ...formState,
       changes: {
         ...formState.changes,

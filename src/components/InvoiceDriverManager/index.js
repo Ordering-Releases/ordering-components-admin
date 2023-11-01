@@ -16,6 +16,8 @@ export const InvoiceDriverManager = (props) => {
   const [ordering] = useApi()
   const [{ token, loading }] = useSession()
   const [{ configs }] = useConfig()
+  const isCashWalletEnabled = configs?.wallet_cash_enabled?.value === '1'
+  const isCreditPointEnabled = configs?.wallet_credit_point_enabled?.value === '1'
   const [driverList, setDriverList] = useState({ loading: false, drivers: [], error: null })
   const [payMethodsList, setPayMethodsList] = useState({ loading: false, data: [], error: null })
   const [exportInvoiceList, setExportInvoiceList] = useState({ loading: false, invoice: null, error: null })
@@ -188,14 +190,18 @@ export const InvoiceDriverManager = (props) => {
     else from = new Date(from[0], from[1] - 1, from[2], 0, 0, 0, 0)
     let to = driverInvocing.to.split('-')
     if (to.length === 1) to = null
-    else to = new Date(to[0], to[1] - 1, to[2], 0, 0, 0, 0)
+    else to = new Date(to[0], to[1] - 1, to[2], 11, 59, 59, 59)
     const orders = result.filter((order) => {
       let valid = true
       let date = order.delivery_datetime.split(' ')
       date = new Date(date[0].split('-')[0], date[0].split('-')[1] - 1, date[0].split('-')[2], 0, 0, 0, 0)
       const orderPaymethodIds = order.payment_events.reduce((ids, event) => [...ids, event?.paymethod?.id], [])
       orderPaymethodIds.push(order.paymethod_id)
-      if (!orderPaymethodIds.some(id => paymethods.includes(id)) ||
+      if (isCashWalletEnabled || isCreditPointEnabled) {
+        if (order?.payment_events?.data?.wallet_currency === 'cash_wallet' || order?.payment_events?.data?.wallet_currency === 'credit_points') {
+          valid = true
+        }
+      } else if (!orderPaymethodIds.some(id => paymethods.includes(id)) ||
         [1, 2, 5, 6, 10, 11, 12].indexOf(order.status) === -1 ||
         ([2, 5, 6, 10, 12].indexOf(order.status) > -1 && !driverInvocing.cancelled)) {
         valid = false
