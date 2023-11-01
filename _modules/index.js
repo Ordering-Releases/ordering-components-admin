@@ -1479,6 +1479,12 @@ Object.defineProperty(exports, "SettingsList", {
     return _SettingsList.SettingsList;
   }
 });
+Object.defineProperty(exports, "SettingsLogs", {
+  enumerable: true,
+  get: function get() {
+    return _SettingsLogs.SettingsLogs;
+  }
+});
 Object.defineProperty(exports, "SidebarMenu", {
   enumerable: true,
   get: function get() {
@@ -1901,6 +1907,7 @@ var _DriversGroupOrders = require("./components/DriversGroupOrders");
 var _DriversGroupsList = require("./components/DriversGroupsList");
 var _DriversGroupLogs = require("./components/DriversGroupLogs");
 var _DriversLogs = require("./components/DriversLogs");
+var _SettingsLogs = require("./components/SettingsLogs");
 var _DriverTips = require("./components/DriverTips");
 var _DriversList = require("./components/DriversList");
 var _DriverAnalytics = require("./components/DriverAnalytics");

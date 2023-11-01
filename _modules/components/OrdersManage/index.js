@@ -827,7 +827,7 @@ var OrdersManage = function OrdersManage(props) {
         }
       }
     };
-  }, [socket, loading, driversList.drivers, useBatchSockets]);
+  }, [socket, loading, useBatchSockets]);
   (0, _react.useEffect)(function () {
     if (!auth || loading || !(socket !== null && socket !== void 0 && socket.socket) || disableSocketRoomDriver) return;
     handleJoinMainRooms();

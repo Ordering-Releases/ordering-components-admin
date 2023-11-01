@@ -36,6 +36,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  * Component to manage InvoiceDriverManager behavior without UI component
  */
 var InvoiceDriverManager = function InvoiceDriverManager(props) {
+  var _configs$wallet_cash_, _configs$wallet_credi;
   var UIComponent = props.UIComponent,
     propsToFetch = props.propsToFetch;
   var _useApi = (0, _ApiContext.useApi)(),
@@ -49,6 +50,8 @@ var InvoiceDriverManager = function InvoiceDriverManager(props) {
   var _useConfig = (0, _ConfigContext.useConfig)(),
     _useConfig2 = _slicedToArray(_useConfig, 1),
     configs = _useConfig2[0].configs;
+  var isCashWalletEnabled = (configs === null || configs === void 0 ? void 0 : (_configs$wallet_cash_ = configs.wallet_cash_enabled) === null || _configs$wallet_cash_ === void 0 ? void 0 : _configs$wallet_cash_.value) === '1';
+  var isCreditPointEnabled = (configs === null || configs === void 0 ? void 0 : (_configs$wallet_credi = configs.wallet_credit_point_enabled) === null || _configs$wallet_credi === void 0 ? void 0 : _configs$wallet_credi.value) === '1';
   var _useState = (0, _react.useState)({
       loading: false,
       drivers: [],
@@ -324,7 +327,7 @@ var InvoiceDriverManager = function InvoiceDriverManager(props) {
     var from = driverInvocing.from.split('-');
     if (from.length === 1) from = null;else from = new Date(from[0], from[1] - 1, from[2], 0, 0, 0, 0);
     var to = driverInvocing.to.split('-');
-    if (to.length === 1) to = null;else to = new Date(to[0], to[1] - 1, to[2], 0, 0, 0, 0);
+    if (to.length === 1) to = null;else to = new Date(to[0], to[1] - 1, to[2], 11, 59, 59, 59);
     var orders = result.filter(function (order) {
       var valid = true;
       var date = order.delivery_datetime.split(' ');
@@ -334,7 +337,12 @@ var InvoiceDriverManager = function InvoiceDriverManager(props) {
         return [].concat(_toConsumableArray(ids), [event === null || event === void 0 ? void 0 : (_event$paymethod = event.paymethod) === null || _event$paymethod === void 0 ? void 0 : _event$paymethod.id]);
       }, []);
       orderPaymethodIds.push(order.paymethod_id);
-      if (!orderPaymethodIds.some(function (id) {
+      if (isCashWalletEnabled || isCreditPointEnabled) {
+        var _order$payment_events, _order$payment_events2, _order$payment_events3, _order$payment_events4;
+        if ((order === null || order === void 0 ? void 0 : (_order$payment_events = order.payment_events) === null || _order$payment_events === void 0 ? void 0 : (_order$payment_events2 = _order$payment_events.data) === null || _order$payment_events2 === void 0 ? void 0 : _order$payment_events2.wallet_currency) === 'cash_wallet' || (order === null || order === void 0 ? void 0 : (_order$payment_events3 = order.payment_events) === null || _order$payment_events3 === void 0 ? void 0 : (_order$payment_events4 = _order$payment_events3.data) === null || _order$payment_events4 === void 0 ? void 0 : _order$payment_events4.wallet_currency) === 'credit_points') {
+          valid = true;
+        }
+      } else if (!orderPaymethodIds.some(function (id) {
         return paymethods.includes(id);
       }) || [1, 2, 5, 6, 10, 11, 12].indexOf(order.status) === -1 || [2, 5, 6, 10, 12].indexOf(order.status) > -1 && !driverInvocing.cancelled) {
         valid = false;

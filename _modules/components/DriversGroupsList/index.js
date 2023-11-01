@@ -240,7 +240,7 @@ var DriversGroupsList = function DriversGroupsList(props) {
           case 0:
             _context3.prev = 0;
             setBusinessesList(_objectSpread(_objectSpread({}, businessesList), {}, {
-              loading: false
+              loading: true
             }));
             _context3.next = 4;
             return ordering.setAccessToken(token).businesses().select(['name', 'logo']).asDashboard().get();
