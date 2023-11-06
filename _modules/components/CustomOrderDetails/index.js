@@ -34,6 +34,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  * Component to manage custom order details behavior without UI component
  */
 var CustomOrderDetails = function CustomOrderDetails(props) {
+  var _orderState$options4, _orderState$options5, _orderState$options5$;
   var UIComponent = props.UIComponent,
     businessPropsToFetch = props.businessPropsToFetch,
     onClose = props.onClose,
@@ -186,7 +187,7 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
    */
   var getBusinessList = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(location) {
-      var _orderState$options, parameters, conditions, fetchEndpoint, _yield$fetchEndpoint$, _yield$fetchEndpoint$2, error, result;
+      var _orderState$options, parameters, conditions, fetchEndpoint, _yield$fetchEndpoint$, _yield$fetchEndpoint$2, error, result, availableBusinesses;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -205,7 +206,7 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
                 value: encodeURI(true)
               }]
             };
-            fetchEndpoint = ordering.businesses().where(conditions).select(businessPropsToFetch).parameters(parameters);
+            fetchEndpoint = ordering.businesses().select(businessPropsToFetch).where(conditions).parameters(parameters);
             _context2.next = 7;
             return fetchEndpoint.get();
           case 7:
@@ -214,9 +215,12 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
             error = _yield$fetchEndpoint$2.error;
             result = _yield$fetchEndpoint$2.result;
             if (!error) {
+              availableBusinesses = result.filter(function (business) {
+                return business === null || business === void 0 ? void 0 : business.open;
+              });
               setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
                 loading: false,
-                businesses: result
+                businesses: availableBusinesses
               }));
             } else {
               setBusinessList(_objectSpread(_objectSpread({}, businessList), {}, {
@@ -249,7 +253,7 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
    */
   var getProducts = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(searchValue) {
-      var where, searchConditions, _yield$ordering$busin, _yield$ordering$busin2, error, result;
+      var _orderState$options2, where, searchConditions, parameters, _yield$ordering$busin, _yield$ordering$busin2, error, result;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
@@ -259,6 +263,9 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
             }));
             where = null;
             searchConditions = [];
+            parameters = {
+              type: ((_orderState$options2 = orderState.options) === null || _orderState$options2 === void 0 ? void 0 : _orderState$options2.type) || 1
+            };
             if (searchValue) {
               searchConditions.push({
                 attribute: 'name',
@@ -272,9 +279,9 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
               conditions: searchConditions,
               conector: 'OR'
             };
-            _context3.next = 8;
-            return ordering.businesses(selectedBusiness.id).products().where(where).get();
-          case 8:
+            _context3.next = 9;
+            return ordering.businesses(selectedBusiness.id).products().parameters(parameters).where(where).get();
+          case 9:
             _yield$ordering$busin = _context3.sent;
             _yield$ordering$busin2 = _yield$ordering$busin.content;
             error = _yield$ordering$busin2.error;
@@ -290,20 +297,20 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
                 error: result
               }));
             }
-            _context3.next = 18;
+            _context3.next = 19;
             break;
-          case 15:
-            _context3.prev = 15;
+          case 16:
+            _context3.prev = 16;
             _context3.t0 = _context3["catch"](0);
             setProductList(_objectSpread(_objectSpread({}, productList), {}, {
               loading: false,
               error: [_context3.t0 === null || _context3.t0 === void 0 ? void 0 : _context3.t0.message]
             }));
-          case 18:
+          case 19:
           case "end":
             return _context3.stop();
         }
-      }, _callee3, null, [[0, 15]]);
+      }, _callee3, null, [[0, 16]]);
     }));
     return function getProducts(_x3) {
       return _ref3.apply(this, arguments);
@@ -343,7 +350,7 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
   }();
   var handlePlaceOrderByTotal = /*#__PURE__*/function () {
     var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-      var _orderState$options2;
+      var _orderState$options3;
       var customer, changes, requestOptions, response, content;
       return _regeneratorRuntime().wrap(function _callee5$(_context5) {
         while (1) switch (_context5.prev = _context5.next) {
@@ -362,7 +369,7 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
             changes = _objectSpread({
               paymethod: 'cash',
               business_id: selectedBusiness === null || selectedBusiness === void 0 ? void 0 : selectedBusiness.id,
-              delivery_type: ((_orderState$options2 = orderState.options) === null || _orderState$options2 === void 0 ? void 0 : _orderState$options2.type) || 1,
+              delivery_type: ((_orderState$options3 = orderState.options) === null || _orderState$options3 === void 0 ? void 0 : _orderState$options3.type) || 1,
               customer: JSON.stringify(customer)
             }, extraFields);
             _context5.prev = 2;
@@ -434,6 +441,7 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
     }
   }, [phone]);
   (0, _react.useEffect)(function () {
+    if (orderState !== null && orderState !== void 0 && orderState.loading) return;
     if (selectedBusiness !== null && selectedBusiness !== void 0 && selectedBusiness.id) {
       getProducts();
     } else {
@@ -443,7 +451,7 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
         error: null
       });
     }
-  }, [selectedBusiness]);
+  }, [selectedBusiness, orderState === null || orderState === void 0 ? void 0 : (_orderState$options4 = orderState.options) === null || _orderState$options4 === void 0 ? void 0 : _orderState$options4.type, orderState === null || orderState === void 0 ? void 0 : (_orderState$options5 = orderState.options) === null || _orderState$options5 === void 0 ? void 0 : (_orderState$options5$ = _orderState$options5.address) === null || _orderState$options5$ === void 0 ? void 0 : _orderState$options5$.location, orderState === null || orderState === void 0 ? void 0 : orderState.loading]);
   (0, _react.useEffect)(function () {
     if (selectedUser) {
       handleDisableToast(false);
@@ -488,5 +496,5 @@ CustomOrderDetails.propTypes = {
   UIComponent: _propTypes.default.elementType
 };
 CustomOrderDetails.defaultProps = {
-  businessPropsToFetch: ['id', 'name', 'location', 'logo', 'slug', 'zones']
+  businessPropsToFetch: ['id', 'name', 'location', 'logo', 'slug', 'zones', 'open', 'timezone', 'schedule', 'slug']
 };
