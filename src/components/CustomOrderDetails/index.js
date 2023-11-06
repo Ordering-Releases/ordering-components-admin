@@ -109,13 +109,14 @@ export const CustomOrderDetails = (props) => {
         }]
       }
 
-      const fetchEndpoint = ordering.businesses().where(conditions).select(businessPropsToFetch).parameters(parameters)
+      const fetchEndpoint = ordering.businesses().select(businessPropsToFetch).where(conditions).parameters(parameters)
       const { content: { error, result } } = await fetchEndpoint.get()
       if (!error) {
+        const availableBusinesses = result.filter(business => business?.open)
         setBusinessList({
           ...businessList,
           loading: false,
-          businesses: result
+          businesses: availableBusinesses
         })
       } else {
         setBusinessList({
@@ -144,6 +145,9 @@ export const CustomOrderDetails = (props) => {
       })
       let where = null
       const searchConditions = []
+      const parameters = {
+        type: orderState.options?.type || 1
+      }
       if (searchValue) {
         searchConditions.push(
           {
@@ -159,7 +163,7 @@ export const CustomOrderDetails = (props) => {
         conditions: searchConditions,
         conector: 'OR'
       }
-      const { content: { error, result } } = await ordering.businesses(selectedBusiness.id).products().where(where).get()
+      const { content: { error, result } } = await ordering.businesses(selectedBusiness.id).products().parameters(parameters).where(where).get()
       if (!error) {
         setProductList({
           ...productList,
@@ -258,12 +262,13 @@ export const CustomOrderDetails = (props) => {
   }, [phone])
 
   useEffect(() => {
+    if (orderState?.loading) return
     if (selectedBusiness?.id) {
       getProducts()
     } else {
       setProductList({ loading: false, products: [], error: null })
     }
-  }, [selectedBusiness])
+  }, [selectedBusiness, orderState?.options?.type, orderState?.options?.address?.location, orderState?.loading])
 
   useEffect(() => {
     if (selectedUser) {
@@ -315,5 +320,5 @@ CustomOrderDetails.propTypes = {
 }
 
 CustomOrderDetails.defaultProps = {
-  businessPropsToFetch: ['id', 'name', 'location', 'logo', 'slug', 'zones']
+  businessPropsToFetch: ['id', 'name', 'location', 'logo', 'slug', 'zones', 'open', 'timezone', 'schedule', 'slug']
 }
