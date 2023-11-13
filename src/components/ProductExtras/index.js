@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
+import PropTypes, { string } from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
@@ -14,7 +14,8 @@ export const ProductExtras = (props) => {
     UIComponent,
     product,
     handleSuccessUpdate,
-    handleUpdateBusinessState
+    handleUpdateBusinessState,
+    propsToFetch
   } = props
   const [ordering] = useApi()
   const [{ token }] = useSession()
@@ -27,6 +28,45 @@ export const ProductExtras = (props) => {
   const [isAddMode, setIsAddMode] = useState(false)
   const [dragoverExtaId, setdragOverExtaId] = useState(null)
   const [isExtrasBottom, setIsExtrasBottom] = useState(false)
+
+  /**
+   * Method to get business extras from API
+   */
+  const getBusinessExtras = async () => {
+    try {
+      setExtrasState({
+        ...extrasState,
+        loading: true
+      })
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${ordering.root}/business/${business.id}/extras?mode=dashboard&params=${propsToFetch.toString()}`, requestOptions)
+      const { error, result } = await response.json()
+      if (!error) {
+        if (handleUpdateBusinessState) {
+          const updatedBusiness = { ...business, extras: result }
+          handleUpdateBusinessState(updatedBusiness)
+        }
+      } else {
+        setExtrasState({
+          ...extrasState,
+          loading: false,
+          error: result
+        })
+      }
+    } catch (err) {
+      setExtrasState({
+        ...extrasState,
+        loading: false,
+        error: [err.message]
+      })
+    }
+  }
 
   /**
    * Method to save the new ingredient from API
@@ -321,8 +361,16 @@ export const ProductExtras = (props) => {
   }, [product])
 
   useEffect(() => {
-    setExtrasState({ ...extrasState, extras: business?.extras })
-  }, [business])
+    if (business?.extras) {
+      setExtrasState({
+        ...extrasState,
+        loading: false,
+        extras: business?.extras
+      })
+    } else {
+      getBusinessExtras()
+    }
+  }, [business?.extras])
 
   return (
     <>
@@ -359,6 +407,10 @@ ProductExtras.propTypes = {
    */
   UIComponent: PropTypes.elementType,
   /**
+   * Array of extra props to fetch
+   */
+  propsToFetch: PropTypes.arrayOf(string),
+  /**
    * Components types before product extras
    * Array of type components, the parent props will pass to these components
    */
@@ -384,5 +436,6 @@ ProductExtras.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: []
+  afterElements: [],
+  propsToFetch: ['id', 'extras', 'business_id', 'name', 'description', 'enabled', 'external_id', 'rank', 'metafields']
 }

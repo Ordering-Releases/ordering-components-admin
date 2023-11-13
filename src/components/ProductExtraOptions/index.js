@@ -38,6 +38,54 @@ export const ProductExtraOptions = (props) => {
   const [isOptionsBottom, setIsOptionsBottom] = useState(false)
 
   /**
+   * Method to get extra options from API
+   */
+  const getExtraOptions = async () => {
+    try {
+      setExtrasState({
+        ...extrasState,
+        loading: true
+      })
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${ordering.root}/business/${business.id}/extras/${extra.id}/options?mode=dashboard`, requestOptions)
+      const { error, result } = await response.json()
+      if (!error) {
+        if (handleUpdateBusinessState) {
+          const extraOptions = business?.extras?.map((_extra) => {
+            if (_extra?.id === extra?.id) {
+              _extra.options = result
+            }
+            return _extra
+          })
+          const updatedBusiness = {
+            ...business,
+            extras: extraOptions
+          }
+          handleUpdateBusinessState(updatedBusiness)
+        }
+      } else {
+        setExtrasState({
+          ...extrasState,
+          loading: false,
+          error: result
+        })
+      }
+    } catch (err) {
+      setExtrasState({
+        ...extrasState,
+        loading: false,
+        error: [err.message]
+      })
+    }
+  }
+
+  /**
    * Clean changesState
    */
   const cleanChangesState = (values) => setChangesState({ ...values })
@@ -478,8 +526,12 @@ export const ProductExtraOptions = (props) => {
 
   useEffect(() => {
     setChangesState({ changes: {}, result: {} })
-    setExtraState({ ...extraState, extra: extra })
-  }, [extra])
+    if (extra?.options) {
+      setExtraState({ ...extraState, extra: extra })
+    } else {
+      getExtraOptions()
+    }
+  }, [extra?.options])
 
   useEffect(() => {
     setAddChangesState({

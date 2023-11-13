@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
+import PropTypes, { string } from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
 import { useLanguage } from '../../contexts/LanguageContext'
@@ -9,7 +9,8 @@ export const BusinessMenu = (props) => {
   const {
     business,
     UIComponent,
-    handleSuccessBusinessMenu
+    handleSuccessBusinessMenu,
+    propsToFetch
   } = props
   const [ordering] = useApi()
   const [{ token }] = useSession()
@@ -26,28 +27,25 @@ export const BusinessMenu = (props) => {
   const getBusinessMenus = async () => {
     try {
       setBusinessMenusState({ ...businessMenusState, loading: true })
-      const requestOptions = {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      }
-      const response = await fetch(`${ordering.root}/business/${business.id}/menus`, requestOptions)
-      const content = await response.json()
-      if (!content.error) {
+      const { content: { error, result } } = await ordering.setAccessToken(token).businesses(business.id).select(propsToFetch).asDashboard().get()
+      const _business = Array.isArray(result) ? null : result
+      if (!error) {
+        const _menus = {}
+        if (result?.menus) _menus.menus = result?.menus
+        if (result?.menus_shared) _menus.menusShared = result?.menus_shared
         setBusinessMenusState({
           ...businessMenusState,
-          loading: false,
-          menus: content.result
+          ..._menus,
+          loading: false
         })
       } else {
         setBusinessMenusState({
           ...businessMenusState,
           loading: false,
-          error: content.result
+          error: result
         })
       }
+      handleSuccessBusinessMenu && handleSuccessBusinessMenu(_business)
     } catch (err) {
       setBusinessMenusState({
         ...businessMenusState,
@@ -131,7 +129,6 @@ export const BusinessMenu = (props) => {
       })
     }
   }
-
 
   /**
    * Method to delete the business menu from API
@@ -255,16 +252,18 @@ export const BusinessMenu = (props) => {
   }
 
   useEffect(() => {
-    if (business?.menus) {
+    if (business?.menus || business?.menus_shared) {
+      const data = {}
+      if (business?.menus) data.menus = business?.menus
+      if (business?.menus_shared) data.menusShared = business?.menus_shared
       setBusinessMenusState({
         ...businessMenusState,
-        menus: business?.menus,
-        menusShared: business?.menus_shared
+        ...data
       })
     } else {
       getBusinessMenus()
     }
-  }, [business])
+  }, [business?.menu, business?.menus_shared])
 
   useEffect(() => {
     getBusinessMenuChannels()
@@ -295,6 +294,10 @@ BusinessMenu.propTypes = {
    */
   UIComponent: PropTypes.elementType,
   /**
+   * Array of business menu props to fetch
+   */
+  propsToFetch: PropTypes.arrayOf(string),
+  /**
   * Business, this must be contains an object with all business info
   */
   business: PropTypes.object,
@@ -324,5 +327,6 @@ BusinessMenu.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: []
+  afterElements: [],
+  propsToFetch: ['id', 'categories', 'menus', 'menus_shared', 'categories_shared', 'header', 'logo']
 }

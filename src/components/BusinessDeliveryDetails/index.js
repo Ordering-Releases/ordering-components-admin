@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
+import PropTypes, { string } from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
 import { useToast, ToastType } from '../../contexts/ToastContext'
@@ -9,7 +9,8 @@ export const BusinessDeliveryDetails = (props) => {
   const {
     business,
     UIComponent,
-    handleUpdateBusinessState
+    handleUpdateBusinessState,
+    propsToFetch
   } = props
 
   const [ordering] = useApi()
@@ -23,6 +24,29 @@ export const BusinessDeliveryDetails = (props) => {
     isCheckAll: false,
     isDirty: false
   })
+
+  /**
+  * Method to get the business zones from API
+  */
+  const getBusinessZones = async () => {
+    try {
+      const { content: { error, result } } = await ordering.setAccessToken(session.token).businesses(business.id).select(propsToFetch).asDashboard().get()
+      const _business = Array.isArray(result) ? null : result
+      if (!error) {
+        handleUpdateBusinessState(_business)
+      } else {
+        setActionState({
+          loading: false,
+          error: [result]
+        })
+      }
+    } catch (err) {
+      setActionState({
+        loading: false,
+        error: [err.message]
+      })
+    }
+  }
 
   /**
    * Method to update the business from the API
@@ -149,15 +173,19 @@ export const BusinessDeliveryDetails = (props) => {
   }, [zoneListState.changes])
 
   useEffect(() => {
-    const zoneList = business?.zones?.filter(zone => zone?.type !== 3) || []
-    const zoneChanges = {}
-    zoneList.forEach(zone => {
-      zoneChanges[zone.id] = zone.enabled
-    })
-    setZoneListState({
-      ...zoneListState,
-      changes: zoneChanges
-    })
+    if (business?.zones) {
+      const zoneList = business?.zones?.filter(zone => zone?.type !== 3) || []
+      const zoneChanges = {}
+      zoneList.forEach(zone => {
+        zoneChanges[zone.id] = zone.enabled
+      })
+      setZoneListState({
+        ...zoneListState,
+        changes: zoneChanges
+      })
+    } else {
+      getBusinessZones()
+    }
   }, [business?.zones])
 
   return (
@@ -186,6 +214,10 @@ BusinessDeliveryDetails.propTypes = {
    */
   UIComponent: PropTypes.elementType,
   /**
+   * Array of delivery zone props to fetch
+   */
+  propsToFetch: PropTypes.arrayOf(string),
+  /**
    * Components types before order details
    * Array of type components, the parent props will pass to these components
    */
@@ -211,5 +243,6 @@ BusinessDeliveryDetails.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: []
+  afterElements: [],
+  propsToFetch: ['id', 'zones', 'header', 'logo']
 }

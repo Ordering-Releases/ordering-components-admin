@@ -385,7 +385,7 @@ export const ProductDetatils = (props) => {
   }
 
   useEffect(() => {
-    if (props.product) {
+    if (props?.product && props?.product?.extras) {
       setProductState({ ...productState, product: props.product })
       initProductCart(props.product)
     } else {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
+import PropTypes, { string } from 'prop-types'
 import { useSession } from '../../contexts/SessionContext'
 import { useEvent } from '../../contexts/EventContext'
 
@@ -13,7 +13,8 @@ export const BusinessProductsListing = (props) => {
     isAllCategoryProducts,
     isInitialRender,
     ordering,
-    UIComponent
+    UIComponent,
+    propsToFetch
   } = props
 
   const [{ token }] = useSession()
@@ -381,7 +382,7 @@ export const BusinessProductsListing = (props) => {
       requestsState.business = source
       setRequestsState({ ...requestsState })
 
-      const { content: { result } } = await ordering.businesses(businessSlug).asDashboard().get()
+      const { content: { result } } = await ordering.businesses(businessSlug).asDashboard().select(propsToFetch).get()
 
       if (!result?.categories || result?.categories?.length === 0) {
         setErrorQuantityProducts(true)
@@ -603,6 +604,10 @@ BusinessProductsListing.propTypes = {
    */
   UIComponent: PropTypes.elementType,
   /**
+   * Array of product props to fetch
+   */
+  propsToFetch: PropTypes.arrayOf(string),
+  /**
    * true, flag to decide search parmeter
    */
   isSearchByName: PropTypes.bool,
@@ -625,5 +630,6 @@ BusinessProductsListing.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: []
+  afterElements: [],
+  propsToFetch: ['id', 'categories', 'name', 'email', 'slug', 'schedule', 'description', 'about', 'logo', 'header', 'phone', 'cellphone', 'owner_id', 'city_id', 'address', 'address_notes', 'zipcode', 'location', 'featured', 'timezone', 'currency', 'food', 'alcohol', 'groceries', 'laundry', 'use_printer', 'printer_id', 'minimum', 'delivery_price', 'always_deliver', 'tax_type', 'tax', 'delivery_time', 'pickup_time', 'service_fee', 'fixed_usage_fee', 'percentage_usage_fee', 'order_default_priority', 'cancel_order_after_minutes', 'enabled', 'preorder_time', 'maximum', 'schedule_ranges', 'franchise_id', 'external_id', 'front_layout', 'seo_image', 'seo_title', 'seo_description', 'eta_status_times', 'eta_variation_time', 'price_level', 'facebook_profile', 'instagram_profile', 'tiktok_profile', 'snapchat_profile', 'pinterest_profile', 'whatsapp_number', 'delivery_tax_rate', 'delivery_tax_type', 'disabled_reason', 'menus_count', 'available_menus_count', 'menus_shared_count', 'available_menus_shared_count', 'professionals', 'configs', 'checkoutfields', 'reviews', 'open', 'today', 'lazy_load_products_recommended', 'available_products_count', 'valid_service', 'num_zones', 'types', 'metafields', 'owners', 'gallery', 'city', 'webhooks', 'maximums', 'paymethods', 'ribbon', 'offers']
 }
