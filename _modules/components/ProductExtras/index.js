@@ -6,12 +6,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ProductExtras = void 0;
 var _react = _interopRequireWildcard(require("react"));
-var _propTypes = _interopRequireDefault(require("prop-types"));
+var _propTypes = _interopRequireWildcard(require("prop-types"));
 var _SessionContext = require("../../contexts/SessionContext");
 var _ApiContext = require("../../contexts/ApiContext");
 var _ToastContext = require("../../contexts/ToastContext");
 var _LanguageContext = require("../../contexts/LanguageContext");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -41,7 +40,8 @@ var ProductExtras = function ProductExtras(props) {
     UIComponent = props.UIComponent,
     product = props.product,
     handleSuccessUpdate = props.handleSuccessUpdate,
-    handleUpdateBusinessState = props.handleUpdateBusinessState;
+    handleUpdateBusinessState = props.handleUpdateBusinessState,
+    propsToFetch = props.propsToFetch;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -88,16 +88,79 @@ var ProductExtras = function ProductExtras(props) {
     setIsExtrasBottom = _useState12[1];
 
   /**
-   * Method to save the new ingredient from API
-   * @param {Array} extraIds
+   * Method to get business extras from API
    */
-  var handleProductExtraState = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(extraIds) {
-      var changes, requestOptions, response, content, extras, updatedProduct;
+  var getBusinessExtras = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+      var requestOptions, response, _yield$response$json, error, result, updatedBusiness;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
+            setExtrasState(_objectSpread(_objectSpread({}, extrasState), {}, {
+              loading: true
+            }));
+            requestOptions = {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token)
+              }
+            };
+            _context.next = 5;
+            return fetch("".concat(ordering.root, "/business/").concat(business.id, "/extras?mode=dashboard&params=").concat(propsToFetch.toString()), requestOptions);
+          case 5:
+            response = _context.sent;
+            _context.next = 8;
+            return response.json();
+          case 8:
+            _yield$response$json = _context.sent;
+            error = _yield$response$json.error;
+            result = _yield$response$json.result;
+            if (!error) {
+              if (handleUpdateBusinessState) {
+                updatedBusiness = _objectSpread(_objectSpread({}, business), {}, {
+                  extras: result
+                });
+                handleUpdateBusinessState(updatedBusiness);
+              }
+            } else {
+              setExtrasState(_objectSpread(_objectSpread({}, extrasState), {}, {
+                loading: false,
+                error: result
+              }));
+            }
+            _context.next = 17;
+            break;
+          case 14:
+            _context.prev = 14;
+            _context.t0 = _context["catch"](0);
+            setExtrasState(_objectSpread(_objectSpread({}, extrasState), {}, {
+              loading: false,
+              error: [_context.t0.message]
+            }));
+          case 17:
+          case "end":
+            return _context.stop();
+        }
+      }, _callee, null, [[0, 14]]);
+    }));
+    return function getBusinessExtras() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Method to save the new ingredient from API
+   * @param {Array} extraIds
+   */
+  var handleProductExtraState = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(extraIds) {
+      var changes, requestOptions, response, content, extras, updatedProduct;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.prev = 0;
             changes = {
               business_id: business === null || business === void 0 ? void 0 : business.id,
               category_id: product === null || product === void 0 ? void 0 : product.category_id,
@@ -116,14 +179,14 @@ var ProductExtras = function ProductExtras(props) {
               },
               body: JSON.stringify(changes)
             };
-            _context.next = 7;
+            _context2.next = 7;
             return fetch("".concat(ordering.root, "/business/").concat(business.id, "/categories/").concat(product === null || product === void 0 ? void 0 : product.category_id, "/products/").concat(product.id), requestOptions);
           case 7:
-            response = _context.sent;
-            _context.next = 10;
+            response = _context2.sent;
+            _context2.next = 10;
             return response.json();
           case 10:
-            content = _context.sent;
+            content = _context2.sent;
             if (!content.error) {
               extras = extrasState === null || extrasState === void 0 ? void 0 : extrasState.extras.filter(function (extra) {
                 return extraIds.includes(extra.id);
@@ -139,23 +202,23 @@ var ProductExtras = function ProductExtras(props) {
               // updateBusinessState(updatedProduct, business)
               showToast(_ToastContext.ToastType.Success, t('EXTRA_SAVED', 'Extra saved'));
             }
-            _context.next = 17;
+            _context2.next = 17;
             break;
           case 14:
-            _context.prev = 14;
-            _context.t0 = _context["catch"](0);
+            _context2.prev = 14;
+            _context2.t0 = _context2["catch"](0);
             setProductState(_objectSpread(_objectSpread({}, productState), {}, {
               loading: false,
-              error: _context.t0.message
+              error: _context2.t0.message
             }));
           case 17:
           case "end":
-            return _context.stop();
+            return _context2.stop();
         }
-      }, _callee, null, [[0, 14]]);
+      }, _callee2, null, [[0, 14]]);
     }));
     return function handleProductExtraState(_x2) {
-      return _ref.apply(this, arguments);
+      return _ref2.apply(this, arguments);
     };
   }();
 
@@ -165,12 +228,12 @@ var ProductExtras = function ProductExtras(props) {
    * @param {Object} params updated parameters
    */
   var handleUpdateExtraState = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(extraId, params) {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(extraId, params) {
       var requestOptions, response, content, extras, productExtras, updatedProduct;
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-        while (1) switch (_context2.prev = _context2.next) {
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
           case 0:
-            _context2.prev = 0;
+            _context3.prev = 0;
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
             setExtrasState(_objectSpread(_objectSpread({}, extrasState), {}, {
               loading: true
@@ -183,14 +246,14 @@ var ProductExtras = function ProductExtras(props) {
               },
               body: JSON.stringify(params)
             };
-            _context2.next = 6;
+            _context3.next = 6;
             return fetch("".concat(ordering.root, "/business/").concat(business.id, "/extras/").concat(extraId), requestOptions);
           case 6:
-            response = _context2.sent;
-            _context2.next = 9;
+            response = _context3.sent;
+            _context3.next = 9;
             return response.json();
           case 9:
-            content = _context2.sent;
+            content = _context3.sent;
             if (!content.error) {
               extras = extrasState.extras.filter(function (extra) {
                 if (extra.id === content.result.id) {
@@ -217,23 +280,23 @@ var ProductExtras = function ProductExtras(props) {
               handleSuccessUpdate && handleSuccessUpdate(updatedProduct);
               showToast(_ToastContext.ToastType.Success, t('EXTRA_SAVED', 'Extra saved'));
             }
-            _context2.next = 16;
+            _context3.next = 16;
             break;
           case 13:
-            _context2.prev = 13;
-            _context2.t0 = _context2["catch"](0);
+            _context3.prev = 13;
+            _context3.t0 = _context3["catch"](0);
             setProductState(_objectSpread(_objectSpread({}, productState), {}, {
               loading: false,
-              error: _context2.t0.message
+              error: _context3.t0.message
             }));
           case 16:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
-      }, _callee2, null, [[0, 13]]);
+      }, _callee3, null, [[0, 13]]);
     }));
     return function handleUpdateExtraState(_x3, _x4) {
-      return _ref2.apply(this, arguments);
+      return _ref3.apply(this, arguments);
     };
   }();
 
@@ -254,12 +317,12 @@ var ProductExtras = function ProductExtras(props) {
    * @param {Number} extraId
    */
   var handleDeteteExtra = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(extraId) {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(extraId) {
       var requestOptions, response, content, extras, productExtras, updatedProduct;
-      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-        while (1) switch (_context3.prev = _context3.next) {
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) switch (_context4.prev = _context4.next) {
           case 0:
-            _context3.prev = 0;
+            _context4.prev = 0;
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
             setExtrasState(_objectSpread(_objectSpread({}, extrasState), {}, {
               loading: true
@@ -271,14 +334,14 @@ var ProductExtras = function ProductExtras(props) {
                 Authorization: "Bearer ".concat(token)
               }
             };
-            _context3.next = 6;
+            _context4.next = 6;
             return fetch("".concat(ordering.root, "/business/").concat(business.id, "/extras/").concat(extraId), requestOptions);
           case 6:
-            response = _context3.sent;
-            _context3.next = 9;
+            response = _context4.sent;
+            _context4.next = 9;
             return response.json();
           case 9:
-            content = _context3.sent;
+            content = _context4.sent;
             if (!content.error) {
               extras = extrasState.extras.filter(function (extra) {
                 return extra.id !== extraId;
@@ -299,23 +362,23 @@ var ProductExtras = function ProductExtras(props) {
               handleSuccessUpdate && handleSuccessUpdate(updatedProduct);
               showToast(_ToastContext.ToastType.Success, t('EXTRA_DELETED', 'Extra deleted'));
             }
-            _context3.next = 16;
+            _context4.next = 16;
             break;
           case 13:
-            _context3.prev = 13;
-            _context3.t0 = _context3["catch"](0);
+            _context4.prev = 13;
+            _context4.t0 = _context4["catch"](0);
             setProductState(_objectSpread(_objectSpread({}, productState), {}, {
               loading: false,
-              error: _context3.t0.message
+              error: _context4.t0.message
             }));
           case 16:
           case "end":
-            return _context3.stop();
+            return _context4.stop();
         }
-      }, _callee3, null, [[0, 13]]);
+      }, _callee4, null, [[0, 13]]);
     }));
     return function handleDeteteExtra(_x5) {
-      return _ref3.apply(this, arguments);
+      return _ref4.apply(this, arguments);
     };
   }();
 
@@ -333,19 +396,19 @@ var ProductExtras = function ProductExtras(props) {
    * Method to save the new ingredient from API
    */
   var handleAddExtra = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(payload) {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(payload) {
       var changes, requestOptions, response, content, extras, updatedBusiness;
-      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-        while (1) switch (_context4.prev = _context4.next) {
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) switch (_context5.prev = _context5.next) {
           case 0:
             if (!(!payload && Object.keys(changesState).length === 0)) {
-              _context4.next = 3;
+              _context5.next = 3;
               break;
             }
             setIsAddMode(false);
-            return _context4.abrupt("return");
+            return _context5.abrupt("return");
           case 3:
-            _context4.prev = 3;
+            _context5.prev = 3;
             changes = payload ? _objectSpread({
               business_id: business === null || business === void 0 ? void 0 : business.id
             }, payload) : _objectSpread({
@@ -363,14 +426,14 @@ var ProductExtras = function ProductExtras(props) {
               },
               body: JSON.stringify(changes)
             };
-            _context4.next = 10;
+            _context5.next = 10;
             return fetch("".concat(ordering.root, "/business/").concat(business.id, "/extras"), requestOptions);
           case 10:
-            response = _context4.sent;
-            _context4.next = 13;
+            response = _context5.sent;
+            _context5.next = 13;
             return response.json();
           case 13:
-            content = _context4.sent;
+            content = _context5.sent;
             if (!content.error) {
               setChangesState({});
               setIsAddMode(false);
@@ -387,23 +450,23 @@ var ProductExtras = function ProductExtras(props) {
               }
               showToast(_ToastContext.ToastType.Success, t('EXTRA_ADDED', 'Extra added'));
             }
-            _context4.next = 20;
+            _context5.next = 20;
             break;
           case 17:
-            _context4.prev = 17;
-            _context4.t0 = _context4["catch"](3);
+            _context5.prev = 17;
+            _context5.t0 = _context5["catch"](3);
             setExtrasState(_objectSpread(_objectSpread({}, extrasState), {}, {
               loading: false,
-              error: _context4.t0.message
+              error: _context5.t0.message
             }));
           case 20:
           case "end":
-            return _context4.stop();
+            return _context5.stop();
         }
-      }, _callee4, null, [[3, 17]]);
+      }, _callee5, null, [[3, 17]]);
     }));
     return function handleAddExtra(_x6) {
-      return _ref4.apply(this, arguments);
+      return _ref5.apply(this, arguments);
     };
   }();
 
@@ -477,12 +540,12 @@ var ProductExtras = function ProductExtras(props) {
    * Method to change the rank of extra
    */
   var handleChangeExtraRank = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(transferExtraId, params) {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(transferExtraId, params) {
       var requestOptions, response, content, extras, productExtras, updatedProduct;
-      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-        while (1) switch (_context5.prev = _context5.next) {
+      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        while (1) switch (_context6.prev = _context6.next) {
           case 0:
-            _context5.prev = 0;
+            _context6.prev = 0;
             setExtrasState(_objectSpread(_objectSpread({}, extrasState), {}, {
               loading: true
             }));
@@ -495,14 +558,14 @@ var ProductExtras = function ProductExtras(props) {
               },
               body: JSON.stringify(params)
             };
-            _context5.next = 6;
+            _context6.next = 6;
             return fetch("".concat(ordering.root, "/business/").concat(business.id, "/extras/").concat(transferExtraId), requestOptions);
           case 6:
-            response = _context5.sent;
-            _context5.next = 9;
+            response = _context6.sent;
+            _context6.next = 9;
             return response.json();
           case 9:
-            content = _context5.sent;
+            content = _context6.sent;
             if (!content.error) {
               extras = extrasState.extras.filter(function (extra) {
                 if (extra.id === content.result.id) {
@@ -529,23 +592,23 @@ var ProductExtras = function ProductExtras(props) {
               handleSuccessUpdate && handleSuccessUpdate(updatedProduct);
               showToast(_ToastContext.ToastType.Success, t('EXTRA_SAVED', 'Extra saved'));
             }
-            _context5.next = 16;
+            _context6.next = 16;
             break;
           case 13:
-            _context5.prev = 13;
-            _context5.t0 = _context5["catch"](0);
+            _context6.prev = 13;
+            _context6.t0 = _context6["catch"](0);
             setProductState(_objectSpread(_objectSpread({}, productState), {}, {
               loading: false,
-              error: _context5.t0.message
+              error: _context6.t0.message
             }));
           case 16:
           case "end":
-            return _context5.stop();
+            return _context6.stop();
         }
-      }, _callee5, null, [[0, 13]]);
+      }, _callee6, null, [[0, 13]]);
     }));
     return function handleChangeExtraRank(_x7, _x8) {
-      return _ref5.apply(this, arguments);
+      return _ref6.apply(this, arguments);
     };
   }();
   (0, _react.useEffect)(function () {
@@ -554,10 +617,15 @@ var ProductExtras = function ProductExtras(props) {
     }));
   }, [product]);
   (0, _react.useEffect)(function () {
-    setExtrasState(_objectSpread(_objectSpread({}, extrasState), {}, {
-      extras: business === null || business === void 0 ? void 0 : business.extras
-    }));
-  }, [business]);
+    if (business !== null && business !== void 0 && business.extras) {
+      setExtrasState(_objectSpread(_objectSpread({}, extrasState), {}, {
+        loading: false,
+        extras: business === null || business === void 0 ? void 0 : business.extras
+      }));
+    } else {
+      getBusinessExtras();
+    }
+  }, [business === null || business === void 0 ? void 0 : business.extras]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     changesState: changesState,
     isAddMode: isAddMode,
@@ -588,6 +656,10 @@ ProductExtras.propTypes = {
    */
   UIComponent: _propTypes.default.elementType,
   /**
+   * Array of extra props to fetch
+   */
+  propsToFetch: _propTypes.default.arrayOf(_propTypes.string),
+  /**
    * Components types before product extras
    * Array of type components, the parent props will pass to these components
    */
@@ -612,5 +684,6 @@ ProductExtras.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: []
+  afterElements: [],
+  propsToFetch: ['id', 'extras', 'business_id', 'name', 'description', 'enabled', 'external_id', 'rank', 'metafields']
 };

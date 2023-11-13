@@ -537,7 +537,8 @@ var ProductDetatils = function ProductDetatils(props) {
     };
   }();
   (0, _react.useEffect)(function () {
-    if (props.product) {
+    var _props$product4;
+    if (props !== null && props !== void 0 && props.product && props !== null && props !== void 0 && (_props$product4 = props.product) !== null && _props$product4 !== void 0 && _props$product4.extras) {
       setProductState(_objectSpread(_objectSpread({}, productState), {}, {
         product: props.product
       }));

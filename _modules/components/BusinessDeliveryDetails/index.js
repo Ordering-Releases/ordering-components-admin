@@ -6,12 +6,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BusinessDeliveryDetails = void 0;
 var _react = _interopRequireWildcard(require("react"));
-var _propTypes = _interopRequireDefault(require("prop-types"));
+var _propTypes = _interopRequireWildcard(require("prop-types"));
 var _SessionContext = require("../../contexts/SessionContext");
 var _ApiContext = require("../../contexts/ApiContext");
 var _ToastContext = require("../../contexts/ToastContext");
 var _LanguageContext = require("../../contexts/LanguageContext");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -32,7 +31,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var BusinessDeliveryDetails = function BusinessDeliveryDetails(props) {
   var business = props.business,
     UIComponent = props.UIComponent,
-    handleUpdateBusinessState = props.handleUpdateBusinessState;
+    handleUpdateBusinessState = props.handleUpdateBusinessState,
+    propsToFetch = props.propsToFetch;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -68,48 +68,94 @@ var BusinessDeliveryDetails = function BusinessDeliveryDetails(props) {
     setZoneListState = _useState6[1];
 
   /**
-   * Method to update the business from the API
-   */
-  var handleDeliveryStateSave = /*#__PURE__*/function () {
+  * Method to get the business zones from API
+  */
+  var getBusinessZones = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var _yield$ordering$busin, _yield$ordering$busin2, error, result;
+      var _yield$ordering$setAc, _yield$ordering$setAc2, error, result, _business;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
             _context.next = 3;
+            return ordering.setAccessToken(session.token).businesses(business.id).select(propsToFetch).asDashboard().get();
+          case 3:
+            _yield$ordering$setAc = _context.sent;
+            _yield$ordering$setAc2 = _yield$ordering$setAc.content;
+            error = _yield$ordering$setAc2.error;
+            result = _yield$ordering$setAc2.result;
+            _business = Array.isArray(result) ? null : result;
+            if (!error) {
+              handleUpdateBusinessState(_business);
+            } else {
+              setActionState({
+                loading: false,
+                error: [result]
+              });
+            }
+            _context.next = 14;
+            break;
+          case 11:
+            _context.prev = 11;
+            _context.t0 = _context["catch"](0);
+            setActionState({
+              loading: false,
+              error: [_context.t0.message]
+            });
+          case 14:
+          case "end":
+            return _context.stop();
+        }
+      }, _callee, null, [[0, 11]]);
+    }));
+    return function getBusinessZones() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Method to update the business from the API
+   */
+  var handleDeliveryStateSave = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+      var _yield$ordering$busin, _yield$ordering$busin2, error, result;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.prev = 0;
+            _context2.next = 3;
             return ordering.businesses(business.id).save(formState.changes, {
               accessToken: session.token
             });
           case 3:
-            _yield$ordering$busin = _context.sent;
+            _yield$ordering$busin = _context2.sent;
             _yield$ordering$busin2 = _yield$ordering$busin.content;
             error = _yield$ordering$busin2.error;
             result = _yield$ordering$busin2.result;
             if (error) {
-              _context.next = 11;
+              _context2.next = 11;
               break;
             }
-            return _context.abrupt("return", result);
+            return _context2.abrupt("return", result);
           case 11:
             throw {
               message: error
             };
           case 12:
-            _context.next = 17;
+            _context2.next = 17;
             break;
           case 14:
-            _context.prev = 14;
-            _context.t0 = _context["catch"](0);
-            return _context.abrupt("return", Promise.reject(_context.t0));
+            _context2.prev = 14;
+            _context2.t0 = _context2["catch"](0);
+            return _context2.abrupt("return", Promise.reject(_context2.t0));
           case 17:
           case "end":
-            return _context.stop();
+            return _context2.stop();
         }
-      }, _callee, null, [[0, 14]]);
+      }, _callee2, null, [[0, 14]]);
     }));
     return function handleDeliveryStateSave() {
-      return _ref.apply(this, arguments);
+      return _ref2.apply(this, arguments);
     };
   }();
 
@@ -117,12 +163,12 @@ var BusinessDeliveryDetails = function BusinessDeliveryDetails(props) {
    * Method to update the business delivery zone enable state from API
    */
   var handleUpdateDeliveryZoneState = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(zoneId, enabled) {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(zoneId, enabled) {
       var requestOptions, response, content;
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-        while (1) switch (_context2.prev = _context2.next) {
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
           case 0:
-            _context2.prev = 0;
+            _context3.prev = 0;
             requestOptions = {
               method: 'PUT',
               headers: {
@@ -133,88 +179,88 @@ var BusinessDeliveryDetails = function BusinessDeliveryDetails(props) {
                 enabled: enabled
               })
             };
-            _context2.next = 4;
+            _context3.next = 4;
             return fetch("".concat(ordering.root, "/business/").concat(business === null || business === void 0 ? void 0 : business.id, "/deliveryzones/").concat(zoneId), requestOptions);
           case 4:
-            response = _context2.sent;
-            _context2.next = 7;
+            response = _context3.sent;
+            _context3.next = 7;
             return response.json();
           case 7:
-            content = _context2.sent;
+            content = _context3.sent;
             if (content.error) {
-              _context2.next = 12;
+              _context3.next = 12;
               break;
             }
-            return _context2.abrupt("return", content.result);
+            return _context3.abrupt("return", content.result);
           case 12:
             throw {
               message: content.result
             };
           case 13:
-            _context2.next = 18;
+            _context3.next = 18;
             break;
           case 15:
-            _context2.prev = 15;
-            _context2.t0 = _context2["catch"](0);
-            return _context2.abrupt("return", Promise.reject(_context2.t0));
+            _context3.prev = 15;
+            _context3.t0 = _context3["catch"](0);
+            return _context3.abrupt("return", Promise.reject(_context3.t0));
           case 18:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
-      }, _callee2, null, [[0, 15]]);
+      }, _callee3, null, [[0, 15]]);
     }));
     return function handleUpdateDeliveryZoneState(_x2, _x3) {
-      return _ref2.apply(this, arguments);
+      return _ref3.apply(this, arguments);
     };
   }();
   var onDeliveryStateSave = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
       var _loop, key, zones, _business, result;
-      return _regeneratorRuntime().wrap(function _callee3$(_context4) {
-        while (1) switch (_context4.prev = _context4.next) {
+      return _regeneratorRuntime().wrap(function _callee4$(_context5) {
+        while (1) switch (_context5.prev = _context5.next) {
           case 0:
-            _context4.prev = 0;
+            _context5.prev = 0;
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
             setActionState({
               loading: true,
               error: null
             });
             if (!Object.keys(zoneListState.changes).length) {
-              _context4.next = 15;
+              _context5.next = 15;
               break;
             }
             _loop = /*#__PURE__*/_regeneratorRuntime().mark(function _loop() {
               var _business$zones;
               var zoneId, foundZone;
-              return _regeneratorRuntime().wrap(function _loop$(_context3) {
-                while (1) switch (_context3.prev = _context3.next) {
+              return _regeneratorRuntime().wrap(function _loop$(_context4) {
+                while (1) switch (_context4.prev = _context4.next) {
                   case 0:
                     zoneId = parseInt(key);
                     foundZone = business === null || business === void 0 ? void 0 : (_business$zones = business.zones) === null || _business$zones === void 0 ? void 0 : _business$zones.find(function (zone) {
                       return zone.id === zoneId;
                     });
                     if (!((foundZone === null || foundZone === void 0 ? void 0 : foundZone.enabled) !== zoneListState.changes[key])) {
-                      _context3.next = 5;
+                      _context4.next = 5;
                       break;
                     }
-                    _context3.next = 5;
+                    _context4.next = 5;
                     return handleUpdateDeliveryZoneState(zoneId, zoneListState.changes[key]);
                   case 5:
                   case "end":
-                    return _context3.stop();
+                    return _context4.stop();
                 }
               }, _loop);
             });
-            _context4.t0 = _regeneratorRuntime().keys(zoneListState.changes);
+            _context5.t0 = _regeneratorRuntime().keys(zoneListState.changes);
           case 6:
-            if ((_context4.t1 = _context4.t0()).done) {
-              _context4.next = 11;
+            if ((_context5.t1 = _context5.t0()).done) {
+              _context5.next = 11;
               break;
             }
-            key = _context4.t1.value;
-            return _context4.delegateYield(_loop(), "t2", 9);
+            key = _context5.t1.value;
+            return _context5.delegateYield(_loop(), "t2", 9);
           case 9:
-            _context4.next = 6;
+            _context5.next = 6;
             break;
           case 11:
             setZoneListState(_objectSpread(_objectSpread({}, zoneListState), {}, {
@@ -232,13 +278,13 @@ var BusinessDeliveryDetails = function BusinessDeliveryDetails(props) {
             handleUpdateBusinessState(_business);
           case 15:
             if (!Object.keys(formState.changes).length) {
-              _context4.next = 21;
+              _context5.next = 21;
               break;
             }
-            _context4.next = 18;
+            _context5.next = 18;
             return handleDeliveryStateSave();
           case 18:
-            result = _context4.sent;
+            result = _context5.sent;
             setFormState({
               changes: {}
             });
@@ -249,23 +295,23 @@ var BusinessDeliveryDetails = function BusinessDeliveryDetails(props) {
               error: null
             });
             showToast(_ToastContext.ToastType.Success, t('BUSINESS_UPDATED', 'Business updated'));
-            _context4.next = 28;
+            _context5.next = 28;
             break;
           case 25:
-            _context4.prev = 25;
-            _context4.t3 = _context4["catch"](0);
+            _context5.prev = 25;
+            _context5.t3 = _context5["catch"](0);
             setActionState({
               loading: false,
-              error: [_context4.t3.message]
+              error: [_context5.t3.message]
             });
           case 28:
           case "end":
-            return _context4.stop();
+            return _context5.stop();
         }
-      }, _callee3, null, [[0, 25]]);
+      }, _callee4, null, [[0, 25]]);
     }));
     return function onDeliveryStateSave() {
-      return _ref3.apply(this, arguments);
+      return _ref4.apply(this, arguments);
     };
   }();
   var handleChangeAllZoneState = function handleChangeAllZoneState(enabled) {
@@ -300,17 +346,21 @@ var BusinessDeliveryDetails = function BusinessDeliveryDetails(props) {
     }));
   }, [zoneListState.changes]);
   (0, _react.useEffect)(function () {
-    var _business$zones2;
-    var zoneList = (business === null || business === void 0 ? void 0 : (_business$zones2 = business.zones) === null || _business$zones2 === void 0 ? void 0 : _business$zones2.filter(function (zone) {
-      return (zone === null || zone === void 0 ? void 0 : zone.type) !== 3;
-    })) || [];
-    var zoneChanges = {};
-    zoneList.forEach(function (zone) {
-      zoneChanges[zone.id] = zone.enabled;
-    });
-    setZoneListState(_objectSpread(_objectSpread({}, zoneListState), {}, {
-      changes: zoneChanges
-    }));
+    if (business !== null && business !== void 0 && business.zones) {
+      var _business$zones2;
+      var zoneList = (business === null || business === void 0 ? void 0 : (_business$zones2 = business.zones) === null || _business$zones2 === void 0 ? void 0 : _business$zones2.filter(function (zone) {
+        return (zone === null || zone === void 0 ? void 0 : zone.type) !== 3;
+      })) || [];
+      var zoneChanges = {};
+      zoneList.forEach(function (zone) {
+        zoneChanges[zone.id] = zone.enabled;
+      });
+      setZoneListState(_objectSpread(_objectSpread({}, zoneListState), {}, {
+        changes: zoneChanges
+      }));
+    } else {
+      getBusinessZones();
+    }
   }, [business === null || business === void 0 ? void 0 : business.zones]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     actionState: actionState,
@@ -328,6 +378,10 @@ BusinessDeliveryDetails.propTypes = {
    * UI Component, this must be containt all graphic elements and use parent props
    */
   UIComponent: _propTypes.default.elementType,
+  /**
+   * Array of delivery zone props to fetch
+   */
+  propsToFetch: _propTypes.default.arrayOf(_propTypes.string),
   /**
    * Components types before order details
    * Array of type components, the parent props will pass to these components
@@ -353,5 +407,6 @@ BusinessDeliveryDetails.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: []
+  afterElements: [],
+  propsToFetch: ['id', 'zones', 'header', 'logo']
 };

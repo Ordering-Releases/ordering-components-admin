@@ -6,12 +6,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BusinessMenu = void 0;
 var _react = _interopRequireWildcard(require("react"));
-var _propTypes = _interopRequireDefault(require("prop-types"));
+var _propTypes = _interopRequireWildcard(require("prop-types"));
 var _SessionContext = require("../../contexts/SessionContext");
 var _ApiContext = require("../../contexts/ApiContext");
 var _LanguageContext = require("../../contexts/LanguageContext");
 var _ToastContext = require("../../contexts/ToastContext");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -32,7 +31,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var BusinessMenu = function BusinessMenu(props) {
   var business = props.business,
     UIComponent = props.UIComponent,
-    handleSuccessBusinessMenu = props.handleSuccessBusinessMenu;
+    handleSuccessBusinessMenu = props.handleSuccessBusinessMenu,
+    propsToFetch = props.propsToFetch;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -72,7 +72,7 @@ var BusinessMenu = function BusinessMenu(props) {
   */
   var getBusinessMenus = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var requestOptions, response, content;
+      var _yield$ordering$setAc, _yield$ordering$setAc2, error, result, _business, _menus;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -80,46 +80,42 @@ var BusinessMenu = function BusinessMenu(props) {
             setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
               loading: true
             }));
-            requestOptions = {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: "Bearer ".concat(token)
-              }
-            };
-            _context.next = 5;
-            return fetch("".concat(ordering.root, "/business/").concat(business.id, "/menus"), requestOptions);
-          case 5:
-            response = _context.sent;
-            _context.next = 8;
-            return response.json();
-          case 8:
-            content = _context.sent;
-            if (!content.error) {
-              setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
-                loading: false,
-                menus: content.result
+            _context.next = 4;
+            return ordering.setAccessToken(token).businesses(business.id).select(propsToFetch).asDashboard().get();
+          case 4:
+            _yield$ordering$setAc = _context.sent;
+            _yield$ordering$setAc2 = _yield$ordering$setAc.content;
+            error = _yield$ordering$setAc2.error;
+            result = _yield$ordering$setAc2.result;
+            _business = Array.isArray(result) ? null : result;
+            if (!error) {
+              _menus = {};
+              if (result !== null && result !== void 0 && result.menus) _menus.menus = result === null || result === void 0 ? void 0 : result.menus;
+              if (result !== null && result !== void 0 && result.menus_shared) _menus.menusShared = result === null || result === void 0 ? void 0 : result.menus_shared;
+              setBusinessMenusState(_objectSpread(_objectSpread(_objectSpread({}, businessMenusState), _menus), {}, {
+                loading: false
               }));
             } else {
               setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
                 loading: false,
-                error: content.result
+                error: result
               }));
             }
-            _context.next = 15;
+            handleSuccessBusinessMenu && handleSuccessBusinessMenu(_business);
+            _context.next = 16;
             break;
-          case 12:
-            _context.prev = 12;
+          case 13:
+            _context.prev = 13;
             _context.t0 = _context["catch"](0);
             setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
               loading: false,
               error: [_context.t0.message]
             }));
-          case 15:
+          case 16:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 12]]);
+      }, _callee, null, [[0, 13]]);
     }));
     return function getBusinessMenus() {
       return _ref.apply(this, arguments);
@@ -403,15 +399,15 @@ var BusinessMenu = function BusinessMenu(props) {
     };
   }();
   (0, _react.useEffect)(function () {
-    if (business !== null && business !== void 0 && business.menus) {
-      setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
-        menus: business === null || business === void 0 ? void 0 : business.menus,
-        menusShared: business === null || business === void 0 ? void 0 : business.menus_shared
-      }));
+    if (business !== null && business !== void 0 && business.menus || business !== null && business !== void 0 && business.menus_shared) {
+      var data = {};
+      if (business !== null && business !== void 0 && business.menus) data.menus = business === null || business === void 0 ? void 0 : business.menus;
+      if (business !== null && business !== void 0 && business.menus_shared) data.menusShared = business === null || business === void 0 ? void 0 : business.menus_shared;
+      setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), data));
     } else {
       getBusinessMenus();
     }
-  }, [business]);
+  }, [business === null || business === void 0 ? void 0 : business.menu, business === null || business === void 0 ? void 0 : business.menus_shared]);
   (0, _react.useEffect)(function () {
     getBusinessMenuChannels();
   }, []);
@@ -430,6 +426,10 @@ BusinessMenu.propTypes = {
    * UI Component, this must be containt all graphic elements and use parent props
    */
   UIComponent: _propTypes.default.elementType,
+  /**
+   * Array of business menu props to fetch
+   */
+  propsToFetch: _propTypes.default.arrayOf(_propTypes.string),
   /**
   * Business, this must be contains an object with all business info
   */
@@ -459,5 +459,6 @@ BusinessMenu.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: []
+  afterElements: [],
+  propsToFetch: ['id', 'categories', 'menus', 'menus_shared', 'categories_shared', 'header', 'logo']
 };

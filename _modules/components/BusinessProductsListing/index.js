@@ -6,10 +6,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BusinessProductsListing = void 0;
 var _react = _interopRequireWildcard(require("react"));
-var _propTypes = _interopRequireDefault(require("prop-types"));
+var _propTypes = _interopRequireWildcard(require("prop-types"));
 var _SessionContext = require("../../contexts/SessionContext");
 var _EventContext = require("../../contexts/EventContext");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -41,7 +40,8 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
     isAllCategoryProducts = props.isAllCategoryProducts,
     isInitialRender = props.isInitialRender,
     ordering = props.ordering,
-    UIComponent = props.UIComponent;
+    UIComponent = props.UIComponent,
+    propsToFetch = props.propsToFetch;
   var _useSession = (0, _SessionContext.useSession)(),
     _useSession2 = _slicedToArray(_useSession, 1),
     token = _useSession2[0].token;
@@ -633,7 +633,7 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
             requestsState.business = source;
             setRequestsState(_objectSpread({}, requestsState));
             _context7.next = 7;
-            return ordering.businesses(businessSlug).asDashboard().get();
+            return ordering.businesses(businessSlug).asDashboard().select(propsToFetch).get();
           case 7:
             _yield$ordering$busin2 = _context7.sent;
             result = _yield$ordering$busin2.content.result;
@@ -866,6 +866,10 @@ BusinessProductsListing.propTypes = {
    */
   UIComponent: _propTypes.default.elementType,
   /**
+   * Array of product props to fetch
+   */
+  propsToFetch: _propTypes.default.arrayOf(_propTypes.string),
+  /**
    * true, flag to decide search parmeter
    */
   isSearchByName: _propTypes.default.bool,
@@ -886,5 +890,6 @@ BusinessProductsListing.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: []
+  afterElements: [],
+  propsToFetch: ['id', 'categories', 'name', 'email', 'slug', 'schedule', 'description', 'about', 'logo', 'header', 'phone', 'cellphone', 'owner_id', 'city_id', 'address', 'address_notes', 'zipcode', 'location', 'featured', 'timezone', 'currency', 'food', 'alcohol', 'groceries', 'laundry', 'use_printer', 'printer_id', 'minimum', 'delivery_price', 'always_deliver', 'tax_type', 'tax', 'delivery_time', 'pickup_time', 'service_fee', 'fixed_usage_fee', 'percentage_usage_fee', 'order_default_priority', 'cancel_order_after_minutes', 'enabled', 'preorder_time', 'maximum', 'schedule_ranges', 'franchise_id', 'external_id', 'front_layout', 'seo_image', 'seo_title', 'seo_description', 'eta_status_times', 'eta_variation_time', 'price_level', 'facebook_profile', 'instagram_profile', 'tiktok_profile', 'snapchat_profile', 'pinterest_profile', 'whatsapp_number', 'delivery_tax_rate', 'delivery_tax_type', 'disabled_reason', 'menus_count', 'available_menus_count', 'menus_shared_count', 'available_menus_shared_count', 'professionals', 'configs', 'checkoutfields', 'reviews', 'open', 'today', 'lazy_load_products_recommended', 'available_products_count', 'valid_service', 'num_zones', 'types', 'metafields', 'owners', 'gallery', 'city', 'webhooks', 'maximums', 'paymethods', 'ribbon', 'offers']
 };
