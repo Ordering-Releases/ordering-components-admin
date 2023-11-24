@@ -125,7 +125,24 @@ var InvoiceBusinessManager = function InvoiceBusinessManager(props) {
     _useState10 = _slicedToArray(_useState9, 2),
     businessInvocing = _useState10[0],
     setBusinessInvocing = _useState10[1];
+  var _useState11 = (0, _react.useState)([]),
+    _useState12 = _slicedToArray(_useState11, 2),
+    filterPaymethodsID = _useState12[0],
+    setFilterPaymethodsID = _useState12[1];
+  var _useState13 = (0, _react.useState)([]),
+    _useState14 = _slicedToArray(_useState13, 2),
+    filterOrderTypesID = _useState14[0],
+    setFilterOrderTypesID = _useState14[1];
+  var handleChangeDeliveryTypes = function handleChangeDeliveryTypes(orderTypess) {
+    setFilterOrderTypesID(orderTypess);
+  };
   var handleChangePayMethods = function handleChangePayMethods(payMethods) {
+    var _paymethodIds = payMethods.filter(function (_payMethods) {
+      return _payMethods.enabled;
+    }).map(function (_payMethodss) {
+      return _payMethodss.id;
+    });
+    setFilterPaymethodsID(_paymethodIds);
     setPayMethodsList(_objectSpread(_objectSpread({}, payMethodsList), {}, {
       data: payMethods
     }));
@@ -290,9 +307,21 @@ var InvoiceBusinessManager = function InvoiceBusinessManager(props) {
                 }
               });
             }
-            _context3.next = 7;
+            if (filterOrderTypesID.length !== 0) {
+              where.push({
+                attribute: 'delivery_type',
+                value: filterOrderTypesID
+              });
+            }
+            if (filterPaymethodsID.length !== 0) {
+              where.push({
+                attribute: 'paymethod_id',
+                value: filterPaymethodsID
+              });
+            }
+            _context3.next = 9;
             return ordering.orders().asDashboard().where(where).get();
-          case 7:
+          case 9:
             _yield$ordering$order = _context3.sent;
             _yield$ordering$order2 = _yield$ordering$order.content;
             error = _yield$ordering$order2.error;
@@ -311,20 +340,20 @@ var InvoiceBusinessManager = function InvoiceBusinessManager(props) {
                 error: result
               }));
             }
-            _context3.next = 18;
+            _context3.next = 20;
             break;
-          case 15:
-            _context3.prev = 15;
+          case 17:
+            _context3.prev = 17;
             _context3.t0 = _context3["catch"](0);
             setExportInvoiceList(_objectSpread(_objectSpread({}, exportInvoiceList), {}, {
               loading: false,
               error: [_context3.t0 || (_context3.t0 === null || _context3.t0 === void 0 ? void 0 : _context3.t0.toString()) || (_context3.t0 === null || _context3.t0 === void 0 ? void 0 : _context3.t0.message)]
             }));
-          case 18:
+          case 20:
           case "end":
             return _context3.stop();
         }
-      }, _callee3, null, [[0, 15]]);
+      }, _callee3, null, [[0, 17]]);
     }));
     return function getOrders() {
       return _ref3.apply(this, arguments);
@@ -575,7 +604,8 @@ var InvoiceBusinessManager = function InvoiceBusinessManager(props) {
     handleChangePayMethods: handleChangePayMethods,
     getOrders: getOrders,
     getSubtotal: getSubtotal,
-    getTotal: getTotal
+    getTotal: getTotal,
+    handleChangeDeliveryTypes: handleChangeDeliveryTypes
   })));
 };
 exports.InvoiceBusinessManager = InvoiceBusinessManager;

@@ -93,11 +93,20 @@ var InvoiceDriverManager = function InvoiceDriverManager(props) {
     _useState8 = _slicedToArray(_useState7, 2),
     driverInvocing = _useState8[0],
     setDriverInvocing = _useState8[1];
-
+  var _useState9 = (0, _react.useState)([]),
+    _useState10 = _slicedToArray(_useState9, 2),
+    filterPaymethodsID = _useState10[0],
+    setFilterPaymethodsID = _useState10[1];
   /**
    * Method to update payMethod List
    */
   var handleChangePayMethods = function handleChangePayMethods(payMethods) {
+    var _paymethodIds = payMethods.filter(function (_payMethods) {
+      return _payMethods.enabled;
+    }).map(function (_payMethodss) {
+      return _payMethodss.id;
+    });
+    setFilterPaymethodsID(_paymethodIds);
     setPayMethodsList(_objectSpread(_objectSpread({}, payMethodsList), {}, {
       data: payMethods
     }));
@@ -266,9 +275,15 @@ var InvoiceDriverManager = function InvoiceDriverManager(props) {
                 }
               });
             }
-            _context3.next = 7;
+            if (filterPaymethodsID.length !== 0) {
+              where.push({
+                attribute: 'paymethod_id',
+                value: filterPaymethodsID
+              });
+            }
+            _context3.next = 8;
             return ordering.orders().asDashboard().where(where).get();
-          case 7:
+          case 8:
             _yield$ordering$order = _context3.sent;
             _yield$ordering$order2 = _yield$ordering$order.content;
             error = _yield$ordering$order2.error;
@@ -287,20 +302,20 @@ var InvoiceDriverManager = function InvoiceDriverManager(props) {
                 error: result
               }));
             }
-            _context3.next = 18;
+            _context3.next = 19;
             break;
-          case 15:
-            _context3.prev = 15;
+          case 16:
+            _context3.prev = 16;
             _context3.t0 = _context3["catch"](0);
             setExportInvoiceList(_objectSpread(_objectSpread({}, exportInvoiceList), {}, {
               loading: false,
               error: [_context3.t0 || (_context3.t0 === null || _context3.t0 === void 0 ? void 0 : _context3.t0.toString()) || (_context3.t0 === null || _context3.t0 === void 0 ? void 0 : _context3.t0.message)]
             }));
-          case 18:
+          case 19:
           case "end":
             return _context3.stop();
         }
-      }, _callee3, null, [[0, 15]]);
+      }, _callee3, null, [[0, 16]]);
     }));
     return function getOrders() {
       return _ref3.apply(this, arguments);
