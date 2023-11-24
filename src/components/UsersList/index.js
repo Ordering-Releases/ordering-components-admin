@@ -620,6 +620,40 @@ export const UsersList = (props) => {
   }
 
   /**
+  * Method to change busy state of user
+  * @param {Object} user user id and busy state
+  */
+
+  const handleChangeBusyUser = async (user) => {
+    try {
+      showToast(ToastType.Info, t('LOADING', 'Loading'))
+      setActionStatus({ ...actionStatus, loading: true })
+      const requestsState = {}
+      const source = {}
+      requestsState.updateOrder = source
+      const { content: { error, result } } = await ordering.setAccessToken(session.token).users(user.id).save({ busy: user.busy }, { cancelToken: source })
+      setActionStatus({
+        ...actionStatus,
+        loading: false,
+        error: error ? result : null
+      })
+      if (!error) {
+        let users = []
+        users = usersList.users.filter(_user => {
+          if (_user.id === user.id) {
+            _user.busy = user.busy
+          }
+          return true
+        })
+        setUsersList({ ...usersList, users })
+        showToast(ToastType.Success, t('UPDATED', 'Updated'))
+      }
+    } catch (err) {
+      setActionStatus({ ...actionStatus, loading: false, error: [err.message] })
+    }
+  }
+
+  /**
    * Method to change user type from API
    * @param {Object} user user id and new type
    */
@@ -954,6 +988,7 @@ export const UsersList = (props) => {
             handleChangeMultiFilterValues={handleChangeMultiFilterValues}
             actionDisabled={actionDisabled}
             driversGroupsState={driversGroupsState}
+            handleChangeBusyUser={handleChangeBusyUser}
           />
         )
       }
@@ -992,7 +1027,7 @@ UsersList.defaultProps = {
     'name', 'lastname', 'email', 'phone', 'photo', 'cellphone', 'schedule', 'external_id',
     'country_phone_code', 'city_id', 'city', 'address', 'addresses', 'max_days_in_future', 'push_tokens',
     'address_notes', 'driver_zone_restriction', 'mono_session', 'dropdown_option_id', 'dropdown_option', 'location', 'available',
-    'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups', 'created_at', 'timezone'
+    'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups', 'created_at', 'timezone', 'busy'
   ],
   paginationSettings: { initialPage: 1, pageSize: 10, controlType: 'infinity' },
   defaultUserTypesSelected: [0, 1, 2, 3],
