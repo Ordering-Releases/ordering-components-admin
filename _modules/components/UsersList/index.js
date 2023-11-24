@@ -768,10 +768,11 @@ var UsersList = function UsersList(props) {
   }();
 
   /**
-   * Method to change user type from API
-   * @param {Object} user user id and new type
-   */
-  var handleChangeAvailable = /*#__PURE__*/function () {
+  * Method to change busy state of user
+  * @param {Object} user user id and busy state
+  */
+
+  var handleChangeBusyUser = /*#__PURE__*/function () {
     var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(user) {
       var requestsState, source, _yield$ordering$setAc5, _yield$ordering$setAc6, error, result, users;
       return _regeneratorRuntime().wrap(function _callee5$(_context5) {
@@ -787,7 +788,7 @@ var UsersList = function UsersList(props) {
             requestsState.updateOrder = source;
             _context5.next = 8;
             return ordering.setAccessToken(session.token).users(user.id).save({
-              available: user.available
+              busy: user.busy
             }, {
               cancelToken: source
             });
@@ -804,7 +805,7 @@ var UsersList = function UsersList(props) {
               users = [];
               users = usersList.users.filter(function (_user) {
                 if (_user.id === user.id) {
-                  _user.available = user.available;
+                  _user.busy = user.busy;
                 }
                 return true;
               });
@@ -828,8 +829,74 @@ var UsersList = function UsersList(props) {
         }
       }, _callee5, null, [[0, 16]]);
     }));
-    return function handleChangeAvailable(_x6) {
+    return function handleChangeBusyUser(_x6) {
       return _ref5.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Method to change user type from API
+   * @param {Object} user user id and new type
+   */
+  var handleChangeAvailable = /*#__PURE__*/function () {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(user) {
+      var requestsState, source, _yield$ordering$setAc7, _yield$ordering$setAc8, error, result, users;
+      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        while (1) switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.prev = 0;
+            showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
+            setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
+              loading: true
+            }));
+            requestsState = {};
+            source = {};
+            requestsState.updateOrder = source;
+            _context6.next = 8;
+            return ordering.setAccessToken(session.token).users(user.id).save({
+              available: user.available
+            }, {
+              cancelToken: source
+            });
+          case 8:
+            _yield$ordering$setAc7 = _context6.sent;
+            _yield$ordering$setAc8 = _yield$ordering$setAc7.content;
+            error = _yield$ordering$setAc8.error;
+            result = _yield$ordering$setAc8.result;
+            setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
+              loading: false,
+              error: error ? result : null
+            }));
+            if (!error) {
+              users = [];
+              users = usersList.users.filter(function (_user) {
+                if (_user.id === user.id) {
+                  _user.available = user.available;
+                }
+                return true;
+              });
+              setUsersList(_objectSpread(_objectSpread({}, usersList), {}, {
+                users: users
+              }));
+              showToast(_ToastContext.ToastType.Success, t('UPDATED', 'Updated'));
+            }
+            _context6.next = 19;
+            break;
+          case 16:
+            _context6.prev = 16;
+            _context6.t0 = _context6["catch"](0);
+            setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
+              loading: false,
+              error: [_context6.t0.message]
+            }));
+          case 19:
+          case "end":
+            return _context6.stop();
+        }
+      }, _callee6, null, [[0, 16]]);
+    }));
+    return function handleChangeAvailable(_x7) {
+      return _ref6.apply(this, arguments);
     };
   }();
 
@@ -838,20 +905,20 @@ var UsersList = function UsersList(props) {
    * @param {Number} userId user id to delete
    */
   var handleDeleteUser = /*#__PURE__*/function () {
-    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(userId) {
-      var _yield$ordering$setAc7, content, users, _selectedUsers;
-      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
-        while (1) switch (_context6.prev = _context6.next) {
+    var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(userId) {
+      var _yield$ordering$setAc9, content, users, _selectedUsers;
+      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+        while (1) switch (_context7.prev = _context7.next) {
           case 0:
-            _context6.prev = 0;
+            _context7.prev = 0;
             setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
               loading: true
             }));
-            _context6.next = 4;
+            _context7.next = 4;
             return ordering.setAccessToken(session.token).users(userId).delete();
           case 4:
-            _yield$ordering$setAc7 = _context6.sent;
-            content = _yield$ordering$setAc7.content;
+            _yield$ordering$setAc9 = _context7.sent;
+            content = _yield$ordering$setAc9.content;
             if (!content.error) {
               users = usersList.users.filter(function (user) {
                 return user.id !== userId;
@@ -877,29 +944,29 @@ var UsersList = function UsersList(props) {
               loading: false,
               error: content.error ? content.result : null
             }));
-            _context6.next = 14;
+            _context7.next = 14;
             break;
           case 10:
-            _context6.prev = 10;
-            _context6.t0 = _context6["catch"](0);
+            _context7.prev = 10;
+            _context7.t0 = _context7["catch"](0);
             setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
               loading: false,
-              error: [_context6.t0.message]
+              error: [_context7.t0.message]
             }));
             if (deleteUsersActionState.loading) {
               setDeleteUsersActionState(_objectSpread(_objectSpread({}, deleteUsersActionState), {}, {
                 loading: false,
-                error: [_context6.t0.message]
+                error: [_context7.t0.message]
               }));
             }
           case 14:
           case "end":
-            return _context6.stop();
+            return _context7.stop();
         }
-      }, _callee6, null, [[0, 10]]);
+      }, _callee7, null, [[0, 10]]);
     }));
-    return function handleDeleteUser(_x7) {
-      return _ref6.apply(this, arguments);
+    return function handleDeleteUser(_x8) {
+      return _ref7.apply(this, arguments);
     };
   }();
 
@@ -907,12 +974,12 @@ var UsersList = function UsersList(props) {
    * Method to delete several users from API
    */
   var handleDeleteSeveralUsers = /*#__PURE__*/function () {
-    var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(code) {
+    var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(code) {
       var payload, requestOptions, response, content, users;
-      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
-        while (1) switch (_context7.prev = _context7.next) {
+      return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+        while (1) switch (_context8.prev = _context8.next) {
           case 0:
-            _context7.prev = 0;
+            _context8.prev = 0;
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
             setDeleteUsersActionState(_objectSpread(_objectSpread({}, deleteUsersActionState), {}, {
               loading: true
@@ -931,14 +998,14 @@ var UsersList = function UsersList(props) {
               },
               body: JSON.stringify(payload)
             };
-            _context7.next = 8;
+            _context8.next = 8;
             return fetch("".concat(ordering.root, "/users"), requestOptions);
           case 8:
-            response = _context7.sent;
-            _context7.next = 11;
+            response = _context8.sent;
+            _context8.next = 11;
             return response.json();
           case 11:
-            content = _context7.sent;
+            content = _context8.sent;
             if (!content.error) {
               users = usersList.users.filter(function (user) {
                 return !selectedUsers.includes(user.id);
@@ -961,23 +1028,23 @@ var UsersList = function UsersList(props) {
                 error: content.result
               });
             }
-            _context7.next = 18;
+            _context8.next = 18;
             break;
           case 15:
-            _context7.prev = 15;
-            _context7.t0 = _context7["catch"](0);
+            _context8.prev = 15;
+            _context8.t0 = _context8["catch"](0);
             setDeleteUsersActionState({
               loading: false,
-              error: [_context7.t0.message]
+              error: [_context8.t0.message]
             });
           case 18:
           case "end":
-            return _context7.stop();
+            return _context8.stop();
         }
-      }, _callee7, null, [[0, 15]]);
+      }, _callee8, null, [[0, 15]]);
     }));
-    return function handleDeleteSeveralUsers(_x8) {
-      return _ref7.apply(this, arguments);
+    return function handleDeleteSeveralUsers(_x9) {
+      return _ref8.apply(this, arguments);
     };
   }();
 
@@ -1062,12 +1129,12 @@ var UsersList = function UsersList(props) {
    * Method to get the drivers groups from API
    */
   var getDriversGroups = /*#__PURE__*/function () {
-    var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
+    var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
       var requestOptions, response, content, _content$result, found, driverManagerGroups;
-      return _regeneratorRuntime().wrap(function _callee8$(_context8) {
-        while (1) switch (_context8.prev = _context8.next) {
+      return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+        while (1) switch (_context9.prev = _context9.next) {
           case 0:
-            _context8.prev = 0;
+            _context9.prev = 0;
             setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
               loading: true
             }));
@@ -1078,14 +1145,14 @@ var UsersList = function UsersList(props) {
                 Authorization: "Bearer ".concat(session.token)
               }
             };
-            _context8.next = 5;
+            _context9.next = 5;
             return fetch("".concat(ordering.root, "/drivergroups"), requestOptions);
           case 5:
-            response = _context8.sent;
-            _context8.next = 8;
+            response = _context9.sent;
+            _context9.next = 8;
             return response.json();
           case 8:
-            content = _context8.sent;
+            content = _context9.sent;
             if (!content.error) {
               found = content.result.find(function (group) {
                 var _session$user2;
@@ -1101,23 +1168,23 @@ var UsersList = function UsersList(props) {
                 loading: false
               }));
             }
-            _context8.next = 15;
+            _context9.next = 15;
             break;
           case 12:
-            _context8.prev = 12;
-            _context8.t0 = _context8["catch"](0);
+            _context9.prev = 12;
+            _context9.t0 = _context9["catch"](0);
             setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
               loading: false,
-              error: [_context8.t0.message]
+              error: [_context9.t0.message]
             }));
           case 15:
           case "end":
-            return _context8.stop();
+            return _context9.stop();
         }
-      }, _callee8, null, [[0, 12]]);
+      }, _callee9, null, [[0, 12]]);
     }));
     return function getDriversGroups() {
-      return _ref8.apply(this, arguments);
+      return _ref9.apply(this, arguments);
     };
   }();
   (0, _react.useEffect)(function () {
@@ -1213,7 +1280,8 @@ var UsersList = function UsersList(props) {
     multiFilterValues: multiFilterValues,
     handleChangeMultiFilterValues: handleChangeMultiFilterValues,
     actionDisabled: actionDisabled,
-    driversGroupsState: driversGroupsState
+    driversGroupsState: driversGroupsState,
+    handleChangeBusyUser: handleChangeBusyUser
   })));
 };
 exports.UsersList = UsersList;
@@ -1243,7 +1311,7 @@ UsersList.propTypes = {
   propsToFetch: _propTypes.default.arrayOf(_propTypes.string)
 };
 UsersList.defaultProps = {
-  propsToFetch: ['name', 'lastname', 'email', 'phone', 'photo', 'cellphone', 'schedule', 'external_id', 'country_phone_code', 'city_id', 'city', 'address', 'addresses', 'max_days_in_future', 'push_tokens', 'address_notes', 'driver_zone_restriction', 'mono_session', 'dropdown_option_id', 'dropdown_option', 'location', 'available', 'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups', 'created_at', 'timezone'],
+  propsToFetch: ['name', 'lastname', 'email', 'phone', 'photo', 'cellphone', 'schedule', 'external_id', 'country_phone_code', 'city_id', 'city', 'address', 'addresses', 'max_days_in_future', 'push_tokens', 'address_notes', 'driver_zone_restriction', 'mono_session', 'dropdown_option_id', 'dropdown_option', 'location', 'available', 'zipcode', 'level', 'enabled', 'middle_name', 'second_lastname', 'birthdate', 'drivergroups', 'created_at', 'timezone', 'busy'],
   paginationSettings: {
     initialPage: 1,
     pageSize: 10,
