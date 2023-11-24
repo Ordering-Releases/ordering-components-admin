@@ -5,6 +5,7 @@ import { useApi } from '../../contexts/ApiContext'
 import { useConfig } from '../../contexts/ConfigContext'
 import { useLanguage } from '../../contexts/LanguageContext'
 
+
 /**
  * Component to manage InvoiceBusunessManager behavior without UI component
  */
@@ -35,7 +36,6 @@ export const InvoiceBusinessManager = (props) => {
   const [orderTypes, setOrderTypes] = useState(
     defaultOrderTypes.filter(type => configTypes?.includes(type.value))
   )
-
   const [exportInvoiceList, setExportInvoiceList] = useState({ loading: false, invoice: null, error: null })
   const [businessInvocing, setBusinessInvocing] = useState({
     type: 'charge',
@@ -51,8 +51,16 @@ export const InvoiceBusinessManager = (props) => {
     misc_amount: 0,
     misc_description: ''
   })
+  const [filterPaymethodsID, setFilterPaymethodsID] = useState([])
+  const [filterOrderTypesID, setFilterOrderTypesID] = useState([])
 
+  const handleChangeDeliveryTypes = (orderTypess) => {
+    setFilterOrderTypesID(orderTypess)
+  }
+  
   const handleChangePayMethods = (payMethods) => {
+    let _paymethodIds = payMethods.filter((_payMethods) => _payMethods.enabled).map((_payMethodss) => _payMethodss.id)
+    setFilterPaymethodsID(_paymethodIds)
     setPayMethodsList({ ...payMethodsList, data: payMethods })
   }
 
@@ -163,6 +171,22 @@ export const InvoiceBusinessManager = (props) => {
             value: `${businessInvocing.to} 23:59:59`
           }
         })
+      }
+      if (filterOrderTypesID.length !== 0) {
+        where.push(
+          {
+            attribute: 'delivery_type',
+            value: filterOrderTypesID
+          }
+        )
+      }
+      if (filterPaymethodsID.length !== 0) {
+        where.push(
+          {
+            attribute: 'paymethod_id',
+            value: filterPaymethodsID
+          }
+        )
       }
       const { content: { error, result, pagination } } = await ordering.orders().asDashboard().where(where).get()
       if (!error) {
@@ -403,6 +427,7 @@ export const InvoiceBusinessManager = (props) => {
     getPaymentMethod()
   }, [])
 
+
   return (
     <>
       {UIComponent && (
@@ -419,6 +444,7 @@ export const InvoiceBusinessManager = (props) => {
           getOrders={getOrders}
           getSubtotal={getSubtotal}
           getTotal={getTotal}
+          handleChangeDeliveryTypes={handleChangeDeliveryTypes}
         />
       )}
     </>

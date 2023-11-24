@@ -4,6 +4,7 @@ import { useSession } from '../../contexts/SessionContext'
 import { useApi } from '../../contexts/ApiContext'
 import { useConfig } from '../../contexts/ConfigContext'
 
+
 /**
  * Component to manage InvoiceDriverManager behavior without UI component
  */
@@ -35,11 +36,13 @@ export const InvoiceDriverManager = (props) => {
     misc_amount: 0,
     misc_description: ''
   })
-
+  const [filterPaymethodsID, setFilterPaymethodsID] = useState([])
   /**
    * Method to update payMethod List
    */
   const handleChangePayMethods = (payMethods) => {
+    let _paymethodIds = payMethods.filter((_payMethods) => _payMethods.enabled).map((_payMethodss) => _payMethodss.id)
+    setFilterPaymethodsID(_paymethodIds)
     setPayMethodsList({ ...payMethodsList, data: payMethods })
   }
 
@@ -151,6 +154,14 @@ export const InvoiceDriverManager = (props) => {
             value: `${driverInvocing.to} 23:59:59`
           }
         })
+      }
+      if (filterPaymethodsID.length !== 0) {
+        where.push(
+          {
+            attribute: 'paymethod_id',
+            value: filterPaymethodsID
+          }
+        )
       }
       const { content: { error, result, pagination } } = await ordering.orders().asDashboard().where(where).get()
       if (!error) {
