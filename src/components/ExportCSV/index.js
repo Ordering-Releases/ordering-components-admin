@@ -109,8 +109,8 @@ export const ExportCSV = (props) => {
         }
       }
       const functionFetch = filterApply
-        ? `${ordering.root}/orders.csv?mode=dashboard&orderBy=id&where=${JSON.stringify(filterConditons)}`
-        : `${ordering.root}/orders.csv?mode=dashboard&orderBy=id`
+        ? `${ordering.root}/orders_v2.csv?mode=dashboard&orderBy=id&where=${JSON.stringify(filterConditons)}`
+        : `${ordering.root}/orders_v2.csv?mode=dashboard&orderBy=id`
 
       const response = await fetch(functionFetch, requestOptions)
       const { error, result } = await response.json()

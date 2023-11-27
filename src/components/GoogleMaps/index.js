@@ -209,7 +209,7 @@ export const GoogleMaps = (props) => {
       let marker = null
       setGoogleMap(map)
 
-      if (locations) {
+      if (locations?.length) {
         if (businessMap) {
           marker = new window.google.maps.Marker({
             position: new window.google.maps.LatLng(center.lat, center.lng),
