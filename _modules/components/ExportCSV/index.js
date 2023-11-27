@@ -147,7 +147,7 @@ var ExportCSV = function ExportCSV(props) {
                 }
               }
             }
-            functionFetch = filterApply ? "".concat(ordering.root, "/orders.csv?mode=dashboard&orderBy=id&where=").concat(JSON.stringify(filterConditons)) : "".concat(ordering.root, "/orders.csv?mode=dashboard&orderBy=id");
+            functionFetch = filterApply ? "".concat(ordering.root, "/orders_v2.csv?mode=dashboard&orderBy=id&where=").concat(JSON.stringify(filterConditons)) : "".concat(ordering.root, "/orders_v2.csv?mode=dashboard&orderBy=id");
             _context.next = 10;
             return fetch(functionFetch, requestOptions);
           case 10:

@@ -276,7 +276,7 @@ var GoogleMaps = function GoogleMaps(props) {
       });
       var marker = null;
       setGoogleMap(map);
-      if (locations) {
+      if (locations !== null && locations !== void 0 && locations.length) {
         if (businessMap) {
           marker = new window.google.maps.Marker({
             position: new window.google.maps.LatLng(center.lat, center.lng),
