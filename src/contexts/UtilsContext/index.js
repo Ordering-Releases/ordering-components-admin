@@ -267,6 +267,8 @@ export const UtilsProviders = ({ children }) => {
         return t('ORDER_STATUS_DRIVER_WAITING_FOR_ORDER', 'Driver waiting for order')
       case 25:
         return t('ORDER_STATUS_ACCEPTED_BY_DRIVER_COMPANY', 'Accepted by driver company')
+      case 26:
+        return t('ORDER_DRIVER_ARRIVED_CUSTOMER', 'Driver arrived to customer')
       default:
         return 'N/A'
     }
@@ -302,5 +304,5 @@ export const UtilsProviders = ({ children }) => {
  */
 export const useUtils = () => {
   const utilsManager = useContext(UtilsContext)
-  return utilsManager || [{}, () => {}]
+  return utilsManager || [{}, () => { }]
 }

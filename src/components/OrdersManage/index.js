@@ -27,7 +27,7 @@ export const OrdersManage = (props) => {
   const requestsState = {}
   const orderStatuesList = {
     pending: [0, 13],
-    inProgress: [7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23, 24, 25],
+    inProgress: [7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23, 24, 25, 26],
     completed: [1, 11, 15],
     cancelled: [2, 5, 6, 10, 12, 16, 17]
   }
@@ -55,7 +55,8 @@ export const OrdersManage = (props) => {
     advanced: { visable: true, title: t('ADVANCED_LOGISTICS', 'Advanced logistics'), className: 'advanced', draggable: true, colSpan: 3, order: 9 },
     timer: { visable: false, title: t('SLA_TIMER', 'SLA’s timer'), className: 'timer', draggable: true, colSpan: 1, order: 10 },
     eta: { visable: true, title: t('ETA', 'ETA'), className: 'eta', draggable: true, colSpan: 1, order: 11 },
-    total: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 12 }
+    total: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 12 },
+    channel: { visable: false, title: t('CHANNEL', 'Channel'), className: 'channel', draggable: true, colSpan: 1, order: 13 }
   }
   const [allowColumns, setAllowColumns] = useState(allowColumnsModel)
   const [franchisesList, setFranchisesList] = useState({ loading: false, franchises: [], error: null })
@@ -89,11 +90,11 @@ export const OrdersManage = (props) => {
    * Object to save order substatuses
    */
   const [selectedSubOrderStatus, setSelectedSubOrderStatus] = useState({
-    pending: orderStatuesList.pending,
-    inProgress: orderStatuesList.inProgress,
-    completed: orderStatuesList.completed,
-    cancelled: orderStatuesList.cancelled,
-    all: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+    pending: orderStatuesList?.pending,
+    inProgress: orderStatuesList?.inProgress,
+    completed: orderStatuesList?.completed,
+    cancelled: orderStatuesList?.cancelled,
+    all: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
   })
 
   /**
