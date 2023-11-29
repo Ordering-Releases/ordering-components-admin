@@ -66,7 +66,7 @@ var OrdersManage = function OrdersManage(props) {
   var requestsState = {};
   var orderStatuesList = {
     pending: [0, 13],
-    inProgress: [7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23, 24, 25],
+    inProgress: [7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23, 24, 25, 26],
     completed: [1, 11, 15],
     cancelled: [2, 5, 6, 10, 12, 16, 17]
   };
@@ -225,6 +225,14 @@ var OrdersManage = function OrdersManage(props) {
       draggable: false,
       colSpan: 1,
       order: 12
+    },
+    channel: {
+      visable: false,
+      title: t('CHANNEL', 'Channel'),
+      className: 'channel',
+      draggable: true,
+      colSpan: 1,
+      order: 13
     }
   };
   var _useState17 = (0, _react.useState)(allowColumnsModel),
@@ -303,11 +311,11 @@ var OrdersManage = function OrdersManage(props) {
    * Object to save order substatuses
    */
   var _useState33 = (0, _react.useState)({
-      pending: orderStatuesList.pending,
-      inProgress: orderStatuesList.inProgress,
-      completed: orderStatuesList.completed,
-      cancelled: orderStatuesList.cancelled,
-      all: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+      pending: orderStatuesList === null || orderStatuesList === void 0 ? void 0 : orderStatuesList.pending,
+      inProgress: orderStatuesList === null || orderStatuesList === void 0 ? void 0 : orderStatuesList.inProgress,
+      completed: orderStatuesList === null || orderStatuesList === void 0 ? void 0 : orderStatuesList.completed,
+      cancelled: orderStatuesList === null || orderStatuesList === void 0 ? void 0 : orderStatuesList.cancelled,
+      all: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
     }),
     _useState34 = _slicedToArray(_useState33, 2),
     selectedSubOrderStatus = _useState34[0],
