@@ -254,7 +254,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
             if (isOnlyDelivery) {
               conditions.push({
                 attribute: 'delivery_type',
-                value: 1
+                value: [1, 7]
               });
             }
             if (driverId) {
@@ -968,7 +968,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
     if ((order === null || order === void 0 ? void 0 : (_order$products = order.products) === null || _order$products === void 0 ? void 0 : (_order$products$ = _order$products[0]) === null || _order$products$ === void 0 ? void 0 : _order$products$.type) === 'gift_card') return;
     if (customerId && (order === null || order === void 0 ? void 0 : order.customer_id) !== customerId) return;
     if (driverId && (order === null || order === void 0 ? void 0 : order.driver_id) !== driverId) return;
-    if (isOnlyDelivery && (order === null || order === void 0 ? void 0 : order.delivery_type) !== 1) return;
+    if (isOnlyDelivery && ![1, 7].includes(order === null || order === void 0 ? void 0 : order.delivery_type)) return;
     if (typeof order.status === 'undefined') return;
     if (!isFilteredOrder(order)) {
       var _order$history, _order$history2;
@@ -1048,7 +1048,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
     if ((order === null || order === void 0 ? void 0 : (_order$products2 = order.products) === null || _order$products2 === void 0 ? void 0 : (_order$products2$ = _order$products2[0]) === null || _order$products2$ === void 0 ? void 0 : _order$products2$.type) === 'gift_card') return;
     if (customerId && (order === null || order === void 0 ? void 0 : order.customer_id) !== customerId) return;
     if (driverId && (order === null || order === void 0 ? void 0 : order.driver_id) !== driverId) return;
-    if (isOnlyDelivery && (order === null || order === void 0 ? void 0 : order.delivery_type) !== 1) return;
+    if (isOnlyDelivery && ![1, 7].includes(order === null || order === void 0 ? void 0 : order.delivery_type)) return;
     var found = orderList.orders.find(function (_order) {
       return (_order === null || _order === void 0 ? void 0 : _order.id) === (order === null || order === void 0 ? void 0 : order.id);
     });

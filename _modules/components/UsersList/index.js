@@ -1228,7 +1228,8 @@ var UsersList = function UsersList(props) {
           if (item.id === (driver === null || driver === void 0 ? void 0 : driver.id)) {
             return _objectSpread(_objectSpread({}, item), {}, {
               enabled: driver === null || driver === void 0 ? void 0 : driver.enabled,
-              available: driver === null || driver === void 0 ? void 0 : driver.available
+              available: driver === null || driver === void 0 ? void 0 : driver.available,
+              busy: driver === null || driver === void 0 ? void 0 : driver.busy
             });
           }
           return item;
