@@ -929,7 +929,8 @@ export const UsersList = (props) => {
             return {
               ...item,
               enabled: driver?.enabled,
-              available: driver?.available
+              available: driver?.available,
+              busy: driver?.busy
             }
           }
           return item

@@ -157,7 +157,7 @@ export const DashboardOrdersList = (props) => {
       conditions.push(
         {
           attribute: 'delivery_type',
-          value: 1
+          value: [1, 7]
         }
       )
     }
@@ -240,7 +240,7 @@ export const DashboardOrdersList = (props) => {
               value: encodeURI(`%${searchValue}%`)
             }
           }
-        ) 
+        )
       }
       if (isSearchByCustomerEmail) {
         searchConditions.push(
@@ -816,7 +816,7 @@ export const DashboardOrdersList = (props) => {
     if (order?.products?.[0]?.type === 'gift_card') return
     if (customerId && order?.customer_id !== customerId) return
     if (driverId && order?.driver_id !== driverId) return
-    if (isOnlyDelivery && order?.delivery_type !== 1) return
+    if (isOnlyDelivery && ![1, 7].includes(order?.delivery_type)) return
     if (typeof order.status === 'undefined') return
     if (!isFilteredOrder(order)) {
       const length = order?.history?.length
@@ -873,7 +873,7 @@ export const DashboardOrdersList = (props) => {
     if (order?.products?.[0]?.type === 'gift_card') return
     if (customerId && order?.customer_id !== customerId) return
     if (driverId && order?.driver_id !== driverId) return
-    if (isOnlyDelivery && order?.delivery_type !== 1) return
+    if (isOnlyDelivery && ![1, 7].includes(order?.delivery_type)) return
     const found = orderList.orders.find(_order => _order?.id === order?.id)
     if (found) return
     if (!isFilteredOrder(order)) return
