@@ -31,10 +31,14 @@ export const OrdersFilter = (props) => {
     metafield: [],
     logisticStatus: null,
     assigned: null,
-    driverGroupBusinessIds: []
+    driverGroupBusinessIds: [],
+    customerName: null,
+    customerEmail: null,
+    customerCellphone: null,
+    customerLastname: null
   })
 
-  /** 
+  /**
    * Changer order Id
    * @param {EventTarget} e Related HTML event
    */
@@ -97,21 +101,21 @@ export const OrdersFilter = (props) => {
     setFilterValues({ ...filterValues, groupTypes: _groupTypes })
   }
 
-    /**
-   * Change group type
-   * * @param {object} groupTypeUnassigned Group type unassigned
-   */
-    const handleChangeGroupUnassigned = (groupTypeUnassigned) => {
-      let _groupTypesUnassigned = [...filterValues.groupTypesUnassigned]
-      if (!_groupTypesUnassigned.includes(groupTypeUnassigned)) {
-        _groupTypesUnassigned.push(groupTypeUnassigned)
-      } else {
-        _groupTypesUnassigned = _groupTypesUnassigned.filter((type) => type !== groupTypeUnassigned)
-      }
-  
-      // setGroupDriverIds(_driverIds)
-      setFilterValues({ ...filterValues, groupTypesUnassigned: _groupTypesUnassigned })
+  /**
+ * Change group type
+ * * @param {object} groupTypeUnassigned Group type unassigned
+ */
+  const handleChangeGroupUnassigned = (groupTypeUnassigned) => {
+    let _groupTypesUnassigned = [...filterValues.groupTypesUnassigned]
+    if (!_groupTypesUnassigned.includes(groupTypeUnassigned)) {
+      _groupTypesUnassigned.push(groupTypeUnassigned)
+    } else {
+      _groupTypesUnassigned = _groupTypesUnassigned.filter((type) => type !== groupTypeUnassigned)
     }
+
+    // setGroupDriverIds(_driverIds)
+    setFilterValues({ ...filterValues, groupTypesUnassigned: _groupTypesUnassigned })
+  }
   /**
    * Change date type
    * * @param {string} dateType date type
@@ -315,7 +319,11 @@ export const OrdersFilter = (props) => {
       metafield: [],
       logisticStatus: null,
       assigned: null,
-      driverGroupBusinessIds: []
+      driverGroupBusinessIds: [],
+      customerName: null,
+      customerEmail: null,
+      customerCellphone: null,
+      customerLastname: null
     })
   }
 

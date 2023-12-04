@@ -205,7 +205,7 @@ export const DashboardOrdersList = (props) => {
             attribute: 'id',
             value: {
               condition: 'ilike',
-              value: encodeURI(`%${searchValue}%`)
+              value: encodeURIComponent(`%${searchValue}%`)
             }
           }
         )
@@ -214,102 +214,11 @@ export const DashboardOrdersList = (props) => {
             attribute: 'external_id',
             value: {
               condition: 'ilike',
-              value: encodeURI(`%${searchValue}%`)
-            }
-          }
-        )
-        searchConditions.push(
-          {
-            attribute: 'customer',
-            conditions: [
-              {
-                attribute: 'name',
-                value: {
-                  condition: 'ilike',
-                  value: encodeURI(`%${searchValue}%`)
-                }
-              }
-            ]
-          }
-        )
-        searchConditions.push(
-          {
-            attribute: 'cellphone',
-            value: {
-              condition: 'ilike',
-              value: encodeURI(`%${searchValue}%`)
+              value: encodeURIComponent(`%${searchValue}%`)
             }
           }
         )
       }
-      if (isSearchByCustomerEmail) {
-        searchConditions.push(
-          {
-            attribute: 'customer',
-            conditions: [
-              {
-                attribute: 'email',
-                value: {
-                  condition: 'ilike',
-                  value: encodeURI(`%${searchValue}%`)
-                }
-              }
-            ]
-          }
-        )
-      }
-
-      if (isSearchByCustomerPhone) {
-        searchConditions.push(
-          {
-            attribute: 'customer',
-            conditions: [
-              {
-                attribute: 'cellphone',
-                value: {
-                  condition: 'ilike',
-                  value: encodeURI(`%${searchValue}%`)
-                }
-              }
-            ]
-          }
-        )
-      }
-
-      if (isSearchByBusinessName) {
-        searchConditions.push(
-          {
-            attribute: 'business',
-            conditions: [
-              {
-                attribute: 'name',
-                value: {
-                  condition: 'ilike',
-                  value: encodeURI(`%${searchValue}%`)
-                }
-              }
-            ]
-          }
-        )
-      }
-
-      if (isSearchByDriverName) {
-        searchConditions.push(
-          {
-            attribute: 'driver',
-            conditions: [
-              {
-                attribute: 'name',
-                value: {
-                  condition: 'ilike',
-                  value: encodeURI(`%${searchValue}%`)
-                }
-              }
-            ]
-          }
-        )
-      }
-
       conditions.push({
         conector: 'OR',
         conditions: searchConditions
@@ -364,7 +273,7 @@ export const DashboardOrdersList = (props) => {
             attribute: 'external_id',
             value: {
               condition: 'ilike',
-              value: encodeURI(`%${filterValues?.externalId}%`)
+              value: encodeURIComponent(`%${filterValues?.externalId}%`)
             }
           }
         )
@@ -496,6 +405,70 @@ export const DashboardOrdersList = (props) => {
               {
                 attribute: 'city_id',
                 value: filterValues?.cityIds
+              }
+            ]
+          }
+        )
+      }
+      if (filterValues?.customerName) {
+        filterConditons.push(
+          {
+            attribute: 'customer',
+            conditions: [
+              {
+                attribute: 'name',
+                value: {
+                  condition: 'ilike',
+                  value: encodeURI(`%${filterValues?.customerName}%`)
+                }
+              }
+            ]
+          }
+        )
+      }
+      if (filterValues?.customerLastname) {
+        filterConditons.push(
+          {
+            attribute: 'customer',
+            conditions: [
+              {
+                attribute: 'lastname',
+                value: {
+                  condition: 'ilike',
+                  value: encodeURI(`%${filterValues?.customerLastname}%`)
+                }
+              }
+            ]
+          }
+        )
+      }
+      if (filterValues?.customerCellphone) {
+        filterConditons.push(
+          {
+            attribute: 'customer',
+            conditions: [
+              {
+                attribute: 'cellphone',
+                value: {
+                  condition: 'ilike',
+                  value: encodeURI(`%${filterValues?.customerCellphone}%`)
+                }
+              }
+            ]
+          }
+        )
+      }
+      if (filterValues?.customerEmail) {
+        filterConditons.push(
+          {
+            attribute: 'customer',
+            conditions: [
+              {
+                attribute: 'email',
+                value: {
+                  condition: 'ilike',
+                  value: encodeURI(`%${filterValues?.customerEmail}%`)
+                }
               }
             ]
           }
