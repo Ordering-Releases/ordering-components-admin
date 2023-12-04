@@ -288,80 +288,15 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
                   attribute: 'id',
                   value: {
                     condition: 'ilike',
-                    value: encodeURI("%".concat(searchValue, "%"))
+                    value: encodeURIComponent("%".concat(searchValue, "%"))
                   }
                 });
                 searchConditions.push({
                   attribute: 'external_id',
                   value: {
                     condition: 'ilike',
-                    value: encodeURI("%".concat(searchValue, "%"))
+                    value: encodeURIComponent("%".concat(searchValue, "%"))
                   }
-                });
-                searchConditions.push({
-                  attribute: 'customer',
-                  conditions: [{
-                    attribute: 'name',
-                    value: {
-                      condition: 'ilike',
-                      value: encodeURI("%".concat(searchValue, "%"))
-                    }
-                  }]
-                });
-                searchConditions.push({
-                  attribute: 'cellphone',
-                  value: {
-                    condition: 'ilike',
-                    value: encodeURI("%".concat(searchValue, "%"))
-                  }
-                });
-              }
-              if (isSearchByCustomerEmail) {
-                searchConditions.push({
-                  attribute: 'customer',
-                  conditions: [{
-                    attribute: 'email',
-                    value: {
-                      condition: 'ilike',
-                      value: encodeURI("%".concat(searchValue, "%"))
-                    }
-                  }]
-                });
-              }
-              if (isSearchByCustomerPhone) {
-                searchConditions.push({
-                  attribute: 'customer',
-                  conditions: [{
-                    attribute: 'cellphone',
-                    value: {
-                      condition: 'ilike',
-                      value: encodeURI("%".concat(searchValue, "%"))
-                    }
-                  }]
-                });
-              }
-              if (isSearchByBusinessName) {
-                searchConditions.push({
-                  attribute: 'business',
-                  conditions: [{
-                    attribute: 'name',
-                    value: {
-                      condition: 'ilike',
-                      value: encodeURI("%".concat(searchValue, "%"))
-                    }
-                  }]
-                });
-              }
-              if (isSearchByDriverName) {
-                searchConditions.push({
-                  attribute: 'driver',
-                  conditions: [{
-                    attribute: 'name',
-                    value: {
-                      condition: 'ilike',
-                      value: encodeURI("%".concat(searchValue, "%"))
-                    }
-                  }]
                 });
               }
               conditions.push({
@@ -408,7 +343,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
                   attribute: 'external_id',
                   value: {
                     condition: 'ilike',
-                    value: encodeURI("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.externalId, "%"))
+                    value: encodeURIComponent("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.externalId, "%"))
                   }
                 });
               }
@@ -512,6 +447,54 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
                   conditions: [{
                     attribute: 'city_id',
                     value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.cityIds
+                  }]
+                });
+              }
+              if (filterValues !== null && filterValues !== void 0 && filterValues.customerName) {
+                filterConditons.push({
+                  attribute: 'customer',
+                  conditions: [{
+                    attribute: 'name',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.customerName, "%"))
+                    }
+                  }]
+                });
+              }
+              if (filterValues !== null && filterValues !== void 0 && filterValues.customerLastname) {
+                filterConditons.push({
+                  attribute: 'customer',
+                  conditions: [{
+                    attribute: 'lastname',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.customerLastname, "%"))
+                    }
+                  }]
+                });
+              }
+              if (filterValues !== null && filterValues !== void 0 && filterValues.customerCellphone) {
+                filterConditons.push({
+                  attribute: 'customer',
+                  conditions: [{
+                    attribute: 'cellphone',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.customerCellphone, "%"))
+                    }
+                  }]
+                });
+              }
+              if (filterValues !== null && filterValues !== void 0 && filterValues.customerEmail) {
+                filterConditons.push({
+                  attribute: 'customer',
+                  conditions: [{
+                    attribute: 'email',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.customerEmail, "%"))
+                    }
                   }]
                 });
               }

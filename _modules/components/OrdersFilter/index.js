@@ -55,13 +55,17 @@ var OrdersFilter = function OrdersFilter(props) {
       metafield: [],
       logisticStatus: null,
       assigned: null,
-      driverGroupBusinessIds: []
+      driverGroupBusinessIds: [],
+      customerName: null,
+      customerEmail: null,
+      customerCellphone: null,
+      customerLastname: null
     }),
     _useState2 = _slicedToArray(_useState, 2),
     filterValues = _useState2[0],
     setFilterValues = _useState2[1];
 
-  /** 
+  /**
    * Changer order Id
    * @param {EventTarget} e Related HTML event
    */
@@ -417,7 +421,11 @@ var OrdersFilter = function OrdersFilter(props) {
       metafield: [],
       logisticStatus: null,
       assigned: null,
-      driverGroupBusinessIds: []
+      driverGroupBusinessIds: [],
+      customerName: null,
+      customerEmail: null,
+      customerCellphone: null,
+      customerLastname: null
     });
   };
   (0, _react.useEffect)(function () {
