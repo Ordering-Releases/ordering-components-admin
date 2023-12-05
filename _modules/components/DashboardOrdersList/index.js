@@ -92,6 +92,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
     session = _useSession2[0];
   var socket = (0, _WebsocketContext.useWebsocket)();
   var accessToken = useDefualtSessionManager ? session.token : props.accessToken;
+  var isAlsea = ['alsea', 'alsea-staging'].includes(ordering.project);
   var requestsState = {};
   var _useState5 = (0, _react.useState)({
       loading: false,
@@ -298,6 +299,66 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
                     value: encodeURIComponent("%".concat(searchValue, "%"))
                   }
                 });
+              }
+              if (!isAlsea) {
+                searchConditions.push({
+                  attribute: 'customer',
+                  conditions: [{
+                    attribute: 'name',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI("%".concat(searchValue, "%"))
+                    }
+                  }]
+                });
+                if (isSearchByCustomerEmail) {
+                  searchConditions.push({
+                    attribute: 'customer',
+                    conditions: [{
+                      attribute: 'email',
+                      value: {
+                        condition: 'ilike',
+                        value: encodeURI("%".concat(searchValue, "%"))
+                      }
+                    }]
+                  });
+                }
+                if (isSearchByCustomerPhone) {
+                  searchConditions.push({
+                    attribute: 'customer',
+                    conditions: [{
+                      attribute: 'cellphone',
+                      value: {
+                        condition: 'ilike',
+                        value: encodeURI("%".concat(searchValue, "%"))
+                      }
+                    }]
+                  });
+                }
+                if (isSearchByBusinessName) {
+                  searchConditions.push({
+                    attribute: 'business',
+                    conditions: [{
+                      attribute: 'name',
+                      value: {
+                        condition: 'ilike',
+                        value: encodeURI("%".concat(searchValue, "%"))
+                      }
+                    }]
+                  });
+                }
+                if (isSearchByDriverName) {
+                  searchConditions.push({
+                    attribute: 'driver',
+                    conditions: [{
+                      attribute: 'name',
+                      value: {
+                        condition: 'ilike',
+                        value: encodeURI("%".concat(searchValue, "%"))
+                      }
+                    }]
+                  });
+                }
               }
               conditions.push({
                 conector: 'OR',
