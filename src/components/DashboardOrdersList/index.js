@@ -49,7 +49,7 @@ export const DashboardOrdersList = (props) => {
   const [session] = useSession()
   const socket = useWebsocket()
   const accessToken = useDefualtSessionManager ? session.token : props.accessToken
-
+  const isAlsea = ['alsea', 'alsea-staging'].includes(ordering.project)
   const requestsState = {}
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
   const firstRender = useRef(true)
@@ -218,6 +218,89 @@ export const DashboardOrdersList = (props) => {
             }
           }
         )
+      }
+      if (!isAlsea) {
+        searchConditions.push(
+          {
+            attribute: 'customer',
+            conditions: [
+              {
+                attribute: 'name',
+                value: {
+                  condition: 'ilike',
+                  value: encodeURI(`%${searchValue}%`)
+                }
+              }
+            ]
+          }
+        )
+        if (isSearchByCustomerEmail) {
+          searchConditions.push(
+            {
+              attribute: 'customer',
+              conditions: [
+                {
+                  attribute: 'email',
+                  value: {
+                    condition: 'ilike',
+                    value: encodeURI(`%${searchValue}%`)
+                  }
+                }
+              ]
+            }
+          )
+        }
+
+        if (isSearchByCustomerPhone) {
+          searchConditions.push(
+            {
+              attribute: 'customer',
+              conditions: [
+                {
+                  attribute: 'cellphone',
+                  value: {
+                    condition: 'ilike',
+                    value: encodeURI(`%${searchValue}%`)
+                  }
+                }
+              ]
+            }
+          )
+        }
+
+        if (isSearchByBusinessName) {
+          searchConditions.push(
+            {
+              attribute: 'business',
+              conditions: [
+                {
+                  attribute: 'name',
+                  value: {
+                    condition: 'ilike',
+                    value: encodeURI(`%${searchValue}%`)
+                  }
+                }
+              ]
+            }
+          )
+        }
+
+        if (isSearchByDriverName) {
+          searchConditions.push(
+            {
+              attribute: 'driver',
+              conditions: [
+                {
+                  attribute: 'name',
+                  value: {
+                    condition: 'ilike',
+                    value: encodeURI(`%${searchValue}%`)
+                  }
+                }
+              ]
+            }
+          )
+        }
       }
       conditions.push({
         conector: 'OR',
