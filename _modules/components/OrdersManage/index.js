@@ -218,19 +218,19 @@ var OrdersManage = function OrdersManage(props) {
       colSpan: 1,
       order: 11
     },
+    channel: {
+      visable: false,
+      title: t('CHANNEL', 'Channel'),
+      className: 'channelInfo',
+      draggable: true,
+      colSpan: 1,
+      order: 12
+    },
     total: {
       visable: true,
       title: '',
       className: '',
       draggable: false,
-      colSpan: 1,
-      order: 12
-    },
-    channel: {
-      visable: false,
-      title: t('CHANNEL', 'Channel'),
-      className: 'channel',
-      draggable: true,
       colSpan: 1,
       order: 13
     }
