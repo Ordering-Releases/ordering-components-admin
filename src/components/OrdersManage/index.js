@@ -55,8 +55,8 @@ export const OrdersManage = (props) => {
     advanced: { visable: true, title: t('ADVANCED_LOGISTICS', 'Advanced logistics'), className: 'advanced', draggable: true, colSpan: 3, order: 9 },
     timer: { visable: false, title: t('SLA_TIMER', 'SLA’s timer'), className: 'timer', draggable: true, colSpan: 1, order: 10 },
     eta: { visable: true, title: t('ETA', 'ETA'), className: 'eta', draggable: true, colSpan: 1, order: 11 },
-    total: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 12 },
-    channel: { visable: false, title: t('CHANNEL', 'Channel'), className: 'channel', draggable: true, colSpan: 1, order: 13 }
+    channel: { visable: false, title: t('CHANNEL', 'Channel'), className: 'channelInfo', draggable: true, colSpan: 1, order: 12 },
+    total: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 13 }
   }
   const [allowColumns, setAllowColumns] = useState(allowColumnsModel)
   const [franchisesList, setFranchisesList] = useState({ loading: false, franchises: [], error: null })
