@@ -44,6 +44,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
     driverId = props.driverId,
     customerId = props.customerId,
     businessId = props.businessId,
+    franchiseId = props.franchiseId,
     orderIds = props.orderIds,
     deletedOrderIds = props.deletedOrderIds,
     orderStatus = props.orderStatus,
@@ -274,6 +275,15 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
               conditions.push({
                 attribute: 'business_id',
                 value: businessId
+              });
+            }
+            if (franchiseId) {
+              conditions.push({
+                attribute: 'ref_business',
+                conditions: [{
+                  attribute: 'franchise_id',
+                  value: franchiseId
+                }]
               });
             }
             if (timeStatus) {
@@ -580,11 +590,11 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
             } else {
               functionFetch = ordering.setAccessToken(accessToken).orders().asDashboard().where(where);
             }
-            _context2.next = 20;
+            _context2.next = 21;
             return functionFetch.get(options);
-          case 20:
-            return _context2.abrupt("return", _context2.sent);
           case 21:
+            return _context2.abrupt("return", _context2.sent);
+          case 22:
           case "end":
             return _context2.stop();
         }

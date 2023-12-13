@@ -31,7 +31,8 @@ var ExportCSV = function ExportCSV(props) {
   var UIComponent = props.UIComponent,
     filterValues = props.filterValues,
     ordersStatusGroup = props.ordersStatusGroup,
-    selectedSubOrderStatus = props.selectedSubOrderStatus;
+    selectedSubOrderStatus = props.selectedSubOrderStatus,
+    franchiseId = props.franchiseId;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -76,6 +77,15 @@ var ExportCSV = function ExportCSV(props) {
               }
             };
             filterConditons = [];
+            if (franchiseId) {
+              filterConditons.push({
+                attribute: 'ref_business',
+                conditions: [{
+                  attribute: 'franchise_id',
+                  value: franchiseId
+                }]
+              });
+            }
             if (filterApply) {
               if (Object.keys(filterValues).length) {
                 if (filterValues.statuses !== undefined) {
@@ -148,13 +158,13 @@ var ExportCSV = function ExportCSV(props) {
               }
             }
             functionFetch = filterApply ? "".concat(ordering.root, "/orders_v2.csv?mode=dashboard&orderBy=id&where=").concat(JSON.stringify(filterConditons)) : "".concat(ordering.root, "/orders_v2.csv?mode=dashboard&orderBy=id");
-            _context.next = 10;
+            _context.next = 11;
             return fetch(functionFetch, requestOptions);
-          case 10:
+          case 11:
             response = _context.sent;
-            _context.next = 13;
+            _context.next = 14;
             return response.json();
-          case 13:
+          case 14:
             _yield$response$json = _context.sent;
             error = _yield$response$json.error;
             result = _yield$response$json.result;
@@ -169,20 +179,20 @@ var ExportCSV = function ExportCSV(props) {
                 error: result
               }));
             }
-            _context.next = 22;
+            _context.next = 23;
             break;
-          case 19:
-            _context.prev = 19;
+          case 20:
+            _context.prev = 20;
             _context.t0 = _context["catch"](2);
             setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
               loading: false,
               error: _context.t0
             }));
-          case 22:
+          case 23:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[2, 19]]);
+      }, _callee, null, [[2, 20]]);
     }));
     return function getCSV(_x2) {
       return _ref.apply(this, arguments);
