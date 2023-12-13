@@ -8,7 +8,8 @@ export const ExportCSV = (props) => {
     UIComponent,
     filterValues,
     ordersStatusGroup,
-    selectedSubOrderStatus
+    selectedSubOrderStatus,
+    franchiseId
   } = props
   const [ordering] = useApi()
   const [{ token, loading }] = useSession()
@@ -30,6 +31,16 @@ export const ExportCSV = (props) => {
       }
 
       const filterConditons = []
+
+      if (franchiseId) {
+        filterConditons.push({
+          attribute: 'ref_business',
+          conditions: [{
+            attribute: 'franchise_id',
+            value: franchiseId
+          }]
+        })
+      }
 
       if (filterApply) {
         if (Object.keys(filterValues).length) {
