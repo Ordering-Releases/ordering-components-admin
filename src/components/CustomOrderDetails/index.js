@@ -165,6 +165,16 @@ export const CustomOrderDetails = (props) => {
       }
       const { content: { error, result } } = await ordering.businesses(selectedBusiness.id).products().parameters(parameters).where(where).get()
       if (!error) {
+        if (searchValue) {
+          const newProducts = result.filter(newProduct => !productList.products.some(existingProduct => existingProduct.id === newProduct.id))
+
+          setProductList(prevProductList => ({
+            ...prevProductList,
+            loading: false,
+            products: [...prevProductList.products, ...newProducts]
+          }))
+          return
+        }
         setProductList({
           ...productList,
           loading: false,
