@@ -313,8 +313,8 @@ var SingleBusinessProduct = function SingleBusinessProduct(props) {
   /**
   * Method to handle drag start
   */
-  var handleDragStart = function handleDragStart(event, productId) {
-    event.dataTransfer.setData('transferProductId', productId);
+  var handleDragStart = function handleDragStart(event, product) {
+    event.dataTransfer.setData('transferProduct', JSON.stringify(product));
     var ghostEle = document.createElement('div');
     ghostEle.classList.add('ghostDragging');
     ghostEle.innerHTML = product === null || product === void 0 ? void 0 : product.name;
@@ -351,7 +351,7 @@ var SingleBusinessProduct = function SingleBusinessProduct(props) {
    */
   var handleDrop = function handleDrop(event) {
     event.preventDefault();
-    var transferProductId = parseInt(event.dataTransfer.getData('transferProductId'));
+    var transferProduct = JSON.parse(event.dataTransfer.getData('transferProduct'));
     var dropProductRank;
     if (isProductsBottom) {
       var rankedProducts = category.products.sort(function (a, b) {
@@ -370,7 +370,7 @@ var SingleBusinessProduct = function SingleBusinessProduct(props) {
       dropProductRank = product === null || product === void 0 ? void 0 : product.rank;
     }
     setIsProductsBottom(false);
-    handleChangeProductRank(transferProductId, {
+    handleChangeProductRank(transferProduct, {
       rank: dropProductRank
     });
   };
@@ -379,7 +379,7 @@ var SingleBusinessProduct = function SingleBusinessProduct(props) {
    * Method to change the rank of transfer category
    */
   var handleChangeProductRank = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(transferProductId, params) {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(transferProduct, params) {
       var _yield$ordering$busin5, _yield$ordering$busin6, error, result, _categories, updateProducts;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
@@ -393,7 +393,7 @@ var SingleBusinessProduct = function SingleBusinessProduct(props) {
             _context3.prev = 2;
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
             _context3.next = 6;
-            return ordering.businesses(parseInt(business === null || business === void 0 ? void 0 : business.id)).categories(parseInt(product === null || product === void 0 ? void 0 : product.category_id)).products(transferProductId).save(params);
+            return ordering.businesses(parseInt(business === null || business === void 0 ? void 0 : business.id)).categories(parseInt(transferProduct === null || transferProduct === void 0 ? void 0 : transferProduct.category_id)).products(transferProduct === null || transferProduct === void 0 ? void 0 : transferProduct.id).save(params);
           case 6:
             _yield$ordering$busin5 = _context3.sent;
             _yield$ordering$busin6 = _yield$ordering$busin5.content;
@@ -405,7 +405,7 @@ var SingleBusinessProduct = function SingleBusinessProduct(props) {
                 _categories.forEach(function iterate(category) {
                   if (category.id === (product === null || product === void 0 ? void 0 : product.category_id)) {
                     var _products = category.products.map(function (_product) {
-                      if (_product.id === transferProductId) {
+                      if (_product.id === (transferProduct === null || transferProduct === void 0 ? void 0 : transferProduct.id)) {
                         return _objectSpread(_objectSpread({}, _product), {}, {
                           rank: result === null || result === void 0 ? void 0 : result.rank
                         });
