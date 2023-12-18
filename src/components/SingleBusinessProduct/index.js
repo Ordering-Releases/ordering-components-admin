@@ -213,8 +213,8 @@ export const SingleBusinessProduct = (props) => {
   /**
  * Method to handle drag start
  */
-  const handleDragStart = (event, productId) => {
-    event.dataTransfer.setData('transferProductId', productId)
+  const handleDragStart = (event, product) => {
+    event.dataTransfer.setData('transferProduct', JSON.stringify(product))
     const ghostEle = document.createElement('div')
     ghostEle.classList.add('ghostDragging')
     ghostEle.innerHTML = product?.name
@@ -251,7 +251,7 @@ export const SingleBusinessProduct = (props) => {
    */
   const handleDrop = (event) => {
     event.preventDefault()
-    const transferProductId = parseInt(event.dataTransfer.getData('transferProductId'))
+    const transferProduct = JSON.parse(event.dataTransfer.getData('transferProduct'))
     let dropProductRank
     if (isProductsBottom) {
       const rankedProducts = category.products.sort((a, b) => a.rank - b.rank)
@@ -267,24 +267,24 @@ export const SingleBusinessProduct = (props) => {
       dropProductRank = product?.rank
     }
     setIsProductsBottom(false)
-    handleChangeProductRank(transferProductId, { rank: dropProductRank })
+    handleChangeProductRank(transferProduct, { rank: dropProductRank })
   }
 
   /**
    * Method to change the rank of transfer category
    */
-  const handleChangeProductRank = async (transferProductId, params) => {
+  const handleChangeProductRank = async (transferProduct, params) => {
     if (loading) return
     try {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
-      const { content: { error, result } } = await ordering.businesses(parseInt(business?.id)).categories(parseInt(product?.category_id)).products(transferProductId).save(params)
+      const { content: { error, result } } = await ordering.businesses(parseInt(business?.id)).categories(parseInt(transferProduct?.category_id)).products(transferProduct?.id).save(params)
       if (!error) {
         if (handleUpdateBusinessState) {
           const _categories = [...business?.categories]
           _categories.forEach(function iterate (category) {
             if (category.id === product?.category_id) {
               const _products = category.products.map(_product => {
-                if (_product.id === transferProductId) {
+                if (_product.id === transferProduct?.id) {
                   return {
                     ..._product,
                     rank: result?.rank
