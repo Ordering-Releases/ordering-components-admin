@@ -39,7 +39,8 @@ exports.WebsocketContext = WebsocketContext;
 var WebsocketProvider = function WebsocketProvider(_ref) {
   var _session$user2;
   var settings = _ref.settings,
-    children = _ref.children;
+    children = _ref.children,
+    isAlsea = _ref.isAlsea;
   var _useSession = (0, _SessionContext.useSession)(),
     _useSession2 = _slicedToArray(_useSession, 1),
     session = _useSession2[0];
@@ -54,7 +55,8 @@ var WebsocketProvider = function WebsocketProvider(_ref) {
     if (session.loading) return;
     if (session.auth && settings.project && settings.url) {
       var _socket = new _socket2.Socket(_objectSpread(_objectSpread({}, settings), {}, {
-        accessToken: session.token
+        accessToken: session.token,
+        url: isAlsea ? 'https://alsea-socket3-production.ordering.co' : settings.url
       }));
       setSocket(_socket);
     }

@@ -39,6 +39,7 @@ var OrderingProvider = function OrderingProvider(_ref) {
     settings = _ref.settings,
     children = _ref.children;
   var webStrategy = new _webStrategy.WebStrategy();
+  var isAlsea = ['alsea', 'alsea-staging'].includes(settings.project);
   return /*#__PURE__*/_react.default.createElement(OrderingContext.Provider, null, /*#__PURE__*/_react.default.createElement(_EventContext.EventProvider, null, /*#__PURE__*/_react.default.createElement(_ApiContext.ApiProvider, {
     settings: settings
   }, /*#__PURE__*/_react.default.createElement(_LanguageContext.LanguageProvider, {
@@ -48,7 +49,8 @@ var OrderingProvider = function OrderingProvider(_ref) {
   }, /*#__PURE__*/_react.default.createElement(_ConfigContext.ConfigProvider, null, /*#__PURE__*/_react.default.createElement(_UtilsContext.UtilsProviders, null, /*#__PURE__*/_react.default.createElement(_ToastContext.ToastProvider, null, /*#__PURE__*/_react.default.createElement(_ValidationsFieldsContext.ValidationFieldsProvider, null, /*#__PURE__*/_react.default.createElement(_WebsocketContext.WebsocketProvider, {
     settings: Object.assign(settings.socket, {
       project: settings.project
-    })
+    }),
+    isAlsea: isAlsea
   }, /*#__PURE__*/_react.default.createElement(_SiteContext.SiteProvider, null, /*#__PURE__*/_react.default.createElement(_CustomerContext.CustomerProvider, {
     strategy: webStrategy
   }, /*#__PURE__*/_react.default.createElement(_OrderContext.OrderProvider, {
