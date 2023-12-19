@@ -27,6 +27,7 @@ export const OrderingContext = createContext()
  */
 export const OrderingProvider = ({ Alert, settings, children }) => {
   const webStrategy = new WebStrategy()
+  const isAlsea = ['alsea', 'alsea-staging'].includes(settings.project)
   return (
     <OrderingContext.Provider>
       <EventProvider>
@@ -37,7 +38,7 @@ export const OrderingProvider = ({ Alert, settings, children }) => {
                 <UtilsProviders>
                   <ToastProvider>
                     <ValidationFieldsProvider>
-                      <WebsocketProvider settings={Object.assign(settings.socket, { project: settings.project })}>
+                      <WebsocketProvider settings={Object.assign(settings.socket, { project: settings.project })} isAlsea={isAlsea}>
                         <SiteProvider>
                           <CustomerProvider strategy={webStrategy}>
                             <OrderProvider strategy={webStrategy} Alert={Alert}>

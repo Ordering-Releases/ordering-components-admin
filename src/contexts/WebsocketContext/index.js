@@ -16,7 +16,7 @@ export const WebsocketContext = createContext()
  * This provider has a reducer for manage session state
  * @param {props} props
  */
-export const WebsocketProvider = ({ settings, children }) => {
+export const WebsocketProvider = ({ settings, children, isAlsea }) => {
   const [session] = useSession()
   const [events] = useEvent()
   const [socket, setSocket] = useState()
@@ -24,7 +24,7 @@ export const WebsocketProvider = ({ settings, children }) => {
   useEffect(() => {
     if (session.loading) return
     if (session.auth && settings.project && settings.url) {
-      const _socket = new Socket({ ...settings, accessToken: session.token })
+      const _socket = new Socket({ ...settings, accessToken: session.token, url: isAlsea ? 'https://alsea-socket3-production.ordering.co' : settings.url })
       setSocket(_socket)
     }
     if (!session.auth) {
