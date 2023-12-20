@@ -222,7 +222,7 @@ export const ProductExtraOptions = (props) => {
       const businessState = { ...business, extras: updatedExtras }
       const categories = businessState.categories.map(item => {
         const _products = item.products.map(prod => {
-          const _extras = prod.extras.filter(extra => {
+          const _extras = prod?.extras?.filter(extra => {
             if (extra.id === updatedExtra.id) {
               Object.assign(extra, updatedExtra)
             }
@@ -366,7 +366,7 @@ export const ProductExtraOptions = (props) => {
           const businessState = { ...business, extras: extras }
           const categories = businessState.categories.map(item => {
             const _products = item.products.map(prod => {
-              const _extras = prod.extras.filter(_extra => _extra.id !== extra.id)
+              const _extras = prod?.extras?.filter(_extra => _extra.id !== extra.id)
               return { ...prod, extras: _extras }
             })
             const _item = { ...item, products: _products }
