@@ -303,7 +303,8 @@ var ProductExtraOptions = function ProductExtraOptions(props) {
       });
       var categories = businessState.categories.map(function (item) {
         var _products = item.products.map(function (prod) {
-          var _extras = prod.extras.filter(function (extra) {
+          var _prod$extras;
+          var _extras = prod === null || prod === void 0 ? void 0 : (_prod$extras = prod.extras) === null || _prod$extras === void 0 ? void 0 : _prod$extras.filter(function (extra) {
             if (extra.id === updatedExtra.id) {
               Object.assign(extra, updatedExtra);
             }
@@ -575,7 +576,8 @@ var ProductExtraOptions = function ProductExtraOptions(props) {
                 });
                 categories = businessState.categories.map(function (item) {
                   var _products = item.products.map(function (prod) {
-                    var _extras = prod.extras.filter(function (_extra) {
+                    var _prod$extras2;
+                    var _extras = prod === null || prod === void 0 ? void 0 : (_prod$extras2 = prod.extras) === null || _prod$extras2 === void 0 ? void 0 : _prod$extras2.filter(function (_extra) {
                       return _extra.id !== extra.id;
                     });
                     return _objectSpread(_objectSpread({}, prod), {}, {

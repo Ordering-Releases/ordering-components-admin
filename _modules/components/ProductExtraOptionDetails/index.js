@@ -249,7 +249,8 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
       });
       var categories = businessState.categories.map(function (item) {
         var _products = item.products.map(function (prod) {
-          var _extras = prod.extras.filter(function (extra) {
+          var _prod$extras;
+          var _extras = prod === null || prod === void 0 ? void 0 : (_prod$extras = prod.extras) === null || _prod$extras === void 0 ? void 0 : _prod$extras.filter(function (extra) {
             if (extra.id === updatedExtra.id) {
               Object.assign(extra, updatedExtra);
             }
