@@ -24,7 +24,8 @@ export const GoogleMaps = (props) => {
     data,
     fillStyle,
     placeId,
-    setDetails
+    setDetails,
+    onlyMarkerChangeCenter
   } = props
 
   const [{ optimizeImage }] = useUtils()
@@ -153,12 +154,14 @@ export const GoogleMaps = (props) => {
     }
 
     if (!maxLimitLocation) {
+      onlyMarkerChangeCenter && handleChangeCenter(curPos)
       geocodePosition(curPos)
       return
     }
 
     if (distance <= maxLimitLocation) {
       geocodePosition(curPos)
+      onlyMarkerChangeCenter && handleChangeCenter(curPos)
     } else if (center?.lat && center?.lng) {
       marker.setPosition(center)
       map.panTo(new window.google.maps.LatLng(center?.lat, center?.lng))
@@ -272,14 +275,15 @@ export const GoogleMaps = (props) => {
 
         if (mapControls?.isMarkerDraggable) {
           window.google.maps.event.addListener(googleMap, 'drag', () => {
-            googleMapMarker.setPosition(googleMap.getCenter())
+            !onlyMarkerChangeCenter && googleMapMarker.setPosition(googleMap.getCenter())
             events.emit('map_is_dragging', true)
           })
-
-          window.google.maps.event.addListener(googleMap, 'dragend', () => {
-            googleMapMarker.setPosition(googleMap.getCenter())
-            validateResult(googleMap, googleMapMarker, googleMap.getCenter())
-          })
+          if (!onlyMarkerChangeCenter) {
+            window.google.maps.event.addListener(googleMap, 'dragend', () => {
+              googleMapMarker.setPosition(googleMap.getCenter())
+              validateResult(googleMap, googleMapMarker, googleMap.getCenter())
+            })
+          }
         }
 
         if (isHeatMap && !markerCluster && window.google.maps.visualization) {
