@@ -48,7 +48,8 @@ var GoogleMaps = function GoogleMaps(props) {
     data = props.data,
     fillStyle = props.fillStyle,
     placeId = props.placeId,
-    setDetails = props.setDetails;
+    setDetails = props.setDetails,
+    onlyMarkerChangeCenter = props.onlyMarkerChangeCenter;
   var _useUtils = (0, _UtilsContext.useUtils)(),
     _useUtils2 = _slicedToArray(_useUtils, 1),
     optimizeImage = _useUtils2[0].optimizeImage;
@@ -224,11 +225,13 @@ var GoogleMaps = function GoogleMaps(props) {
       return false;
     }
     if (!maxLimitLocation) {
+      onlyMarkerChangeCenter && handleChangeCenter(curPos);
       geocodePosition(curPos);
       return;
     }
     if (distance <= maxLimitLocation) {
       geocodePosition(curPos);
+      onlyMarkerChangeCenter && handleChangeCenter(curPos);
     } else if (center !== null && center !== void 0 && center.lat && center !== null && center !== void 0 && center.lng) {
       marker.setPosition(center);
       map.panTo(new window.google.maps.LatLng(center === null || center === void 0 ? void 0 : center.lat, center === null || center === void 0 ? void 0 : center.lng));
@@ -334,13 +337,15 @@ var GoogleMaps = function GoogleMaps(props) {
         });
         if (mapControls !== null && mapControls !== void 0 && mapControls.isMarkerDraggable) {
           window.google.maps.event.addListener(googleMap, 'drag', function () {
-            googleMapMarker.setPosition(googleMap.getCenter());
+            !onlyMarkerChangeCenter && googleMapMarker.setPosition(googleMap.getCenter());
             events.emit('map_is_dragging', true);
           });
-          window.google.maps.event.addListener(googleMap, 'dragend', function () {
-            googleMapMarker.setPosition(googleMap.getCenter());
-            validateResult(googleMap, googleMapMarker, googleMap.getCenter());
-          });
+          if (!onlyMarkerChangeCenter) {
+            window.google.maps.event.addListener(googleMap, 'dragend', function () {
+              googleMapMarker.setPosition(googleMap.getCenter());
+              validateResult(googleMap, googleMapMarker, googleMap.getCenter());
+            });
+          }
         }
         if (isHeatMap && !markerCluster && window.google.maps.visualization) {
           var _heatMap = new window.google.maps.visualization.HeatmapLayer({
