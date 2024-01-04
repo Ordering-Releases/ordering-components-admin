@@ -8,7 +8,7 @@ import { useLanguage } from '../../contexts/LanguageContext'
 export const OrderingWebsite = (props) => {
   const {
     UIComponent,
-    appId,
+    appId
   } = props
 
   const [ordering] = useApi()
@@ -42,7 +42,6 @@ export const OrderingWebsite = (props) => {
       [e.target.name]: e.target.value
     })
   }
-
 
   /**
  * Method to get the themes from API
@@ -363,6 +362,14 @@ export const OrderingWebsite = (props) => {
 
   useEffect(() => {
     if (!orderingTheme.themes[0]?.values) return
+    if (
+      orderingTheme.themes[0]?.values?.business_view?.components?.products?.components?.product?.components?.favorite?.hidden === undefined &&
+      orderingTheme.themes[0]?.values?.business_view?.components?.products?.components?.product?.components
+    ) {
+      orderingTheme.themes[0].values.business_view.components.products.components.product.components.favorite = {
+        hidden: orderingTheme.themes[0]?.values?.business_view?.components?.product?.components?.favorite
+      }
+    }
     setAdvancedValues(JSON.parse(JSON.stringify(orderingTheme.themes[0]?.values)))
     const _themeValues = orderingTheme.themes[0]?.values?.my_products?.components
     if (!_themeValues) return
