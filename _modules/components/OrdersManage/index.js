@@ -226,13 +226,21 @@ var OrdersManage = function OrdersManage(props) {
       colSpan: 1,
       order: 12
     },
+    pod: {
+      visable: true,
+      title: t('PODS', 'Pod'),
+      className: 'podInfo',
+      draggable: true,
+      colSpan: 1,
+      order: 13
+    },
     total: {
       visable: true,
       title: '',
       className: '',
       draggable: false,
       colSpan: 1,
-      order: 13
+      order: 14
     }
   };
   var _useState17 = (0, _react.useState)(allowColumnsModel),
