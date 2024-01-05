@@ -56,7 +56,8 @@ export const OrdersManage = (props) => {
     timer: { visable: false, title: t('SLA_TIMER', 'SLA’s timer'), className: 'timer', draggable: true, colSpan: 1, order: 10 },
     eta: { visable: true, title: t('ETA', 'ETA'), className: 'eta', draggable: true, colSpan: 1, order: 11 },
     channel: { visable: false, title: t('CHANNEL', 'Channel'), className: 'channelInfo', draggable: true, colSpan: 1, order: 12 },
-    total: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 13 }
+    pod: { visable: true, title: t('PODS', 'Pod'), className: 'podInfo', draggable: true, colSpan: 1, order: 13 },
+    total: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: 14 }
   }
   const [allowColumns, setAllowColumns] = useState(allowColumnsModel)
   const [franchisesList, setFranchisesList] = useState({ loading: false, franchises: [], error: null })
