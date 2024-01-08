@@ -46,7 +46,7 @@ const AutocompleteInput = (props) => {
         for (const component of place.address_components) {
           const addressType = component.types[0]
           if (addressType === 'postal_code') {
-            postalCode = component.short_name
+            postalCode = component.short_name || component.long_name
             break
           }
         }

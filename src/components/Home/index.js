@@ -28,7 +28,6 @@ export const Home = (props) => {
   const [todaySalelsList, setTodaySalesList] = useState({ loading: false, sales: 0, error: null })
   const [monthSalesList, setMonthSalesList] = useState({ loading: false, sales: [], error: null })
   const [taskList, setTaskList] = useState({ loading: false, data: [], error: null })
-  const [projectStatus, setProjectStatus] = useState({ loading: true, project: {}, error: null })
 
   /**
    * Method to get task list
@@ -180,36 +179,6 @@ export const Home = (props) => {
     }
   }
 
-  /**
-   * Method to get current project status
-   */
-  const getCurrentProjectStatus = async () => {
-    try {
-      setProjectStatus({ ...projectStatus, loading: true })
-      const requestOptions = {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-      const functionFetch = `${ordering.root}/current`
-
-      const response = await fetch(functionFetch, requestOptions)
-      const { error, result } = await response.json()
-      setProjectStatus({
-        loading: false,
-        project: error ? {} : result,
-        error: error ? result : null
-      })
-    } catch (error) {
-      setProjectStatus({
-        ...projectStatus,
-        loading: false,
-        error: [error.message]
-      })
-    }
-  }
-
   const getCurrentDateRange = () => {
     const newDate = new Date()
     const date = newDate.getDate()
@@ -221,7 +190,6 @@ export const Home = (props) => {
   }
 
   useEffect(() => {
-    getCurrentProjectStatus()
     getOrders()
     getSales()
     getMonthSales()
@@ -233,7 +201,6 @@ export const Home = (props) => {
       {UIComponent && (
         <UIComponent
           {...props}
-          projectStatus={projectStatus}
           ordersList={ordersList}
           todaySalelsList={todaySalelsList}
           monthSalesList={monthSalesList}
