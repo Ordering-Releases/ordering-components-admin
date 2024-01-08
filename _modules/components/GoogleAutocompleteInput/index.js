@@ -62,7 +62,7 @@ var AutocompleteInput = function AutocompleteInput(props) {
             var component = _step.value;
             var addressType = component.types[0];
             if (addressType === 'postal_code') {
-              postalCode = component.short_name;
+              postalCode = component.short_name || component.long_name;
               break;
             }
           }

@@ -118,14 +118,6 @@ var Home = function Home(props) {
     _useState8 = _slicedToArray(_useState7, 2),
     taskList = _useState8[0],
     setTaskList = _useState8[1];
-  var _useState9 = (0, _react.useState)({
-      loading: true,
-      project: {},
-      error: null
-    }),
-    _useState10 = _slicedToArray(_useState9, 2),
-    projectStatus = _useState10[0],
-    setProjectStatus = _useState10[1];
 
   /**
    * Method to get task list
@@ -377,61 +369,6 @@ var Home = function Home(props) {
       return _ref3.apply(this, arguments);
     };
   }();
-
-  /**
-   * Method to get current project status
-   */
-  var getCurrentProjectStatus = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-      var requestOptions, functionFetch, response, _yield$response$json4, error, result;
-      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-        while (1) switch (_context4.prev = _context4.next) {
-          case 0:
-            _context4.prev = 0;
-            setProjectStatus(_objectSpread(_objectSpread({}, projectStatus), {}, {
-              loading: true
-            }));
-            requestOptions = {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            };
-            functionFetch = "".concat(ordering.root, "/current");
-            _context4.next = 6;
-            return fetch(functionFetch, requestOptions);
-          case 6:
-            response = _context4.sent;
-            _context4.next = 9;
-            return response.json();
-          case 9:
-            _yield$response$json4 = _context4.sent;
-            error = _yield$response$json4.error;
-            result = _yield$response$json4.result;
-            setProjectStatus({
-              loading: false,
-              project: error ? {} : result,
-              error: error ? result : null
-            });
-            _context4.next = 18;
-            break;
-          case 15:
-            _context4.prev = 15;
-            _context4.t0 = _context4["catch"](0);
-            setProjectStatus(_objectSpread(_objectSpread({}, projectStatus), {}, {
-              loading: false,
-              error: [_context4.t0.message]
-            }));
-          case 18:
-          case "end":
-            return _context4.stop();
-        }
-      }, _callee4, null, [[0, 15]]);
-    }));
-    return function getCurrentProjectStatus() {
-      return _ref4.apply(this, arguments);
-    };
-  }();
   var getCurrentDateRange = function getCurrentDateRange() {
     var newDate = new Date();
     var date = newDate.getDate();
@@ -442,14 +379,12 @@ var Home = function Home(props) {
     return "".concat(year, "-").concat(fullMonth, "-01,").concat(year, "-").concat(fullMonth, "-").concat(fullDate);
   };
   (0, _react.useEffect)(function () {
-    getCurrentProjectStatus();
     getOrders();
     getSales();
     getMonthSales();
     getTasks();
   }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
-    projectStatus: projectStatus,
     ordersList: ordersList,
     todaySalelsList: todaySalelsList,
     monthSalesList: monthSalesList,
