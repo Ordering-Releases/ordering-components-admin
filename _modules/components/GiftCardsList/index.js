@@ -90,7 +90,7 @@ var GiftCardsList = function GiftCardsList(props) {
             if (activeStatus) {
               conditions.push({
                 attribute: 'status',
-                value: activeStatus
+                value: activeStatus === 'pending' ? ['pending', 'sent'] : activeStatus
               });
             }
             if (searchValue) {
