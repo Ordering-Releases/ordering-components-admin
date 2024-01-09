@@ -45,7 +45,7 @@ export const GiftCardsList = (props) => {
         conditions.push(
           {
             attribute: 'status',
-            value: activeStatus
+            value: activeStatus === 'pending' ? ['pending', 'sent'] : activeStatus
           }
         )
       }

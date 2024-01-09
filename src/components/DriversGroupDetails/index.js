@@ -31,6 +31,7 @@ export const DriversGroupDetails = (props) => {
   const [selectedPaymethodIds, setSelectedPaymethodIds] = useState([])
   const [selectedDriverIds, setSelectedDriverIds] = useState([])
   const [selectedDriversCompanyIds, setSelectedDriversCompanyIds] = useState([])
+  const [selectedDriverManager, setSelectedDriverManager] = useState([])
 
   const initSet = (driversGroup) => {
     const businessIds = driversGroup?.business?.reduce((ids, business) => [...ids, business.id], [])
@@ -40,6 +41,8 @@ export const DriversGroupDetails = (props) => {
     setSelectedDriverIds(drivers)
     const companyIds = driversGroup?.driver_companies?.reduce((ids, company) => [...ids, company.id], [])
     setSelectedDriversCompanyIds(companyIds)
+    const managersIds = driversGroup?.administrators?.reduce((ids, manager) => [...ids, manager.id], [])
+    setSelectedDriverManager(managersIds)
   }
 
   /**
@@ -326,8 +329,24 @@ export const DriversGroupDetails = (props) => {
     delete changes.driver_companies
     changes.type = type
     setSelectedDriverIds([])
+    setSelectedDriverManager([])
     setSelectedDriversCompanyIds([])
     setChangesState({ ...changes })
+  }
+
+  const handleSelectDriverManager = (managerId, checked) => {
+    const driverCompanyIds = selectedDriverManager
+    let filteredIds = []
+    if (checked) {
+      filteredIds = [...driverCompanyIds, managerId]
+    } else {
+      filteredIds = driverCompanyIds.filter(id => id !== managerId)
+    }
+    setSelectedDriverManager(filteredIds)
+    setChangesState({
+      ...changesState,
+      administrators: JSON.stringify(filteredIds)
+    })
   }
 
   useEffect(() => {
@@ -382,6 +401,7 @@ export const DriversGroupDetails = (props) => {
         setSelectedPaymethodIds([])
         setSelectedDriverIds([])
         setSelectedDriversCompanyIds([])
+        setSelectedDriverManager([])
       }
     }
   }, [curDriversGroup, driversGroupId])
@@ -400,6 +420,7 @@ export const DriversGroupDetails = (props) => {
             selectedPaymethodIds={selectedPaymethodIds}
             selectedDriverIds={selectedDriverIds}
             selectedDriversCompanyIds={selectedDriversCompanyIds}
+            selectedDriverManager={selectedDriverManager}
             handleChangesState={handleChangesState}
             handleSelectBusiness={handleSelectBusiness}
             handleSelectAllBusiness={handleSelectAllBusiness}
@@ -413,6 +434,7 @@ export const DriversGroupDetails = (props) => {
             handleDeleteDriversGroup={handleDeleteDriversGroup}
             handleAddDriversGroup={handleAddDriversGroup}
             handleChangeType={handleChangeType}
+            handleSelectDriverManager={handleSelectDriverManager}
           />
         )
       }

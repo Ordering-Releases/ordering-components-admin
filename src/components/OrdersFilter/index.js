@@ -1,42 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import dayjs from 'dayjs'
 
 export const OrdersFilter = (props) => {
   const {
     UIComponent,
-    driverGroupList
+    driverGroupList,
+    filterValues,
+    setFilterValues
   } = props
-
-  /**
-   * This property is used to set in state the current value
-   */
-  const [filterValues, setFilterValues] = useState({
-    orderId: null,
-    externalId: null,
-    groupTypes: [],
-    groupTypesUnassigned: [],
-    dateType: null,
-    deliveryFromDatetime: null,
-    deliveryEndDatetime: null,
-    businessIds: [],
-    driverIds: [],
-    driverGroupIds: [],
-    cityIds: [],
-    statuses: [],
-    deliveryTypes: [],
-    paymethodIds: [],
-    countryCode: [],
-    currency: [],
-    metafield: [],
-    logisticStatus: null,
-    assigned: null,
-    driverGroupBusinessIds: [],
-    customerName: null,
-    customerEmail: null,
-    customerCellphone: null,
-    customerLastname: null
-  })
 
   /**
    * Changer order Id
@@ -351,7 +323,6 @@ export const OrdersFilter = (props) => {
       {UIComponent && (
         <UIComponent
           {...props}
-          filterValues={filterValues}
           handleChangeOrderId={handleChangeOrderId}
           handleChangeGroup={handleChangeGroup}
           handleChangeDateType={handleChangeDateType}
