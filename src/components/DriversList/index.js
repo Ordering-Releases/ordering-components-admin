@@ -17,7 +17,8 @@ export const DriversList = (props) => {
     orderId,
     setCommentInfostate,
     disableSocketRoomDriver,
-    useBatchSockets
+    useBatchSockets,
+    filterValues
   } = props
 
   const [ordering] = useApi()
@@ -175,15 +176,17 @@ export const DriversList = (props) => {
   const getOnlineOfflineDrivers = (drivers) => {
     let _onlineDrivers
     let _offlineDrivers
+    const driversFiltered = filterValues?.driverIds?.length > 0 ? drivers.filter(driver => filterValues?.driverIds?.includes(driver?.id)) : drivers
+
     if (driversSubfilter.busy && driversSubfilter.notBusy) {
-      _onlineDrivers = drivers.filter(driver => driver.enabled && driver.available)
-      _offlineDrivers = drivers.filter(driver => driver.enabled && !driver.available)
+      _onlineDrivers = driversFiltered.filter(driver => driver.enabled && driver.available)
+      _offlineDrivers = driversFiltered.filter(driver => driver.enabled && !driver.available)
     } else if (driversSubfilter.busy && !driversSubfilter.notBusy) {
-      _onlineDrivers = drivers.filter(driver => driver.enabled && driver.available && driver.busy)
-      _offlineDrivers = drivers.filter(driver => driver.enabled && !driver.available && driver.busy)
+      _onlineDrivers = driversFiltered.filter(driver => driver.enabled && driver.available && driver.busy)
+      _offlineDrivers = driversFiltered.filter(driver => driver.enabled && !driver.available && driver.busy)
     } else if (!driversSubfilter.busy && driversSubfilter.notBusy) {
-      _onlineDrivers = drivers.filter(driver => driver.enabled && driver.available && !driver.busy)
-      _offlineDrivers = drivers.filter(driver => driver.enabled && !driver.available && !driver.busy)
+      _onlineDrivers = driversFiltered.filter(driver => driver.enabled && driver.available && !driver.busy)
+      _offlineDrivers = driversFiltered.filter(driver => driver.enabled && !driver.available && !driver.busy)
     } else {
       _onlineDrivers = []
       _offlineDrivers = []
@@ -398,7 +401,7 @@ export const DriversList = (props) => {
    */
   useEffect(() => {
     getOnlineOfflineDrivers(driversList.drivers)
-  }, [driversSubfilter])
+  }, [driversSubfilter, filterValues?.driverIds])
 
   useEffect(() => {
     if (drivers) {

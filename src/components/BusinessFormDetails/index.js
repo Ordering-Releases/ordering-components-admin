@@ -189,6 +189,14 @@ export const BusinessFormDetails = (props) => {
     })
   }
 
+  const handleChangeSelectedOption = (key, value) => {
+    const currentChanges = { ...formState.changes, [key]: value }
+    setFormState({
+      ...formState,
+      changes: currentChanges
+    })
+  }
+
   /**
    * Update business photo data
    * @param {File} file Image to change business photo
@@ -303,6 +311,7 @@ export const BusinessFormDetails = (props) => {
           handleChangeCenter={handleChangeCenter}
           handleChangeSwtich={handleChangeSwtich}
           handleChangeRibbon={handleChangeRibbon}
+          handleChangeSelectedOption={handleChangeSelectedOption}
         />
       )}
     </>

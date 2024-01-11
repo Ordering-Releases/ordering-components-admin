@@ -7,7 +7,8 @@ export const OrdersFilter = (props) => {
     UIComponent,
     driverGroupList,
     filterValues,
-    setFilterValues
+    setFilterValues,
+    handleFilterValues
   } = props
 
   /**
@@ -24,7 +25,7 @@ export const OrdersFilter = (props) => {
    * @param {EventTarget} e Related HTML event
    */
   const handleChangeExternalId = (e) => {
-    setFilterValues({ ...filterValues, externalId: e.target.value })
+    setFilterValues({ ...filterValues, externalId: e?.target?.value })
   }
 
   /**
@@ -271,7 +272,7 @@ export const OrdersFilter = (props) => {
    * Reset filter values
   */
   const handleResetFilterValues = () => {
-    setFilterValues({
+    const initialValues = {
       orderId: null,
       externalId: null,
       groupTypes: [],
@@ -296,7 +297,9 @@ export const OrdersFilter = (props) => {
       customerEmail: null,
       customerCellphone: null,
       customerLastname: null
-    })
+    }
+    setFilterValues(initialValues)
+    handleFilterValues(initialValues)
   }
 
   useEffect(() => {
