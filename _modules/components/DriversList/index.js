@@ -44,7 +44,8 @@ var DriversList = function DriversList(props) {
     orderId = props.orderId,
     setCommentInfostate = props.setCommentInfostate,
     disableSocketRoomDriver = props.disableSocketRoomDriver,
-    useBatchSockets = props.useBatchSockets;
+    useBatchSockets = props.useBatchSockets,
+    filterValues = props.filterValues;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -308,27 +309,32 @@ var DriversList = function DriversList(props) {
    * @param {Array} drivers
    */
   var getOnlineOfflineDrivers = function getOnlineOfflineDrivers(drivers) {
+    var _filterValues$driverI;
     var _onlineDrivers;
     var _offlineDrivers;
+    var driversFiltered = (filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$driverI = filterValues.driverIds) === null || _filterValues$driverI === void 0 ? void 0 : _filterValues$driverI.length) > 0 ? drivers.filter(function (driver) {
+      var _filterValues$driverI2;
+      return filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$driverI2 = filterValues.driverIds) === null || _filterValues$driverI2 === void 0 ? void 0 : _filterValues$driverI2.includes(driver === null || driver === void 0 ? void 0 : driver.id);
+    }) : drivers;
     if (driversSubfilter.busy && driversSubfilter.notBusy) {
-      _onlineDrivers = drivers.filter(function (driver) {
+      _onlineDrivers = driversFiltered.filter(function (driver) {
         return driver.enabled && driver.available;
       });
-      _offlineDrivers = drivers.filter(function (driver) {
+      _offlineDrivers = driversFiltered.filter(function (driver) {
         return driver.enabled && !driver.available;
       });
     } else if (driversSubfilter.busy && !driversSubfilter.notBusy) {
-      _onlineDrivers = drivers.filter(function (driver) {
+      _onlineDrivers = driversFiltered.filter(function (driver) {
         return driver.enabled && driver.available && driver.busy;
       });
-      _offlineDrivers = drivers.filter(function (driver) {
+      _offlineDrivers = driversFiltered.filter(function (driver) {
         return driver.enabled && !driver.available && driver.busy;
       });
     } else if (!driversSubfilter.busy && driversSubfilter.notBusy) {
-      _onlineDrivers = drivers.filter(function (driver) {
+      _onlineDrivers = driversFiltered.filter(function (driver) {
         return driver.enabled && driver.available && !driver.busy;
       });
-      _offlineDrivers = drivers.filter(function (driver) {
+      _offlineDrivers = driversFiltered.filter(function (driver) {
         return driver.enabled && !driver.available && !driver.busy;
       });
     } else {
@@ -621,7 +627,7 @@ var DriversList = function DriversList(props) {
    */
   (0, _react.useEffect)(function () {
     getOnlineOfflineDrivers(driversList.drivers);
-  }, [driversSubfilter]);
+  }, [driversSubfilter, filterValues === null || filterValues === void 0 ? void 0 : filterValues.driverIds]);
   (0, _react.useEffect)(function () {
     if (drivers) {
       setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {

@@ -352,6 +352,12 @@ var BusinessFormDetails = function BusinessFormDetails(props) {
       changes: _objectSpread(_objectSpread({}, formState.changes), currentChanges)
     }));
   };
+  var handleChangeSelectedOption = function handleChangeSelectedOption(key, value) {
+    var currentChanges = _objectSpread(_objectSpread({}, formState.changes), {}, _defineProperty({}, key, value));
+    setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+      changes: currentChanges
+    }));
+  };
 
   /**
    * Update business photo data
@@ -501,7 +507,8 @@ var BusinessFormDetails = function BusinessFormDetails(props) {
     handleChangeAddress: handleChangeAddress,
     handleChangeCenter: handleChangeCenter,
     handleChangeSwtich: handleChangeSwtich,
-    handleChangeRibbon: handleChangeRibbon
+    handleChangeRibbon: handleChangeRibbon,
+    handleChangeSelectedOption: handleChangeSelectedOption
   })));
 };
 exports.BusinessFormDetails = BusinessFormDetails;

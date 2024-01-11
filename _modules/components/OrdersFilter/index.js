@@ -28,7 +28,8 @@ var OrdersFilter = function OrdersFilter(props) {
   var UIComponent = props.UIComponent,
     driverGroupList = props.driverGroupList,
     filterValues = props.filterValues,
-    setFilterValues = props.setFilterValues;
+    setFilterValues = props.setFilterValues,
+    handleFilterValues = props.handleFilterValues;
 
   /**
    * Changer order Id
@@ -46,8 +47,9 @@ var OrdersFilter = function OrdersFilter(props) {
    * @param {EventTarget} e Related HTML event
    */
   var handleChangeExternalId = function handleChangeExternalId(e) {
+    var _e$target;
     setFilterValues(_objectSpread(_objectSpread({}, filterValues), {}, {
-      externalId: e.target.value
+      externalId: e === null || e === void 0 ? void 0 : (_e$target = e.target) === null || _e$target === void 0 ? void 0 : _e$target.value
     }));
   };
 
@@ -366,7 +368,7 @@ var OrdersFilter = function OrdersFilter(props) {
    * Reset filter values
   */
   var handleResetFilterValues = function handleResetFilterValues() {
-    setFilterValues({
+    var initialValues = {
       orderId: null,
       externalId: null,
       groupTypes: [],
@@ -391,7 +393,9 @@ var OrdersFilter = function OrdersFilter(props) {
       customerEmail: null,
       customerCellphone: null,
       customerLastname: null
-    });
+    };
+    setFilterValues(initialValues);
+    handleFilterValues(initialValues);
   };
   (0, _react.useEffect)(function () {
     var groupDriverIds = [];
