@@ -1,6 +1,6 @@
 {
   "name": "ordering-components-admin-external",
-  "version": "1.43.0",
+  "version": "1.43.1",
   "description": "Ordering External Admin Dashboard",
   "main": "./_modules/index.js",
   "scripts": {
