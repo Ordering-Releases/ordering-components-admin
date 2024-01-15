@@ -1,6 +1,5 @@
 "use strict";
 
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -29,6 +28,7 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _ty
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -122,6 +122,20 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       });
     }
     return array;
+  };
+  var isDeepEmptyObject = function isDeepEmptyObject(obj) {
+    for (var key in obj) {
+      if (obj[key] !== null && _typeof(obj[key]) === 'object' && !isDeepEmptyObject(obj[key])) {
+        return false;
+      }
+      if (Array.isArray(obj[key]) && obj[key].length > 0) {
+        return false;
+      }
+      if (obj[key] !== null && _typeof(obj[key]) !== 'object' && obj[key] !== '') {
+        return false;
+      }
+    }
+    return true;
   };
 
   /**
@@ -695,11 +709,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       }
     }
     if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$driverG = filterValues.driverGroupIds) === null || _filterValues$driverG === void 0 ? void 0 : _filterValues$driverG.length) > 0) {
-      var _lastHistoryData$find3;
-      var _lastDriverId = lastHistoryData === null || lastHistoryData === void 0 ? void 0 : (_lastHistoryData$find3 = lastHistoryData.find(function (item) {
-        return item.attribute === 'driver_id';
-      })) === null || _lastHistoryData$find3 === void 0 ? void 0 : _lastHistoryData$find3.old;
-      if (!filterValues.driverGroupIds.includes(order.driver_id) && !filterValues.driverGroupIds.includes(_lastDriverId)) {
+      if (!filterValues.driverGroupIds.includes(order.driver_group_id)) {
         filterCheck = false;
       }
     }
@@ -707,10 +717,10 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       if (!filterValues.currency.includes(order === null || order === void 0 ? void 0 : order.currency)) filterCheck = false;
     }
     if (filterValues !== null && filterValues !== void 0 && filterValues.logisticStatus) {
-      var _lastHistoryData$find4;
-      var lastLogisticStatus = lastHistoryData === null || lastHistoryData === void 0 ? void 0 : (_lastHistoryData$find4 = lastHistoryData.find(function (item) {
+      var _lastHistoryData$find3;
+      var lastLogisticStatus = lastHistoryData === null || lastHistoryData === void 0 ? void 0 : (_lastHistoryData$find3 = lastHistoryData.find(function (item) {
         return item.attribute === 'logistic_status';
-      })) === null || _lastHistoryData$find4 === void 0 ? void 0 : _lastHistoryData$find4.old;
+      })) === null || _lastHistoryData$find3 === void 0 ? void 0 : _lastHistoryData$find3.old;
       if ((order === null || order === void 0 ? void 0 : order.logistic_status) !== parseInt(filterValues === null || filterValues === void 0 ? void 0 : filterValues.logisticStatus) && lastLogisticStatus !== parseInt(filterValues === null || filterValues === void 0 ? void 0 : filterValues.logisticStatus)) filterCheck = false;
     }
     if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$metafie2 = filterValues.metafield) === null || _filterValues$metafie2 === void 0 ? void 0 : _filterValues$metafie2.length) > 0) {
@@ -1024,6 +1034,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
     if (driverId && (order === null || order === void 0 ? void 0 : order.driver_id) !== driverId) return;
     if (isOnlyDelivery && ![1, 7].includes(order === null || order === void 0 ? void 0 : order.delivery_type)) return;
     if (typeof order.status === 'undefined') return;
+    if (!isDeepEmptyObject(filterValues)) return;
     if (!isFilteredOrder(order)) {
       var _order$history, _order$history2;
       var length = order === null || order === void 0 ? void 0 : (_order$history = order.history) === null || _order$history === void 0 ? void 0 : _order$history.length;
@@ -1107,12 +1118,8 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       return (_order === null || _order === void 0 ? void 0 : _order.id) === (order === null || order === void 0 ? void 0 : order.id);
     });
     if (found) return;
+    if (!isDeepEmptyObject(filterValues)) return;
     if (!isFilteredOrder(order)) return;
-    setPagination(function (prevPagination) {
-      return _objectSpread(_objectSpread({}, prevPagination), {}, {
-        total: prevPagination.total + 1
-      });
-    });
     setOrderList(function (prevState) {
       var found = prevState.orders.find(function (_order) {
         return (_order === null || _order === void 0 ? void 0 : _order.id) === (order === null || order === void 0 ? void 0 : order.id);
@@ -1122,6 +1129,11 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       var sortedOrders = sortOrdersArray(orderBy, updatedOrders);
       return _objectSpread(_objectSpread({}, prevState), {}, {
         orders: sortedOrders.slice(0, pagination.pageSize)
+      });
+    });
+    setPagination(function (prevPagination) {
+      return _objectSpread(_objectSpread({}, prevPagination), {}, {
+        total: prevPagination.total + 1
       });
     });
   };
