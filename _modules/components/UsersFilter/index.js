@@ -35,6 +35,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var UsersFilter = function UsersFilter(props) {
   var UIComponent = props.UIComponent;
   var initialFilterValues = {
+    id: null,
     name: null,
     lastname: null,
     email: null,
