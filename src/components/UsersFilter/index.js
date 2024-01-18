@@ -11,6 +11,7 @@ export const UsersFilter = (props) => {
 
   const initialFilterValues = {
     id: null,
+    externalId: null,
     name: null,
     lastname: null,
     email: null,

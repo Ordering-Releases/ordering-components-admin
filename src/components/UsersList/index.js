@@ -281,6 +281,17 @@ export const UsersList = (props) => {
             }
           )
         }
+        if (multiFilterValues?.externalId && parseInt(multiFilterValues?.externalId) > 0) {
+          filterConditons.push(
+            {
+              attribute: 'external_id',
+              value: {
+                condition: 'ilike',
+                value: encodeURI(`%${parseInt(multiFilterValues.externalId)}%`)
+              }
+            }
+          )
+        }
         if (multiFilterValues?.name && multiFilterValues?.name !== null) {
           filterConditons.push(
             {
