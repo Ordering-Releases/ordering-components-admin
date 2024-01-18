@@ -10,6 +10,7 @@ export const UsersFilter = (props) => {
   } = props
 
   const initialFilterValues = {
+    id: null,
     name: null,
     lastname: null,
     email: null,
