@@ -356,6 +356,15 @@ var UsersList = function UsersList(props) {
                   }
                 });
               }
+              if (multiFilterValues !== null && multiFilterValues !== void 0 && multiFilterValues.externalId && parseInt(multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.externalId) > 0) {
+                filterConditons.push({
+                  attribute: 'external_id',
+                  value: {
+                    condition: 'ilike',
+                    value: encodeURI("%".concat(parseInt(multiFilterValues.externalId), "%"))
+                  }
+                });
+              }
               if (multiFilterValues !== null && multiFilterValues !== void 0 && multiFilterValues.name && (multiFilterValues === null || multiFilterValues === void 0 ? void 0 : multiFilterValues.name) !== null) {
                 filterConditons.push({
                   attribute: 'name',

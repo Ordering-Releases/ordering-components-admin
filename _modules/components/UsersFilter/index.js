@@ -36,6 +36,7 @@ var UsersFilter = function UsersFilter(props) {
   var UIComponent = props.UIComponent;
   var initialFilterValues = {
     id: null,
+    externalId: null,
     name: null,
     lastname: null,
     email: null,
