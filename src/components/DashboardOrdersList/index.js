@@ -70,21 +70,6 @@ export const DashboardOrdersList = (props) => {
     return array
   }
 
-  const isDeepEmptyObject = (obj) => {
-    for (const key in obj) {
-      if (obj[key] !== null && typeof obj[key] === 'object' && !isDeepEmptyObject(obj[key])) {
-        return false
-      }
-      if (Array.isArray(obj[key]) && obj[key].length > 0) {
-        return false
-      }
-      if (obj[key] !== null && typeof obj[key] !== 'object' && obj[key] !== '') {
-        return false
-      }
-    }
-    return true
-  }
-
   /**
    * Method to change order status from API
    * @param {object} order orders id and new status
@@ -899,12 +884,11 @@ export const DashboardOrdersList = (props) => {
     if (driverId && order?.driver_id !== driverId) return
     if (isOnlyDelivery && ![1, 7].includes(order?.delivery_type)) return
     if (typeof order.status === 'undefined') return
-    if (!isDeepEmptyObject(filterValues)) return
 
     if (!isFilteredOrder(order)) {
       const length = order?.history?.length
       const lastHistoryData = order?.history[length - 1]?.data
-      if (isFilteredOrder(order, lastHistoryData)) {
+      if (isFilteredOrder(order, lastHistoryData) && pagination.total > 0) {
         setPagination(prevPagination => ({ ...prevPagination, total: prevPagination.total - 1 }))
       }
       setOrderList(prevState => {
@@ -959,7 +943,6 @@ export const DashboardOrdersList = (props) => {
     if (isOnlyDelivery && ![1, 7].includes(order?.delivery_type)) return
     const found = orderList.orders.find(_order => _order?.id === order?.id)
     if (found) return
-    if (!isDeepEmptyObject(filterValues)) return
     if (!isFilteredOrder(order)) return
     setOrderList(prevState => {
       const found = prevState.orders.find(_order => _order?.id === order?.id)
