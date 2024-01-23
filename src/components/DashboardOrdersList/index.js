@@ -27,6 +27,7 @@ export const DashboardOrdersList = (props) => {
     filterValues,
     searchValue,
     isSearchByOrderId,
+    isSearchByCustomerName,
     isSearchByCustomerEmail,
     isSearchByCustomerPhone,
     isSearchByBusinessName,
@@ -231,20 +232,22 @@ export const DashboardOrdersList = (props) => {
         )
       }
       if (!isAlsea) {
-        searchConditions.push(
-          {
-            attribute: 'customer',
-            conditions: [
-              {
-                attribute: 'name',
-                value: {
-                  condition: 'ilike',
-                  value: encodeURI(`%${searchValue}%`)
+        if (isSearchByCustomerName) {
+          searchConditions.push(
+            {
+              attribute: 'customer',
+              conditions: [
+                {
+                  attribute: 'name',
+                  value: {
+                    condition: 'ilike',
+                    value: encodeURI(`%${searchValue}%`)
+                  }
                 }
-              }
-            ]
-          }
-        )
+              ]
+            }
+          )
+        }
         if (isSearchByCustomerEmail) {
           searchConditions.push(
             {
@@ -608,6 +611,10 @@ export const DashboardOrdersList = (props) => {
       if (isSearchByOrderId) {
         if ((order?.id?.toString() || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true
       }
+      if (isSearchByCustomerName) {
+        if ((order?.customer?.name || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true
+      }
+
       if (isSearchByCustomerEmail) {
         if ((order?.customer?.email || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true
       }
@@ -945,7 +952,6 @@ export const DashboardOrdersList = (props) => {
     const found = orderList.orders.find(_order => _order?.id === order?.id)
     if (found) return
     if (!isFilteredOrder(order)) return
-    setPagination(prevPagination => ({ ...prevPagination, total: prevPagination.total + 1 }))
     setOrderList(prevState => {
       const found = prevState.orders.find(_order => _order?.id === order?.id)
       if (found) return prevState
@@ -957,6 +963,7 @@ export const DashboardOrdersList = (props) => {
         orders: sortedOrders.slice(0, pagination.pageSize)
       }
     })
+    setPagination(prevPagination => ({ ...prevPagination, total: prevPagination.total + 1 }))
   }
 
   const handleNewMessage = (message) => {
