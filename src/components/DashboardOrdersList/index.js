@@ -677,7 +677,8 @@ export const DashboardOrdersList = (props) => {
       }
     }
     if (filterValues?.driverGroupIds?.length > 0) {
-      if (!filterValues.driverGroupIds.includes(order.driver_group_id)) {
+      const lastDriverId = lastHistoryData?.find(item => item.attribute === 'driver_id')?.old
+      if (!filterValues.driverGroupIds.includes(order.driver_id) && !filterValues.driverGroupIds.includes(lastDriverId)) {
         filterCheck = false
       }
     }
@@ -944,6 +945,7 @@ export const DashboardOrdersList = (props) => {
     const found = orderList.orders.find(_order => _order?.id === order?.id)
     if (found) return
     if (!isFilteredOrder(order)) return
+    setPagination(prevPagination => ({ ...prevPagination, total: prevPagination.total + 1 }))
     setOrderList(prevState => {
       const found = prevState.orders.find(_order => _order?.id === order?.id)
       if (found) return prevState
@@ -955,7 +957,6 @@ export const DashboardOrdersList = (props) => {
         orders: sortedOrders.slice(0, pagination.pageSize)
       }
     })
-    setPagination(prevPagination => ({ ...prevPagination, total: prevPagination.total + 1 }))
   }
 
   const handleNewMessage = (message) => {
