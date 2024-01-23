@@ -1028,7 +1028,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       var _order$history, _order$history2;
       var length = order === null || order === void 0 ? void 0 : (_order$history = order.history) === null || _order$history === void 0 ? void 0 : _order$history.length;
       var lastHistoryData = order === null || order === void 0 ? void 0 : (_order$history2 = order.history[length - 1]) === null || _order$history2 === void 0 ? void 0 : _order$history2.data;
-      if (isFilteredOrder(order, lastHistoryData) && pagination.total > 0) {
+      if (isFilteredOrder(order, lastHistoryData)) {
         setPagination(function (prevPagination) {
           return _objectSpread(_objectSpread({}, prevPagination), {}, {
             total: prevPagination.total - 1

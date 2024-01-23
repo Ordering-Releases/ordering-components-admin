@@ -889,7 +889,7 @@ export const DashboardOrdersList = (props) => {
     if (!isFilteredOrder(order)) {
       const length = order?.history?.length
       const lastHistoryData = order?.history[length - 1]?.data
-      if (isFilteredOrder(order, lastHistoryData) && pagination.total > 0) {
+      if (isFilteredOrder(order, lastHistoryData)) {
         setPagination(prevPagination => ({ ...prevPagination, total: prevPagination.total - 1 }))
       }
       setOrderList(prevState => {
