@@ -55,6 +55,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
     filterValues = props.filterValues,
     searchValue = props.searchValue,
     isSearchByOrderId = props.isSearchByOrderId,
+    isSearchByCustomerName = props.isSearchByCustomerName,
     isSearchByCustomerEmail = props.isSearchByCustomerEmail,
     isSearchByCustomerPhone = props.isSearchByCustomerPhone,
     isSearchByBusinessName = props.isSearchByBusinessName,
@@ -311,16 +312,18 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
                 });
               }
               if (!isAlsea) {
-                searchConditions.push({
-                  attribute: 'customer',
-                  conditions: [{
-                    attribute: 'name',
-                    value: {
-                      condition: 'ilike',
-                      value: encodeURI("%".concat(searchValue, "%"))
-                    }
-                  }]
-                });
+                if (isSearchByCustomerName) {
+                  searchConditions.push({
+                    attribute: 'customer',
+                    conditions: [{
+                      attribute: 'name',
+                      value: {
+                        condition: 'ilike',
+                        value: encodeURI("%".concat(searchValue, "%"))
+                      }
+                    }]
+                  });
+                }
                 if (isSearchByCustomerEmail) {
                   searchConditions.push({
                     attribute: 'customer',
@@ -619,13 +622,17 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
         var _order$id;
         if (((order === null || order === void 0 ? void 0 : (_order$id = order.id) === null || _order$id === void 0 ? void 0 : _order$id.toString()) || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true;
       }
-      if (isSearchByCustomerEmail) {
+      if (isSearchByCustomerName) {
         var _order$customer;
-        if (((order === null || order === void 0 ? void 0 : (_order$customer = order.customer) === null || _order$customer === void 0 ? void 0 : _order$customer.email) || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true;
+        if (((order === null || order === void 0 ? void 0 : (_order$customer = order.customer) === null || _order$customer === void 0 ? void 0 : _order$customer.name) || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true;
+      }
+      if (isSearchByCustomerEmail) {
+        var _order$customer2;
+        if (((order === null || order === void 0 ? void 0 : (_order$customer2 = order.customer) === null || _order$customer2 === void 0 ? void 0 : _order$customer2.email) || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true;
       }
       if (isSearchByCustomerPhone) {
-        var _order$customer2;
-        if (((order === null || order === void 0 ? void 0 : (_order$customer2 = order.customer) === null || _order$customer2 === void 0 ? void 0 : _order$customer2.cellphone) || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true;
+        var _order$customer3;
+        if (((order === null || order === void 0 ? void 0 : (_order$customer3 = order.customer) === null || _order$customer3 === void 0 ? void 0 : _order$customer3.cellphone) || '').toLowerCase().includes(lowerCaseSearchValue)) searchCheck = true;
       }
       if (isSearchByBusinessName) {
         var _order$business;
@@ -1108,11 +1115,6 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
     });
     if (found) return;
     if (!isFilteredOrder(order)) return;
-    setPagination(function (prevPagination) {
-      return _objectSpread(_objectSpread({}, prevPagination), {}, {
-        total: prevPagination.total + 1
-      });
-    });
     setOrderList(function (prevState) {
       var found = prevState.orders.find(function (_order) {
         return (_order === null || _order === void 0 ? void 0 : _order.id) === (order === null || order === void 0 ? void 0 : order.id);
@@ -1122,6 +1124,11 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       var sortedOrders = sortOrdersArray(orderBy, updatedOrders);
       return _objectSpread(_objectSpread({}, prevState), {}, {
         orders: sortedOrders.slice(0, pagination.pageSize)
+      });
+    });
+    setPagination(function (prevPagination) {
+      return _objectSpread(_objectSpread({}, prevPagination), {}, {
+        total: prevPagination.total + 1
       });
     });
   };
