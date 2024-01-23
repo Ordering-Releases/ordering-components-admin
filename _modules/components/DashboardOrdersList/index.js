@@ -695,7 +695,11 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       }
     }
     if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$driverG = filterValues.driverGroupIds) === null || _filterValues$driverG === void 0 ? void 0 : _filterValues$driverG.length) > 0) {
-      if (!filterValues.driverGroupIds.includes(order.driver_group_id)) {
+      var _lastHistoryData$find3;
+      var _lastDriverId = lastHistoryData === null || lastHistoryData === void 0 ? void 0 : (_lastHistoryData$find3 = lastHistoryData.find(function (item) {
+        return item.attribute === 'driver_id';
+      })) === null || _lastHistoryData$find3 === void 0 ? void 0 : _lastHistoryData$find3.old;
+      if (!filterValues.driverGroupIds.includes(order.driver_id) && !filterValues.driverGroupIds.includes(_lastDriverId)) {
         filterCheck = false;
       }
     }
@@ -703,10 +707,10 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       if (!filterValues.currency.includes(order === null || order === void 0 ? void 0 : order.currency)) filterCheck = false;
     }
     if (filterValues !== null && filterValues !== void 0 && filterValues.logisticStatus) {
-      var _lastHistoryData$find3;
-      var lastLogisticStatus = lastHistoryData === null || lastHistoryData === void 0 ? void 0 : (_lastHistoryData$find3 = lastHistoryData.find(function (item) {
+      var _lastHistoryData$find4;
+      var lastLogisticStatus = lastHistoryData === null || lastHistoryData === void 0 ? void 0 : (_lastHistoryData$find4 = lastHistoryData.find(function (item) {
         return item.attribute === 'logistic_status';
-      })) === null || _lastHistoryData$find3 === void 0 ? void 0 : _lastHistoryData$find3.old;
+      })) === null || _lastHistoryData$find4 === void 0 ? void 0 : _lastHistoryData$find4.old;
       if ((order === null || order === void 0 ? void 0 : order.logistic_status) !== parseInt(filterValues === null || filterValues === void 0 ? void 0 : filterValues.logisticStatus) && lastLogisticStatus !== parseInt(filterValues === null || filterValues === void 0 ? void 0 : filterValues.logisticStatus)) filterCheck = false;
     }
     if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$metafie2 = filterValues.metafield) === null || _filterValues$metafie2 === void 0 ? void 0 : _filterValues$metafie2.length) > 0) {
@@ -1104,6 +1108,11 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
     });
     if (found) return;
     if (!isFilteredOrder(order)) return;
+    setPagination(function (prevPagination) {
+      return _objectSpread(_objectSpread({}, prevPagination), {}, {
+        total: prevPagination.total + 1
+      });
+    });
     setOrderList(function (prevState) {
       var found = prevState.orders.find(function (_order) {
         return (_order === null || _order === void 0 ? void 0 : _order.id) === (order === null || order === void 0 ? void 0 : order.id);
@@ -1113,11 +1122,6 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       var sortedOrders = sortOrdersArray(orderBy, updatedOrders);
       return _objectSpread(_objectSpread({}, prevState), {}, {
         orders: sortedOrders.slice(0, pagination.pageSize)
-      });
-    });
-    setPagination(function (prevPagination) {
-      return _objectSpread(_objectSpread({}, prevPagination), {}, {
-        total: prevPagination.total + 1
       });
     });
   };
