@@ -571,6 +571,38 @@ export const DashboardOrdersList = (props) => {
           }
         )
       }
+      if (filterValues?.offerId) {
+        filterConditons.push(
+          {
+            attribute: 'offers',
+            conditions: [
+              {
+                attribute: 'offer_id',
+                value: {
+                  condition: '=',
+                  value: filterValues?.offerId
+                }
+              }
+            ]
+          }
+        )
+      }
+      if (filterValues?.coupon) {
+        filterConditons.push(
+          {
+            attribute: 'offers',
+            conditions: [
+              {
+                attribute: 'coupon',
+                value: {
+                  condition: '=',
+                  value: filterValues?.coupon
+                }
+              }
+            ]
+          }
+        )
+      }
 
       if (filterConditons.length) {
         conditions.push({
@@ -703,6 +735,12 @@ export const DashboardOrdersList = (props) => {
           filterCheck = false
         }
       })
+    }
+    if (filterValues?.offerId) {
+      if (!order?.offerId?.toString().includes(filterValues?.offerId)) filterCheck = false
+    }
+    if (filterValues?.coupon) {
+      if (!order?.coupon?.toString().includes(filterValues?.coupon)) filterCheck = false
     }
     return filterCheck
   }

@@ -269,6 +269,15 @@ export const OrdersFilter = (props) => {
   }
 
   /**
+   * Changer offer Id
+   * @param {EventTarget} e Related HTML event
+   */
+  const handleChangeOfferId = (e) => {
+    const offerId = e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')
+    setFilterValues({ ...filterValues, offerId })
+  }
+
+  /**
    * Reset filter values
   */
   const handleResetFilterValues = () => {
@@ -296,7 +305,9 @@ export const OrdersFilter = (props) => {
       customerName: null,
       customerEmail: null,
       customerCellphone: null,
-      customerLastname: null
+      customerLastname: null,
+      coupon: null,
+      offerId: null
     }
     setFilterValues(initialValues)
     handleFilterValues(initialValues)
@@ -346,6 +357,7 @@ export const OrdersFilter = (props) => {
           handleChangeExternalId={handleChangeExternalId}
           handleChangeChildFilterValue={handleChangeChildFilterValue}
           handleChangeGroupUnassigned={handleChangeGroupUnassigned}
+          handleChangeOfferId={handleChangeOfferId}
         />
       )}
     </>
