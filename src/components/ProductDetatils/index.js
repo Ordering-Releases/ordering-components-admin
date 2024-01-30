@@ -139,6 +139,18 @@ export const ProductDetatils = (props) => {
           const updatedProducts = categoryState?.products?.filter(item => item.id !== productState.product.id)
           handleUpdateCategoryState({ ...categoryState, products: updatedProducts })
         }
+        if (handleUpdateBusinessState) {
+          const _categories = [...business?.categories]
+          _categories.forEach(function iterate (category) {
+            if (category.id === productState.product?.category_id) {
+              const _products = category.products.filter(_product => _product.id !== productState.product.id)
+              category.products = [..._products]
+            }
+            Array.isArray(category?.subcategories) && category.subcategories.forEach(iterate)
+          })
+          const updatedBusiness = { ...business, categories: _categories }
+          handleUpdateBusinessState(updatedBusiness)
+        }
         showToast(ToastType.Success, t('PRODUCT_DELETED', 'Product deleted'))
         props.onClose && props.onClose()
       } else {

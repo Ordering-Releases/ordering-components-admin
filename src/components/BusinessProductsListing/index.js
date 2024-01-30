@@ -98,7 +98,7 @@ export const BusinessProductsListing = (props) => {
       if (categorySelected) {
         let categoryFinded
         const _categories = [...businessState?.business?.categories]
-        _categories.forEach(function iterate (category) {
+        _categories.forEach(function iterate(category) {
           if (category?.id === categorySelected?.id) {
             categoryFinded = category
           }
@@ -107,7 +107,7 @@ export const BusinessProductsListing = (props) => {
 
         let productsFinded = [...categoryFinded?.products]
         if (categoryFinded && categoryFinded?.subcategories) {
-          categoryFinded.subcategories.forEach(function iterate (category) {
+          categoryFinded.subcategories.forEach(function iterate(category) {
             productsFinded = [...productsFinded, ...category.products]
             Array.isArray(category?.subcategories) && category.subcategories.forEach(iterate)
           })
@@ -410,7 +410,7 @@ export const BusinessProductsListing = (props) => {
     const business = { ...businessState?.business }
     Object.assign(business, result)
     if (categorySelected) {
-      business.categories.forEach(function iterate (category) {
+      business.categories.forEach(function iterate(category) {
         if (category?.id === categorySelected?.id) {
           setCategorySelected(category)
         }
@@ -498,12 +498,12 @@ export const BusinessProductsListing = (props) => {
   }, [businessState?.loading])
 
   useEffect(() => {
-    if (searchValue !== null) getProducts(!!searchValue)
-  }, [searchValue])
-
-  useEffect(() => {
-    getProducts(!!searchValue, 1)
-  }, [categorySelected?.id])
+    if (searchValue === null || searchValue === '') {
+      getProducts(true, 1)
+    } else {
+      getProducts(searchValue)
+    }
+  }, [categorySelected?.id, searchValue])
 
   useEffect(() => {
     if (businessSlug) {

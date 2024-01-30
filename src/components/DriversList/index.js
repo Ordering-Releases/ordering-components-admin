@@ -14,11 +14,14 @@ export const DriversList = (props) => {
     isSearchByName,
     isSearchByCellphone,
     isOrderDrivers,
+    isSearchFilterValue,
     orderId,
     setCommentInfostate,
     disableSocketRoomDriver,
     useBatchSockets,
-    filterValues
+    filterValues,
+    searchFilterValue,
+    driverGroupList
   } = props
 
   const [ordering] = useApi()
@@ -176,7 +179,17 @@ export const DriversList = (props) => {
   const getOnlineOfflineDrivers = (drivers) => {
     let _onlineDrivers
     let _offlineDrivers
-    const driversFiltered = filterValues?.driverIds?.length > 0 ? drivers.filter(driver => filterValues?.driverIds?.includes(driver?.id)) : drivers
+    let driversFiltered = drivers
+    if (filterValues?.driverIds?.length > 0) {
+      driversFiltered = driversFiltered.filter(driver => filterValues?.driverIds?.includes(driver?.id))
+    }
+
+    if (isSearchFilterValue && searchFilterValue) {
+      const driverGroupFilter = driverGroupList?.groups?.find(({ name }) => (name.toLowerCase().includes(searchFilterValue.toLowerCase())))
+      if (driverGroupFilter) {
+        driversFiltered = driversFiltered.filter(driver => (driverGroupFilter.drivers.includes(driver.id)))
+      }
+    }
 
     if (driversSubfilter.busy && driversSubfilter.notBusy) {
       _onlineDrivers = driversFiltered.filter(driver => driver.enabled && driver.available)
@@ -401,7 +414,7 @@ export const DriversList = (props) => {
    */
   useEffect(() => {
     getOnlineOfflineDrivers(driversList.drivers)
-  }, [driversSubfilter, filterValues?.driverIds])
+  }, [driversSubfilter, filterValues?.driverIds, searchFilterValue])
 
   useEffect(() => {
     if (drivers) {
