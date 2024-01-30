@@ -230,7 +230,7 @@ var ProductDetatils = function ProductDetatils(props) {
   */
   var handleDeleteProduct = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var _productState$product5, _productState$product6, _yield$ordering$busin6, _yield$ordering$busin7, error, result, _categoryState$produc, updatedProducts;
+      var _productState$product5, _productState$product6, _yield$ordering$busin6, _yield$ordering$busin7, error, result, _categoryState$produc, updatedProducts, _categories, updatedBusiness;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
@@ -261,6 +261,23 @@ var ProductDetatils = function ProductDetatils(props) {
                 handleUpdateCategoryState(_objectSpread(_objectSpread({}, categoryState), {}, {
                   products: updatedProducts
                 }));
+              }
+              if (handleUpdateBusinessState) {
+                _categories = _toConsumableArray(business === null || business === void 0 ? void 0 : business.categories);
+                _categories.forEach(function iterate(category) {
+                  var _productState$product7;
+                  if (category.id === ((_productState$product7 = productState.product) === null || _productState$product7 === void 0 ? void 0 : _productState$product7.category_id)) {
+                    var _products = category.products.filter(function (_product) {
+                      return _product.id !== productState.product.id;
+                    });
+                    category.products = _toConsumableArray(_products);
+                  }
+                  Array.isArray(category === null || category === void 0 ? void 0 : category.subcategories) && category.subcategories.forEach(iterate);
+                });
+                updatedBusiness = _objectSpread(_objectSpread({}, business), {}, {
+                  categories: _categories
+                });
+                handleUpdateBusinessState(updatedBusiness);
               }
               showToast(_ToastContext.ToastType.Success, t('PRODUCT_DELETED', 'Product deleted'));
               props.onClose && props.onClose();
@@ -300,9 +317,9 @@ var ProductDetatils = function ProductDetatils(props) {
    * Method to change the product enabled state
    */
   var handleChangeProductActiveState = function handleChangeProductActiveState() {
-    var _productState$product7;
+    var _productState$product8;
     var params = {
-      enabled: !(productState !== null && productState !== void 0 && (_productState$product7 = productState.product) !== null && _productState$product7 !== void 0 && _productState$product7.enabled)
+      enabled: !(productState !== null && productState !== void 0 && (_productState$product8 = productState.product) !== null && _productState$product8 !== void 0 && _productState$product8.enabled)
     };
     handleUpdateClick(params);
   };
@@ -451,8 +468,8 @@ var ProductDetatils = function ProductDetatils(props) {
     if (handleUpdateBusinessState) {
       var _categories = _toConsumableArray(business === null || business === void 0 ? void 0 : business.categories);
       _categories.forEach(function iterate(category) {
-        var _productState$product8;
-        if (category.id === ((_productState$product8 = productState.product) === null || _productState$product8 === void 0 ? void 0 : _productState$product8.category_id)) {
+        var _productState$product9;
+        if (category.id === ((_productState$product9 = productState.product) === null || _productState$product9 === void 0 ? void 0 : _productState$product9.category_id)) {
           var _products = category.products.map(function (_product) {
             if (_product.id === productState.product.id) {
               return _objectSpread(_objectSpread({}, _product), updatedProduct);
@@ -471,8 +488,8 @@ var ProductDetatils = function ProductDetatils(props) {
     if (handleUpdateCategoryState) {
       var _categoryState$produc2;
       var updatedProducts = categoryState === null || categoryState === void 0 ? void 0 : (_categoryState$produc2 = categoryState.products) === null || _categoryState$produc2 === void 0 ? void 0 : _categoryState$produc2.map(function (item) {
-        var _productState$product9;
-        if ((item === null || item === void 0 ? void 0 : item.id) === (productState === null || productState === void 0 ? void 0 : (_productState$product9 = productState.product) === null || _productState$product9 === void 0 ? void 0 : _productState$product9.id)) {
+        var _productState$product10;
+        if ((item === null || item === void 0 ? void 0 : item.id) === (productState === null || productState === void 0 ? void 0 : (_productState$product10 = productState.product) === null || _productState$product10 === void 0 ? void 0 : _productState$product10.id)) {
           return _objectSpread(_objectSpread({}, productState.product), updatedProduct);
         }
         return item;

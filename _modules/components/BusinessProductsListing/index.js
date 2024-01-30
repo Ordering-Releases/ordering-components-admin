@@ -762,11 +762,12 @@ var BusinessProductsListing = function BusinessProductsListing(props) {
     }
   }, [businessState === null || businessState === void 0 ? void 0 : businessState.loading]);
   (0, _react.useEffect)(function () {
-    if (searchValue !== null) getProducts(!!searchValue);
-  }, [searchValue]);
-  (0, _react.useEffect)(function () {
-    getProducts(!!searchValue, 1);
-  }, [categorySelected === null || categorySelected === void 0 ? void 0 : categorySelected.id]);
+    if (searchValue === null || searchValue === '') {
+      getProducts(true, 1);
+    } else {
+      getProducts(searchValue);
+    }
+  }, [categorySelected === null || categorySelected === void 0 ? void 0 : categorySelected.id, searchValue]);
   (0, _react.useEffect)(function () {
     if (businessSlug) {
       getBusiness();
