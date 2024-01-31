@@ -571,6 +571,14 @@ export const DashboardOrdersList = (props) => {
           }
         )
       }
+      if (filterValues.administratorIds.length !== 0) {
+        conditions.push(
+          {
+            attribute: 'agent_id',
+            value: filterValues.administratorIds
+          }
+        )
+      }
       if (filterValues?.offerId) {
         filterConditons.push(
           {
