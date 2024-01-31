@@ -572,6 +572,12 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
                   }]
                 });
               }
+              if (filterValues.administratorIds.length !== 0) {
+                conditions.push({
+                  attribute: 'agent_id',
+                  value: filterValues.administratorIds
+                });
+              }
               if (filterValues !== null && filterValues !== void 0 && filterValues.offerId) {
                 filterConditons.push({
                   attribute: 'offers',
