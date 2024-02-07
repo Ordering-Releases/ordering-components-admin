@@ -8,7 +8,10 @@ import { useLanguage } from '../../contexts/LanguageContext'
 export const DriversGroupsList = (props) => {
   const {
     UIComponent,
-    isDriversMangersRequired
+    isDriversMangersRequired,
+    isHeaderComponent,
+    paginationSettings,
+
   } = props
 
   const [ordering] = useApi()
@@ -27,6 +30,62 @@ export const DriversGroupsList = (props) => {
   const [actionState, setActionState] = useState({ loading: false, error: null })
   const [selectedGroupList, setSelectedGroupList] = useState([])
   const [actionDisabled, setActionDisabled] = useState(true)
+  const [paginationProps, setPaginationProps] = useState({
+    currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage : 1,
+    pageSize: paginationSettings.pageSize ?? 10,
+    totalItems: null,
+    totalPages: null
+  })
+
+    /**
+   * Method to get the driver groups from API
+   */
+    const getHeaderDriversGroups = async (page, pageSize) => {
+      try {
+        setDriversGroupsState({ ...driversGroupsState, loading: true })
+        const requestOptions = {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        }
+        const response = await fetch(`${ordering.root}/drivergroups?page=${page}&page_size=${pageSize}`, requestOptions)
+        const content = await response.json()
+        const { result, pagination, error } = content
+
+        if (!error) {
+          setDriversGroupsState({
+            ...driversGroupsState,
+            groups: result,
+            loading: false
+          })
+        } else {
+          driversGroupsState.groups = result
+          setDriversGroupsState({
+            ...driversGroupsState,
+            loading: false
+          })
+          let nextPageItems = 0
+        if (pagination.current_page !== pagination.total_pages) {
+          const remainingItems = pagination.total - driversList.users.length
+          nextPageItems = remainingItems < pagination.page_size ? remainingItems : pagination.page_size
+        }
+        setPaginationProps({
+          ...paginationProps,
+          currentPage: pagination.current_page,
+          pageSize: pagination.page_size === 0 ? paginationProps.pageSize : pagination.page_size,
+          totalPages: pagination.total_pages,
+          totalItems: pagination.total,
+          from: pagination.from,
+          to: pagination.to,
+          nextPageItems
+        })
+        }
+      } catch (err) {
+        setDriversGroupsState({ ...driversGroupsState, loading: false, error: [err.message] })
+      }
+    }
 
   /**
    * Method to get the drivers groups from API
@@ -263,6 +322,8 @@ export const DriversGroupsList = (props) => {
   }, [selectedGroupList, startSeveralDeleteStart])
 
   useEffect(() => {
+    getHeaderDriversGroups(paginationProps.currentPage, paginationProps.pageSize)
+    if(isHeaderComponent) return
     getDriversGroups()
     if (isDriversMangersRequired) {
       getDriverManagers()
@@ -294,6 +355,8 @@ export const DriversGroupsList = (props) => {
             handleSelectGroup={handleSelectGroup}
             handleAllSelectGroup={handleAllSelectGroup}
             actionDisabled={actionDisabled}
+            getHeaderDriversGroups={getHeaderDriversGroups}
+            pagination={paginationProps}
           />
         )
       }

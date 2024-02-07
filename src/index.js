@@ -267,6 +267,7 @@ import { UserDetails } from './components/UserDetails'
 import { UserWallet } from './components/UserWallet'
 import { WebhookList } from './components/WebhookList'
 import { WebsocketStatus } from './components/WebsocketStatus'
+import { CalendarDriversList } from './components/CalendarDriversList'
 
 import { CODES } from './constants/code-numbers'
 
@@ -343,6 +344,7 @@ export {
   BusinessProductCreator,
   BusinessWalletsList,
   BusinessQRCodeOptions,
+  CalendarDriversList,
   CampaignListing,
   CampaignDetail,
   CampaignDetailContent,
