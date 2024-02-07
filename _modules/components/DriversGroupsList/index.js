@@ -34,8 +34,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var DriversGroupsList = function DriversGroupsList(props) {
+  var _paginationSettings$p;
   var UIComponent = props.UIComponent,
-    isDriversMangersRequired = props.isDriversMangersRequired;
+    isDriversMangersRequired = props.isDriversMangersRequired,
+    isHeaderComponent = props.isHeaderComponent,
+    paginationSettings = props.paginationSettings;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -117,13 +120,22 @@ var DriversGroupsList = function DriversGroupsList(props) {
     _useState20 = _slicedToArray(_useState19, 2),
     actionDisabled = _useState20[0],
     setActionDisabled = _useState20[1];
+  var _useState21 = (0, _react.useState)({
+      currentPage: paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1 ? paginationSettings.initialPage : 1,
+      pageSize: (_paginationSettings$p = paginationSettings.pageSize) !== null && _paginationSettings$p !== void 0 ? _paginationSettings$p : 10,
+      totalItems: null,
+      totalPages: null
+    }),
+    _useState22 = _slicedToArray(_useState21, 2),
+    paginationProps = _useState22[0],
+    setPaginationProps = _useState22[1];
 
   /**
-   * Method to get the drivers groups from API
-   */
-  var getDriversGroups = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var requestOptions, response, content, found;
+  * Method to get the driver groups from API
+  */
+  var getHeaderDriversGroups = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(page, pageSize) {
+      var requestOptions, response, content, result, pagination, error, nextPageItems, remainingItems;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -139,13 +151,87 @@ var DriversGroupsList = function DriversGroupsList(props) {
               }
             };
             _context.next = 5;
-            return fetch("".concat(ordering.root, "/drivergroups"), requestOptions);
+            return fetch("".concat(ordering.root, "/drivergroups?page=").concat(page, "&page_size=").concat(pageSize), requestOptions);
           case 5:
             response = _context.sent;
             _context.next = 8;
             return response.json();
           case 8:
             content = _context.sent;
+            result = content.result, pagination = content.pagination, error = content.error;
+            if (!error) {
+              setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
+                groups: result,
+                loading: false
+              }));
+            } else {
+              driversGroupsState.groups = result;
+              setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
+                loading: false
+              }));
+              nextPageItems = 0;
+              if (pagination.current_page !== pagination.total_pages) {
+                remainingItems = pagination.total - driversList.users.length;
+                nextPageItems = remainingItems < pagination.page_size ? remainingItems : pagination.page_size;
+              }
+              setPaginationProps(_objectSpread(_objectSpread({}, paginationProps), {}, {
+                currentPage: pagination.current_page,
+                pageSize: pagination.page_size === 0 ? paginationProps.pageSize : pagination.page_size,
+                totalPages: pagination.total_pages,
+                totalItems: pagination.total,
+                from: pagination.from,
+                to: pagination.to,
+                nextPageItems: nextPageItems
+              }));
+            }
+            _context.next = 16;
+            break;
+          case 13:
+            _context.prev = 13;
+            _context.t0 = _context["catch"](0);
+            setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
+              loading: false,
+              error: [_context.t0.message]
+            }));
+          case 16:
+          case "end":
+            return _context.stop();
+        }
+      }, _callee, null, [[0, 13]]);
+    }));
+    return function getHeaderDriversGroups(_x2, _x3) {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Method to get the drivers groups from API
+   */
+  var getDriversGroups = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+      var requestOptions, response, content, found;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.prev = 0;
+            setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
+              loading: true
+            }));
+            requestOptions = {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token)
+              }
+            };
+            _context2.next = 5;
+            return fetch("".concat(ordering.root, "/drivergroups"), requestOptions);
+          case 5:
+            response = _context2.sent;
+            _context2.next = 8;
+            return response.json();
+          case 8:
+            content = _context2.sent;
             if (!content.error) {
               setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
                 groups: content.result,
@@ -160,23 +246,23 @@ var DriversGroupsList = function DriversGroupsList(props) {
                 setActionDisabled(false);
               }
             }
-            _context.next = 15;
+            _context2.next = 15;
             break;
           case 12:
-            _context.prev = 12;
-            _context.t0 = _context["catch"](0);
+            _context2.prev = 12;
+            _context2.t0 = _context2["catch"](0);
             setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
               loading: false,
-              error: [_context.t0.message]
+              error: [_context2.t0.message]
             }));
           case 15:
           case "end":
-            return _context.stop();
+            return _context2.stop();
         }
-      }, _callee, null, [[0, 12]]);
+      }, _callee2, null, [[0, 12]]);
     }));
     return function getDriversGroups() {
-      return _ref.apply(this, arguments);
+      return _ref2.apply(this, arguments);
     };
   }();
 
@@ -184,22 +270,22 @@ var DriversGroupsList = function DriversGroupsList(props) {
    * Method to  get the driver managers from API
    */
   var getDriverManagers = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
       var _yield$ordering$setAc, _yield$ordering$setAc2, error, result;
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-        while (1) switch (_context2.prev = _context2.next) {
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
           case 0:
-            _context2.prev = 0;
+            _context3.prev = 0;
             setDriversManagersList(_objectSpread(_objectSpread({}, driversManagersList), {}, {
               loading: false
             }));
-            _context2.next = 4;
+            _context3.next = 4;
             return ordering.setAccessToken(token).users().where([{
               attribute: 'level',
               value: 5
             }]).select(['name', 'email', 'photo']).get();
           case 4:
-            _yield$ordering$setAc = _context2.sent;
+            _yield$ordering$setAc = _context3.sent;
             _yield$ordering$setAc2 = _yield$ordering$setAc.content;
             error = _yield$ordering$setAc2.error;
             result = _yield$ordering$setAc2.result;
@@ -209,58 +295,12 @@ var DriversGroupsList = function DriversGroupsList(props) {
                 managers: result
               }));
             }
-            _context2.next = 14;
-            break;
-          case 11:
-            _context2.prev = 11;
-            _context2.t0 = _context2["catch"](0);
-            setDriversManagersList(_objectSpread(_objectSpread({}, driversManagersList), {}, {
-              loading: false,
-              error: [_context2.t0.message]
-            }));
-          case 14:
-          case "end":
-            return _context2.stop();
-        }
-      }, _callee2, null, [[0, 11]]);
-    }));
-    return function getDriverManagers() {
-      return _ref2.apply(this, arguments);
-    };
-  }();
-
-  /**
-   * Method to get businesses from API
-   */
-  var getBusinesses = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var _yield$ordering$setAc3, _yield$ordering$setAc4, error, result;
-      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-        while (1) switch (_context3.prev = _context3.next) {
-          case 0:
-            _context3.prev = 0;
-            setBusinessesList(_objectSpread(_objectSpread({}, businessesList), {}, {
-              loading: true
-            }));
-            _context3.next = 4;
-            return ordering.setAccessToken(token).businesses().select(['name', 'logo']).asDashboard().get();
-          case 4:
-            _yield$ordering$setAc3 = _context3.sent;
-            _yield$ordering$setAc4 = _yield$ordering$setAc3.content;
-            error = _yield$ordering$setAc4.error;
-            result = _yield$ordering$setAc4.result;
-            if (!error) {
-              setBusinessesList(_objectSpread(_objectSpread({}, businessesList), {}, {
-                loading: false,
-                businesses: result
-              }));
-            }
             _context3.next = 14;
             break;
           case 11:
             _context3.prev = 11;
             _context3.t0 = _context3["catch"](0);
-            setBusinessesList(_objectSpread(_objectSpread({}, businessesList), {}, {
+            setDriversManagersList(_objectSpread(_objectSpread({}, driversManagersList), {}, {
               loading: false,
               error: [_context3.t0.message]
             }));
@@ -270,38 +310,35 @@ var DriversGroupsList = function DriversGroupsList(props) {
         }
       }, _callee3, null, [[0, 11]]);
     }));
-    return function getBusinesses() {
+    return function getDriverManagers() {
       return _ref3.apply(this, arguments);
     };
   }();
 
   /**
-   * Method to get drivers from API
+   * Method to get businesses from API
    */
-  var getDrivers = /*#__PURE__*/function () {
+  var getBusinesses = /*#__PURE__*/function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-      var _yield$ordering$setAc5, _yield$ordering$setAc6, error, result;
+      var _yield$ordering$setAc3, _yield$ordering$setAc4, error, result;
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
-            setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
-              loading: false
+            setBusinessesList(_objectSpread(_objectSpread({}, businessesList), {}, {
+              loading: true
             }));
             _context4.next = 4;
-            return ordering.setAccessToken(token).users().where([{
-              attribute: 'level',
-              value: 4
-            }]).select(['name', 'lastname', 'email', 'photo']).get();
+            return ordering.setAccessToken(token).businesses().select(['name', 'logo']).asDashboard().get();
           case 4:
-            _yield$ordering$setAc5 = _context4.sent;
-            _yield$ordering$setAc6 = _yield$ordering$setAc5.content;
-            error = _yield$ordering$setAc6.error;
-            result = _yield$ordering$setAc6.result;
+            _yield$ordering$setAc3 = _context4.sent;
+            _yield$ordering$setAc4 = _yield$ordering$setAc3.content;
+            error = _yield$ordering$setAc4.error;
+            result = _yield$ordering$setAc4.result;
             if (!error) {
-              setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
+              setBusinessesList(_objectSpread(_objectSpread({}, businessesList), {}, {
                 loading: false,
-                drivers: result
+                businesses: result
               }));
             }
             _context4.next = 14;
@@ -309,7 +346,7 @@ var DriversGroupsList = function DriversGroupsList(props) {
           case 11:
             _context4.prev = 11;
             _context4.t0 = _context4["catch"](0);
-            setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
+            setBusinessesList(_objectSpread(_objectSpread({}, businessesList), {}, {
               loading: false,
               error: [_context4.t0.message]
             }));
@@ -319,8 +356,57 @@ var DriversGroupsList = function DriversGroupsList(props) {
         }
       }, _callee4, null, [[0, 11]]);
     }));
-    return function getDrivers() {
+    return function getBusinesses() {
       return _ref4.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Method to get drivers from API
+   */
+  var getDrivers = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+      var _yield$ordering$setAc5, _yield$ordering$setAc6, error, result;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.prev = 0;
+            setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
+              loading: false
+            }));
+            _context5.next = 4;
+            return ordering.setAccessToken(token).users().where([{
+              attribute: 'level',
+              value: 4
+            }]).select(['name', 'lastname', 'email', 'photo']).get();
+          case 4:
+            _yield$ordering$setAc5 = _context5.sent;
+            _yield$ordering$setAc6 = _yield$ordering$setAc5.content;
+            error = _yield$ordering$setAc6.error;
+            result = _yield$ordering$setAc6.result;
+            if (!error) {
+              setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
+                loading: false,
+                drivers: result
+              }));
+            }
+            _context5.next = 14;
+            break;
+          case 11:
+            _context5.prev = 11;
+            _context5.t0 = _context5["catch"](0);
+            setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
+              loading: false,
+              error: [_context5.t0.message]
+            }));
+          case 14:
+          case "end":
+            return _context5.stop();
+        }
+      }, _callee5, null, [[0, 11]]);
+    }));
+    return function getDrivers() {
+      return _ref5.apply(this, arguments);
     };
   }();
 
@@ -328,67 +414,13 @@ var DriversGroupsList = function DriversGroupsList(props) {
    * Method to get the paymethods from API
    */
   var getPaymethods = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-      var requestOptions, response, content;
-      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-        while (1) switch (_context5.prev = _context5.next) {
-          case 0:
-            _context5.prev = 0;
-            setPaymethodsList(_objectSpread(_objectSpread({}, paymethodsList), {}, {
-              loading: true
-            }));
-            requestOptions = {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: "Bearer ".concat(token)
-              }
-            };
-            _context5.next = 5;
-            return fetch("".concat(ordering.root, "/paymethods?params=name,gateway&where={%22enabled%22:true}"), requestOptions);
-          case 5:
-            response = _context5.sent;
-            _context5.next = 8;
-            return response.json();
-          case 8:
-            content = _context5.sent;
-            if (!content.error) {
-              setPaymethodsList(_objectSpread(_objectSpread({}, paymethodsList), {}, {
-                paymethods: content.result,
-                loading: false
-              }));
-            }
-            _context5.next = 15;
-            break;
-          case 12:
-            _context5.prev = 12;
-            _context5.t0 = _context5["catch"](0);
-            setPaymethodsList(_objectSpread(_objectSpread({}, paymethodsList), {}, {
-              loading: false,
-              error: [_context5.t0.message]
-            }));
-          case 15:
-          case "end":
-            return _context5.stop();
-        }
-      }, _callee5, null, [[0, 12]]);
-    }));
-    return function getPaymethods() {
-      return _ref5.apply(this, arguments);
-    };
-  }();
-
-  /**
-   * Method to get the drivers companies from API
-   */
-  var getDriversCompanies = /*#__PURE__*/function () {
     var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
       var requestOptions, response, content;
       return _regeneratorRuntime().wrap(function _callee6$(_context6) {
         while (1) switch (_context6.prev = _context6.next) {
           case 0:
             _context6.prev = 0;
-            setDriversCompanyList(_objectSpread(_objectSpread({}, driversCompanyList), {}, {
+            setPaymethodsList(_objectSpread(_objectSpread({}, paymethodsList), {}, {
               loading: true
             }));
             requestOptions = {
@@ -399,7 +431,7 @@ var DriversGroupsList = function DriversGroupsList(props) {
               }
             };
             _context6.next = 5;
-            return fetch("".concat(ordering.root, "/driver_companies?params=name"), requestOptions);
+            return fetch("".concat(ordering.root, "/paymethods?params=name,gateway&where={%22enabled%22:true}"), requestOptions);
           case 5:
             response = _context6.sent;
             _context6.next = 8;
@@ -407,8 +439,8 @@ var DriversGroupsList = function DriversGroupsList(props) {
           case 8:
             content = _context6.sent;
             if (!content.error) {
-              setDriversCompanyList(_objectSpread(_objectSpread({}, driversCompanyList), {}, {
-                companies: content.result,
+              setPaymethodsList(_objectSpread(_objectSpread({}, paymethodsList), {}, {
+                paymethods: content.result,
                 loading: false
               }));
             }
@@ -417,7 +449,7 @@ var DriversGroupsList = function DriversGroupsList(props) {
           case 12:
             _context6.prev = 12;
             _context6.t0 = _context6["catch"](0);
-            setDriversCompanyList(_objectSpread(_objectSpread({}, driversCompanyList), {}, {
+            setPaymethodsList(_objectSpread(_objectSpread({}, paymethodsList), {}, {
               loading: false,
               error: [_context6.t0.message]
             }));
@@ -427,8 +459,62 @@ var DriversGroupsList = function DriversGroupsList(props) {
         }
       }, _callee6, null, [[0, 12]]);
     }));
-    return function getDriversCompanies() {
+    return function getPaymethods() {
       return _ref6.apply(this, arguments);
+    };
+  }();
+
+  /**
+   * Method to get the drivers companies from API
+   */
+  var getDriversCompanies = /*#__PURE__*/function () {
+    var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+      var requestOptions, response, content;
+      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+        while (1) switch (_context7.prev = _context7.next) {
+          case 0:
+            _context7.prev = 0;
+            setDriversCompanyList(_objectSpread(_objectSpread({}, driversCompanyList), {}, {
+              loading: true
+            }));
+            requestOptions = {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token)
+              }
+            };
+            _context7.next = 5;
+            return fetch("".concat(ordering.root, "/driver_companies?params=name"), requestOptions);
+          case 5:
+            response = _context7.sent;
+            _context7.next = 8;
+            return response.json();
+          case 8:
+            content = _context7.sent;
+            if (!content.error) {
+              setDriversCompanyList(_objectSpread(_objectSpread({}, driversCompanyList), {}, {
+                companies: content.result,
+                loading: false
+              }));
+            }
+            _context7.next = 15;
+            break;
+          case 12:
+            _context7.prev = 12;
+            _context7.t0 = _context7["catch"](0);
+            setDriversCompanyList(_objectSpread(_objectSpread({}, driversCompanyList), {}, {
+              loading: false,
+              error: [_context7.t0.message]
+            }));
+          case 15:
+          case "end":
+            return _context7.stop();
+        }
+      }, _callee7, null, [[0, 12]]);
+    }));
+    return function getDriversCompanies() {
+      return _ref7.apply(this, arguments);
     };
   }();
 
@@ -438,12 +524,12 @@ var DriversGroupsList = function DriversGroupsList(props) {
    * @param {Object} changes
    */
   var handleUpdateDriversGroup = /*#__PURE__*/function () {
-    var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(driverGroupId, changes) {
+    var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(driverGroupId, changes) {
       var requestOptions, response, content, groups;
-      return _regeneratorRuntime().wrap(function _callee7$(_context7) {
-        while (1) switch (_context7.prev = _context7.next) {
+      return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+        while (1) switch (_context8.prev = _context8.next) {
           case 0:
-            _context7.prev = 0;
+            _context8.prev = 0;
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
             setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
               loading: true,
@@ -457,14 +543,14 @@ var DriversGroupsList = function DriversGroupsList(props) {
               },
               body: JSON.stringify(changes)
             };
-            _context7.next = 6;
+            _context8.next = 6;
             return fetch("".concat(ordering.root, "/drivergroups/").concat(driverGroupId), requestOptions);
           case 6:
-            response = _context7.sent;
-            _context7.next = 9;
+            response = _context8.sent;
+            _context8.next = 9;
             return response.json();
           case 9:
-            content = _context7.sent;
+            content = _context8.sent;
             if (!content.error) {
               setActionState({
                 error: null,
@@ -486,23 +572,23 @@ var DriversGroupsList = function DriversGroupsList(props) {
                 error: content.result
               }));
             }
-            _context7.next = 16;
+            _context8.next = 16;
             break;
           case 13:
-            _context7.prev = 13;
-            _context7.t0 = _context7["catch"](0);
+            _context8.prev = 13;
+            _context8.t0 = _context8["catch"](0);
             setActionState({
               loading: false,
-              error: [_context7.t0.message]
+              error: [_context8.t0.message]
             });
           case 16:
           case "end":
-            return _context7.stop();
+            return _context8.stop();
         }
-      }, _callee7, null, [[0, 13]]);
+      }, _callee8, null, [[0, 13]]);
     }));
-    return function handleUpdateDriversGroup(_x2, _x3) {
-      return _ref7.apply(this, arguments);
+    return function handleUpdateDriversGroup(_x4, _x5) {
+      return _ref8.apply(this, arguments);
     };
   }();
 
@@ -511,12 +597,12 @@ var DriversGroupsList = function DriversGroupsList(props) {
    * @param {Number} driversGroupId
    */
   var handleDeleteDriversGroup = /*#__PURE__*/function () {
-    var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(driversGroupId) {
+    var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(driversGroupId) {
       var requestOptions, response, content, groups, groupList;
-      return _regeneratorRuntime().wrap(function _callee8$(_context8) {
-        while (1) switch (_context8.prev = _context8.next) {
+      return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+        while (1) switch (_context9.prev = _context9.next) {
           case 0:
-            _context8.prev = 0;
+            _context9.prev = 0;
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
             setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
               loading: true,
@@ -529,14 +615,14 @@ var DriversGroupsList = function DriversGroupsList(props) {
                 Authorization: "Bearer ".concat(token)
               }
             };
-            _context8.next = 6;
+            _context9.next = 6;
             return fetch("".concat(ordering.root, "/drivergroups/").concat(driversGroupId), requestOptions);
           case 6:
-            response = _context8.sent;
-            _context8.next = 9;
+            response = _context9.sent;
+            _context9.next = 9;
             return response.json();
           case 9:
-            content = _context8.sent;
+            content = _context9.sent;
             if (!content.error) {
               setActionState(_objectSpread(_objectSpread({}, actionState), {}, {
                 loading: false
@@ -563,23 +649,23 @@ var DriversGroupsList = function DriversGroupsList(props) {
               }));
               setStartSeveralDeleteStart(false);
             }
-            _context8.next = 16;
+            _context9.next = 16;
             break;
           case 13:
-            _context8.prev = 13;
-            _context8.t0 = _context8["catch"](0);
+            _context9.prev = 13;
+            _context9.t0 = _context9["catch"](0);
             setActionState({
               loading: false,
-              error: [_context8.t0.message]
+              error: [_context9.t0.message]
             });
           case 16:
           case "end":
-            return _context8.stop();
+            return _context9.stop();
         }
-      }, _callee8, null, [[0, 13]]);
+      }, _callee9, null, [[0, 13]]);
     }));
-    return function handleDeleteDriversGroup(_x4) {
-      return _ref8.apply(this, arguments);
+    return function handleDeleteDriversGroup(_x6) {
+      return _ref9.apply(this, arguments);
     };
   }();
   var handleSelectGroup = function handleSelectGroup(groupId) {
@@ -609,6 +695,8 @@ var DriversGroupsList = function DriversGroupsList(props) {
     handleDeleteDriversGroup(selectedGroupList[0]);
   }, [selectedGroupList, startSeveralDeleteStart]);
   (0, _react.useEffect)(function () {
+    getHeaderDriversGroups(paginationProps.currentPage, paginationProps.pageSize);
+    if (isHeaderComponent) return;
     getDriversGroups();
     if (isDriversMangersRequired) {
       getDriverManagers();
@@ -635,7 +723,9 @@ var DriversGroupsList = function DriversGroupsList(props) {
     selectedGroupList: selectedGroupList,
     handleSelectGroup: handleSelectGroup,
     handleAllSelectGroup: handleAllSelectGroup,
-    actionDisabled: actionDisabled
+    actionDisabled: actionDisabled,
+    getHeaderDriversGroups: getHeaderDriversGroups,
+    pagination: paginationProps
   })));
 };
 exports.DriversGroupsList = DriversGroupsList;
