@@ -399,6 +399,36 @@ export const BusinessDetails = (props) => {
     }
   }
 
+  const handleSyncEvent = async (event = 'business') => {
+    try {
+      setBusinessState({
+        ...businessState,
+        loading: true
+      })
+      const response = await fetch(`https://integrations.ordering.co/pulseposdps/api/sync_${event}.php?store_id=${businessState?.business?.external_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.token}`
+        }
+      })
+      const { result, error } = await response.json()
+      if (!error) {
+        showToast(ToastType.Success, result?.[0] || t('OK', 'OK'))
+      }
+      setBusinessState({
+        ...businessState,
+        loading: false
+      })
+    } catch (err) {
+      setBusinessState({
+        ...businessState,
+        error: [err.message],
+        loading: false
+      })
+    }
+  }
+
   useEffect(() => {
     if (!businessState?.business) return
     handleSucessUpdateBusiness && handleSucessUpdateBusiness(businessState?.business)
@@ -442,6 +472,7 @@ export const BusinessDetails = (props) => {
             handleSuccessDeleteBusinessItem={handleSuccessDeleteBusinessItem}
             handleUpdatePreorderConfigs={handleUpdatePreorderConfigs}
             handleUpdateSpoonityKey={handleUpdateSpoonityKey}
+            handleSyncEvent={handleSyncEvent}
             spoonityKeyState={spoonityKeyState}
             siteState={siteState}
           />
