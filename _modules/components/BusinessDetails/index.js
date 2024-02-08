@@ -725,6 +725,64 @@ var BusinessDetails = function BusinessDetails(props) {
       return _ref10.apply(this, arguments);
     };
   }();
+  var handleSyncEvent = /*#__PURE__*/function () {
+    var _ref11 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11() {
+      var event,
+        _businessState$busine3,
+        response,
+        _yield$response$json2,
+        result,
+        error,
+        _args11 = arguments;
+      return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+        while (1) switch (_context11.prev = _context11.next) {
+          case 0:
+            event = _args11.length > 0 && _args11[0] !== undefined ? _args11[0] : 'business';
+            _context11.prev = 1;
+            setBusinessState(_objectSpread(_objectSpread({}, businessState), {}, {
+              loading: true
+            }));
+            _context11.next = 5;
+            return fetch("https://integrations.ordering.co/pulseposdps/api/sync_".concat(event, ".php?store_id=").concat(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine3 = businessState.business) === null || _businessState$busine3 === void 0 ? void 0 : _businessState$busine3.external_id), {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(session.token)
+              }
+            });
+          case 5:
+            response = _context11.sent;
+            _context11.next = 8;
+            return response.json();
+          case 8:
+            _yield$response$json2 = _context11.sent;
+            result = _yield$response$json2.result;
+            error = _yield$response$json2.error;
+            if (!error) {
+              showToast(_ToastContext.ToastType.Success, (result === null || result === void 0 ? void 0 : result[0]) || t('OK', 'OK'));
+            }
+            setBusinessState(_objectSpread(_objectSpread({}, businessState), {}, {
+              loading: false
+            }));
+            _context11.next = 18;
+            break;
+          case 15:
+            _context11.prev = 15;
+            _context11.t0 = _context11["catch"](1);
+            setBusinessState(_objectSpread(_objectSpread({}, businessState), {}, {
+              error: [_context11.t0.message],
+              loading: false
+            }));
+          case 18:
+          case "end":
+            return _context11.stop();
+        }
+      }, _callee11, null, [[1, 15]]);
+    }));
+    return function handleSyncEvent() {
+      return _ref11.apply(this, arguments);
+    };
+  }();
   (0, _react.useEffect)(function () {
     if (!(businessState !== null && businessState !== void 0 && businessState.business)) return;
     handleSucessUpdateBusiness && handleSucessUpdateBusiness(businessState === null || businessState === void 0 ? void 0 : businessState.business);
@@ -759,6 +817,7 @@ var BusinessDetails = function BusinessDetails(props) {
     handleSuccessDeleteBusinessItem: handleSuccessDeleteBusinessItem,
     handleUpdatePreorderConfigs: handleUpdatePreorderConfigs,
     handleUpdateSpoonityKey: handleUpdateSpoonityKey,
+    handleSyncEvent: handleSyncEvent,
     spoonityKeyState: spoonityKeyState,
     siteState: siteState
   })));
