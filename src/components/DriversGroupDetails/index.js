@@ -30,6 +30,7 @@ export const DriversGroupDetails = (props) => {
   const [selectedBusinessIds, setSelectedBusinessIds] = useState([])
   const [selectedPaymethodIds, setSelectedPaymethodIds] = useState([])
   const [selectedDriverIds, setSelectedDriverIds] = useState([])
+  const [selectedDriverTemporaryIds, setSelectedDriverTemporaryIds] = useState([])
   const [selectedDriversCompanyIds, setSelectedDriversCompanyIds] = useState([])
   const [selectedDriverManager, setSelectedDriverManager] = useState([])
 
@@ -39,6 +40,14 @@ export const DriversGroupDetails = (props) => {
     setSelectedPaymethodIds(driversGroup?.allowed_paymethods || [])
     const drivers = driversGroup?.drivers?.reduce((ids, driver) => [...ids, driver.id], [])
     setSelectedDriverIds(drivers)
+    const driversTemporary = driversGroup?.drivers?.reduce((driverData, driver) => {
+      if (driver?.temporary_at) {
+        return [...driverData, { id: driver?.id, temporarily_activated: true, temporary_at: driver?.temporary_at }]
+      } else {
+        return [...driverData]
+      }
+    }, [])
+    setSelectedDriverTemporaryIds(driversTemporary)
     const companyIds = driversGroup?.driver_companies?.reduce((ids, company) => [...ids, company.id], [])
     setSelectedDriversCompanyIds(companyIds)
     const managersIds = driversGroup?.administrators?.reduce((ids, manager) => [...ids, manager.id], [])
@@ -259,7 +268,35 @@ export const DriversGroupDetails = (props) => {
     setSelectedDriverIds(filteredIds)
     setChangesState({
       ...changesState,
-      drivers: JSON.stringify(filteredIds)
+      drivers: JSON.stringify(filteredIds),
+      temporary_drivers: JSON.stringify(selectedDriverTemporaryIds)
+    })
+  }
+
+  const handleSelectDriverTemporary = (driverId, checked, temporaryAt) => {
+    const driverTemporaryIds = [...selectedDriverTemporaryIds]
+    const filteredTemporaryIds = [...driverTemporaryIds]
+    const index = filteredTemporaryIds.findIndex(driver => driver.id === driverId)
+
+    if (index !== -1) {
+      filteredTemporaryIds[index] = {
+        ...filteredTemporaryIds[index],
+        temporarily_activated: checked,
+        temporary_at: temporaryAt || null
+      }
+    } else {
+      filteredTemporaryIds.push({
+        id: driverId,
+        temporarily_activated: checked,
+        temporary_at: temporaryAt || null
+      })
+    }
+
+    setSelectedDriverTemporaryIds(filteredTemporaryIds)
+    setChangesState({
+      ...changesState,
+      drivers: JSON.stringify(selectedDriverIds),
+      temporary_drivers: JSON.stringify(filteredTemporaryIds)
     })
   }
 
@@ -419,6 +456,7 @@ export const DriversGroupDetails = (props) => {
             selectedBusinessIds={selectedBusinessIds}
             selectedPaymethodIds={selectedPaymethodIds}
             selectedDriverIds={selectedDriverIds}
+            selectedDriverTemporaryIds={selectedDriverTemporaryIds}
             selectedDriversCompanyIds={selectedDriversCompanyIds}
             selectedDriverManager={selectedDriverManager}
             handleChangesState={handleChangesState}
@@ -435,6 +473,7 @@ export const DriversGroupDetails = (props) => {
             handleAddDriversGroup={handleAddDriversGroup}
             handleChangeType={handleChangeType}
             handleSelectDriverManager={handleSelectDriverManager}
+            handleSelectDriverTemporary={handleSelectDriverTemporary}
           />
         )
       }
