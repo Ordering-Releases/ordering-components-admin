@@ -91,14 +91,18 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
     setSelectedDriverIds = _useState12[1];
   var _useState13 = (0, _react.useState)([]),
     _useState14 = _slicedToArray(_useState13, 2),
-    selectedDriversCompanyIds = _useState14[0],
-    setSelectedDriversCompanyIds = _useState14[1];
+    selectedDriverTemporaryIds = _useState14[0],
+    setSelectedDriverTemporaryIds = _useState14[1];
   var _useState15 = (0, _react.useState)([]),
     _useState16 = _slicedToArray(_useState15, 2),
-    selectedDriverManager = _useState16[0],
-    setSelectedDriverManager = _useState16[1];
+    selectedDriversCompanyIds = _useState16[0],
+    setSelectedDriversCompanyIds = _useState16[1];
+  var _useState17 = (0, _react.useState)([]),
+    _useState18 = _slicedToArray(_useState17, 2),
+    selectedDriverManager = _useState18[0],
+    setSelectedDriverManager = _useState18[1];
   var initSet = function initSet(driversGroup) {
-    var _driversGroup$busines, _driversGroup$drivers, _driversGroup$driver_, _driversGroup$adminis;
+    var _driversGroup$busines, _driversGroup$drivers, _driversGroup$drivers2, _driversGroup$driver_, _driversGroup$adminis;
     var businessIds = driversGroup === null || driversGroup === void 0 ? void 0 : (_driversGroup$busines = driversGroup.business) === null || _driversGroup$busines === void 0 ? void 0 : _driversGroup$busines.reduce(function (ids, business) {
       return [].concat(_toConsumableArray(ids), [business.id]);
     }, []);
@@ -108,6 +112,18 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
       return [].concat(_toConsumableArray(ids), [driver.id]);
     }, []);
     setSelectedDriverIds(drivers);
+    var driversTemporary = driversGroup === null || driversGroup === void 0 ? void 0 : (_driversGroup$drivers2 = driversGroup.drivers) === null || _driversGroup$drivers2 === void 0 ? void 0 : _driversGroup$drivers2.reduce(function (driverData, driver) {
+      if (driver !== null && driver !== void 0 && driver.temporary_at) {
+        return [].concat(_toConsumableArray(driverData), [{
+          id: driver === null || driver === void 0 ? void 0 : driver.id,
+          temporarily_activated: true,
+          temporary_at: driver === null || driver === void 0 ? void 0 : driver.temporary_at
+        }]);
+      } else {
+        return _toConsumableArray(driverData);
+      }
+    }, []);
+    setSelectedDriverTemporaryIds(driversTemporary);
     var companyIds = driversGroup === null || driversGroup === void 0 ? void 0 : (_driversGroup$driver_ = driversGroup.driver_companies) === null || _driversGroup$driver_ === void 0 ? void 0 : _driversGroup$driver_.reduce(function (ids, company) {
       return [].concat(_toConsumableArray(ids), [company.id]);
     }, []);
@@ -465,7 +481,32 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
     }
     setSelectedDriverIds(filteredIds);
     setChangesState(_objectSpread(_objectSpread({}, changesState), {}, {
-      drivers: JSON.stringify(filteredIds)
+      drivers: JSON.stringify(filteredIds),
+      temporary_drivers: JSON.stringify(selectedDriverTemporaryIds)
+    }));
+  };
+  var handleSelectDriverTemporary = function handleSelectDriverTemporary(driverId, checked, temporaryAt) {
+    var driverTemporaryIds = _toConsumableArray(selectedDriverTemporaryIds);
+    var filteredTemporaryIds = _toConsumableArray(driverTemporaryIds);
+    var index = filteredTemporaryIds.findIndex(function (driver) {
+      return driver.id === driverId;
+    });
+    if (index !== -1) {
+      filteredTemporaryIds[index] = _objectSpread(_objectSpread({}, filteredTemporaryIds[index]), {}, {
+        temporarily_activated: checked,
+        temporary_at: temporaryAt || null
+      });
+    } else {
+      filteredTemporaryIds.push({
+        id: driverId,
+        temporarily_activated: checked,
+        temporary_at: temporaryAt || null
+      });
+    }
+    setSelectedDriverTemporaryIds(filteredTemporaryIds);
+    setChangesState(_objectSpread(_objectSpread({}, changesState), {}, {
+      drivers: JSON.stringify(selectedDriverIds),
+      temporary_drivers: JSON.stringify(filteredTemporaryIds)
     }));
   };
   var handleSelectDriversCompany = function handleSelectDriversCompany(driverCompanyId, checked) {
@@ -620,6 +661,7 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
     selectedBusinessIds: selectedBusinessIds,
     selectedPaymethodIds: selectedPaymethodIds,
     selectedDriverIds: selectedDriverIds,
+    selectedDriverTemporaryIds: selectedDriverTemporaryIds,
     selectedDriversCompanyIds: selectedDriversCompanyIds,
     selectedDriverManager: selectedDriverManager,
     handleChangesState: handleChangesState,
@@ -635,7 +677,8 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
     handleDeleteDriversGroup: handleDeleteDriversGroup,
     handleAddDriversGroup: handleAddDriversGroup,
     handleChangeType: handleChangeType,
-    handleSelectDriverManager: handleSelectDriverManager
+    handleSelectDriverManager: handleSelectDriverManager,
+    handleSelectDriverTemporary: handleSelectDriverTemporary
   })));
 };
 exports.DriversGroupDetails = DriversGroupDetails;
