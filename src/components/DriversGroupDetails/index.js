@@ -266,38 +266,53 @@ export const DriversGroupDetails = (props) => {
       filteredIds = driverIds.filter(id => id !== driverId)
     }
     setSelectedDriverIds(filteredIds)
-    setChangesState({
+    const changes = {
       ...changesState,
-      drivers: JSON.stringify(filteredIds),
-      temporary_drivers: JSON.stringify(selectedDriverTemporaryIds)
-    })
+      drivers: JSON.stringify(filteredIds)
+    }
+    if (selectedDriverTemporaryIds?.length > 0) {
+      changes.temporary_drivers = JSON.stringify(selectedDriverTemporaryIds)
+    } else if ('temporary_drivers' in changes) {
+      delete changes.temporary_drivers
+    }
+    setChangesState(changes)
   }
 
   const handleSelectDriverTemporary = (driverId, checked, temporaryAt) => {
-    const driverTemporaryIds = [...selectedDriverTemporaryIds]
-    const filteredTemporaryIds = [...driverTemporaryIds]
-    const index = filteredTemporaryIds.findIndex(driver => driver.id === driverId)
+    const index = selectedDriverTemporaryIds.findIndex(driver => driver.id === driverId)
 
-    if (index !== -1) {
-      filteredTemporaryIds[index] = {
-        ...filteredTemporaryIds[index],
-        temporarily_activated: checked,
-        temporary_at: temporaryAt || null
+    if (checked) {
+      if (index !== -1) {
+        selectedDriverTemporaryIds[index] = {
+          ...selectedDriverTemporaryIds[index],
+          temporarily_activated: checked,
+          temporary_at: temporaryAt || null
+        }
+      } else {
+        selectedDriverTemporaryIds.push({
+          id: driverId,
+          temporarily_activated: checked,
+          temporary_at: temporaryAt || null
+        })
       }
     } else {
-      filteredTemporaryIds.push({
-        id: driverId,
-        temporarily_activated: checked,
-        temporary_at: temporaryAt || null
-      })
+      if (index !== -1) {
+        selectedDriverTemporaryIds.splice(index, 1)
+      }
     }
 
-    setSelectedDriverTemporaryIds(filteredTemporaryIds)
-    setChangesState({
+    setSelectedDriverTemporaryIds([...selectedDriverTemporaryIds])
+
+    const changes = {
       ...changesState,
-      drivers: JSON.stringify(selectedDriverIds),
-      temporary_drivers: JSON.stringify(filteredTemporaryIds)
-    })
+      drivers: JSON.stringify(selectedDriverIds)
+    }
+    if (selectedDriverTemporaryIds.length > 0) {
+      changes.temporary_drivers = JSON.stringify(selectedDriverTemporaryIds)
+    } else if ('temporary_drivers' in changes) {
+      delete changes.temporary_drivers
+    }
+    setChangesState(changes)
   }
 
   const handleSelectDriversCompany = (driverCompanyId, checked) => {
