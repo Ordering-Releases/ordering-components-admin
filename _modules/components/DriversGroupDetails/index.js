@@ -480,34 +480,48 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
       });
     }
     setSelectedDriverIds(filteredIds);
-    setChangesState(_objectSpread(_objectSpread({}, changesState), {}, {
-      drivers: JSON.stringify(filteredIds),
-      temporary_drivers: JSON.stringify(selectedDriverTemporaryIds)
-    }));
+    var changes = _objectSpread(_objectSpread({}, changesState), {}, {
+      drivers: JSON.stringify(filteredIds)
+    });
+    if ((selectedDriverTemporaryIds === null || selectedDriverTemporaryIds === void 0 ? void 0 : selectedDriverTemporaryIds.length) > 0) {
+      changes.temporary_drivers = JSON.stringify(selectedDriverTemporaryIds);
+    } else if ('temporary_drivers' in changes) {
+      delete changes.temporary_drivers;
+    }
+    setChangesState(changes);
   };
   var handleSelectDriverTemporary = function handleSelectDriverTemporary(driverId, checked, temporaryAt) {
-    var driverTemporaryIds = _toConsumableArray(selectedDriverTemporaryIds);
-    var filteredTemporaryIds = _toConsumableArray(driverTemporaryIds);
-    var index = filteredTemporaryIds.findIndex(function (driver) {
+    var index = selectedDriverTemporaryIds.findIndex(function (driver) {
       return driver.id === driverId;
     });
-    if (index !== -1) {
-      filteredTemporaryIds[index] = _objectSpread(_objectSpread({}, filteredTemporaryIds[index]), {}, {
-        temporarily_activated: checked,
-        temporary_at: temporaryAt || null
-      });
+    if (checked) {
+      if (index !== -1) {
+        selectedDriverTemporaryIds[index] = _objectSpread(_objectSpread({}, selectedDriverTemporaryIds[index]), {}, {
+          temporarily_activated: checked,
+          temporary_at: temporaryAt || null
+        });
+      } else {
+        selectedDriverTemporaryIds.push({
+          id: driverId,
+          temporarily_activated: checked,
+          temporary_at: temporaryAt || null
+        });
+      }
     } else {
-      filteredTemporaryIds.push({
-        id: driverId,
-        temporarily_activated: checked,
-        temporary_at: temporaryAt || null
-      });
+      if (index !== -1) {
+        selectedDriverTemporaryIds.splice(index, 1);
+      }
     }
-    setSelectedDriverTemporaryIds(filteredTemporaryIds);
-    setChangesState(_objectSpread(_objectSpread({}, changesState), {}, {
-      drivers: JSON.stringify(selectedDriverIds),
-      temporary_drivers: JSON.stringify(filteredTemporaryIds)
-    }));
+    setSelectedDriverTemporaryIds(_toConsumableArray(selectedDriverTemporaryIds));
+    var changes = _objectSpread(_objectSpread({}, changesState), {}, {
+      drivers: JSON.stringify(selectedDriverIds)
+    });
+    if (selectedDriverTemporaryIds.length > 0) {
+      changes.temporary_drivers = JSON.stringify(selectedDriverTemporaryIds);
+    } else if ('temporary_drivers' in changes) {
+      delete changes.temporary_drivers;
+    }
+    setChangesState(changes);
   };
   var handleSelectDriversCompany = function handleSelectDriversCompany(driverCompanyId, checked) {
     var driverCompanyIds = _toConsumableArray(selectedDriversCompanyIds);
