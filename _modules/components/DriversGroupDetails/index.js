@@ -202,8 +202,8 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
    * @param {Object} changes
    */
   var handleUpdateDriversGroup = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(changes) {
-      var requestOptions, groupId, response, content, groups;
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(_changes) {
+      var changes, requestOptions, groupId, response, content, groups;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -213,6 +213,9 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
               loading: true,
               error: null
             }));
+            changes = _objectSpread(_objectSpread({}, _changes), {}, {
+              driver_available_max_distance: (_changes === null || _changes === void 0 ? void 0 : _changes.driver_available_max_distance) || null
+            });
             requestOptions = {
               method: 'PUT',
               headers: {
@@ -222,13 +225,13 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
               body: JSON.stringify(changes)
             };
             groupId = (curDriversGroup === null || curDriversGroup === void 0 ? void 0 : curDriversGroup.id) || driversGroupId;
-            _context2.next = 7;
+            _context2.next = 8;
             return fetch("".concat(ordering.root, "/drivergroups/").concat(groupId), requestOptions);
-          case 7:
+          case 8:
             response = _context2.sent;
-            _context2.next = 10;
+            _context2.next = 11;
             return response.json();
-          case 10:
+          case 11:
             content = _context2.sent;
             if (!content.error) {
               setActionState({
@@ -255,20 +258,20 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
                 error: content.result
               }));
             }
-            _context2.next = 17;
+            _context2.next = 18;
             break;
-          case 14:
-            _context2.prev = 14;
+          case 15:
+            _context2.prev = 15;
             _context2.t0 = _context2["catch"](0);
             setActionState({
               loading: false,
               error: [_context2.t0.message]
             });
-          case 17:
+          case 18:
           case "end":
             return _context2.stop();
         }
-      }, _callee2, null, [[0, 14]]);
+      }, _callee2, null, [[0, 15]]);
     }));
     return function handleUpdateDriversGroup(_x2) {
       return _ref2.apply(this, arguments);
@@ -348,7 +351,7 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
    */
   var handleAddDriversGroup = /*#__PURE__*/function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-      var requestOptions, response, content, _content$result, newGroup, newAdmin, groups;
+      var changes, requestOptions, response, content, _content$result, newGroup, newAdmin, groups;
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) switch (_context4.prev = _context4.next) {
           case 0:
@@ -358,21 +361,24 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
               loading: true,
               error: null
             });
+            changes = _objectSpread(_objectSpread({}, changesState), {}, {
+              driver_available_max_distance: (changesState === null || changesState === void 0 ? void 0 : changesState.driver_available_max_distance) || null
+            });
             requestOptions = {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: "Bearer ".concat(token)
               },
-              body: JSON.stringify(changesState)
+              body: JSON.stringify(changes)
             };
-            _context4.next = 6;
+            _context4.next = 7;
             return fetch("".concat(ordering.root, "/drivergroups"), requestOptions);
-          case 6:
+          case 7:
             response = _context4.sent;
-            _context4.next = 9;
+            _context4.next = 10;
             return response.json();
-          case 9:
+          case 10:
             content = _context4.sent;
             if (!content.error) {
               setActionState({
@@ -402,20 +408,20 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
                 error: content.result
               });
             }
-            _context4.next = 16;
+            _context4.next = 17;
             break;
-          case 13:
-            _context4.prev = 13;
+          case 14:
+            _context4.prev = 14;
             _context4.t0 = _context4["catch"](0);
             setActionState({
               loading: false,
               error: [_context4.t0.message]
             });
-          case 16:
+          case 17:
           case "end":
             return _context4.stop();
         }
-      }, _callee4, null, [[0, 13]]);
+      }, _callee4, null, [[0, 14]]);
     }));
     return function handleAddDriversGroup() {
       return _ref4.apply(this, arguments);
@@ -423,6 +429,12 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
   }();
   var handleChangesState = function handleChangesState(changes) {
     setChangesState(_objectSpread(_objectSpread({}, changesState), changes));
+  };
+  var handleChangeMaxDistance = function handleChangeMaxDistance(value) {
+    var maxDistance = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+    setChangesState(_objectSpread(_objectSpread({}, changesState), {}, {
+      driver_available_max_distance: maxDistance
+    }));
   };
   var handleSelectBusiness = function handleSelectBusiness(businessId, checked) {
     var businessIds = _toConsumableArray(selectedBusinessIds);
@@ -692,6 +704,7 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
     handleAddDriversGroup: handleAddDriversGroup,
     handleChangeType: handleChangeType,
     handleSelectDriverManager: handleSelectDriverManager,
+    handleChangeMaxDistance: handleChangeMaxDistance,
     handleSelectDriverTemporary: handleSelectDriverTemporary
   })));
 };
