@@ -21,6 +21,9 @@ export const CalendarDriversList = (props) => {
   const [stackEventsState, setStackEventsState] = useState({ open: false, events: [], user: null })
   const [alertState, setAlertState] = useState({ open: false, content: [] })
   const [openEditModal, setOpenEditModal] = useState(false)
+  const [filterValues, setFilterValues] = useState({
+    driverIds: []
+  })
 
   const [openModal, setOpenModal] = useState(false)
   const [date, setDate] = useState([moment().startOf('day').utc().format('YYYY-MM-DD HH:mm:ss'), moment().endOf('day').utc().format('YYYY-MM-DD HH:mm:ss')])
@@ -98,7 +101,10 @@ export const CalendarDriversList = (props) => {
   const getDrivers = async (page, pageSize, selectedGroupId) => {
     try {
       setDriversList({ ...driversList, loading: true })
-
+      const where = filterValues?.driverIds?.length > 0 ? `&where=${JSON.stringify({
+        conditions: [{ attribute: 'id', value: filterValues?.driverIds }],
+        conector: 'AND'
+      })}` : ''
       const requestOptions = {
         method: 'GET',
         headers: {
@@ -106,7 +112,7 @@ export const CalendarDriversList = (props) => {
           Authorization: `Bearer ${session.token}`
         }
       }
-      const response = await fetch(`${ordering.root}/drivergroups/${selectedGroupId}/drivers?delivery_block_from=${date[0]}&delivery_block_to=${date[1]}&page=${page}&page_size=${pageSize}`, requestOptions)
+      const response = await fetch(`${ordering.root}/drivergroups/${selectedGroupId}/drivers?delivery_block_from=${date[0]}&delivery_block_to=${date[1]}&page=${page}&page_size=${pageSize}${where}`, requestOptions)
       const content = await response.json()
 
       const { result, pagination, error } = content
@@ -399,10 +405,26 @@ export const CalendarDriversList = (props) => {
     })
   }
 
+  const handleChangeDriver = (driverId) => {
+    let _driverIds = [...filterValues.driverIds]
+    if (!_driverIds.includes(driverId)) {
+      _driverIds.push(driverId)
+    } else {
+      _driverIds = _driverIds.filter((id) => id !== driverId)
+    }
+    setFilterValues({ ...filterValues, driverIds: _driverIds })
+  }
+
+  const handleClearFilters = () => {
+    setFilterValues({
+      driverIds: []
+    })
+  }
+
   useEffect(() => {
     if (!selectedGroup?.id) return
     getDrivers(paginationProps.currentPage, paginationProps.pageSize, selectedGroup?.id)
-  }, [selectedGroup?.id, date])
+  }, [selectedGroup?.id, date, filterValues?.driverIds])
 
   useEffect(() => {
     const _startHour = moment(scheduleState?.state?.start ?? selectedBlock?.block?.start).format('HH:mm')
@@ -492,6 +514,9 @@ export const CalendarDriversList = (props) => {
           handleChangeScheduleTime={handleChangeScheduleTime}
           handleSelectedUntilDate={handleSelectedUntilDate}
           handleSetInitialStates={handleSetInitialStates}
+          filterValues={filterValues}
+          handleChangeDriver={handleChangeDriver}
+          handleClearFilters={handleClearFilters}
         />
       )}
     </>
