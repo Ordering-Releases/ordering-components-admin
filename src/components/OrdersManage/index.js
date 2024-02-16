@@ -71,6 +71,10 @@ export const OrdersManage = (props) => {
    */
   const [driversList, setDriversList] = useState({ drivers: [], loading: true, error: null })
   /**
+   * Object to save admins
+   */
+  const [adminsList, setAdminsList] = useState({ admins: [], loading: true, error: null })
+  /**
    * Object to save paymethods
    */
   const [paymethodsList, setPaymethodsList] = useState({ paymethods: [], loading: true, error: null })
@@ -285,6 +289,11 @@ export const OrdersManage = (props) => {
           loading: false,
           businesses: content.result.businesses
         })
+        setAdminsList({
+          ...adminsList,
+          loading: false,
+          admins: content.result.agents
+        })
         setActionStatus({ ...actionStatus, loading: false })
       } else {
         setActionStatus({ loading: false, error: content?.result })
@@ -431,7 +440,7 @@ export const OrdersManage = (props) => {
           }
           return driver
         })
-        return { ...prevState, drivers: updatedDrivers };
+        return { ...prevState, drivers: updatedDrivers }
       })
     }
     const handleBatchDriverLocations = (locations) => {
@@ -568,6 +577,7 @@ export const OrdersManage = (props) => {
           timeStatus={timeStatus}
           setTimeStatus={setTimeStatus}
           franchisesList={franchisesList}
+          adminsList={adminsList}
         />
       )}
     </>

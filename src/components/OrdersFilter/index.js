@@ -278,6 +278,20 @@ export const OrdersFilter = (props) => {
   }
 
   /**
+   * Change admin
+   * * @param {number} adminID admin id
+  */
+  const handleChangeAdmin = (adminId) => {
+    let _adminIds = [...filterValues.administratorIds]
+    if (!_adminIds.includes(adminId)) {
+      _adminIds.push(adminId)
+    } else {
+      _adminIds = _adminIds.filter((id) => id !== adminId)
+    }
+    setFilterValues({ ...filterValues, administratorIds: _adminIds })
+  }
+
+  /**
    * Reset filter values
   */
   const handleResetFilterValues = () => {
@@ -306,6 +320,7 @@ export const OrdersFilter = (props) => {
       customerEmail: null,
       customerCellphone: null,
       customerLastname: null,
+      administratorIds: [],
       coupon: null,
       offerId: null
     }
@@ -357,6 +372,7 @@ export const OrdersFilter = (props) => {
           handleChangeExternalId={handleChangeExternalId}
           handleChangeChildFilterValue={handleChangeChildFilterValue}
           handleChangeGroupUnassigned={handleChangeGroupUnassigned}
+          handleChangeAdmin={handleChangeAdmin}
           handleChangeOfferId={handleChangeOfferId}
         />
       )}
