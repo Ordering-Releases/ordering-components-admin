@@ -1,6 +1,12 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import { useSession } from '../../contexts/SessionContext'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 export const OrdersFilter = (props) => {
   const {
@@ -10,6 +16,8 @@ export const OrdersFilter = (props) => {
     setFilterValues,
     handleFilterValues
   } = props
+
+  const [{ user }] = useSession()
 
   /**
    * Changer order Id
@@ -100,15 +108,29 @@ export const OrdersFilter = (props) => {
         setFilterValues({ ...filterValues, dateType: 'default', deliveryFromDatetime: null, deliveryEndDatetime: null })
         break
       case 'today': {
-        const today = now.format('YYYY-MM-DD')
-        const todayDatetime = dayjs(today).format('YYYY-MM-DD HH:mm:ss')
+        let todayDatetime
+        if (user?.timezone && user?.timezone !== 'UTC') {
+          const nowInUserTimezone = now.tz(user?.timezone).startOf('day')
+          todayDatetime = nowInUserTimezone.utc().format('YYYY-MM-DD HH:mm:ss')
+        } else {
+          const today = now.format('YYYY-MM-DD')
+          todayDatetime = dayjs(today).format('YYYY-MM-DD HH:mm:ss')
+        }
         setFilterValues({ ...filterValues, dateType: 'today', deliveryFromDatetime: todayDatetime, deliveryEndDatetime: null })
         break
       }
       case 'yesterday': {
-        const yesterday = now.subtract('1', 'day').format('YYYY-MM-DD')
-        const yesterFrom = dayjs(yesterday).format('YYYY-MM-DD 00:00:00')
-        const yesterEnd = dayjs(yesterday).format('YYYY-MM-DD 23:59:59')
+        let yesterFrom
+        let yesterEnd
+        if (user?.timezone && user?.timezone !== 'UTC') {
+          const yesterdayInUserTimezone = now.tz(user?.timezone).subtract(1, 'day').startOf('day')
+          yesterFrom = yesterdayInUserTimezone.utc().format('YYYY-MM-DD HH:mm:ss')
+          yesterEnd = yesterdayInUserTimezone.endOf('day').utc().format('YYYY-MM-DD HH:mm:ss')
+        } else {
+          const yesterday = now.subtract(1, 'day')
+          yesterFrom = dayjs(yesterday).format('YYYY-MM-DD 00:00:00')
+          yesterEnd = dayjs(yesterday).endOf('day').format('YYYY-MM-DD 23:59:59')
+        }
         setFilterValues({ ...filterValues, dateType: 'yesterday', deliveryFromDatetime: yesterFrom, deliveryEndDatetime: yesterEnd })
         break
       }
