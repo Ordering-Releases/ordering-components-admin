@@ -243,6 +243,12 @@ Object.defineProperty(exports, "BusinessList", {
     return _BusinessList.BusinessList;
   }
 });
+Object.defineProperty(exports, "BusinessLogs", {
+  enumerable: true,
+  get: function get() {
+    return _BusinessLogs.BusinessLogs;
+  }
+});
 Object.defineProperty(exports, "BusinessManagerBusinesses", {
   enumerable: true,
   get: function get() {
@@ -1849,6 +1855,7 @@ var _BusinessGallery = require("./components/BusinessGallery");
 var _BusinessGprsPrinters = require("./components/BusinessGprsPrinters");
 var _BusinessInformation = require("./components/BusinessInformation");
 var _BusinessList = require("./components/BusinessList");
+var _BusinessLogs = require("./components/BusinessLogs");
 var _BusinessManagerBusinesses = require("./components/BusinessManagerBusinesses");
 var _BusinessMenu = require("./components/BusinessMenu");
 var _BusinessProductsListing = require("./components/BusinessProductsListing");
