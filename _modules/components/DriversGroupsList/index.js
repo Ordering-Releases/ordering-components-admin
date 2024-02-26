@@ -38,7 +38,8 @@ var DriversGroupsList = function DriversGroupsList(props) {
   var UIComponent = props.UIComponent,
     isDriversMangersRequired = props.isDriversMangersRequired,
     isHeaderComponent = props.isHeaderComponent,
-    paginationSettings = props.paginationSettings;
+    paginationSettings = props.paginationSettings,
+    propsToFetch = props.propsToFetch;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -101,41 +102,45 @@ var DriversGroupsList = function DriversGroupsList(props) {
     _useState12 = _slicedToArray(_useState11, 2),
     driversCompanyList = _useState12[0],
     setDriversCompanyList = _useState12[1];
-  var _useState13 = (0, _react.useState)(false),
+  var _useState13 = (0, _react.useState)(''),
     _useState14 = _slicedToArray(_useState13, 2),
-    startSeveralDeleteStart = _useState14[0],
-    setStartSeveralDeleteStart = _useState14[1];
-  var _useState15 = (0, _react.useState)({
+    searchValue = _useState14[0],
+    setSearchValue = _useState14[1];
+  var _useState15 = (0, _react.useState)(false),
+    _useState16 = _slicedToArray(_useState15, 2),
+    startSeveralDeleteStart = _useState16[0],
+    setStartSeveralDeleteStart = _useState16[1];
+  var _useState17 = (0, _react.useState)({
       loading: false,
       error: null
     }),
-    _useState16 = _slicedToArray(_useState15, 2),
-    actionState = _useState16[0],
-    setActionState = _useState16[1];
-  var _useState17 = (0, _react.useState)([]),
     _useState18 = _slicedToArray(_useState17, 2),
-    selectedGroupList = _useState18[0],
-    setSelectedGroupList = _useState18[1];
-  var _useState19 = (0, _react.useState)(true),
+    actionState = _useState18[0],
+    setActionState = _useState18[1];
+  var _useState19 = (0, _react.useState)([]),
     _useState20 = _slicedToArray(_useState19, 2),
-    actionDisabled = _useState20[0],
-    setActionDisabled = _useState20[1];
-  var _useState21 = (0, _react.useState)({
+    selectedGroupList = _useState20[0],
+    setSelectedGroupList = _useState20[1];
+  var _useState21 = (0, _react.useState)(true),
+    _useState22 = _slicedToArray(_useState21, 2),
+    actionDisabled = _useState22[0],
+    setActionDisabled = _useState22[1];
+  var _useState23 = (0, _react.useState)({
       currentPage: paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1 ? paginationSettings.initialPage : 1,
       pageSize: (_paginationSettings$p = paginationSettings.pageSize) !== null && _paginationSettings$p !== void 0 ? _paginationSettings$p : 10,
       totalItems: null,
       totalPages: null
     }),
-    _useState22 = _slicedToArray(_useState21, 2),
-    paginationProps = _useState22[0],
-    setPaginationProps = _useState22[1];
+    _useState24 = _slicedToArray(_useState23, 2),
+    paginationProps = _useState24[0],
+    setPaginationProps = _useState24[1];
 
   /**
   * Method to get the driver groups from API
   */
   var getHeaderDriversGroups = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(page, pageSize) {
-      var requestOptions, response, content, result, pagination, error, nextPageItems, remainingItems;
+      var requestOptions, where, conditions, searchConditions, response, content, result, pagination, error, nextPageItems, remainingItems;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -150,13 +155,42 @@ var DriversGroupsList = function DriversGroupsList(props) {
                 Authorization: "Bearer ".concat(token)
               }
             };
-            _context.next = 5;
-            return fetch("".concat(ordering.root, "/drivergroups?page=").concat(page, "&page_size=").concat(pageSize), requestOptions);
-          case 5:
+            where = [];
+            conditions = [];
+            if (searchValue) {
+              searchConditions = [];
+              searchConditions.push({
+                attribute: 'name',
+                value: {
+                  condition: 'ilike',
+                  value: encodeURIComponent("%".concat(searchValue, "%"))
+                }
+              });
+              searchConditions.push({
+                attribute: 'lastname',
+                value: {
+                  condition: 'ilike',
+                  value: encodeURI("%".concat(searchValue, "%"))
+                }
+              });
+              conditions.push({
+                conector: 'OR',
+                conditions: searchConditions
+              });
+            }
+            if (conditions.length) {
+              where = {
+                conditions: conditions,
+                conector: 'AND'
+              };
+            }
+            _context.next = 9;
+            return fetch("".concat(ordering.root, "/drivergroups?page=").concat(page, "&page_size=").concat(pageSize, "&params=").concat(propsToFetch, "&where=").concat(JSON.stringify(where)), requestOptions);
+          case 9:
             response = _context.sent;
-            _context.next = 8;
+            _context.next = 12;
             return response.json();
-          case 8:
+          case 12:
             content = _context.sent;
             result = content.result, pagination = content.pagination, error = content.error;
             if (!error) {
@@ -169,35 +203,35 @@ var DriversGroupsList = function DriversGroupsList(props) {
               setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
                 loading: false
               }));
-              nextPageItems = 0;
-              if (pagination.current_page !== pagination.total_pages) {
-                remainingItems = pagination.total - driversList.users.length;
-                nextPageItems = remainingItems < pagination.page_size ? remainingItems : pagination.page_size;
-              }
-              setPaginationProps(_objectSpread(_objectSpread({}, paginationProps), {}, {
-                currentPage: pagination.current_page,
-                pageSize: pagination.page_size === 0 ? paginationProps.pageSize : pagination.page_size,
-                totalPages: pagination.total_pages,
-                totalItems: pagination.total,
-                from: pagination.from,
-                to: pagination.to,
-                nextPageItems: nextPageItems
-              }));
             }
-            _context.next = 16;
+            nextPageItems = 0;
+            if (pagination.current_page !== pagination.total_pages) {
+              remainingItems = pagination.total - pagination.page_size * pagination.current_page;
+              nextPageItems = remainingItems < pagination.page_size ? remainingItems : pagination.page_size;
+            }
+            setPaginationProps(_objectSpread(_objectSpread({}, paginationProps), {}, {
+              currentPage: pagination.current_page,
+              pageSize: pagination.page_size === 0 ? paginationProps.pageSize : pagination.page_size,
+              totalPages: pagination.total_pages,
+              totalItems: pagination.total,
+              from: pagination.from,
+              to: pagination.to,
+              nextPageItems: nextPageItems
+            }));
+            _context.next = 23;
             break;
-          case 13:
-            _context.prev = 13;
+          case 20:
+            _context.prev = 20;
             _context.t0 = _context["catch"](0);
             setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
               loading: false,
               error: [_context.t0.message]
             }));
-          case 16:
+          case 23:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 13]]);
+      }, _callee, null, [[0, 20]]);
     }));
     return function getHeaderDriversGroups(_x2, _x3) {
       return _ref.apply(this, arguments);
@@ -695,7 +729,7 @@ var DriversGroupsList = function DriversGroupsList(props) {
     handleDeleteDriversGroup(selectedGroupList[0]);
   }, [selectedGroupList, startSeveralDeleteStart]);
   (0, _react.useEffect)(function () {
-    getHeaderDriversGroups(paginationProps.currentPage, paginationProps.pageSize);
+    getHeaderDriversGroups(paginationSettings.initialPage, paginationProps.pageSize);
     if (isHeaderComponent) return;
     getDriversGroups();
     if (isDriversMangersRequired) {
@@ -705,7 +739,7 @@ var DriversGroupsList = function DriversGroupsList(props) {
     getBusinesses();
     getPaymethods();
     getDriversCompanies();
-  }, []);
+  }, [searchValue]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     driversGroupsState: driversGroupsState,
     setDriversGroupsState: setDriversGroupsState,
@@ -725,7 +759,9 @@ var DriversGroupsList = function DriversGroupsList(props) {
     handleAllSelectGroup: handleAllSelectGroup,
     actionDisabled: actionDisabled,
     getHeaderDriversGroups: getHeaderDriversGroups,
-    pagination: paginationProps
+    pagination: paginationProps,
+    onSearch: setSearchValue,
+    searchValue: searchValue
   })));
 };
 exports.DriversGroupsList = DriversGroupsList;
@@ -759,5 +795,6 @@ DriversGroupsList.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: []
+  afterElements: [],
+  propsToFetch: []
 };

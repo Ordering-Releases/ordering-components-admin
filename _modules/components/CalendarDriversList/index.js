@@ -36,7 +36,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var CalendarDriversList = function CalendarDriversList(props) {
   var _selectedBlock$block, _selectedBlock$block2, _paginationSettings$p, _selectedBlock$block14;
   var UIComponent = props.UIComponent,
-    paginationSettings = props.paginationSettings;
+    paginationSettings = props.paginationSettings,
+    propsToFetch = props.propsToFetch;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -91,31 +92,35 @@ var CalendarDriversList = function CalendarDriversList(props) {
     _useState18 = _slicedToArray(_useState17, 2),
     filterValues = _useState18[0],
     setFilterValues = _useState18[1];
-  var _useState19 = (0, _react.useState)(false),
+  var _useState19 = (0, _react.useState)(null),
     _useState20 = _slicedToArray(_useState19, 2),
-    openModal = _useState20[0],
-    setOpenModal = _useState20[1];
-  var _useState21 = (0, _react.useState)([(0, _moment.default)().startOf('day').utc().format('YYYY-MM-DD HH:mm:ss'), (0, _moment.default)().endOf('day').utc().format('YYYY-MM-DD HH:mm:ss')]),
+    filtOption = _useState20[0],
+    setFiltOption = _useState20[1];
+  var _useState21 = (0, _react.useState)(false),
     _useState22 = _slicedToArray(_useState21, 2),
-    date = _useState22[0],
-    setDate = _useState22[1];
-  var _useState23 = (0, _react.useState)({
+    openModal = _useState22[0],
+    setOpenModal = _useState22[1];
+  var _useState23 = (0, _react.useState)([(0, _moment.default)().startOf('day').utc().format('YYYY-MM-DD HH:mm:ss'), (0, _moment.default)().endOf('day').utc().format('YYYY-MM-DD HH:mm:ss')]),
+    _useState24 = _slicedToArray(_useState23, 2),
+    date = _useState24[0],
+    setDate = _useState24[1];
+  var _useState25 = (0, _react.useState)({
       user: null,
       block: null
     }),
-    _useState24 = _slicedToArray(_useState23, 2),
-    selectedBlock = _useState24[0],
-    setSelectedBlock = _useState24[1];
-  var _useState25 = (0, _react.useState)(selectedBlock !== null && selectedBlock !== void 0 && selectedBlock.block ? selectedBlock === null || selectedBlock === void 0 ? void 0 : (_selectedBlock$block = selectedBlock.block) === null || _selectedBlock$block === void 0 ? void 0 : _selectedBlock$block.start : new Date()),
     _useState26 = _slicedToArray(_useState25, 2),
-    selectedDate = _useState26[0],
-    setSelectedDate = _useState26[1];
-  var actualDate = (0, _moment.default)(selectedDate).format('YYYY-MM-DD');
-  var _useState27 = (0, _react.useState)(selectedBlock !== null && selectedBlock !== void 0 && selectedBlock.block ? selectedBlock === null || selectedBlock === void 0 ? void 0 : (_selectedBlock$block2 = selectedBlock.block) === null || _selectedBlock$block2 === void 0 ? void 0 : _selectedBlock$block2.until : new Date()),
+    selectedBlock = _useState26[0],
+    setSelectedBlock = _useState26[1];
+  var _useState27 = (0, _react.useState)(selectedBlock !== null && selectedBlock !== void 0 && selectedBlock.block ? selectedBlock === null || selectedBlock === void 0 ? void 0 : (_selectedBlock$block = selectedBlock.block) === null || _selectedBlock$block === void 0 ? void 0 : _selectedBlock$block.start : new Date()),
     _useState28 = _slicedToArray(_useState27, 2),
-    selectedUntilDate = _useState28[0],
-    setSelectedUntilDate = _useState28[1];
-  var _useState29 = (0, _react.useState)({
+    selectedDate = _useState28[0],
+    setSelectedDate = _useState28[1];
+  var actualDate = (0, _moment.default)(selectedDate).format('YYYY-MM-DD');
+  var _useState29 = (0, _react.useState)(selectedBlock !== null && selectedBlock !== void 0 && selectedBlock.block ? selectedBlock === null || selectedBlock === void 0 ? void 0 : (_selectedBlock$block2 = selectedBlock.block) === null || _selectedBlock$block2 === void 0 ? void 0 : _selectedBlock$block2.until : new Date()),
+    _useState30 = _slicedToArray(_useState29, 2),
+    selectedUntilDate = _useState30[0],
+    setSelectedUntilDate = _useState30[1];
+  var _useState31 = (0, _react.useState)({
       state: {
         start: "".concat(actualDate, " 00:00:00"),
         end: "".concat(actualDate, " 23:59:00")
@@ -123,25 +128,26 @@ var CalendarDriversList = function CalendarDriversList(props) {
       error: null,
       loading: false
     }),
-    _useState30 = _slicedToArray(_useState29, 2),
-    scheduleState = _useState30[0],
-    setScheduleState = _useState30[1];
-  var _useState31 = (0, _react.useState)({
+    _useState32 = _slicedToArray(_useState31, 2),
+    scheduleState = _useState32[0],
+    setScheduleState = _useState32[1];
+  var _useState33 = (0, _react.useState)({
       freq: null,
       byweekday: []
     }),
-    _useState32 = _slicedToArray(_useState31, 2),
-    ruleState = _useState32[0],
-    setRuleState = _useState32[1];
-  var _useState33 = (0, _react.useState)({
+    _useState34 = _slicedToArray(_useState33, 2),
+    ruleState = _useState34[0],
+    setRuleState = _useState34[1];
+  var _useState35 = (0, _react.useState)({
+      initialPage: 1,
       currentPage: paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1 ? paginationSettings.initialPage : 1,
       pageSize: (_paginationSettings$p = paginationSettings.pageSize) !== null && _paginationSettings$p !== void 0 ? _paginationSettings$p : 10,
       totalItems: null,
       totalPages: null
     }),
-    _useState34 = _slicedToArray(_useState33, 2),
-    paginationProps = _useState34[0],
-    setPaginationProps = _useState34[1];
+    _useState36 = _slicedToArray(_useState35, 2),
+    paginationProps = _useState36[0],
+    setPaginationProps = _useState36[1];
   var timeErrorList = [t('END_TIME_LATER', 'Choose an end time later than the start time.'), t('START_TIME_EARLY', 'Choose a start time earlier than the end time.'), t('BREAK_END_TIME_EARLY', 'Choose a break end time later than the start/break start time and earlier than end time.'), t('BREAK_START_TIME_LATER', 'Choose a break start time later than the start times and earlier than end/break end times.'), t('DATE_RANGE_ERROR', 'The difference between dates should not be greater than 31'), t('UNTIL_TIME_LATER', 'Choose an until time later than the start time with a difference of 2 months or less.')];
 
   /**
@@ -154,14 +160,14 @@ var CalendarDriversList = function CalendarDriversList(props) {
   /**
    * Array to save drivers
    */
-  var _useState35 = (0, _react.useState)({
+  var _useState37 = (0, _react.useState)({
       users: [],
       loading: false,
       error: null
     }),
-    _useState36 = _slicedToArray(_useState35, 2),
-    driversList = _useState36[0],
-    setDriversList = _useState36[1];
+    _useState38 = _slicedToArray(_useState37, 2),
+    driversList = _useState38[0],
+    setDriversList = _useState38[1];
   var handleSetInitialStates = function handleSetInitialStates() {
     setSelectedBlock({
       user: null,
@@ -199,7 +205,7 @@ var CalendarDriversList = function CalendarDriversList(props) {
    */
   var getDrivers = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(page, pageSize, selectedGroupId) {
-      var _filterValues$driverI, where, requestOptions, response, content, result, pagination, error, formattedUtcToLocalUsers, nextPageItems, remainingItems;
+      var _filterValues$driverI, conditions, where, requestOptions, endpoint, response, content, result, pagination, error, formattedUtcToLocalUsers, nextPageItems, remainingItems;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -207,13 +213,20 @@ var CalendarDriversList = function CalendarDriversList(props) {
             setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
               loading: true
             }));
-            where = (filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$driverI = filterValues.driverIds) === null || _filterValues$driverI === void 0 ? void 0 : _filterValues$driverI.length) > 0 ? "&where=".concat(JSON.stringify({
-              conditions: [{
+            conditions = [{
+              attribute: 'level',
+              value: '4'
+            }];
+            if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$driverI = filterValues.driverIds) === null || _filterValues$driverI === void 0 ? void 0 : _filterValues$driverI.length) > 0) {
+              conditions.push({
                 attribute: 'id',
                 value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.driverIds
-              }],
+              });
+            }
+            where = "&where=".concat(JSON.stringify({
+              conditions: conditions,
               conector: 'AND'
-            })) : '';
+            }));
             requestOptions = {
               method: 'GET',
               headers: {
@@ -221,13 +234,14 @@ var CalendarDriversList = function CalendarDriversList(props) {
                 Authorization: "Bearer ".concat(session.token)
               }
             };
-            _context.next = 6;
-            return fetch("".concat(ordering.root, "/drivergroups/").concat(selectedGroupId, "/drivers?delivery_block_from=").concat(date[0], "&delivery_block_to=").concat(date[1], "&page=").concat(page, "&page_size=").concat(pageSize).concat(where), requestOptions);
-          case 6:
-            response = _context.sent;
+            endpoint = selectedGroupId ? "".concat(ordering.root, "/drivergroups/").concat(selectedGroupId, "/drivers") : "".concat(ordering.root, "/users");
             _context.next = 9;
-            return response.json();
+            return fetch("".concat(endpoint, "?delivery_block_from=").concat(date[0], "&delivery_block_to=").concat(date[1], "&page=").concat(page, "&page_size=").concat(pageSize, "&params=").concat(propsToFetch).concat(where), requestOptions);
           case 9:
+            response = _context.sent;
+            _context.next = 12;
+            return response.json();
+          case 12:
             content = _context.sent;
             result = content.result, pagination = content.pagination, error = content.error;
             if (error) {
@@ -267,10 +281,10 @@ var CalendarDriversList = function CalendarDriversList(props) {
                 nextPageItems: nextPageItems
               }));
             }
-            _context.next = 17;
+            _context.next = 20;
             break;
-          case 14:
-            _context.prev = 14;
+          case 17:
+            _context.prev = 17;
             _context.t0 = _context["catch"](0);
             if (_context.t0.constructor.name !== 'Cancel') {
               setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
@@ -278,11 +292,11 @@ var CalendarDriversList = function CalendarDriversList(props) {
                 error: [_context.t0.message]
               }));
             }
-          case 17:
+          case 20:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 14]]);
+      }, _callee, null, [[0, 17]]);
     }));
     return function getDrivers(_x2, _x3, _x4) {
       return _ref.apply(this, arguments);
@@ -628,10 +642,19 @@ var CalendarDriversList = function CalendarDriversList(props) {
       driverIds: []
     });
   };
+  var handleClearDriversList = function handleClearDriversList() {
+    setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
+      users: []
+    }));
+  };
   (0, _react.useEffect)(function () {
-    if (!(selectedGroup !== null && selectedGroup !== void 0 && selectedGroup.id)) return;
-    getDrivers(paginationProps.currentPage, paginationProps.pageSize, selectedGroup === null || selectedGroup === void 0 ? void 0 : selectedGroup.id);
-  }, [selectedGroup === null || selectedGroup === void 0 ? void 0 : selectedGroup.id, date, filterValues === null || filterValues === void 0 ? void 0 : filterValues.driverIds]);
+    if (selectedGroup !== null && selectedGroup !== void 0 && selectedGroup.id && filtOption === 'driver_groups') {
+      getDrivers(paginationProps.initialPage, paginationProps.pageSize, selectedGroup === null || selectedGroup === void 0 ? void 0 : selectedGroup.id);
+    }
+    if (filtOption === 'drivers') {
+      getDrivers(paginationProps.initialPage, paginationProps.pageSize);
+    }
+  }, [selectedGroup === null || selectedGroup === void 0 ? void 0 : selectedGroup.id, date, filterValues === null || filterValues === void 0 ? void 0 : filterValues.driverIds, filtOption]);
   (0, _react.useEffect)(function () {
     var _scheduleState$state$3, _scheduleState$state19, _selectedBlock$block9, _scheduleState$state$4, _scheduleState$state20, _selectedBlock$block10, _scheduleState$state$5, _scheduleState$state21, _selectedBlock$block11, _scheduleState$state$6, _scheduleState$state22, _selectedBlock$block12;
     var _startHour = (0, _moment.default)((_scheduleState$state$3 = scheduleState === null || scheduleState === void 0 ? void 0 : (_scheduleState$state19 = scheduleState.state) === null || _scheduleState$state19 === void 0 ? void 0 : _scheduleState$state19.start) !== null && _scheduleState$state$3 !== void 0 ? _scheduleState$state$3 : selectedBlock === null || selectedBlock === void 0 ? void 0 : (_selectedBlock$block9 = selectedBlock.block) === null || _selectedBlock$block9 === void 0 ? void 0 : _selectedBlock$block9.start).format('HH:mm');
@@ -710,7 +733,10 @@ var CalendarDriversList = function CalendarDriversList(props) {
     handleSetInitialStates: handleSetInitialStates,
     filterValues: filterValues,
     handleChangeDriver: handleChangeDriver,
-    handleClearFilters: handleClearFilters
+    handleClearFilters: handleClearFilters,
+    handleClearDriversList: handleClearDriversList,
+    setFiltOption: setFiltOption,
+    filtOption: filtOption
   })));
 };
 exports.CalendarDriversList = CalendarDriversList;
@@ -748,5 +774,6 @@ CalendarDriversList.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: []
+  afterElements: [],
+  propsToFetch: []
 };

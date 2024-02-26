@@ -35,6 +35,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var DriversList = function DriversList(props) {
+  var _paginationSettings$p, _driversList$drivers3;
   var drivers = props.drivers,
     UIComponent = props.UIComponent,
     propsToFetch = props.propsToFetch,
@@ -43,12 +44,13 @@ var DriversList = function DriversList(props) {
     isOrderDrivers = props.isOrderDrivers,
     isSearchFilterValue = props.isSearchFilterValue,
     orderId = props.orderId,
-    setCommentInfostate = props.setCommentInfostate,
     disableSocketRoomDriver = props.disableSocketRoomDriver,
     useBatchSockets = props.useBatchSockets,
     filterValues = props.filterValues,
     searchFilterValue = props.searchFilterValue,
-    driverGroupList = props.driverGroupList;
+    driverGroupList = props.driverGroupList,
+    useDriversByProps = props.useDriversByProps,
+    paginationSettings = props.paginationSettings;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -85,6 +87,16 @@ var DriversList = function DriversList(props) {
     _useState8 = _slicedToArray(_useState7, 2),
     assignedOrders = _useState8[0],
     setAssignedOrders = _useState8[1];
+  var _useState9 = (0, _react.useState)({
+      initialPage: 1,
+      currentPage: (paginationSettings === null || paginationSettings === void 0 ? void 0 : paginationSettings.controlType) === 'pages' && paginationSettings !== null && paginationSettings !== void 0 && paginationSettings.initialPage && (paginationSettings === null || paginationSettings === void 0 ? void 0 : paginationSettings.initialPage) >= 1 ? paginationSettings === null || paginationSettings === void 0 ? void 0 : paginationSettings.initialPage : 1,
+      pageSize: (_paginationSettings$p = paginationSettings === null || paginationSettings === void 0 ? void 0 : paginationSettings.pageSize) !== null && _paginationSettings$p !== void 0 ? _paginationSettings$p : 10,
+      totalItems: null,
+      totalPages: null
+    }),
+    _useState10 = _slicedToArray(_useState9, 2),
+    paginationDrivers = _useState10[0],
+    setPaginationDrivers = _useState10[1];
   var controller = new AbortController();
   var signal = controller.signal;
   var activeOrderStatuses = [0, 13, 7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23];
@@ -100,63 +112,63 @@ var DriversList = function DriversList(props) {
   /**
    * Array to save drivers
    */
-  var _useState9 = (0, _react.useState)({
-      drivers: [],
-      loading: true,
+  var _useState11 = (0, _react.useState)({
+      drivers: useDriversByProps ? drivers : [],
+      loading: !useDriversByProps,
       error: null
     }),
-    _useState10 = _slicedToArray(_useState9, 2),
-    driversList = _useState10[0],
-    setDriversList = _useState10[1];
+    _useState12 = _slicedToArray(_useState11, 2),
+    driversList = _useState12[0],
+    setDriversList = _useState12[1];
   /**
    * Array to save companys
    */
-  var _useState11 = (0, _react.useState)({
+  var _useState13 = (0, _react.useState)({
       companys: [],
       loading: true,
       error: null
     }),
-    _useState12 = _slicedToArray(_useState11, 2),
-    companysList = _useState12[0],
-    setCompanysList = _useState12[1];
+    _useState14 = _slicedToArray(_useState13, 2),
+    companysList = _useState14[0],
+    setCompanysList = _useState14[1];
   /**
    * Array to save online drivers
    */
-  var _useState13 = (0, _react.useState)([]),
-    _useState14 = _slicedToArray(_useState13, 2),
-    onlineDrivers = _useState14[0],
-    setOnlineDrivers = _useState14[1];
+  var _useState15 = (0, _react.useState)([]),
+    _useState16 = _slicedToArray(_useState15, 2),
+    onlineDrivers = _useState16[0],
+    setOnlineDrivers = _useState16[1];
   /**
    * Array to save offline drivers
    */
-  var _useState15 = (0, _react.useState)([]),
-    _useState16 = _slicedToArray(_useState15, 2),
-    offlineDrivers = _useState16[0],
-    setOfflineDrivers = _useState16[1];
+  var _useState17 = (0, _react.useState)([]),
+    _useState18 = _slicedToArray(_useState17, 2),
+    offlineDrivers = _useState18[0],
+    setOfflineDrivers = _useState18[1];
   /**
    * state for drivers online / offline filter
    */
-  var _useState17 = (0, _react.useState)(true),
-    _useState18 = _slicedToArray(_useState17, 2),
-    driversIsOnline = _useState18[0],
-    setDriversIsOnline = _useState18[1];
+  var _useState19 = (0, _react.useState)(true),
+    _useState20 = _slicedToArray(_useState19, 2),
+    driversIsOnline = _useState20[0],
+    setDriversIsOnline = _useState20[1];
   /**
    * state for drivers busy / not busy sub filter
    */
-  var _useState19 = (0, _react.useState)({
+  var _useState21 = (0, _react.useState)({
       busy: true,
       notBusy: true
     }),
-    _useState20 = _slicedToArray(_useState19, 2),
-    driversSubfilter = _useState20[0],
-    setDriversSubfilter = _useState20[1];
+    _useState22 = _slicedToArray(_useState21, 2),
+    driversSubfilter = _useState22[0],
+    setDriversSubfilter = _useState22[1];
   /**
    * search value
    */
-  var _useState21 = (0, _react.useState)(null),
-    _useState22 = _slicedToArray(_useState21, 2),
-    searchValue = _useState22[0],
-    setSearchValue = _useState22[1];
+  var _useState23 = (0, _react.useState)(null),
+    _useState24 = _slicedToArray(_useState23, 2),
+    searchValue = _useState24[0],
+    setSearchValue = _useState24[1];
 
   /**
    * Change text to search
@@ -368,14 +380,36 @@ var DriversList = function DriversList(props) {
    */
   var getDrivers = /*#__PURE__*/function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var source, where, conditions, searchConditions, _yield$ordering$setAc2, result;
+      var page,
+        pageSize,
+        paginationParams,
+        parameters,
+        source,
+        where,
+        conditions,
+        searchConditions,
+        _yield$ordering$setAc2,
+        _yield$ordering$setAc3,
+        result,
+        pagination,
+        nextPageItems,
+        _driversList$drivers,
+        remainingItems,
+        _args3 = arguments;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
-            _context3.prev = 0;
+            page = _args3.length > 0 && _args3[0] !== undefined ? _args3[0] : 1;
+            pageSize = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : 10;
+            _context3.prev = 2;
             setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
               loading: true
             }));
+            paginationParams = {
+              page: page,
+              page_size: pageSize || paginationDrivers.pageSize
+            };
+            parameters = paginationSettings ? paginationParams : {};
             source = {};
             requestsState.drivers = source;
             where = null;
@@ -422,32 +456,48 @@ var DriversList = function DriversList(props) {
                 conector: 'AND'
               };
             }
-            _context3.next = 11;
-            return ordering.setAccessToken(session.token).users().select(propsToFetch).where(where).get({
+            _context3.next = 15;
+            return ordering.setAccessToken(session.token).users().parameters(parameters).select(propsToFetch).where(where).get({
               cancelToken: source
             });
-          case 11:
+          case 15:
             _yield$ordering$setAc2 = _context3.sent;
-            result = _yield$ordering$setAc2.content.result;
+            _yield$ordering$setAc3 = _yield$ordering$setAc2.content;
+            result = _yield$ordering$setAc3.result;
+            pagination = _yield$ordering$setAc3.pagination;
             setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
               loading: false,
               drivers: result
             }));
+            nextPageItems = 0;
+            if (pagination.current_page !== pagination.total_pages) {
+              remainingItems = pagination.total - (driversList === null || driversList === void 0 ? void 0 : (_driversList$drivers = driversList.drivers) === null || _driversList$drivers === void 0 ? void 0 : _driversList$drivers.length);
+              nextPageItems = remainingItems < pagination.page_size ? remainingItems : pagination.page_size;
+            }
+            setPaginationDrivers(_objectSpread(_objectSpread({}, paginationDrivers), {}, {
+              currentPage: pagination.current_page,
+              pageSize: pagination.page_size === 0 ? paginationDrivers.pageSize : pagination.page_size,
+              totalPages: pagination.total_pages,
+              total: pagination.total,
+              from: pagination.from,
+              to: pagination.to,
+              nextPageItems: nextPageItems
+            }));
             getOnlineOfflineDrivers(result);
-            _context3.next = 20;
+            _context3.next = 29;
             break;
-          case 17:
-            _context3.prev = 17;
-            _context3.t0 = _context3["catch"](0);
+          case 26:
+            _context3.prev = 26;
+            _context3.t0 = _context3["catch"](2);
             setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
               loading: false,
               error: _context3.t0.message
             }));
-          case 20:
+          case 29:
           case "end":
             return _context3.stop();
         }
-      }, _callee3, null, [[0, 17]]);
+      }, _callee3, null, [[2, 26]]);
     }));
     return function getDrivers() {
       return _ref4.apply(this, arguments);
@@ -628,6 +678,22 @@ var DriversList = function DriversList(props) {
       return _ref7.apply(this, arguments);
     };
   }();
+  var handleChangePage = function handleChangePage(page) {
+    !useDriversByProps && getDrivers(page, paginationDrivers === null || paginationDrivers === void 0 ? void 0 : paginationDrivers.pageSize);
+    setPaginationDrivers(_objectSpread(_objectSpread({}, paginationDrivers), {}, {
+      currentPage: page
+    }));
+  };
+  var handleChangePageSize = function handleChangePageSize(pageSize) {
+    var _driversList$drivers2;
+    var expectedPage = Math.ceil((((paginationDrivers === null || paginationDrivers === void 0 ? void 0 : paginationDrivers.currentPage) - 1) * (paginationDrivers === null || paginationDrivers === void 0 ? void 0 : paginationDrivers.pageSize) + 1) / pageSize);
+    !useDriversByProps && getDrivers(expectedPage, pageSize);
+    setPaginationDrivers(_objectSpread(_objectSpread({}, paginationDrivers), {}, {
+      currentPage: expectedPage,
+      pageSize: pageSize,
+      totalPages: Math.ceil((driversList === null || driversList === void 0 ? void 0 : (_driversList$drivers2 = driversList.drivers) === null || _driversList$drivers2 === void 0 ? void 0 : _driversList$drivers2.length) / pageSize)
+    }));
+  };
   (0, _react.useEffect)(function () {
     if (selectedDriver !== null && selectedDriver !== void 0 && selectedDriver.id) {
       loadAssignedOrders();
@@ -644,9 +710,11 @@ var DriversList = function DriversList(props) {
    * listen for busy/not busy filter
    */
   (0, _react.useEffect)(function () {
+    if (useDriversByProps) return;
     getOnlineOfflineDrivers(driversList.drivers);
-  }, [driversSubfilter, filterValues === null || filterValues === void 0 ? void 0 : filterValues.driverIds, searchFilterValue]);
+  }, [driversSubfilter, filterValues === null || filterValues === void 0 ? void 0 : filterValues.driverIds, searchFilterValue, useDriversByProps]);
   (0, _react.useEffect)(function () {
+    if (useDriversByProps) return;
     if (drivers) {
       setDriversList(_objectSpread(_objectSpread({}, driversList), {}, {
         drivers: drivers,
@@ -657,7 +725,7 @@ var DriversList = function DriversList(props) {
       if (isOrderDrivers) {
         getOrderDrivers();
       } else {
-        getDrivers();
+        getDrivers(paginationDrivers === null || paginationDrivers === void 0 ? void 0 : paginationDrivers.initialPage, paginationDrivers === null || paginationDrivers === void 0 ? void 0 : paginationDrivers.pageSize);
       }
     }
     return function () {
@@ -668,8 +736,15 @@ var DriversList = function DriversList(props) {
         controller === null || controller === void 0 ? void 0 : controller.abort();
       }
     };
-  }, [drivers, searchValue, orderId]);
-
+  }, [JSON.stringify(drivers), orderId, useDriversByProps, searchValue]);
+  (0, _react.useEffect)(function () {
+    if (!useDriversByProps) return;
+    setDriversList({
+      drivers: drivers,
+      loading: false,
+      error: null
+    });
+  }, [driversSubfilter, filterValues === null || filterValues === void 0 ? void 0 : filterValues.driverIds, searchFilterValue, useDriversByProps]);
   /**
    * Listening driver change
    */
@@ -832,8 +907,22 @@ var DriversList = function DriversList(props) {
     };
   }, [socket === null || socket === void 0 ? void 0 : socket.socket, session === null || session === void 0 ? void 0 : session.auth, session === null || session === void 0 ? void 0 : session.loading, disableSocketRoomDriver, useBatchSockets]);
   (0, _react.useEffect)(function () {
+    if (useDriversByProps) return;
     getOnlineOfflineDrivers(driversList.drivers);
-  }, [driversList.drivers]);
+  }, [driversList.drivers, useDriversByProps]);
+  (0, _react.useEffect)(function () {
+    if (!useDriversByProps) return;
+    var drivers = searchValue ? driversList.drivers.filter(function (driver) {
+      return (driver.name + driver.lastname).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase());
+    }) : driversList.drivers;
+    setPaginationDrivers({
+      initialPage: 1,
+      currentPage: 1,
+      pageSize: 10,
+      totalPages: Math.ceil((drivers === null || drivers === void 0 ? void 0 : drivers.length) / 10),
+      total: (drivers === null || drivers === void 0 ? void 0 : drivers.length) || 0
+    });
+  }, [driversList === null || driversList === void 0 ? void 0 : (_driversList$drivers3 = driversList.drivers) === null || _driversList$drivers3 === void 0 ? void 0 : _driversList$drivers3.length, searchValue, useDriversByProps]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     driversList: driversList,
     companysList: companysList,
@@ -844,6 +933,7 @@ var DriversList = function DriversList(props) {
     driversIsOnline: driversIsOnline,
     driversSubfilter: driversSubfilter,
     searchValue: searchValue,
+    setSearchValue: setSearchValue,
     handleAssignDriverCompany: handleAssignDriverCompany,
     handleChangeSearch: handleChangeSearch,
     handleChangeDriverIsOnline: handleChangeDriverIsOnline,
@@ -851,7 +941,10 @@ var DriversList = function DriversList(props) {
     handleAssignDriver: handleAssignDriver,
     selectedDriver: selectedDriver,
     setSelectedDriver: setSelectedDriver,
-    assignedOrders: assignedOrders
+    assignedOrders: assignedOrders,
+    pagination: paginationDrivers,
+    handleChangePage: handleChangePage,
+    handleChangePageSize: handleChangePageSize
   })));
 };
 exports.DriversList = DriversList;
