@@ -8,7 +8,8 @@ import { useSession } from '../../contexts/SessionContext'
 export const CalendarDriversList = (props) => {
   const {
     UIComponent,
-    paginationSettings
+    paginationSettings,
+    propsToFetch
   } = props
 
   const [ordering] = useApi()
@@ -24,7 +25,7 @@ export const CalendarDriversList = (props) => {
   const [filterValues, setFilterValues] = useState({
     driverIds: []
   })
-
+  const [filtOption, setFiltOption] = useState(null)
   const [openModal, setOpenModal] = useState(false)
   const [date, setDate] = useState([moment().startOf('day').utc().format('YYYY-MM-DD HH:mm:ss'), moment().endOf('day').utc().format('YYYY-MM-DD HH:mm:ss')])
   const [selectedBlock, setSelectedBlock] = useState({
@@ -45,6 +46,7 @@ export const CalendarDriversList = (props) => {
   const [ruleState, setRuleState] = useState({ freq: null, byweekday: [] })
 
   const [paginationProps, setPaginationProps] = useState({
+    initialPage: 1,
     currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage : 1,
     pageSize: paginationSettings.pageSize ?? 10,
     totalItems: null,
@@ -101,10 +103,15 @@ export const CalendarDriversList = (props) => {
   const getDrivers = async (page, pageSize, selectedGroupId) => {
     try {
       setDriversList({ ...driversList, loading: true })
-      const where = filterValues?.driverIds?.length > 0 ? `&where=${JSON.stringify({
-        conditions: [{ attribute: 'id', value: filterValues?.driverIds }],
+      const conditions = [{ attribute: 'level', value: '4' }]
+      if (filterValues?.driverIds?.length > 0) {
+        conditions.push({ attribute: 'id', value: filterValues?.driverIds })
+      }
+      const where = `&where=${JSON.stringify({
+        conditions: conditions,
         conector: 'AND'
-      })}` : ''
+      })}`
+
       const requestOptions = {
         method: 'GET',
         headers: {
@@ -112,7 +119,8 @@ export const CalendarDriversList = (props) => {
           Authorization: `Bearer ${session.token}`
         }
       }
-      const response = await fetch(`${ordering.root}/drivergroups/${selectedGroupId}/drivers?delivery_block_from=${date[0]}&delivery_block_to=${date[1]}&page=${page}&page_size=${pageSize}${where}`, requestOptions)
+      const endpoint = selectedGroupId ? `${ordering.root}/drivergroups/${selectedGroupId}/drivers` : `${ordering.root}/users`
+      const response = await fetch(`${endpoint}?delivery_block_from=${date[0]}&delivery_block_to=${date[1]}&page=${page}&page_size=${pageSize}&params=${propsToFetch}${where}`, requestOptions)
       const content = await response.json()
 
       const { result, pagination, error } = content
@@ -421,10 +429,21 @@ export const CalendarDriversList = (props) => {
     })
   }
 
+  const handleClearDriversList = () => {
+    setDriversList({
+      ...driversList,
+      users: []
+    })
+  }
+
   useEffect(() => {
-    if (!selectedGroup?.id) return
-    getDrivers(paginationProps.currentPage, paginationProps.pageSize, selectedGroup?.id)
-  }, [selectedGroup?.id, date, filterValues?.driverIds])
+    if (selectedGroup?.id && filtOption === 'driver_groups') {
+      getDrivers(paginationProps.initialPage, paginationProps.pageSize, selectedGroup?.id)
+    }
+    if (filtOption === 'drivers') {
+      getDrivers(paginationProps.initialPage, paginationProps.pageSize)
+    }
+  }, [selectedGroup?.id, date, filterValues?.driverIds, filtOption])
 
   useEffect(() => {
     const _startHour = moment(scheduleState?.state?.start ?? selectedBlock?.block?.start).format('HH:mm')
@@ -517,6 +536,9 @@ export const CalendarDriversList = (props) => {
           filterValues={filterValues}
           handleChangeDriver={handleChangeDriver}
           handleClearFilters={handleClearFilters}
+          handleClearDriversList={handleClearDriversList}
+          setFiltOption={setFiltOption}
+          filtOption={filtOption}
         />
       )}
     </>
@@ -558,5 +580,6 @@ CalendarDriversList.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: []
+  afterElements: [],
+  propsToFetch: []
 }

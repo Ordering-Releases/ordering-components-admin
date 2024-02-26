@@ -16,12 +16,13 @@ export const DriversList = (props) => {
     isOrderDrivers,
     isSearchFilterValue,
     orderId,
-    setCommentInfostate,
     disableSocketRoomDriver,
     useBatchSockets,
     filterValues,
     searchFilterValue,
-    driverGroupList
+    driverGroupList,
+    useDriversByProps,
+    paginationSettings
   } = props
 
   const [ordering] = useApi()
@@ -33,9 +34,15 @@ export const DriversList = (props) => {
   const [companyActionStatus, setCompanyActionStatus] = useState({ loading: true, error: null })
   const [selectedDriver, setSelectedDriver] = useState(null)
   const [assignedOrders, setAssignedOrders] = useState({ loading: false, error: null, orders: [] })
-  const controller = new AbortController();
+  const [paginationDrivers, setPaginationDrivers] = useState({
+    initialPage: 1,
+    currentPage: (paginationSettings?.controlType === 'pages' && paginationSettings?.initialPage && paginationSettings?.initialPage >= 1) ? paginationSettings?.initialPage : 1,
+    pageSize: paginationSettings?.pageSize ?? 10,
+    totalItems: null,
+    totalPages: null
+  })
+  const controller = new AbortController()
   const signal = controller.signal
-
   const activeOrderStatuses = [0, 13, 7, 8, 4, 9, 3, 14, 18, 19, 20, 21, 22, 23]
 
   const socket = useWebsocket()
@@ -48,7 +55,7 @@ export const DriversList = (props) => {
   /**
    * Array to save drivers
    */
-  const [driversList, setDriversList] = useState({ drivers: [], loading: true, error: null })
+  const [driversList, setDriversList] = useState({ drivers: useDriversByProps ? drivers : [], loading: !useDriversByProps, error: null })
   /**
    * Array to save companys
    */
@@ -211,9 +218,14 @@ export const DriversList = (props) => {
   /**
    * Method to get drivers from API
    */
-  const getDrivers = async () => {
+  const getDrivers = async (page = 1, pageSize = 10) => {
     try {
       setDriversList({ ...driversList, loading: true })
+      const paginationParams = {
+        page: page,
+        page_size: pageSize || paginationDrivers.pageSize
+      }
+      const parameters = paginationSettings ? paginationParams : {}
       const source = {}
       requestsState.drivers = source
 
@@ -267,9 +279,10 @@ export const DriversList = (props) => {
         }
       }
 
-      const { content: { result } } = await ordering
+      const { content: { result, pagination } } = await ordering
         .setAccessToken(session.token)
         .users()
+        .parameters(parameters)
         .select(propsToFetch)
         .where(where)
         .get({ cancelToken: source })
@@ -278,6 +291,21 @@ export const DriversList = (props) => {
         ...driversList,
         loading: false,
         drivers: result
+      })
+      let nextPageItems = 0
+      if (pagination.current_page !== pagination.total_pages) {
+        const remainingItems = pagination.total - driversList?.drivers?.length
+        nextPageItems = remainingItems < pagination.page_size ? remainingItems : pagination.page_size
+      }
+      setPaginationDrivers({
+        ...paginationDrivers,
+        currentPage: pagination.current_page,
+        pageSize: pagination.page_size === 0 ? paginationDrivers.pageSize : pagination.page_size,
+        totalPages: pagination.total_pages,
+        total: pagination.total,
+        from: pagination.from,
+        to: pagination.to,
+        nextPageItems
       })
       getOnlineOfflineDrivers(result)
     } catch (err) {
@@ -397,6 +425,25 @@ export const DriversList = (props) => {
     }
   }
 
+  const handleChangePage = (page) => {
+    !useDriversByProps && getDrivers(page, paginationDrivers?.pageSize)
+    setPaginationDrivers({
+      ...paginationDrivers,
+      currentPage: page
+    })
+  }
+
+  const handleChangePageSize = (pageSize) => {
+    const expectedPage = Math.ceil(((paginationDrivers?.currentPage - 1) * paginationDrivers?.pageSize + 1) / pageSize)
+    !useDriversByProps && getDrivers(expectedPage, pageSize)
+    setPaginationDrivers({
+      ...paginationDrivers,
+      currentPage: expectedPage,
+      pageSize,
+      totalPages: Math.ceil(driversList?.drivers?.length / pageSize)
+    })
+  }
+
   useEffect(() => {
     if (selectedDriver?.id) {
       loadAssignedOrders()
@@ -413,10 +460,12 @@ export const DriversList = (props) => {
    * listen for busy/not busy filter
    */
   useEffect(() => {
+    if (useDriversByProps) return
     getOnlineOfflineDrivers(driversList.drivers)
-  }, [driversSubfilter, filterValues?.driverIds, searchFilterValue])
+  }, [driversSubfilter, filterValues?.driverIds, searchFilterValue, useDriversByProps])
 
   useEffect(() => {
+    if (useDriversByProps) return
     if (drivers) {
       setDriversList({ ...driversList, drivers: drivers, loading: false })
       getOnlineOfflineDrivers(drivers)
@@ -424,7 +473,7 @@ export const DriversList = (props) => {
       if (isOrderDrivers) {
         getOrderDrivers()
       } else {
-        getDrivers()
+        getDrivers(paginationDrivers?.initialPage, paginationDrivers?.pageSize)
       }
     }
 
@@ -433,11 +482,15 @@ export const DriversList = (props) => {
         requestsState.drivers.cancel()
       }
       if (isOrderDrivers) {
-        controller?.abort();
+        controller?.abort()
       }
     }
-  }, [drivers, searchValue, orderId])
+  }, [JSON.stringify(drivers), orderId, useDriversByProps, searchValue])
 
+  useEffect(() => {
+    if (!useDriversByProps) return
+    setDriversList({ drivers: drivers, loading: false, error: null })
+  }, [driversSubfilter, filterValues?.driverIds, searchFilterValue, useDriversByProps])
   /**
    * Listening driver change
    */
@@ -585,8 +638,25 @@ export const DriversList = (props) => {
   }, [socket?.socket, session?.auth, session?.loading, disableSocketRoomDriver, useBatchSockets])
 
   useEffect(() => {
+    if (useDriversByProps) return
     getOnlineOfflineDrivers(driversList.drivers)
-  }, [driversList.drivers])
+  }, [driversList.drivers, useDriversByProps])
+
+  useEffect(() => {
+    if (!useDriversByProps) return
+    const drivers =
+      searchValue
+        ? driversList.drivers.filter(driver => (driver.name + driver.lastname).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()))
+        : driversList.drivers
+
+    setPaginationDrivers({
+      initialPage: 1,
+      currentPage: 1,
+      pageSize: 10,
+      totalPages: Math.ceil(drivers?.length / 10),
+      total: drivers?.length || 0
+    })
+  }, [driversList?.drivers?.length, searchValue, useDriversByProps])
 
   return (
     <>
@@ -602,6 +672,7 @@ export const DriversList = (props) => {
           driversIsOnline={driversIsOnline}
           driversSubfilter={driversSubfilter}
           searchValue={searchValue}
+          setSearchValue={setSearchValue}
           handleAssignDriverCompany={handleAssignDriverCompany}
           handleChangeSearch={handleChangeSearch}
           handleChangeDriverIsOnline={handleChangeDriverIsOnline}
@@ -610,6 +681,9 @@ export const DriversList = (props) => {
           selectedDriver={selectedDriver}
           setSelectedDriver={setSelectedDriver}
           assignedOrders={assignedOrders}
+          pagination={paginationDrivers}
+          handleChangePage={handleChangePage}
+          handleChangePageSize={handleChangePageSize}
         />
       )}
     </>
