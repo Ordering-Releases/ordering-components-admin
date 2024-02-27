@@ -31,8 +31,8 @@ export const DriversGroupsList = (props) => {
   const [selectedGroupList, setSelectedGroupList] = useState([])
   const [actionDisabled, setActionDisabled] = useState(true)
   const [paginationProps, setPaginationProps] = useState({
-    currentPage: (paginationSettings.controlType === 'pages' && paginationSettings.initialPage && paginationSettings.initialPage >= 1) ? paginationSettings.initialPage : 1,
-    pageSize: paginationSettings.pageSize ?? 10,
+    currentPage: (paginationSettings?.controlType === 'pages' && paginationSettings?.initialPage && paginationSettings?.initialPage >= 1) ? paginationSettings?.initialPage : 1,
+    pageSize: paginationSettings?.pageSize ?? 10,
     totalItems: null,
     totalPages: null
   })
@@ -356,7 +356,7 @@ export const DriversGroupsList = (props) => {
   }, [selectedGroupList, startSeveralDeleteStart])
 
   useEffect(() => {
-    getHeaderDriversGroups(paginationSettings.initialPage, paginationProps.pageSize)
+    getHeaderDriversGroups(paginationSettings?.initialPage, paginationProps?.pageSize)
     if (isHeaderComponent) return
     getDriversGroups()
     if (isDriversMangersRequired) {
