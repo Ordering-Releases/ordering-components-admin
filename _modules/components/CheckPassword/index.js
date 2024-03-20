@@ -73,6 +73,10 @@ var CheckPassword = function CheckPassword(props) {
     _useState12 = _slicedToArray(_useState11, 2),
     otpState = _useState12[0],
     setOtpState = _useState12[1];
+  var _useState13 = (0, _react.useState)(null),
+    _useState14 = _slicedToArray(_useState13, 2),
+    cellphoneStartZero = _useState14[0],
+    setCellphoneStartZero = _useState14[1];
 
   /**
    * Change current selected tab
@@ -171,7 +175,7 @@ var CheckPassword = function CheckPassword(props) {
               size: 6
             };
             email = (values === null || values === void 0 ? void 0 : values.email) || (credentials === null || credentials === void 0 ? void 0 : credentials.email);
-            cellphone = (values === null || values === void 0 ? void 0 : values.cellphone) || (credentials === null || credentials === void 0 ? void 0 : credentials.cellphone);
+            cellphone = cellphoneStartZero || (values === null || values === void 0 ? void 0 : values.cellphone) || (credentials === null || credentials === void 0 ? void 0 : credentials.cellphone);
             countryPhoneCode = (values === null || values === void 0 ? void 0 : values.countryPhoneCode) || (values === null || values === void 0 ? void 0 : values.country_phone_code) || credentials.country_phone_code;
             _context2.prev = 4;
             if (otpType === 'cellphone') {
@@ -254,7 +258,8 @@ var CheckPassword = function CheckPassword(props) {
     checkCodeState: checkCodeState,
     credentials: credentials,
     handleChangeInput: handleChangeInput,
-    handleChangeCredentials: handleChangeCredentials
+    handleChangeCredentials: handleChangeCredentials,
+    setCellphoneStartZero: setCellphoneStartZero
   })));
 };
 exports.CheckPassword = CheckPassword;

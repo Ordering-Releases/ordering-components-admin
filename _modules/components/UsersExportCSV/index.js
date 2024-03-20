@@ -60,7 +60,7 @@ var UsersExportCSV = function UsersExportCSV(props) {
    */
   var getCSV = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(filterApply) {
-      var _props$multiFilterVal, _props$multiFilterVal2, _props$multiFilterVal3, _props$multiFilterVal34, _props$multiFilterVal35, _props$multiFilterVal36, _props$multiFilterVal37, requestOptions, defaultConditions, filterConditons, isOrdersCountValue, searchConditions, _props$multiFilterVal4, _props$multiFilterVal5, _props$multiFilterVal7, _props$multiFilterVal8, _props$multiFilterVal10, _props$multiFilterVal11, _props$multiFilterVal13, _props$multiFilterVal14, _props$multiFilterVal16, _props$multiFilterVal18, _props$multiFilterVal20, _props$multiFilterVal22, _props$multiFilterVal24, _props$multiFilterVal26, _props$multiFilterVal28, _props$multiFilterVal30, _props$multiFilterVal32, _searchConditions, _props$multiFilterVal6, _props$multiFilterVal9, _props$multiFilterVal12, _props$multiFilterVal15, _props$multiFilterVal17, _props$multiFilterVal19, _props$multiFilterVal21, _props$multiFilterVal23, _props$multiFilterVal25, _props$multiFilterVal27, _props$multiFilterVal29, _props$multiFilterVal31, _props$multiFilterVal33, filterConditonsObj, functionFetch, response, content;
+      var _props$multiFilterVal, _props$multiFilterVal2, _props$multiFilterVal3, _props$multiFilterVal34, _props$multiFilterVal35, _props$multiFilterVal36, _props$multiFilterVal37, requestOptions, defaultConditions, filterConditons, isOrdersCountValue, _Object$keys, searchConditions, _props$multiFilterVal4, _props$multiFilterVal5, _props$multiFilterVal7, _props$multiFilterVal8, _props$multiFilterVal10, _props$multiFilterVal11, _props$multiFilterVal13, _props$multiFilterVal14, _props$multiFilterVal16, _props$multiFilterVal18, _props$multiFilterVal20, _props$multiFilterVal22, _props$multiFilterVal24, _props$multiFilterVal26, _props$multiFilterVal28, _props$multiFilterVal30, _props$multiFilterVal32, _searchConditions, _props$multiFilterVal6, _props$multiFilterVal9, _props$multiFilterVal12, _props$multiFilterVal15, _props$multiFilterVal17, _props$multiFilterVal19, _props$multiFilterVal21, _props$multiFilterVal23, _props$multiFilterVal25, _props$multiFilterVal27, _props$multiFilterVal29, _props$multiFilterVal31, _props$multiFilterVal33, filterConditonsObj, functionFetch, response, content;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -150,7 +150,7 @@ var UsersExportCSV = function UsersExportCSV(props) {
                   conditions: searchConditions
                 });
               }
-              if (Object.keys(props.multiFilterValues).length > 0) {
+              if (((_Object$keys = Object.keys(props === null || props === void 0 ? void 0 : props.multiFilterValues)) === null || _Object$keys === void 0 ? void 0 : _Object$keys.length) > 0) {
                 _searchConditions = [];
                 if ((_props$multiFilterVal4 = props.multiFilterValues) !== null && _props$multiFilterVal4 !== void 0 && _props$multiFilterVal4.name && ((_props$multiFilterVal5 = props.multiFilterValues) === null || _props$multiFilterVal5 === void 0 ? void 0 : _props$multiFilterVal5.name) !== null) {
                   _searchConditions.push({
@@ -332,5 +332,6 @@ UsersExportCSV.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: []
+  afterElements: [],
+  multiFilterValues: {}
 };
