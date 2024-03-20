@@ -36,6 +36,7 @@ export const LoginForm = (props) => {
   const [{ configs }] = useConfig()
   const [reCaptchaValue, setReCaptchaValue] = useState({ code: '', version: '' })
   const [isReCaptchaEnable, setIsReCaptchaEnable] = useState(false)
+  const [cellphoneStartZero, setCellphoneStartZero] = useState(null)
 
   const useLoginOtpEmail = configs?.opt_email_enabled?.value === '1'
   const useLoginOptCellphone = configs?.otp_cellphone_enabled?.value === '1'
@@ -222,7 +223,7 @@ export const LoginForm = (props) => {
     try {
       setVerifyPhoneState({ ...verifyPhoneState, loading: true })
       const body = {
-        cellphone: values.cellphone,
+        cellphone: cellphoneStartZero || values.cellphone,
         country_phone_code: `+${values.country_phone_code}`
       }
       if (notificationState?.notification_token) {
@@ -302,7 +303,7 @@ export const LoginForm = (props) => {
       size: 6
     }
     const email = values?.email || credentials?.email
-    const cellphone = values?.cellphone || credentials?.cellphone
+    const cellphone = cellphoneStartZero || values?.cellphone || credentials?.cellphone
     const countryPhoneCode = values?.countryPhoneCode || values?.country_phone_code || credentials.country_phone_code
 
     try {
@@ -379,6 +380,7 @@ export const LoginForm = (props) => {
           useLoginByCellphone={useLoginByCellphone}
           useLoginOptCellphone={useLoginOptCellphone}
           handleChangeCredentials={handleChangeCredentials}
+          setCellphoneStartZero={setCellphoneStartZero}
         />
       )}
     </>

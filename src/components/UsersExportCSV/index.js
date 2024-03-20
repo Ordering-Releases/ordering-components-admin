@@ -10,7 +10,6 @@ export const UsersExportCSV = (props) => {
     UIComponent,
     userTypesSelected,
     selectedUserActiveState,
-
     searchValue,
     isSearchByUserId,
     isSearchByUserEmail,
@@ -112,7 +111,7 @@ export const UsersExportCSV = (props) => {
             conditions: searchConditions
           })
         }
-        if (Object.keys(props.multiFilterValues).length > 0) {
+        if (Object.keys(props?.multiFilterValues)?.length > 0) {
           const searchConditions = []
           if (props.multiFilterValues?.name && props.multiFilterValues?.name !== null) {
             searchConditions.push(
@@ -239,7 +238,7 @@ export const UsersExportCSV = (props) => {
               }
             )
           }
-         
+
           if (searchConditions.length) {
             filterConditons.push({
               conector: 'AND',
@@ -249,12 +248,12 @@ export const UsersExportCSV = (props) => {
         }
       }
       const filterConditonsObj = {
-        conditions:filterConditons,
+        conditions: filterConditons,
         conector: 'AND'
       }
 
       const functionFetch = filterApply
-        ? isOrdersCountValue 
+        ? isOrdersCountValue
           ? `${ordering.root}/users_new.csv?mode=dashboard&orderBy=id&orders_count_condition=${(props.multiFilterValues?.ordersCount?.condition)}&orders_count_value=${(props.multiFilterValues?.ordersCount?.value)}&where=${JSON.stringify(filterConditonsObj)}`
           : `${ordering.root}/users_new.csv?mode=dashboard&orderBy=id&where=${JSON.stringify(filterConditonsObj)}`
         : defaultConditions.length > 0
@@ -320,5 +319,6 @@ UsersExportCSV.defaultProps = {
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],
-  afterElements: []
+  afterElements: [],
+  multiFilterValues: {}
 }

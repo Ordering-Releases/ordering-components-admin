@@ -29,6 +29,8 @@ export const UserFormDetails = (props) => {
   const [userState, setUserState] = useState({ loading: false, result: { error: false } })
   const [formState, setFormState] = useState({ loading: false, changes: {}, result: { error: false } })
   const [selectedDriverGroupIds, setSelectedDriverGroupIds] = useState([])
+  const [cellphoneStartZero, setCellphoneStartZero] = useState(null)
+
   const requestsState = {}
 
   const accessToken = useDefualtSessionManager ? session.token : props.accessToken
@@ -93,6 +95,9 @@ export const UserFormDetails = (props) => {
       setFormState({ ...formState, loading: true })
       if (changes) {
         formState.changes = { ...formState.changes, ...changes }
+        if (cellphoneStartZero) {
+          formState.changes.cellphone = cellphoneStartZero
+        }
       }
       if (isImage) {
         if (session.user?.level !== 2) {
@@ -183,6 +188,9 @@ export const UserFormDetails = (props) => {
       setFormState({ ...formState, loading: true })
       const changes = { ...formState?.changes }
       if (isProfessional) Object.assign(changes, { level: 8 })
+      if (cellphoneStartZero) {
+        changes.cellphone = cellphoneStartZero
+      }
       const response = await ordering.users().save(changes, {
         accessToken: accessToken
       })
@@ -369,6 +377,7 @@ export const UserFormDetails = (props) => {
           handleChangeOccupation={handleChangeOccupation}
           selectedDriverGroupIds={selectedDriverGroupIds}
           handleDriverGroupClick={handleDriverGroupClick}
+          setCellphoneStartZero={setCellphoneStartZero}
         />
       )}
     </>

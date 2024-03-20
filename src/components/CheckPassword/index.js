@@ -18,6 +18,7 @@ export const CheckPassword = (props) => {
   const [confirmTab, setConfirmTab] = useState(defaultConfirmTab)
   const [otpType, setOtpType] = useState('email')
   const [otpState, setOtpState] = useState('')
+  const [cellphoneStartZero, setCellphoneStartZero] = useState(null)
 
   /**
    * Change current selected tab
@@ -81,7 +82,7 @@ export const CheckPassword = (props) => {
       size: 6
     }
     const email = values?.email || credentials?.email
-    const cellphone = values?.cellphone || credentials?.cellphone
+    const cellphone = cellphoneStartZero || values?.cellphone || credentials?.cellphone
     const countryPhoneCode = values?.countryPhoneCode || values?.country_phone_code || credentials.country_phone_code
 
     try {
@@ -135,6 +136,7 @@ export const CheckPassword = (props) => {
           credentials={credentials}
           handleChangeInput={handleChangeInput}
           handleChangeCredentials={handleChangeCredentials}
+          setCellphoneStartZero={setCellphoneStartZero}
         />
       )}
     </>
