@@ -202,7 +202,7 @@ var UserDetails = function UserDetails(props) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
-            if (!((scheduleState === null || scheduleState === void 0 ? void 0 : (_scheduleState$change = scheduleState.change) === null || _scheduleState$change === void 0 ? void 0 : _scheduleState$change.length) > 0 && userState !== null && userState !== void 0 && (_userState$user = userState.user) !== null && _userState$user !== void 0 && _userState$user.id)) {
+            if (!((scheduleState === null || scheduleState === void 0 || (_scheduleState$change = scheduleState.change) === null || _scheduleState$change === void 0 ? void 0 : _scheduleState$change.length) > 0 && userState !== null && userState !== void 0 && (_userState$user = userState.user) !== null && _userState$user !== void 0 && _userState$user.id)) {
               _context3.next = 24;
               break;
             }
@@ -219,7 +219,7 @@ var UserDetails = function UserDetails(props) {
               break;
             }
             _context3.next = 9;
-            return ordering.users(userState === null || userState === void 0 ? void 0 : (_userState$user2 = userState.user) === null || _userState$user2 === void 0 ? void 0 : _userState$user2.id).save(_change, {
+            return ordering.users(userState === null || userState === void 0 || (_userState$user2 = userState.user) === null || _userState$user2 === void 0 ? void 0 : _userState$user2.id).save(_change, {
               accessToken: accessToken
             });
           case 9:
@@ -237,7 +237,7 @@ var UserDetails = function UserDetails(props) {
               body: JSON.stringify(_change)
             };
             _context3.next = 16;
-            return fetch("".concat(ordering.root, "/professionals/").concat(userState === null || userState === void 0 ? void 0 : (_userState$user3 = userState.user) === null || _userState$user3 === void 0 ? void 0 : _userState$user3.id), requestOptions);
+            return fetch("".concat(ordering.root, "/professionals/").concat(userState === null || userState === void 0 || (_userState$user3 = userState.user) === null || _userState$user3 === void 0 ? void 0 : _userState$user3.id), requestOptions);
           case 16:
             _response2 = _context3.sent;
             _context3.next = 19;

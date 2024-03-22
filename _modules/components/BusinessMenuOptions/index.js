@@ -37,9 +37,10 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
   var business = props.business,
     menu = props.menu,
     UIComponent = props.UIComponent,
-    handleUpdateBusinessState = props.handleUpdateBusinessState,
     isSelectedSharedMenus = props.isSelectedSharedMenus,
-    sitesState = props.sitesState;
+    sitesState = props.sitesState,
+    menuList = props.menuList,
+    setMenuList = props.setMenuList;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -112,7 +113,7 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
    */
   var handleUpdateBusinessMenuOption = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var changes, key, requestOptions, response, content, _business;
+      var changes, key, requestOptions, response, content, menus;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -155,8 +156,7 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
               loading: false
             }));
             if (!content.error) {
-              _business = _objectSpread({}, business);
-              _business.menus.filter(function (menu) {
+              menus = menuList.menus.filter(function (menu) {
                 if (menu.id === content.result.id) {
                   Object.assign(menu, content.result);
                   var isUpdatedProducts = typeof (changes === null || changes === void 0 ? void 0 : changes.products) !== 'undefined';
@@ -166,7 +166,9 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
                 }
                 return true;
               });
-              handleUpdateBusinessState && handleUpdateBusinessState(_business);
+              setMenuList(_objectSpread(_objectSpread({}, menuList), {}, {
+                menus: menus
+              }));
               showToast(_ToastContext.ToastType.Success, t('MENU_SAVED', 'Products catalog saved'));
             }
             _context.next = 19;
@@ -197,7 +199,7 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
    */
   var handleAddBusinessMenuOption = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var changes, schedule, i, requestOptions, response, content, _business, _menu, allProducts, products;
+      var changes, schedule, i, requestOptions, response, content, _menu, allProducts, products, menusArray;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -259,7 +261,6 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
               loading: false
             }));
             if (!content.error) {
-              _business = _objectSpread({}, business);
               _menu = _objectSpread(_objectSpread({}, content.result), {}, {
                 enabled: true
               });
@@ -279,8 +280,11 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
               _menu = _objectSpread(_objectSpread({}, _menu), {}, {
                 products: products
               });
-              _business.menus.push(_menu);
-              handleUpdateBusinessState && handleUpdateBusinessState(_business);
+              menusArray = menuList.menus;
+              menusArray.push(_menu);
+              setMenuList(_objectSpread(_objectSpread({}, menuList), {}, {
+                menus: menusArray
+              }));
               showToast(_ToastContext.ToastType.Success, t('MENU_ADDED', 'Products catalog added'));
               props.onClose() && props.onClose();
             }
@@ -308,7 +312,7 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
   }();
   var handleDeleteMenu = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var requestOptions, endPoint, response, content, _business, menusShared, menus;
+      var requestOptions, endPoint, response, content, menus, menusShared;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
@@ -338,23 +342,21 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
                 loading: false,
                 error: null
               }));
-              _business = null;
               if (isSelectedSharedMenus) {
-                menusShared = business.menus_shared.filter(function (_menu) {
+                menusShared = menuList.menusShared.filter(function (_menu) {
                   return _menu.id !== menu.id;
                 });
-                _business = _objectSpread(_objectSpread({}, business), {}, {
-                  menus_shared: menusShared
-                });
+                setMenuList(_objectSpread(_objectSpread({}, menuList), {}, {
+                  menusShared: menusShared
+                }));
               } else {
-                menus = business.menus.filter(function (_menu) {
+                menus = menuList.menus.filter(function (_menu) {
                   return _menu.id !== menu.id;
                 });
-                _business = _objectSpread(_objectSpread({}, business), {}, {
+                setMenuList(_objectSpread(_objectSpread({}, menuList), {}, {
                   menus: menus
-                });
+                }));
               }
-              handleUpdateBusinessState && handleUpdateBusinessState(_business);
               showToast(_ToastContext.ToastType.Success, t('MENU_DELETED', 'Products catalog deleted'));
               props.onClose && props.onClose();
             } else {
@@ -391,7 +393,7 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
   };
   var handleChangeMenuSite = function handleChangeMenuSite(site) {
     var _menu$sites;
-    var sites = [].concat(_toConsumableArray(menu === null || menu === void 0 ? void 0 : (_menu$sites = menu.sites) === null || _menu$sites === void 0 ? void 0 : _menu$sites.map(function (s) {
+    var sites = [].concat(_toConsumableArray(menu === null || menu === void 0 || (_menu$sites = menu.sites) === null || _menu$sites === void 0 ? void 0 : _menu$sites.map(function (s) {
       return s.id;
     }).filter(function (s) {
       var _formState$changes$si;

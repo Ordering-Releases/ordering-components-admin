@@ -176,12 +176,12 @@ var BusinessWebhooks = function BusinessWebhooks(props) {
                 result: content,
                 loading: false
               }));
-              _webhooks = business === null || business === void 0 ? void 0 : (_business$webhooks = business.webhooks) === null || _business$webhooks === void 0 ? void 0 : _business$webhooks.map(function (webhook) {
+              _webhooks = business === null || business === void 0 || (_business$webhooks = business.webhooks) === null || _business$webhooks === void 0 ? void 0 : _business$webhooks.map(function (webhook) {
                 var _content$result;
-                if (webhook.id === (content === null || content === void 0 ? void 0 : (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.id)) {
+                if (webhook.id === (content === null || content === void 0 || (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.id)) {
                   var _content$result2;
                   return _objectSpread(_objectSpread({}, webhook), {}, {
-                    delay: content === null || content === void 0 ? void 0 : (_content$result2 = content.result) === null || _content$result2 === void 0 ? void 0 : _content$result2.delay
+                    delay: content === null || content === void 0 || (_content$result2 = content.result) === null || _content$result2 === void 0 ? void 0 : _content$result2.delay
                   });
                 }
                 return webhook;
@@ -252,7 +252,7 @@ var BusinessWebhooks = function BusinessWebhooks(props) {
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {
                 loading: false
               }));
-              _webhooks = business === null || business === void 0 ? void 0 : (_business$webhooks2 = business.webhooks) === null || _business$webhooks2 === void 0 ? void 0 : _business$webhooks2.filter(function (item) {
+              _webhooks = business === null || business === void 0 || (_business$webhooks2 = business.webhooks) === null || _business$webhooks2 === void 0 ? void 0 : _business$webhooks2.filter(function (item) {
                 return item.id !== id;
               });
               _business = _objectSpread(_objectSpread({}, business), {}, {

@@ -72,7 +72,7 @@ var BusinessMenu = function BusinessMenu(props) {
   */
   var getBusinessMenus = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var _yield$ordering$setAc, _yield$ordering$setAc2, error, result, _business, _menus;
+      var _yield$ordering$setAc, _yield$ordering$setAc2, error, result, _business;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -89,10 +89,7 @@ var BusinessMenu = function BusinessMenu(props) {
             result = _yield$ordering$setAc2.result;
             _business = Array.isArray(result) ? null : result;
             if (!error) {
-              _menus = {};
-              if (result !== null && result !== void 0 && result.menus) _menus.menus = result === null || result === void 0 ? void 0 : result.menus;
-              if (result !== null && result !== void 0 && result.menus_shared) _menus.menusShared = result === null || result === void 0 ? void 0 : result.menus_shared;
-              setBusinessMenusState(_objectSpread(_objectSpread(_objectSpread({}, businessMenusState), _menus), {}, {
+              setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
                 loading: false
               }));
             } else {
@@ -129,7 +126,7 @@ var BusinessMenu = function BusinessMenu(props) {
    */
   var handleChangeBusinessMenuActiveState = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(menuId, enabled) {
-      var requestOptions, endPoint, response, content, _business, menus, menusShared;
+      var requestOptions, endPoint, response, content, menus, menusShared;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -158,7 +155,6 @@ var BusinessMenu = function BusinessMenu(props) {
           case 10:
             content = _context2.sent;
             if (!content.error) {
-              _business = {};
               if (!isSelectedSharedMenus) {
                 menus = businessMenusState.menus.filter(function (menu) {
                   if (menu.id === menuId) {
@@ -170,9 +166,6 @@ var BusinessMenu = function BusinessMenu(props) {
                   loading: false,
                   menus: menus
                 }));
-                _business = _objectSpread(_objectSpread({}, business), {}, {
-                  menus: menus
-                });
               } else {
                 menusShared = businessMenusState.menusShared.map(function (menu) {
                   if (menu.id === menuId) {
@@ -186,11 +179,7 @@ var BusinessMenu = function BusinessMenu(props) {
                   loading: false,
                   menusShared: menusShared
                 }));
-                _business = _objectSpread(_objectSpread({}, business), {}, {
-                  menus_shared: menusShared
-                });
               }
-              handleSuccessBusinessMenu && handleSuccessBusinessMenu(_business);
               showToast(_ToastContext.ToastType.Success, t('MENU_SAVED', 'Products catalog saved'));
             } else {
               setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
@@ -224,7 +213,7 @@ var BusinessMenu = function BusinessMenu(props) {
    */
   var handleDeleteBusinessMenu = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(menuId) {
-      var requestOptions, endPoint, response, content, _business, menus, menusShared;
+      var requestOptions, endPoint, response, content, menus, menusShared;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
@@ -250,7 +239,6 @@ var BusinessMenu = function BusinessMenu(props) {
           case 10:
             content = _context3.sent;
             if (!content.error) {
-              _business = {};
               if (!isSelectedSharedMenus) {
                 menus = businessMenusState.menus.filter(function (menu) {
                   return menu.id !== menuId;
@@ -259,9 +247,6 @@ var BusinessMenu = function BusinessMenu(props) {
                   loading: false,
                   menus: menus
                 }));
-                _business = _objectSpread(_objectSpread({}, business), {}, {
-                  menus: menus
-                });
               } else {
                 menusShared = businessMenusState.menusShared.filter(function (menu) {
                   return menu.id !== menuId;
@@ -270,11 +255,7 @@ var BusinessMenu = function BusinessMenu(props) {
                   loading: false,
                   menusShared: menusShared
                 }));
-                _business = _objectSpread(_objectSpread({}, business), {}, {
-                  menus_shared: menusShared
-                });
               }
-              handleSuccessBusinessMenu && handleSuccessBusinessMenu(_business);
               showToast(_ToastContext.ToastType.Success, t('MENU_DELETED', 'Products catalog deleted'));
             } else {
               setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
@@ -320,7 +301,7 @@ var BusinessMenu = function BusinessMenu(props) {
               }
             };
             _context4.next = 4;
-            return fetch("".concat(ordering.root, "/business/").concat(business.id, "/menus?params=sites"), requestOptions);
+            return fetch("".concat(ordering.root, "/business/").concat(business.id, "/menus?params=sites,products&mode=dashboard"), requestOptions);
           case 4:
             response = _context4.sent;
             _context4.next = 7;
@@ -330,7 +311,7 @@ var BusinessMenu = function BusinessMenu(props) {
             result = _yield$response$json.result;
             error = _yield$response$json.error;
             if (error) {
-              _context4.next = 29;
+              _context4.next = 30;
               break;
             }
             sites = {};
@@ -361,58 +342,55 @@ var BusinessMenu = function BusinessMenu(props) {
               loading: false,
               sites: sitesResult
             }));
-            _context4.next = 27;
+            setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
+              loading: false,
+              menus: result,
+              error: null
+            }));
+            _context4.next = 28;
             break;
-          case 24:
-            _context4.prev = 24;
+          case 25:
+            _context4.prev = 25;
             _context4.t0 = _context4["catch"](13);
             setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
               loading: false,
               error: [_context4.t0.message]
             }));
-          case 27:
-            _context4.next = 30;
+          case 28:
+            _context4.next = 31;
             break;
-          case 29:
+          case 30:
             setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
               loading: false,
               error: result
             }));
-          case 30:
-            _context4.next = 35;
+          case 31:
+            _context4.next = 36;
             break;
-          case 32:
-            _context4.prev = 32;
+          case 33:
+            _context4.prev = 33;
             _context4.t1 = _context4["catch"](0);
             setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
               loading: false,
               error: [_context4.t1.message]
             }));
-          case 35:
+          case 36:
           case "end":
             return _context4.stop();
         }
-      }, _callee4, null, [[0, 32], [13, 24]]);
+      }, _callee4, null, [[0, 33], [13, 25]]);
     }));
     return function getBusinessMenuChannels() {
       return _ref4.apply(this, arguments);
     };
   }();
   (0, _react.useEffect)(function () {
-    if (business !== null && business !== void 0 && business.menus || business !== null && business !== void 0 && business.menus_shared) {
-      var data = {};
-      if (business !== null && business !== void 0 && business.menus) data.menus = business === null || business === void 0 ? void 0 : business.menus;
-      if (business !== null && business !== void 0 && business.menus_shared) data.menusShared = business === null || business === void 0 ? void 0 : business.menus_shared;
-      setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), data));
-    } else {
-      getBusinessMenus();
-    }
-  }, [business === null || business === void 0 ? void 0 : business.menu, business === null || business === void 0 ? void 0 : business.menus_shared]);
-  (0, _react.useEffect)(function () {
+    getBusinessMenus();
     getBusinessMenuChannels();
   }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     businessMenusState: businessMenusState,
+    setBusinessMenusState: setBusinessMenusState,
     isSelectedSharedMenus: isSelectedSharedMenus,
     sitesState: sitesState,
     handleChangeBusinessMenuActiveState: handleChangeBusinessMenuActiveState,
@@ -460,5 +438,5 @@ BusinessMenu.defaultProps = {
   afterComponents: [],
   beforeElements: [],
   afterElements: [],
-  propsToFetch: ['id', 'categories', 'menus', 'menus_shared', 'categories_shared', 'header', 'logo']
+  propsToFetch: ['id', 'categories', 'categories_shared', 'header', 'logo']
 };

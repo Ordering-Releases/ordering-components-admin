@@ -111,7 +111,7 @@ var BusinessAdd = function BusinessAdd(props) {
     setDetails = _useState20[1];
   var timeout = null;
   var paymethodsNotAllowed = ['paypal_express', 'authorize'];
-  var googleMapsApiKey = configs === null || configs === void 0 ? void 0 : (_configs$google_maps_ = configs.google_maps_api_key) === null || _configs$google_maps_ === void 0 ? void 0 : _configs$google_maps_.value;
+  var googleMapsApiKey = configs === null || configs === void 0 || (_configs$google_maps_ = configs.google_maps_api_key) === null || _configs$google_maps_ === void 0 ? void 0 : _configs$google_maps_.value;
   var sandboxRequiredGateways = defaultSandboxRequiredGateways || ['paypal', 'stripe_direct', 'paypal_express', 'stripe_connect', 'stripe_redirect', 'carlos_payment', 'ivr'];
 
   /**
@@ -131,7 +131,7 @@ var BusinessAdd = function BusinessAdd(props) {
     tax_type: 1,
     service_fee: 0,
     enabled: true,
-    owner_id: session === null || session === void 0 ? void 0 : (_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.id
+    owner_id: session === null || session === void 0 || (_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.id
   };
 
   /**
@@ -197,7 +197,7 @@ var BusinessAdd = function BusinessAdd(props) {
     } else {
       currentChanges = _defineProperty({}, e.target.name, e.target.value);
     }
-    if ((e === null || e === void 0 ? void 0 : (_e$target = e.target) === null || _e$target === void 0 ? void 0 : _e$target.name) === 'distance') {
+    if ((e === null || e === void 0 || (_e$target = e.target) === null || _e$target === void 0 ? void 0 : _e$target.name) === 'distance') {
       var _data;
       setZoneState(_objectSpread(_objectSpread({}, zoneState), {}, {
         data: (_data = {}, _defineProperty(_data, e.target.name, e.target.value), _defineProperty(_data, "unit", unit), _data)
@@ -221,7 +221,7 @@ var BusinessAdd = function BusinessAdd(props) {
             setFormState(_objectSpread(_objectSpread({}, formState), {}, {
               loading: true
             }));
-            formState === null || formState === void 0 ? true : (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? true : delete _formState$changes.schedule;
+            formState === null || formState === void 0 || (_formState$changes = formState.changes) === null || _formState$changes === void 0 || delete _formState$changes.schedule;
             changes = _objectSpread(_objectSpread(_objectSpread({}, formState.changes), defaultAddBusinessParams), {}, {
               schedule: schedule
             }, cityId && {
@@ -269,13 +269,13 @@ var BusinessAdd = function BusinessAdd(props) {
             _context4.next = 15;
             return Promise.all(gallery.map( /*#__PURE__*/function () {
               var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(galleryItem) {
-                var _response$content, _response$content$res;
+                var _response$content;
                 var newGallery;
                 return _regeneratorRuntime().wrap(function _callee3$(_context3) {
                   while (1) switch (_context3.prev = _context3.next) {
                     case 0:
                       newGallery = {
-                        business_id: response === null || response === void 0 ? void 0 : (_response$content = response.content) === null || _response$content === void 0 ? void 0 : (_response$content$res = _response$content.result) === null || _response$content$res === void 0 ? void 0 : _response$content$res.id,
+                        business_id: response === null || response === void 0 || (_response$content = response.content) === null || _response$content === void 0 || (_response$content = _response$content.result) === null || _response$content === void 0 ? void 0 : _response$content.id,
                         file: galleryItem === null || galleryItem === void 0 ? void 0 : galleryItem.file,
                         type: 1
                       };
@@ -619,7 +619,7 @@ var BusinessAdd = function BusinessAdd(props) {
    */
   var handleChangeRibbon = function handleChangeRibbon(changes) {
     var _formState$changes2, _formState$changes3;
-    var ribbonChanges = formState !== null && formState !== void 0 && (_formState$changes2 = formState.changes) !== null && _formState$changes2 !== void 0 && _formState$changes2.ribbon ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : (_formState$changes3 = formState.changes) === null || _formState$changes3 === void 0 ? void 0 : _formState$changes3.ribbon), changes) : _objectSpread({}, changes);
+    var ribbonChanges = formState !== null && formState !== void 0 && (_formState$changes2 = formState.changes) !== null && _formState$changes2 !== void 0 && _formState$changes2.ribbon ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 || (_formState$changes3 = formState.changes) === null || _formState$changes3 === void 0 ? void 0 : _formState$changes3.ribbon), changes) : _objectSpread({}, changes);
     var currentChanges = _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), {}, {
       ribbon: ribbonChanges
     });
@@ -677,7 +677,7 @@ var BusinessAdd = function BusinessAdd(props) {
         while (1) switch (_context10.prev = _context10.next) {
           case 0:
             _context10.next = 2;
-            return getTimeZone(address === null || address === void 0 ? void 0 : (_address$location = address.location) === null || _address$location === void 0 ? void 0 : _address$location.lat, address === null || address === void 0 ? void 0 : (_address$location2 = address.location) === null || _address$location2 === void 0 ? void 0 : _address$location2.lng);
+            return getTimeZone(address === null || address === void 0 || (_address$location = address.location) === null || _address$location === void 0 ? void 0 : _address$location.lat, address === null || address === void 0 || (_address$location2 = address.location) === null || _address$location2 === void 0 ? void 0 : _address$location2.lng);
           case 2:
             timezone = _context10.sent;
             setAddressChange({
@@ -811,18 +811,18 @@ var BusinessAdd = function BusinessAdd(props) {
     }
   };
   var getSchedule = function getSchedule(periods) {
-    var _schedule$, _extraHours, _extraHours$close, _extraHours2, _extraHours2$close, _schedule$2, _extraHours3, _extraHours3$close, _extraHours4, _extraHours4$close;
+    var _schedule$, _extraHours, _extraHours2, _schedule$2, _extraHours3, _extraHours4;
     var extraHours = null;
     var schedule = [];
     var _loop = function _loop(i) {
       var _period$open, _period$close, _period$open4, _period$close4, _period$open7;
       var period = periods.find(function (item) {
         var _item$open;
-        return (item === null || item === void 0 ? void 0 : (_item$open = item.open) === null || _item$open === void 0 ? void 0 : _item$open.day) === i;
+        return (item === null || item === void 0 || (_item$open = item.open) === null || _item$open === void 0 ? void 0 : _item$open.day) === i;
       });
       if (!period) {
-        var _extraHours5, _extraHours5$close, _extraHours6, _extraHours6$close;
-        !extraHours || ((_extraHours5 = extraHours) === null || _extraHours5 === void 0 ? void 0 : (_extraHours5$close = _extraHours5.close) === null || _extraHours5$close === void 0 ? void 0 : _extraHours5$close.hour) === 0 && ((_extraHours6 = extraHours) === null || _extraHours6 === void 0 ? void 0 : (_extraHours6$close = _extraHours6.close) === null || _extraHours6$close === void 0 ? void 0 : _extraHours6$close.minute) === 0 ? schedule.push({
+        var _extraHours5, _extraHours6;
+        !extraHours || ((_extraHours5 = extraHours) === null || _extraHours5 === void 0 || (_extraHours5 = _extraHours5.close) === null || _extraHours5 === void 0 ? void 0 : _extraHours5.hour) === 0 && ((_extraHours6 = extraHours) === null || _extraHours6 === void 0 || (_extraHours6 = _extraHours6.close) === null || _extraHours6 === void 0 ? void 0 : _extraHours6.minute) === 0 ? schedule.push({
           enabled: true,
           lapses: [{
             open: {
@@ -839,16 +839,16 @@ var BusinessAdd = function BusinessAdd(props) {
           lapses: [extraHours]
         });
       }
-      if ((period === null || period === void 0 ? void 0 : (_period$open = period.open) === null || _period$open === void 0 ? void 0 : _period$open.day) === i && (period === null || period === void 0 ? void 0 : (_period$close = period.close) === null || _period$close === void 0 ? void 0 : _period$close.day) === i) {
+      if ((period === null || period === void 0 || (_period$open = period.open) === null || _period$open === void 0 ? void 0 : _period$open.day) === i && (period === null || period === void 0 || (_period$close = period.close) === null || _period$close === void 0 ? void 0 : _period$close.day) === i) {
         var _period$open2, _period$open3, _period$close2, _period$close3;
         var lapses = [{
           open: {
-            hour: period === null || period === void 0 ? void 0 : (_period$open2 = period.open) === null || _period$open2 === void 0 ? void 0 : _period$open2.hours,
-            minute: period === null || period === void 0 ? void 0 : (_period$open3 = period.open) === null || _period$open3 === void 0 ? void 0 : _period$open3.minutes
+            hour: period === null || period === void 0 || (_period$open2 = period.open) === null || _period$open2 === void 0 ? void 0 : _period$open2.hours,
+            minute: period === null || period === void 0 || (_period$open3 = period.open) === null || _period$open3 === void 0 ? void 0 : _period$open3.minutes
           },
           close: {
-            hour: period === null || period === void 0 ? void 0 : (_period$close2 = period.close) === null || _period$close2 === void 0 ? void 0 : _period$close2.hours,
-            minute: period === null || period === void 0 ? void 0 : (_period$close3 = period.close) === null || _period$close3 === void 0 ? void 0 : _period$close3.minutes
+            hour: period === null || period === void 0 || (_period$close2 = period.close) === null || _period$close2 === void 0 ? void 0 : _period$close2.hours,
+            minute: period === null || period === void 0 || (_period$close3 = period.close) === null || _period$close3 === void 0 ? void 0 : _period$close3.minutes
           }
         }];
         extraHours && lapses.unshift(extraHours);
@@ -858,12 +858,12 @@ var BusinessAdd = function BusinessAdd(props) {
           lapses: lapses
         });
       }
-      if ((period === null || period === void 0 ? void 0 : (_period$open4 = period.open) === null || _period$open4 === void 0 ? void 0 : _period$open4.day) === i && period !== null && period !== void 0 && period.close && (period === null || period === void 0 ? void 0 : (_period$close4 = period.close) === null || _period$close4 === void 0 ? void 0 : _period$close4.day) !== i) {
+      if ((period === null || period === void 0 || (_period$open4 = period.open) === null || _period$open4 === void 0 ? void 0 : _period$open4.day) === i && period !== null && period !== void 0 && period.close && (period === null || period === void 0 || (_period$close4 = period.close) === null || _period$close4 === void 0 ? void 0 : _period$close4.day) !== i) {
         var _period$open5, _period$open6, _period$close5, _period$close6;
         var _lapses = [{
           open: {
-            hour: period === null || period === void 0 ? void 0 : (_period$open5 = period.open) === null || _period$open5 === void 0 ? void 0 : _period$open5.hours,
-            minute: period === null || period === void 0 ? void 0 : (_period$open6 = period.open) === null || _period$open6 === void 0 ? void 0 : _period$open6.minutes
+            hour: period === null || period === void 0 || (_period$open5 = period.open) === null || _period$open5 === void 0 ? void 0 : _period$open5.hours,
+            minute: period === null || period === void 0 || (_period$open6 = period.open) === null || _period$open6 === void 0 ? void 0 : _period$open6.minutes
           },
           close: {
             hour: 23,
@@ -871,7 +871,7 @@ var BusinessAdd = function BusinessAdd(props) {
           }
         }];
         extraHours && _lapses.unshift(extraHours);
-        if ((period === null || period === void 0 ? void 0 : (_period$close5 = period.close) === null || _period$close5 === void 0 ? void 0 : _period$close5.hours) !== 0 && (period === null || period === void 0 ? void 0 : (_period$close6 = period.close) === null || _period$close6 === void 0 ? void 0 : _period$close6.minutes) !== 0) {
+        if ((period === null || period === void 0 || (_period$close5 = period.close) === null || _period$close5 === void 0 ? void 0 : _period$close5.hours) !== 0 && (period === null || period === void 0 || (_period$close6 = period.close) === null || _period$close6 === void 0 ? void 0 : _period$close6.minutes) !== 0) {
           var _period$close7, _period$close8;
           extraHours = {
             open: {
@@ -879,8 +879,8 @@ var BusinessAdd = function BusinessAdd(props) {
               minute: 0
             },
             close: {
-              hour: period === null || period === void 0 ? void 0 : (_period$close7 = period.close) === null || _period$close7 === void 0 ? void 0 : _period$close7.hours,
-              minute: period === null || period === void 0 ? void 0 : (_period$close8 = period.close) === null || _period$close8 === void 0 ? void 0 : _period$close8.minutes
+              hour: period === null || period === void 0 || (_period$close7 = period.close) === null || _period$close7 === void 0 ? void 0 : _period$close7.hours,
+              minute: period === null || period === void 0 || (_period$close8 = period.close) === null || _period$close8 === void 0 ? void 0 : _period$close8.minutes
             }
           };
         }
@@ -889,12 +889,12 @@ var BusinessAdd = function BusinessAdd(props) {
           lapses: _lapses
         });
       }
-      if ((period === null || period === void 0 ? void 0 : (_period$open7 = period.open) === null || _period$open7 === void 0 ? void 0 : _period$open7.day) === i && !(period !== null && period !== void 0 && period.close)) {
+      if ((period === null || period === void 0 || (_period$open7 = period.open) === null || _period$open7 === void 0 ? void 0 : _period$open7.day) === i && !(period !== null && period !== void 0 && period.close)) {
         var _period$open8, _period$open9;
         var _lapses2 = [{
           open: {
-            hour: period === null || period === void 0 ? void 0 : (_period$open8 = period.open) === null || _period$open8 === void 0 ? void 0 : _period$open8.hours,
-            minute: period === null || period === void 0 ? void 0 : (_period$open9 = period.open) === null || _period$open9 === void 0 ? void 0 : _period$open9.minutes
+            hour: period === null || period === void 0 || (_period$open8 = period.open) === null || _period$open8 === void 0 ? void 0 : _period$open8.hours,
+            minute: period === null || period === void 0 || (_period$open9 = period.open) === null || _period$open9 === void 0 ? void 0 : _period$open9.minutes
           },
           close: {
             hour: 23,
@@ -911,8 +911,8 @@ var BusinessAdd = function BusinessAdd(props) {
     for (var i = 0; i < 7; i++) {
       _loop(i);
     }
-    if (extraHours && (_schedule$ = schedule[0]) !== null && _schedule$ !== void 0 && _schedule$.enabled && !(((_extraHours = extraHours) === null || _extraHours === void 0 ? void 0 : (_extraHours$close = _extraHours.close) === null || _extraHours$close === void 0 ? void 0 : _extraHours$close.hour) === 0 && ((_extraHours2 = extraHours) === null || _extraHours2 === void 0 ? void 0 : (_extraHours2$close = _extraHours2.close) === null || _extraHours2$close === void 0 ? void 0 : _extraHours2$close.minute) === 0)) schedule[0].lapses.unshift(extraHours);
-    if (extraHours && !((_schedule$2 = schedule[0]) !== null && _schedule$2 !== void 0 && _schedule$2.enabled) && !(((_extraHours3 = extraHours) === null || _extraHours3 === void 0 ? void 0 : (_extraHours3$close = _extraHours3.close) === null || _extraHours3$close === void 0 ? void 0 : _extraHours3$close.hour) === 0 && ((_extraHours4 = extraHours) === null || _extraHours4 === void 0 ? void 0 : (_extraHours4$close = _extraHours4.close) === null || _extraHours4$close === void 0 ? void 0 : _extraHours4$close.minute) === 0)) schedule[0] = {
+    if (extraHours && (_schedule$ = schedule[0]) !== null && _schedule$ !== void 0 && _schedule$.enabled && !(((_extraHours = extraHours) === null || _extraHours === void 0 || (_extraHours = _extraHours.close) === null || _extraHours === void 0 ? void 0 : _extraHours.hour) === 0 && ((_extraHours2 = extraHours) === null || _extraHours2 === void 0 || (_extraHours2 = _extraHours2.close) === null || _extraHours2 === void 0 ? void 0 : _extraHours2.minute) === 0)) schedule[0].lapses.unshift(extraHours);
+    if (extraHours && !((_schedule$2 = schedule[0]) !== null && _schedule$2 !== void 0 && _schedule$2.enabled) && !(((_extraHours3 = extraHours) === null || _extraHours3 === void 0 || (_extraHours3 = _extraHours3.close) === null || _extraHours3 === void 0 ? void 0 : _extraHours3.hour) === 0 && ((_extraHours4 = extraHours) === null || _extraHours4 === void 0 || (_extraHours4 = _extraHours4.close) === null || _extraHours4 === void 0 ? void 0 : _extraHours4.minute) === 0)) schedule[0] = {
       enabled: true,
       lapses: [extraHours]
     };
@@ -922,12 +922,12 @@ var BusinessAdd = function BusinessAdd(props) {
     if (details) {
       var updateStoreData = /*#__PURE__*/function () {
         var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12() {
-          var _details$photos, _details$geometry, _details$geometry$loc, _details$geometry2, _details$geometry2$lo, _details$price_level, _details$opening_hour, _details$opening_hour2, _details$geometry3, _details$geometry3$lo, _details$geometry4, _details$geometry4$lo;
+          var _details$photos, _details$geometry, _details$geometry2, _details$price_level, _details$opening_hour, _details$opening_hour2, _details$geometry3, _details$geometry4;
           var photos, timezone, changes;
           return _regeneratorRuntime().wrap(function _callee12$(_context12) {
             while (1) switch (_context12.prev = _context12.next) {
               case 0:
-                photos = details === null || details === void 0 ? void 0 : (_details$photos = details.photos) === null || _details$photos === void 0 ? void 0 : _details$photos.map(function (photo) {
+                photos = details === null || details === void 0 || (_details$photos = details.photos) === null || _details$photos === void 0 ? void 0 : _details$photos.map(function (photo) {
                   return {
                     temp_id: (0, _utils.getUniqueId)(),
                     file: photo.getUrl()
@@ -935,21 +935,21 @@ var BusinessAdd = function BusinessAdd(props) {
                 });
                 (photos === null || photos === void 0 ? void 0 : photos.length) > 0 && setGallery(photos);
                 _context12.next = 4;
-                return getTimeZone(details === null || details === void 0 ? void 0 : (_details$geometry = details.geometry) === null || _details$geometry === void 0 ? void 0 : (_details$geometry$loc = _details$geometry.location) === null || _details$geometry$loc === void 0 ? void 0 : _details$geometry$loc.lat(), details === null || details === void 0 ? void 0 : (_details$geometry2 = details.geometry) === null || _details$geometry2 === void 0 ? void 0 : (_details$geometry2$lo = _details$geometry2.location) === null || _details$geometry2$lo === void 0 ? void 0 : _details$geometry2$lo.lng());
+                return getTimeZone(details === null || details === void 0 || (_details$geometry = details.geometry) === null || _details$geometry === void 0 || (_details$geometry = _details$geometry.location) === null || _details$geometry === void 0 ? void 0 : _details$geometry.lat(), details === null || details === void 0 || (_details$geometry2 = details.geometry) === null || _details$geometry2 === void 0 || (_details$geometry2 = _details$geometry2.location) === null || _details$geometry2 === void 0 ? void 0 : _details$geometry2.lng());
               case 4:
                 timezone = _context12.sent;
                 changes = _objectSpread(_objectSpread({
                   name: details === null || details === void 0 ? void 0 : details.name,
                   slug: (0, _utils.stringToSlug)(details === null || details === void 0 ? void 0 : details.name),
                   cellphone: details === null || details === void 0 ? void 0 : details.international_phone_number,
-                  price_level: details === null || details === void 0 ? void 0 : (_details$price_level = details.price_level) === null || _details$price_level === void 0 ? void 0 : _details$price_level.toString(),
+                  price_level: details === null || details === void 0 || (_details$price_level = details.price_level) === null || _details$price_level === void 0 ? void 0 : _details$price_level.toString(),
                   address: details === null || details === void 0 ? void 0 : details.formatted_address
-                }, (details === null || details === void 0 ? void 0 : (_details$opening_hour = details.opening_hours) === null || _details$opening_hour === void 0 ? void 0 : _details$opening_hour.periods) && {
-                  schedule: getSchedule(details === null || details === void 0 ? void 0 : (_details$opening_hour2 = details.opening_hours) === null || _details$opening_hour2 === void 0 ? void 0 : _details$opening_hour2.periods)
+                }, (details === null || details === void 0 || (_details$opening_hour = details.opening_hours) === null || _details$opening_hour === void 0 ? void 0 : _details$opening_hour.periods) && {
+                  schedule: getSchedule(details === null || details === void 0 || (_details$opening_hour2 = details.opening_hours) === null || _details$opening_hour2 === void 0 ? void 0 : _details$opening_hour2.periods)
                 }), {}, {
                   location: {
-                    lat: details === null || details === void 0 ? void 0 : (_details$geometry3 = details.geometry) === null || _details$geometry3 === void 0 ? void 0 : (_details$geometry3$lo = _details$geometry3.location) === null || _details$geometry3$lo === void 0 ? void 0 : _details$geometry3$lo.lat(),
-                    lng: details === null || details === void 0 ? void 0 : (_details$geometry4 = details.geometry) === null || _details$geometry4 === void 0 ? void 0 : (_details$geometry4$lo = _details$geometry4.location) === null || _details$geometry4$lo === void 0 ? void 0 : _details$geometry4$lo.lng(),
+                    lat: details === null || details === void 0 || (_details$geometry3 = details.geometry) === null || _details$geometry3 === void 0 || (_details$geometry3 = _details$geometry3.location) === null || _details$geometry3 === void 0 ? void 0 : _details$geometry3.lat(),
+                    lng: details === null || details === void 0 || (_details$geometry4 = details.geometry) === null || _details$geometry4 === void 0 || (_details$geometry4 = _details$geometry4.location) === null || _details$geometry4 === void 0 ? void 0 : _details$geometry4.lng(),
                     zipcode: -1,
                     zoom: 15
                   },

@@ -357,7 +357,7 @@ var BusinessDetails = function BusinessDetails(props) {
               error: error ? result : null
             }));
             if (!error) {
-              _owners = businessState === null || businessState === void 0 ? void 0 : (_businessState$busine = businessState.business) === null || _businessState$busine === void 0 ? void 0 : _businessState$busine.owners.filter(function (owner) {
+              _owners = businessState === null || businessState === void 0 || (_businessState$busine = businessState.business) === null || _businessState$busine === void 0 ? void 0 : _businessState$busine.owners.filter(function (owner) {
                 return owners.includes(owner.id);
               });
               _business = _objectSpread(_objectSpread({}, businessState === null || businessState === void 0 ? void 0 : businessState.business), {}, {
@@ -416,7 +416,7 @@ var BusinessDetails = function BusinessDetails(props) {
               error: error ? result : null
             }));
             if (!error) {
-              _owners = [].concat(_toConsumableArray(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine2 = businessState.business) === null || _businessState$busine2 === void 0 ? void 0 : _businessState$busine2.owners), [newOwner]);
+              _owners = [].concat(_toConsumableArray(businessState === null || businessState === void 0 || (_businessState$busine2 = businessState.business) === null || _businessState$busine2 === void 0 ? void 0 : _businessState$busine2.owners), [newOwner]);
               _business = _objectSpread(_objectSpread({}, businessState === null || businessState === void 0 ? void 0 : businessState.business), {}, {
                 owners: _owners
               });
@@ -743,7 +743,7 @@ var BusinessDetails = function BusinessDetails(props) {
               loading: true
             }));
             _context11.next = 5;
-            return fetch("https://integrations.ordering.co/pulseposdps/api/sync_".concat(event, ".php?store_id=").concat(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine3 = businessState.business) === null || _businessState$busine3 === void 0 ? void 0 : _businessState$busine3.external_id), {
+            return fetch("https://integrations.ordering.co/pulseposdps/api/sync_".concat(event, ".php?store_id=").concat(businessState === null || businessState === void 0 || (_businessState$busine3 = businessState.business) === null || _businessState$busine3 === void 0 ? void 0 : _businessState$busine3.external_id), {
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json',

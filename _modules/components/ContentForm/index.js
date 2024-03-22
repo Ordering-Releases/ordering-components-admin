@@ -181,7 +181,7 @@ var ContentForm = function ContentForm(props) {
                 images: _images
               }));
               showToast(_ToastContext.ToastType.Success, t('GALLERY_IMAGE_ADDED', 'Business gallery image added'));
-              setSelectedImageUrl(content === null || content === void 0 ? void 0 : (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.source);
+              setSelectedImageUrl(content === null || content === void 0 || (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.source);
             } else {
               setInsertImageState(_objectSpread(_objectSpread({}, insertImageState), {}, {
                 loading: false,
@@ -296,7 +296,7 @@ var ContentForm = function ContentForm(props) {
   };
   var handleSave = function handleSave(value) {
     var _formState$changes;
-    var editValue = value !== null && value !== void 0 ? value : formState === null || formState === void 0 ? void 0 : (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.body;
+    var editValue = value !== null && value !== void 0 ? value : formState === null || formState === void 0 || (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.body;
     handleChangeContent(type, editValue);
     onClose();
   };

@@ -60,7 +60,7 @@ var UsersExportCSV = function UsersExportCSV(props) {
    */
   var getCSV = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(filterApply) {
-      var _props$multiFilterVal, _props$multiFilterVal2, _props$multiFilterVal3, _props$multiFilterVal34, _props$multiFilterVal35, _props$multiFilterVal36, _props$multiFilterVal37, requestOptions, defaultConditions, filterConditons, isOrdersCountValue, _Object$keys, searchConditions, _props$multiFilterVal4, _props$multiFilterVal5, _props$multiFilterVal7, _props$multiFilterVal8, _props$multiFilterVal10, _props$multiFilterVal11, _props$multiFilterVal13, _props$multiFilterVal14, _props$multiFilterVal16, _props$multiFilterVal18, _props$multiFilterVal20, _props$multiFilterVal22, _props$multiFilterVal24, _props$multiFilterVal26, _props$multiFilterVal28, _props$multiFilterVal30, _props$multiFilterVal32, _searchConditions, _props$multiFilterVal6, _props$multiFilterVal9, _props$multiFilterVal12, _props$multiFilterVal15, _props$multiFilterVal17, _props$multiFilterVal19, _props$multiFilterVal21, _props$multiFilterVal23, _props$multiFilterVal25, _props$multiFilterVal27, _props$multiFilterVal29, _props$multiFilterVal31, _props$multiFilterVal33, filterConditonsObj, functionFetch, response, content;
+      var _props$multiFilterVal, _props$multiFilterVal2, _props$multiFilterVal33, _props$multiFilterVal34, requestOptions, defaultConditions, filterConditons, isOrdersCountValue, _Object$keys, searchConditions, _props$multiFilterVal3, _props$multiFilterVal4, _props$multiFilterVal6, _props$multiFilterVal7, _props$multiFilterVal9, _props$multiFilterVal10, _props$multiFilterVal12, _props$multiFilterVal13, _props$multiFilterVal15, _props$multiFilterVal17, _props$multiFilterVal19, _props$multiFilterVal21, _props$multiFilterVal23, _props$multiFilterVal25, _props$multiFilterVal27, _props$multiFilterVal29, _props$multiFilterVal31, _searchConditions, _props$multiFilterVal5, _props$multiFilterVal8, _props$multiFilterVal11, _props$multiFilterVal14, _props$multiFilterVal16, _props$multiFilterVal18, _props$multiFilterVal20, _props$multiFilterVal22, _props$multiFilterVal24, _props$multiFilterVal26, _props$multiFilterVal28, _props$multiFilterVal30, _props$multiFilterVal32, filterConditonsObj, functionFetch, response, content;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -89,7 +89,7 @@ var UsersExportCSV = function UsersExportCSV(props) {
               });
             }
             filterConditons = [];
-            isOrdersCountValue = props.multiFilterValues && ((_props$multiFilterVal = props.multiFilterValues) === null || _props$multiFilterVal === void 0 ? void 0 : _props$multiFilterVal.ordersCount) && ((_props$multiFilterVal2 = props.multiFilterValues) === null || _props$multiFilterVal2 === void 0 ? void 0 : (_props$multiFilterVal3 = _props$multiFilterVal2.ordersCount) === null || _props$multiFilterVal3 === void 0 ? void 0 : _props$multiFilterVal3.value);
+            isOrdersCountValue = props.multiFilterValues && ((_props$multiFilterVal = props.multiFilterValues) === null || _props$multiFilterVal === void 0 ? void 0 : _props$multiFilterVal.ordersCount) && ((_props$multiFilterVal2 = props.multiFilterValues) === null || _props$multiFilterVal2 === void 0 || (_props$multiFilterVal2 = _props$multiFilterVal2.ordersCount) === null || _props$multiFilterVal2 === void 0 ? void 0 : _props$multiFilterVal2.value);
             if (filterApply) {
               if (userTypesSelected.length > 0) {
                 filterConditons.push({
@@ -152,102 +152,102 @@ var UsersExportCSV = function UsersExportCSV(props) {
               }
               if (((_Object$keys = Object.keys(props === null || props === void 0 ? void 0 : props.multiFilterValues)) === null || _Object$keys === void 0 ? void 0 : _Object$keys.length) > 0) {
                 _searchConditions = [];
-                if ((_props$multiFilterVal4 = props.multiFilterValues) !== null && _props$multiFilterVal4 !== void 0 && _props$multiFilterVal4.name && ((_props$multiFilterVal5 = props.multiFilterValues) === null || _props$multiFilterVal5 === void 0 ? void 0 : _props$multiFilterVal5.name) !== null) {
+                if ((_props$multiFilterVal3 = props.multiFilterValues) !== null && _props$multiFilterVal3 !== void 0 && _props$multiFilterVal3.name && ((_props$multiFilterVal4 = props.multiFilterValues) === null || _props$multiFilterVal4 === void 0 ? void 0 : _props$multiFilterVal4.name) !== null) {
                   _searchConditions.push({
                     attribute: 'name',
                     value: {
                       condition: 'ilike',
-                      value: encodeURI("%".concat((_props$multiFilterVal6 = props.multiFilterValues) === null || _props$multiFilterVal6 === void 0 ? void 0 : _props$multiFilterVal6.name, "%"))
+                      value: encodeURI("%".concat((_props$multiFilterVal5 = props.multiFilterValues) === null || _props$multiFilterVal5 === void 0 ? void 0 : _props$multiFilterVal5.name, "%"))
                     }
                   });
                 }
-                if ((_props$multiFilterVal7 = props.multiFilterValues) !== null && _props$multiFilterVal7 !== void 0 && _props$multiFilterVal7.lastname && ((_props$multiFilterVal8 = props.multiFilterValues) === null || _props$multiFilterVal8 === void 0 ? void 0 : _props$multiFilterVal8.lastname) !== null) {
+                if ((_props$multiFilterVal6 = props.multiFilterValues) !== null && _props$multiFilterVal6 !== void 0 && _props$multiFilterVal6.lastname && ((_props$multiFilterVal7 = props.multiFilterValues) === null || _props$multiFilterVal7 === void 0 ? void 0 : _props$multiFilterVal7.lastname) !== null) {
                   _searchConditions.push({
                     attribute: 'lastname',
                     value: {
                       condition: 'ilike',
-                      value: encodeURI("%".concat((_props$multiFilterVal9 = props.multiFilterValues) === null || _props$multiFilterVal9 === void 0 ? void 0 : _props$multiFilterVal9.lastname, "%"))
+                      value: encodeURI("%".concat((_props$multiFilterVal8 = props.multiFilterValues) === null || _props$multiFilterVal8 === void 0 ? void 0 : _props$multiFilterVal8.lastname, "%"))
                     }
                   });
                 }
-                if ((_props$multiFilterVal10 = props.multiFilterValues) !== null && _props$multiFilterVal10 !== void 0 && _props$multiFilterVal10.email && ((_props$multiFilterVal11 = props.multiFilterValues) === null || _props$multiFilterVal11 === void 0 ? void 0 : _props$multiFilterVal11.email) !== null) {
+                if ((_props$multiFilterVal9 = props.multiFilterValues) !== null && _props$multiFilterVal9 !== void 0 && _props$multiFilterVal9.email && ((_props$multiFilterVal10 = props.multiFilterValues) === null || _props$multiFilterVal10 === void 0 ? void 0 : _props$multiFilterVal10.email) !== null) {
                   _searchConditions.push({
                     attribute: 'email',
                     value: {
                       condition: 'ilike',
-                      value: encodeURI("%".concat((_props$multiFilterVal12 = props.multiFilterValues) === null || _props$multiFilterVal12 === void 0 ? void 0 : _props$multiFilterVal12.email, "%"))
+                      value: encodeURI("%".concat((_props$multiFilterVal11 = props.multiFilterValues) === null || _props$multiFilterVal11 === void 0 ? void 0 : _props$multiFilterVal11.email, "%"))
                     }
                   });
                 }
-                if ((_props$multiFilterVal13 = props.multiFilterValues) !== null && _props$multiFilterVal13 !== void 0 && _props$multiFilterVal13.cellphone && ((_props$multiFilterVal14 = props.multiFilterValues) === null || _props$multiFilterVal14 === void 0 ? void 0 : _props$multiFilterVal14.cellphone) !== null) {
+                if ((_props$multiFilterVal12 = props.multiFilterValues) !== null && _props$multiFilterVal12 !== void 0 && _props$multiFilterVal12.cellphone && ((_props$multiFilterVal13 = props.multiFilterValues) === null || _props$multiFilterVal13 === void 0 ? void 0 : _props$multiFilterVal13.cellphone) !== null) {
                   _searchConditions.push({
                     attribute: 'cellphone',
                     value: {
                       condition: 'ilike',
-                      value: encodeURI("%".concat((_props$multiFilterVal15 = props.multiFilterValues) === null || _props$multiFilterVal15 === void 0 ? void 0 : _props$multiFilterVal15.cellphone, "%"))
+                      value: encodeURI("%".concat((_props$multiFilterVal14 = props.multiFilterValues) === null || _props$multiFilterVal14 === void 0 ? void 0 : _props$multiFilterVal14.cellphone, "%"))
                     }
                   });
                 }
-                if (((_props$multiFilterVal16 = props.multiFilterValues) === null || _props$multiFilterVal16 === void 0 ? void 0 : _props$multiFilterVal16.countryPhoneCode) !== null) {
+                if (((_props$multiFilterVal15 = props.multiFilterValues) === null || _props$multiFilterVal15 === void 0 ? void 0 : _props$multiFilterVal15.countryPhoneCode) !== null) {
                   _searchConditions.push({
                     attribute: 'country_phone_code',
                     value: {
                       condition: 'ilike',
-                      value: encodeURI("%".concat((_props$multiFilterVal17 = props.multiFilterValues) === null || _props$multiFilterVal17 === void 0 ? void 0 : _props$multiFilterVal17.countryPhoneCode, "%"))
+                      value: encodeURI("%".concat((_props$multiFilterVal16 = props.multiFilterValues) === null || _props$multiFilterVal16 === void 0 ? void 0 : _props$multiFilterVal16.countryPhoneCode, "%"))
                     }
                   });
                 }
-                if (((_props$multiFilterVal18 = props.multiFilterValues) === null || _props$multiFilterVal18 === void 0 ? void 0 : _props$multiFilterVal18.cityIds.length) !== 0) {
+                if (((_props$multiFilterVal17 = props.multiFilterValues) === null || _props$multiFilterVal17 === void 0 ? void 0 : _props$multiFilterVal17.cityIds.length) !== 0) {
                   _searchConditions.push({
                     attribute: 'city_id',
-                    value: (_props$multiFilterVal19 = props.multiFilterValues) === null || _props$multiFilterVal19 === void 0 ? void 0 : _props$multiFilterVal19.cityIds
+                    value: (_props$multiFilterVal18 = props.multiFilterValues) === null || _props$multiFilterVal18 === void 0 ? void 0 : _props$multiFilterVal18.cityIds
                   });
                 }
-                if (((_props$multiFilterVal20 = props.multiFilterValues) === null || _props$multiFilterVal20 === void 0 ? void 0 : _props$multiFilterVal20.phoneVerified) !== null) {
+                if (((_props$multiFilterVal19 = props.multiFilterValues) === null || _props$multiFilterVal19 === void 0 ? void 0 : _props$multiFilterVal19.phoneVerified) !== null) {
                   _searchConditions.push({
                     attribute: 'phone_verified',
-                    value: (_props$multiFilterVal21 = props.multiFilterValues) === null || _props$multiFilterVal21 === void 0 ? void 0 : _props$multiFilterVal21.phoneVerified
+                    value: (_props$multiFilterVal20 = props.multiFilterValues) === null || _props$multiFilterVal20 === void 0 ? void 0 : _props$multiFilterVal20.phoneVerified
                   });
                 }
-                if (((_props$multiFilterVal22 = props.multiFilterValues) === null || _props$multiFilterVal22 === void 0 ? void 0 : _props$multiFilterVal22.emailVerified) !== null) {
+                if (((_props$multiFilterVal21 = props.multiFilterValues) === null || _props$multiFilterVal21 === void 0 ? void 0 : _props$multiFilterVal21.emailVerified) !== null) {
                   _searchConditions.push({
                     attribute: 'email_verified',
-                    value: (_props$multiFilterVal23 = props.multiFilterValues) === null || _props$multiFilterVal23 === void 0 ? void 0 : _props$multiFilterVal23.emailVerified
+                    value: (_props$multiFilterVal22 = props.multiFilterValues) === null || _props$multiFilterVal22 === void 0 ? void 0 : _props$multiFilterVal22.emailVerified
                   });
                 }
-                if (((_props$multiFilterVal24 = props.multiFilterValues) === null || _props$multiFilterVal24 === void 0 ? void 0 : _props$multiFilterVal24.userType) !== null) {
+                if (((_props$multiFilterVal23 = props.multiFilterValues) === null || _props$multiFilterVal23 === void 0 ? void 0 : _props$multiFilterVal23.userType) !== null) {
                   _searchConditions.push({
                     attribute: 'level',
-                    value: (_props$multiFilterVal25 = props.multiFilterValues) === null || _props$multiFilterVal25 === void 0 ? void 0 : _props$multiFilterVal25.userType
+                    value: (_props$multiFilterVal24 = props.multiFilterValues) === null || _props$multiFilterVal24 === void 0 ? void 0 : _props$multiFilterVal24.userType
                   });
                 }
-                if (((_props$multiFilterVal26 = props.multiFilterValues) === null || _props$multiFilterVal26 === void 0 ? void 0 : _props$multiFilterVal26.loyaltyLevel) !== null) {
+                if (((_props$multiFilterVal25 = props.multiFilterValues) === null || _props$multiFilterVal25 === void 0 ? void 0 : _props$multiFilterVal25.loyaltyLevel) !== null) {
                   _searchConditions.push({
                     attribute: 'loyalty_level_id',
-                    value: (_props$multiFilterVal27 = props.multiFilterValues) === null || _props$multiFilterVal27 === void 0 ? void 0 : _props$multiFilterVal27.loyaltyLevel
+                    value: (_props$multiFilterVal26 = props.multiFilterValues) === null || _props$multiFilterVal26 === void 0 ? void 0 : _props$multiFilterVal26.loyaltyLevel
                   });
                 }
-                if (((_props$multiFilterVal28 = props.multiFilterValues) === null || _props$multiFilterVal28 === void 0 ? void 0 : _props$multiFilterVal28.enabled) !== null) {
+                if (((_props$multiFilterVal27 = props.multiFilterValues) === null || _props$multiFilterVal27 === void 0 ? void 0 : _props$multiFilterVal27.enabled) !== null) {
                   _searchConditions.push({
                     attribute: 'enabled',
-                    value: (_props$multiFilterVal29 = props.multiFilterValues) === null || _props$multiFilterVal29 === void 0 ? void 0 : _props$multiFilterVal29.enabled
+                    value: (_props$multiFilterVal28 = props.multiFilterValues) === null || _props$multiFilterVal28 === void 0 ? void 0 : _props$multiFilterVal28.enabled
                   });
                 }
-                if (((_props$multiFilterVal30 = props.multiFilterValues) === null || _props$multiFilterVal30 === void 0 ? void 0 : _props$multiFilterVal30.deliveryFromDatetime) !== null) {
+                if (((_props$multiFilterVal29 = props.multiFilterValues) === null || _props$multiFilterVal29 === void 0 ? void 0 : _props$multiFilterVal29.deliveryFromDatetime) !== null) {
                   _searchConditions.push({
                     attribute: 'created_at',
                     value: {
                       condition: '>=',
-                      value: (_props$multiFilterVal31 = props.multiFilterValues) === null || _props$multiFilterVal31 === void 0 ? void 0 : _props$multiFilterVal31.deliveryFromDatetime
+                      value: (_props$multiFilterVal30 = props.multiFilterValues) === null || _props$multiFilterVal30 === void 0 ? void 0 : _props$multiFilterVal30.deliveryFromDatetime
                     }
                   });
                 }
-                if (((_props$multiFilterVal32 = props.multiFilterValues) === null || _props$multiFilterVal32 === void 0 ? void 0 : _props$multiFilterVal32.deliveryEndDatetime) !== null) {
+                if (((_props$multiFilterVal31 = props.multiFilterValues) === null || _props$multiFilterVal31 === void 0 ? void 0 : _props$multiFilterVal31.deliveryEndDatetime) !== null) {
                   _searchConditions.push({
                     attribute: 'created_at',
                     value: {
                       condition: '<=',
-                      value: (_props$multiFilterVal33 = props.multiFilterValues) === null || _props$multiFilterVal33 === void 0 ? void 0 : _props$multiFilterVal33.deliveryEndDatetime
+                      value: (_props$multiFilterVal32 = props.multiFilterValues) === null || _props$multiFilterVal32 === void 0 ? void 0 : _props$multiFilterVal32.deliveryEndDatetime
                     }
                   });
                 }
@@ -263,7 +263,7 @@ var UsersExportCSV = function UsersExportCSV(props) {
               conditions: filterConditons,
               conector: 'AND'
             };
-            functionFetch = filterApply ? isOrdersCountValue ? "".concat(ordering.root, "/users_new.csv?mode=dashboard&orderBy=id&orders_count_condition=").concat((_props$multiFilterVal34 = props.multiFilterValues) === null || _props$multiFilterVal34 === void 0 ? void 0 : (_props$multiFilterVal35 = _props$multiFilterVal34.ordersCount) === null || _props$multiFilterVal35 === void 0 ? void 0 : _props$multiFilterVal35.condition, "&orders_count_value=").concat((_props$multiFilterVal36 = props.multiFilterValues) === null || _props$multiFilterVal36 === void 0 ? void 0 : (_props$multiFilterVal37 = _props$multiFilterVal36.ordersCount) === null || _props$multiFilterVal37 === void 0 ? void 0 : _props$multiFilterVal37.value, "&where=").concat(JSON.stringify(filterConditonsObj)) : "".concat(ordering.root, "/users_new.csv?mode=dashboard&orderBy=id&where=").concat(JSON.stringify(filterConditonsObj)) : defaultConditions.length > 0 ? "".concat(ordering.root, "/users_new.csv?mode=dashboard&orderBy=id&where=").concat(JSON.stringify(defaultConditions)) : "".concat(ordering.root, "/users_new.csv?mode=dashboard&orderBy=id");
+            functionFetch = filterApply ? isOrdersCountValue ? "".concat(ordering.root, "/users_new.csv?mode=dashboard&orderBy=id&orders_count_condition=").concat((_props$multiFilterVal33 = props.multiFilterValues) === null || _props$multiFilterVal33 === void 0 || (_props$multiFilterVal33 = _props$multiFilterVal33.ordersCount) === null || _props$multiFilterVal33 === void 0 ? void 0 : _props$multiFilterVal33.condition, "&orders_count_value=").concat((_props$multiFilterVal34 = props.multiFilterValues) === null || _props$multiFilterVal34 === void 0 || (_props$multiFilterVal34 = _props$multiFilterVal34.ordersCount) === null || _props$multiFilterVal34 === void 0 ? void 0 : _props$multiFilterVal34.value, "&where=").concat(JSON.stringify(filterConditonsObj)) : "".concat(ordering.root, "/users_new.csv?mode=dashboard&orderBy=id&where=").concat(JSON.stringify(filterConditonsObj)) : defaultConditions.length > 0 ? "".concat(ordering.root, "/users_new.csv?mode=dashboard&orderBy=id&where=").concat(JSON.stringify(defaultConditions)) : "".concat(ordering.root, "/users_new.csv?mode=dashboard&orderBy=id");
             _context.next = 14;
             return fetch(functionFetch, requestOptions);
           case 14:

@@ -77,7 +77,7 @@ var SelectPOS = function SelectPOS(props) {
               }
             };
             _context.next = 5;
-            return fetch("https://integrations.ordering.co/network/request_integration.php?admin_name=".concat(user === null || user === void 0 ? void 0 : user.name, "&email=").concat(user === null || user === void 0 ? void 0 : user.email, "&project=").concat(ordering === null || ordering === void 0 ? void 0 : ordering.project, "&Selected_POS=").concat(formState === null || formState === void 0 ? void 0 : (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.pos), requestOptions);
+            return fetch("https://integrations.ordering.co/network/request_integration.php?admin_name=".concat(user === null || user === void 0 ? void 0 : user.name, "&email=").concat(user === null || user === void 0 ? void 0 : user.email, "&project=").concat(ordering === null || ordering === void 0 ? void 0 : ordering.project, "&Selected_POS=").concat(formState === null || formState === void 0 || (_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : _formState$changes.pos), requestOptions);
           case 5:
             response = _context.sent;
             _context.next = 8;

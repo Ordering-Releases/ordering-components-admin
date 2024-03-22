@@ -10,9 +10,10 @@ export const BusinessMenuOptions = (props) => {
     business,
     menu,
     UIComponent,
-    handleUpdateBusinessState,
     isSelectedSharedMenus,
-    sitesState
+    sitesState,
+    menuList,
+    setMenuList
   } = props
   const [ordering] = useApi()
   const [{ token }] = useSession()
@@ -91,8 +92,7 @@ export const BusinessMenuOptions = (props) => {
       })
 
       if (!content.error) {
-        const _business = { ...business }
-        _business.menus.filter(menu => {
+        const menus = menuList.menus.filter(menu => {
           if (menu.id === content.result.id) {
             Object.assign(menu, content.result)
             const isUpdatedProducts = typeof (changes?.products) !== 'undefined'
@@ -102,8 +102,10 @@ export const BusinessMenuOptions = (props) => {
           }
           return true
         })
-
-        handleUpdateBusinessState && handleUpdateBusinessState(_business)
+        setMenuList({
+          ...menuList,
+          menus
+        })
         showToast(ToastType.Success, t('MENU_SAVED', 'Products catalog saved'))
       }
     } catch (err) {
@@ -169,7 +171,6 @@ export const BusinessMenuOptions = (props) => {
       })
 
       if (!content.error) {
-        const _business = { ...business }
         let _menu = { ...content.result, enabled: true }
 
         let allProducts = []
@@ -185,8 +186,13 @@ export const BusinessMenuOptions = (props) => {
           products = allProducts.filter(product => _menu.products.includes(product.id))
         }
         _menu = { ..._menu, products: products }
-        _business.menus.push(_menu)
-        handleUpdateBusinessState && handleUpdateBusinessState(_business)
+        const menusArray = menuList.menus
+        menusArray.push(_menu)
+        setMenuList({
+          ...menuList,
+          menus: menusArray
+        })
+
         showToast(ToastType.Success, t('MENU_ADDED', 'Products catalog added'))
         props.onClose() && props.onClose()
       }
@@ -217,15 +223,20 @@ export const BusinessMenuOptions = (props) => {
           loading: false,
           error: null
         })
-        let _business = null
+        let menus, menusShared
         if (isSelectedSharedMenus) {
-          const menusShared = business.menus_shared.filter(_menu => _menu.id !== menu.id)
-          _business = { ...business, menus_shared: menusShared }
+          menusShared = menuList.menusShared.filter(_menu => _menu.id !== menu.id)
+          setMenuList({
+            ...menuList,
+            menusShared
+          })
         } else {
-          const menus = business.menus.filter(_menu => _menu.id !== menu.id)
-          _business = { ...business, menus: menus }
+          menus = menuList.menus.filter(_menu => _menu.id !== menu.id)
+          setMenuList({
+            ...menuList,
+            menus
+          })
         }
-        handleUpdateBusinessState && handleUpdateBusinessState(_business)
         showToast(ToastType.Success, t('MENU_DELETED', 'Products catalog deleted'))
         props.onClose && props.onClose()
       } else {
