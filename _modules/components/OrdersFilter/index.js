@@ -61,7 +61,7 @@ var OrdersFilter = function OrdersFilter(props) {
   var handleChangeExternalId = function handleChangeExternalId(e) {
     var _e$target;
     setFilterValues(_objectSpread(_objectSpread({}, filterValues), {}, {
-      externalId: e === null || e === void 0 || (_e$target = e.target) === null || _e$target === void 0 ? void 0 : _e$target.value
+      externalId: e === null || e === void 0 ? void 0 : (_e$target = e.target) === null || _e$target === void 0 ? void 0 : _e$target.value
     }));
   };
 

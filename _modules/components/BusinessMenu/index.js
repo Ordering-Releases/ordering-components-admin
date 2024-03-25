@@ -72,7 +72,7 @@ var BusinessMenu = function BusinessMenu(props) {
   */
   var getBusinessMenus = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var _yield$ordering$setAc, _yield$ordering$setAc2, error, result, _business;
+      var _yield$ordering$setAc, _yield$ordering$setAc2, error, result, _business, _menus;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -89,7 +89,10 @@ var BusinessMenu = function BusinessMenu(props) {
             result = _yield$ordering$setAc2.result;
             _business = Array.isArray(result) ? null : result;
             if (!error) {
-              setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
+              _menus = {};
+              if (result !== null && result !== void 0 && result.menus) _menus.menus = result === null || result === void 0 ? void 0 : result.menus;
+              if (result !== null && result !== void 0 && result.menus_shared) _menus.menusShared = result === null || result === void 0 ? void 0 : result.menus_shared;
+              setBusinessMenusState(_objectSpread(_objectSpread(_objectSpread({}, businessMenusState), _menus), {}, {
                 loading: false
               }));
             } else {
@@ -301,7 +304,7 @@ var BusinessMenu = function BusinessMenu(props) {
               }
             };
             _context4.next = 4;
-            return fetch("".concat(ordering.root, "/business/").concat(business.id, "/menus?params=sites,products&mode=dashboard"), requestOptions);
+            return fetch("".concat(ordering.root, "/business/").concat(business.id, "/menus?params=sites"), requestOptions);
           case 4:
             response = _context4.sent;
             _context4.next = 7;
@@ -311,7 +314,7 @@ var BusinessMenu = function BusinessMenu(props) {
             result = _yield$response$json.result;
             error = _yield$response$json.error;
             if (error) {
-              _context4.next = 30;
+              _context4.next = 29;
               break;
             }
             sites = {};
@@ -342,43 +345,38 @@ var BusinessMenu = function BusinessMenu(props) {
               loading: false,
               sites: sitesResult
             }));
-            setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
-              loading: false,
-              menus: result,
-              error: null
-            }));
-            _context4.next = 28;
+            _context4.next = 27;
             break;
-          case 25:
-            _context4.prev = 25;
+          case 24:
+            _context4.prev = 24;
             _context4.t0 = _context4["catch"](13);
             setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
               loading: false,
               error: [_context4.t0.message]
             }));
-          case 28:
-            _context4.next = 31;
+          case 27:
+            _context4.next = 30;
             break;
-          case 30:
+          case 29:
             setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
               loading: false,
               error: result
             }));
-          case 31:
-            _context4.next = 36;
+          case 30:
+            _context4.next = 35;
             break;
-          case 33:
-            _context4.prev = 33;
+          case 32:
+            _context4.prev = 32;
             _context4.t1 = _context4["catch"](0);
             setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
               loading: false,
               error: [_context4.t1.message]
             }));
-          case 36:
+          case 35:
           case "end":
             return _context4.stop();
         }
-      }, _callee4, null, [[0, 33], [13, 25]]);
+      }, _callee4, null, [[0, 32], [13, 24]]);
     }));
     return function getBusinessMenuChannels() {
       return _ref4.apply(this, arguments);
@@ -438,5 +436,5 @@ BusinessMenu.defaultProps = {
   afterComponents: [],
   beforeElements: [],
   afterElements: [],
-  propsToFetch: ['id', 'categories', 'categories_shared', 'header', 'logo']
+  propsToFetch: ['id', 'categories', 'menus', 'menus_shared', 'categories_shared', 'header', 'logo']
 };

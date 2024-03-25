@@ -90,7 +90,7 @@ var OpenCartsDetail = function OpenCartsDetail(props) {
               _cart = _objectSpread(_objectSpread({}, content.result), {}, {
                 id: cart === null || cart === void 0 ? void 0 : cart.id,
                 business: _objectSpread(_objectSpread({}, content.result.business), cart === null || cart === void 0 ? void 0 : cart.business),
-                user: _objectSpread(_objectSpread({}, cart === null || cart === void 0 ? void 0 : cart.user), (cart === null || cart === void 0 || (_cart$address = cart.address) === null || _cart$address === void 0 ? void 0 : _cart$address.address) && {
+                user: _objectSpread(_objectSpread({}, cart === null || cart === void 0 ? void 0 : cart.user), (cart === null || cart === void 0 ? void 0 : (_cart$address = cart.address) === null || _cart$address === void 0 ? void 0 : _cart$address.address) && {
                   address: cart.address.address
                 }),
                 updated_at: cart === null || cart === void 0 ? void 0 : cart.updated_at

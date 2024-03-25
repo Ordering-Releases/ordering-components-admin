@@ -32,7 +32,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  * Component to manage Banner Image link behavior without UI component
  */
 var BannerImageDetails = function BannerImageDetails(props) {
-  var _props$image;
+  var _props$image, _props$image$action;
   var UIComponent = props.UIComponent,
     propsToFetch = props.propsToFetch,
     bannerId = props.bannerId,
@@ -81,7 +81,7 @@ var BannerImageDetails = function BannerImageDetails(props) {
     _useState8 = _slicedToArray(_useState7, 2),
     businessList = _useState8[0],
     setBusinessList = _useState8[1];
-  var _useState9 = (0, _react.useState)(((_props$image = props.image) === null || _props$image === void 0 || (_props$image = _props$image.action) === null || _props$image === void 0 ? void 0 : _props$image.type) || null),
+  var _useState9 = (0, _react.useState)(((_props$image = props.image) === null || _props$image === void 0 ? void 0 : (_props$image$action = _props$image.action) === null || _props$image$action === void 0 ? void 0 : _props$image$action.type) || null),
     _useState10 = _slicedToArray(_useState9, 2),
     selectedLinkType = _useState10[0],
     setSelectedLinkType = _useState10[1];

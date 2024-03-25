@@ -140,13 +140,13 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
    * @param {Number} id
    */
   var handleChangeDefaultSuboption = function handleChangeDefaultSuboption(id) {
-    var _optionState$option, _optionState$option2;
-    var suboptionPreselected = optionState === null || optionState === void 0 || (_optionState$option = optionState.option) === null || _optionState$option === void 0 || (_optionState$option = _optionState$option.suboptions) === null || _optionState$option === void 0 || (_optionState$option = _optionState$option.find(function (suboption) {
+    var _optionState$option, _optionState$option$s, _optionState$option$s2, _optionState$option2, _optionState$option2$, _optionState$option2$2;
+    var suboptionPreselected = optionState === null || optionState === void 0 ? void 0 : (_optionState$option = optionState.option) === null || _optionState$option === void 0 ? void 0 : (_optionState$option$s = _optionState$option.suboptions) === null || _optionState$option$s === void 0 ? void 0 : (_optionState$option$s2 = _optionState$option$s.find(function (suboption) {
       return suboption.id === id;
-    })) === null || _optionState$option === void 0 ? void 0 : _optionState$option.preselected;
-    var defaultSubOptionsLength = optionState === null || optionState === void 0 || (_optionState$option2 = optionState.option) === null || _optionState$option2 === void 0 || (_optionState$option2 = _optionState$option2.suboptions) === null || _optionState$option2 === void 0 || (_optionState$option2 = _optionState$option2.filter(function (suboption) {
+    })) === null || _optionState$option$s2 === void 0 ? void 0 : _optionState$option$s2.preselected;
+    var defaultSubOptionsLength = optionState === null || optionState === void 0 ? void 0 : (_optionState$option2 = optionState.option) === null || _optionState$option2 === void 0 ? void 0 : (_optionState$option2$ = _optionState$option2.suboptions) === null || _optionState$option2$ === void 0 ? void 0 : (_optionState$option2$2 = _optionState$option2$.filter(function (suboption) {
       return suboption === null || suboption === void 0 ? void 0 : suboption.preselected;
-    })) === null || _optionState$option2 === void 0 ? void 0 : _optionState$option2.length;
+    })) === null || _optionState$option2$2 === void 0 ? void 0 : _optionState$option2$2.length;
     if (suboptionPreselected) {
       handleUpdateSubOption({
         id: id,
@@ -154,7 +154,7 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
       });
     } else {
       var _optionState$option3;
-      if ((optionState === null || optionState === void 0 || (_optionState$option3 = optionState.option) === null || _optionState$option3 === void 0 ? void 0 : _optionState$option3.max) > defaultSubOptionsLength) {
+      if ((optionState === null || optionState === void 0 ? void 0 : (_optionState$option3 = optionState.option) === null || _optionState$option3 === void 0 ? void 0 : _optionState$option3.max) > defaultSubOptionsLength) {
         handleUpdateSubOption({
           id: id,
           preselected: true
@@ -250,7 +250,7 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
       var categories = businessState.categories.map(function (item) {
         var _products = item.products.map(function (prod) {
           var _prod$extras;
-          var _extras = prod === null || prod === void 0 || (_prod$extras = prod.extras) === null || _prod$extras === void 0 ? void 0 : _prod$extras.filter(function (extra) {
+          var _extras = prod === null || prod === void 0 ? void 0 : (_prod$extras = prod.extras) === null || _prod$extras === void 0 ? void 0 : _prod$extras.filter(function (extra) {
             if (extra.id === updatedExtra.id) {
               Object.assign(extra, updatedExtra);
             }

@@ -49,8 +49,8 @@ var AutocompleteInput = function AutocompleteInput(props) {
     };
   }
   (0, _react.useEffect)(function () {
-    var _window$google;
-    if (googleReady && onChangeAddress && (_window$google = window.google) !== null && _window$google !== void 0 && (_window$google = _window$google.maps) !== null && _window$google !== void 0 && (_window$google = _window$google.places) !== null && _window$google !== void 0 && _window$google.Autocomplete) {
+    var _window$google, _window$google$maps, _window$google$maps$p;
+    if (googleReady && onChangeAddress && (_window$google = window.google) !== null && _window$google !== void 0 && (_window$google$maps = _window$google.maps) !== null && _window$google$maps !== void 0 && (_window$google$maps$p = _window$google$maps.places) !== null && _window$google$maps$p !== void 0 && _window$google$maps$p.Autocomplete) {
       var autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, options);
       autocomplete.addListener('place_changed', function () {
         var place = autocomplete.getPlace();

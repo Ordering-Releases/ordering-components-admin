@@ -24,7 +24,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var BusinessController = function BusinessController(props) {
-  var _businessObject$today;
+  var _businessObject$today, _businessObject$today2;
   var business = props.business,
     businessId = props.businessId,
     businessAttributes = props.businessAttributes,
@@ -125,7 +125,7 @@ var BusinessController = function BusinessController(props) {
   /**
    * Business time to close formatted
    */
-  var timeToCloseFormatted = formatDate((businessObject === null || businessObject === void 0 || (_businessObject$today = businessObject.today) === null || _businessObject$today === void 0 || (_businessObject$today = _businessObject$today.lapses[0]) === null || _businessObject$today === void 0 ? void 0 : _businessObject$today.close) || null);
+  var timeToCloseFormatted = formatDate((businessObject === null || businessObject === void 0 ? void 0 : (_businessObject$today = businessObject.today) === null || _businessObject$today === void 0 ? void 0 : (_businessObject$today2 = _businessObject$today.lapses[0]) === null || _businessObject$today2 === void 0 ? void 0 : _businessObject$today2.close) || null);
   (0, _react.useEffect)(function () {
     var currentHour = currentTime === null || currentTime === void 0 ? void 0 : currentTime.split(':')[0];
     var currentMinute = currentTime === null || currentTime === void 0 ? void 0 : currentTime.split(':')[1];
