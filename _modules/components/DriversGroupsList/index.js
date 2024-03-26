@@ -39,7 +39,8 @@ var DriversGroupsList = function DriversGroupsList(props) {
     isDriversMangersRequired = props.isDriversMangersRequired,
     isHeaderComponent = props.isHeaderComponent,
     paginationSettings = props.paginationSettings,
-    propsToFetch = props.propsToFetch;
+    propsToFetch = props.propsToFetch,
+    business = props.business;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -145,6 +146,15 @@ var DriversGroupsList = function DriversGroupsList(props) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
+            if (!(business !== null && business !== void 0 && business.drivergroups)) {
+              _context.next = 4;
+              break;
+            }
+            setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
+              groups: business === null || business === void 0 ? void 0 : business.drivergroups
+            }));
+            return _context.abrupt("return");
+          case 4:
             setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
               loading: true
             }));
@@ -184,13 +194,13 @@ var DriversGroupsList = function DriversGroupsList(props) {
                 conector: 'AND'
               };
             }
-            _context.next = 9;
-            return fetch("".concat(ordering.root, "/drivergroups?page=").concat(page, "&page_size=").concat(pageSize, "&params=").concat(propsToFetch, "&where=").concat(JSON.stringify(where)), requestOptions);
-          case 9:
-            response = _context.sent;
             _context.next = 12;
-            return response.json();
+            return fetch("".concat(ordering.root, "/drivergroups?page=").concat(page, "&page_size=").concat(pageSize, "&params=").concat(propsToFetch, "&where=").concat(JSON.stringify(where)), requestOptions);
           case 12:
+            response = _context.sent;
+            _context.next = 15;
+            return response.json();
+          case 15:
             content = _context.sent;
             result = content.result, pagination = content.pagination, error = content.error;
             if (!error) {
@@ -218,20 +228,20 @@ var DriversGroupsList = function DriversGroupsList(props) {
               to: pagination.to,
               nextPageItems: nextPageItems
             }));
-            _context.next = 23;
+            _context.next = 26;
             break;
-          case 20:
-            _context.prev = 20;
+          case 23:
+            _context.prev = 23;
             _context.t0 = _context["catch"](0);
             setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
               loading: false,
               error: [_context.t0.message]
             }));
-          case 23:
+          case 26:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 20]]);
+      }, _callee, null, [[0, 23]]);
     }));
     return function getHeaderDriversGroups(_x2, _x3) {
       return _ref.apply(this, arguments);
@@ -248,6 +258,15 @@ var DriversGroupsList = function DriversGroupsList(props) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
             _context2.prev = 0;
+            if (!(business !== null && business !== void 0 && business.drivergroups)) {
+              _context2.next = 4;
+              break;
+            }
+            setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
+              groups: business === null || business === void 0 ? void 0 : business.drivergroups
+            }));
+            return _context2.abrupt("return");
+          case 4:
             setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
               loading: true
             }));
@@ -258,13 +277,13 @@ var DriversGroupsList = function DriversGroupsList(props) {
                 Authorization: "Bearer ".concat(token)
               }
             };
-            _context2.next = 5;
-            return fetch("".concat(ordering.root, "/drivergroups"), requestOptions);
-          case 5:
-            response = _context2.sent;
             _context2.next = 8;
-            return response.json();
+            return fetch("".concat(ordering.root, "/drivergroups"), requestOptions);
           case 8:
+            response = _context2.sent;
+            _context2.next = 11;
+            return response.json();
+          case 11:
             content = _context2.sent;
             if (!content.error) {
               setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
@@ -280,20 +299,20 @@ var DriversGroupsList = function DriversGroupsList(props) {
                 setActionDisabled(false);
               }
             }
-            _context2.next = 15;
+            _context2.next = 18;
             break;
-          case 12:
-            _context2.prev = 12;
+          case 15:
+            _context2.prev = 15;
             _context2.t0 = _context2["catch"](0);
             setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
               loading: false,
               error: [_context2.t0.message]
             }));
-          case 15:
+          case 18:
           case "end":
             return _context2.stop();
         }
-      }, _callee2, null, [[0, 12]]);
+      }, _callee2, null, [[0, 15]]);
     }));
     return function getDriversGroups() {
       return _ref2.apply(this, arguments);
