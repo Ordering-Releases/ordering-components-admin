@@ -11,7 +11,8 @@ export const DriversGroupsList = (props) => {
     isDriversMangersRequired,
     isHeaderComponent,
     paginationSettings,
-    propsToFetch
+    propsToFetch,
+    business
   } = props
 
   const [ordering] = useApi()
@@ -42,6 +43,10 @@ export const DriversGroupsList = (props) => {
  */
   const getHeaderDriversGroups = async (page, pageSize) => {
     try {
+      if (business?.drivergroups) {
+        setDriversGroupsState({ ...driversGroupsState, groups: business?.drivergroups })
+        return
+      }
       setDriversGroupsState({ ...driversGroupsState, loading: true })
       const requestOptions = {
         method: 'GET',
@@ -126,6 +131,10 @@ export const DriversGroupsList = (props) => {
    */
   const getDriversGroups = async () => {
     try {
+      if (business?.drivergroups) {
+        setDriversGroupsState({ ...driversGroupsState, groups: business?.drivergroups })
+        return
+      }
       setDriversGroupsState({ ...driversGroupsState, loading: true })
       const requestOptions = {
         method: 'GET',
