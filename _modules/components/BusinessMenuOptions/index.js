@@ -113,7 +113,7 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
    */
   var handleUpdateBusinessMenuOption = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var changes, key, requestOptions, response, content, menus;
+      var changes, key, requestOptions, response, content, _menuList$menus, menus;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -156,7 +156,7 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
               loading: false
             }));
             if (!content.error) {
-              menus = menuList.menus.filter(function (menu) {
+              menus = menuList === null || menuList === void 0 || (_menuList$menus = menuList.menus) === null || _menuList$menus === void 0 ? void 0 : _menuList$menus.filter(function (menu) {
                 if (menu.id === content.result.id) {
                   Object.assign(menu, content.result);
                   var isUpdatedProducts = typeof (changes === null || changes === void 0 ? void 0 : changes.products) !== 'undefined';
@@ -280,7 +280,7 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
               _menu = _objectSpread(_objectSpread({}, _menu), {}, {
                 products: products
               });
-              menusArray = menuList.menus;
+              menusArray = menuList === null || menuList === void 0 ? void 0 : menuList.menus;
               menusArray.push(_menu);
               setMenuList(_objectSpread(_objectSpread({}, menuList), {}, {
                 menus: menusArray
@@ -312,7 +312,7 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
   }();
   var handleDeleteMenu = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var requestOptions, endPoint, response, content, menus, menusShared;
+      var requestOptions, endPoint, response, content, menus, menusShared, _menuList$menusShared, _menuList$menus2;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
@@ -343,14 +343,14 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
                 error: null
               }));
               if (isSelectedSharedMenus) {
-                menusShared = menuList.menusShared.filter(function (_menu) {
+                menusShared = menuList === null || menuList === void 0 || (_menuList$menusShared = menuList.menusShared) === null || _menuList$menusShared === void 0 ? void 0 : _menuList$menusShared.filter(function (_menu) {
                   return _menu.id !== menu.id;
                 });
                 setMenuList(_objectSpread(_objectSpread({}, menuList), {}, {
                   menusShared: menusShared
                 }));
               } else {
-                menus = menuList.menus.filter(function (_menu) {
+                menus = menuList === null || menuList === void 0 || (_menuList$menus2 = menuList.menus) === null || _menuList$menus2 === void 0 ? void 0 : _menuList$menus2.filter(function (_menu) {
                   return _menu.id !== menu.id;
                 });
                 setMenuList(_objectSpread(_objectSpread({}, menuList), {}, {
@@ -393,7 +393,7 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
   };
   var handleChangeMenuSite = function handleChangeMenuSite(site) {
     var _menu$sites;
-    var sites = [].concat(_toConsumableArray(menu === null || menu === void 0 ? void 0 : (_menu$sites = menu.sites) === null || _menu$sites === void 0 ? void 0 : _menu$sites.map(function (s) {
+    var sites = [].concat(_toConsumableArray(menu === null || menu === void 0 || (_menu$sites = menu.sites) === null || _menu$sites === void 0 ? void 0 : _menu$sites.map(function (s) {
       return s.id;
     }).filter(function (s) {
       var _formState$changes$si;
@@ -473,7 +473,8 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
     handleSetSubCategoryList(_selectedProductsIds);
   }, [menu]);
   var handleSetSubCategoryList = function handleSetSubCategoryList(_selectedProductsIds) {
-    if (business !== null && business !== void 0 && business.categories.length) {
+    var _business$categories;
+    if (business !== null && business !== void 0 && (_business$categories = business.categories) !== null && _business$categories !== void 0 && _business$categories.length) {
       var _subCategoriesList = [];
       var iterateCategories = function iterateCategories(categories) {
         return (categories === null || categories === void 0 ? void 0 : categories.length) > 0 && (categories === null || categories === void 0 ? void 0 : categories.forEach(function (category) {

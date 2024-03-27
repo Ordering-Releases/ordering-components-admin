@@ -90,7 +90,7 @@ var RewardsPrograms = function RewardsPrograms(props) {
    */
   var handleDeleteWalletBusiness = function handleDeleteWalletBusiness(result) {
     var _pointWallet$business;
-    var businesses = pointWallet === null || pointWallet === void 0 ? void 0 : (_pointWallet$business = pointWallet.businesses) === null || _pointWallet$business === void 0 ? void 0 : _pointWallet$business.filter(function (business) {
+    var businesses = pointWallet === null || pointWallet === void 0 || (_pointWallet$business = pointWallet.businesses) === null || _pointWallet$business === void 0 ? void 0 : _pointWallet$business.filter(function (business) {
       return business.id !== result.id;
     });
     setPointWallet(_objectSpread(_objectSpread({}, pointWallet), {}, {

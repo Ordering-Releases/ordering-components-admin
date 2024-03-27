@@ -10,7 +10,8 @@ export const BusinessSharedMenuProducts = (props) => {
     menu,
     UIComponent,
     business,
-    handleUpdateBusinessState
+    setMenuList,
+    menuList
   } = props
 
   const [ordering] = useApi()
@@ -40,7 +41,7 @@ export const BusinessSharedMenuProducts = (props) => {
       const response = await fetch(`${ordering.root}/business/${business.id}/menus_shared/${menu.id}/products/${productId}`, requestOptions)
       const content = await response.json()
       if (!content.error) {
-        const menusShared = business.menus_shared.filter(sharedMenu => {
+        const menusShared = menuList?.menusShared?.filter(sharedMenu => {
           const products = sharedMenu.products.map(product => {
             if (product.id === productId) {
               return {
@@ -53,12 +54,14 @@ export const BusinessSharedMenuProducts = (props) => {
           sharedMenu.products = [...products]
           return true
         })
-        const _business = { ...business, menus_shared: menusShared }
-        handleUpdateBusinessState && handleUpdateBusinessState(_business)
         showToast(ToastType.Success, t('PRODUCT_SAVED', 'Product saved'))
         setActionState({
           loading: false,
           error: null
+        })
+        setMenuList({
+          ...menuList,
+          menusShared
         })
       } else {
         setActionState({

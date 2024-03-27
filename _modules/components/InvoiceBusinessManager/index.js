@@ -70,7 +70,7 @@ var InvoiceBusinessManager = function InvoiceBusinessManager(props) {
     _useState4 = _slicedToArray(_useState3, 2),
     payMethodsList = _useState4[0],
     setPayMethodsList = _useState4[1];
-  var configTypes = (configs === null || configs === void 0 ? void 0 : (_configs$order_types_ = configs.order_types_allowed) === null || _configs$order_types_ === void 0 ? void 0 : _configs$order_types_.value.split('|').map(function (value) {
+  var configTypes = (configs === null || configs === void 0 || (_configs$order_types_ = configs.order_types_allowed) === null || _configs$order_types_ === void 0 ? void 0 : _configs$order_types_.value.split('|').map(function (value) {
     return Number(value);
   })) || [];
   var defaultOrderTypes = [{
@@ -398,12 +398,12 @@ var InvoiceBusinessManager = function InvoiceBusinessManager(props) {
       date = new Date(date[0].split('-')[0], date[0].split('-')[1] - 1, date[0].split('-')[2], 0, 0, 0, 0);
       var orderPaymethodIds = order.payment_events.reduce(function (ids, event) {
         var _event$paymethod;
-        return [].concat(_toConsumableArray(ids), [event === null || event === void 0 ? void 0 : (_event$paymethod = event.paymethod) === null || _event$paymethod === void 0 ? void 0 : _event$paymethod.id]);
+        return [].concat(_toConsumableArray(ids), [event === null || event === void 0 || (_event$paymethod = event.paymethod) === null || _event$paymethod === void 0 ? void 0 : _event$paymethod.id]);
       }, []);
       orderPaymethodIds.push(order.paymethod_id);
       var walletIds = order.payment_events.reduce(function (ids, event) {
         var _event$wallet_event;
-        return [].concat(_toConsumableArray(ids), [event === null || event === void 0 ? void 0 : (_event$wallet_event = event.wallet_event) === null || _event$wallet_event === void 0 ? void 0 : _event$wallet_event.wallet_id]);
+        return [].concat(_toConsumableArray(ids), [event === null || event === void 0 || (_event$wallet_event = event.wallet_event) === null || _event$wallet_event === void 0 ? void 0 : _event$wallet_event.wallet_id]);
       }, []);
       if (!orderPaymethodIds.some(function (id) {
         return paymethods.includes(id);
@@ -500,7 +500,7 @@ var InvoiceBusinessManager = function InvoiceBusinessManager(props) {
       var fixOrderSummary = true;
       if (configs !== null && configs !== void 0 && configs.project_fix_order_summary) {
         var _configs$project_fix_;
-        fixOrderSummary = (configs === null || configs === void 0 ? void 0 : (_configs$project_fix_ = configs.project_fix_order_summary) === null || _configs$project_fix_ === void 0 ? void 0 : _configs$project_fix_.value) === '1';
+        fixOrderSummary = (configs === null || configs === void 0 || (_configs$project_fix_ = configs.project_fix_order_summary) === null || _configs$project_fix_ === void 0 ? void 0 : _configs$project_fix_.value) === '1';
       }
       if (order.tax_type === 1 && !fixOrderSummary) {
         return order.summary.subtotal + order.summary.tax;
@@ -537,7 +537,7 @@ var InvoiceBusinessManager = function InvoiceBusinessManager(props) {
    */
   var roundPrice = function roundPrice(value) {
     var _configs$format_numbe;
-    var power = Math.pow(10, configs === null || configs === void 0 ? void 0 : (_configs$format_numbe = configs.format_number_decimal_length) === null || _configs$format_numbe === void 0 ? void 0 : _configs$format_numbe.value);
+    var power = Math.pow(10, configs === null || configs === void 0 || (_configs$format_numbe = configs.format_number_decimal_length) === null || _configs$format_numbe === void 0 ? void 0 : _configs$format_numbe.value);
     var poweredVal = Math.round(value * power);
     return poweredVal / power;
   };
@@ -582,13 +582,13 @@ var InvoiceBusinessManager = function InvoiceBusinessManager(props) {
   };
   (0, _react.useEffect)(function () {
     var _configs$order_types_2;
-    var configTypes = (configs === null || configs === void 0 ? void 0 : (_configs$order_types_2 = configs.order_types_allowed) === null || _configs$order_types_2 === void 0 ? void 0 : _configs$order_types_2.value.split('|').map(function (value) {
+    var configTypes = (configs === null || configs === void 0 || (_configs$order_types_2 = configs.order_types_allowed) === null || _configs$order_types_2 === void 0 ? void 0 : _configs$order_types_2.value.split('|').map(function (value) {
       return Number(value);
     })) || [];
     setOrderTypes(defaultOrderTypes.filter(function (type) {
       return configTypes === null || configTypes === void 0 ? void 0 : configTypes.includes(type.value);
     }));
-  }, [configs === null || configs === void 0 ? void 0 : (_configs$order_types_3 = configs.order_types_allowed) === null || _configs$order_types_3 === void 0 ? void 0 : _configs$order_types_3.value]);
+  }, [configs === null || configs === void 0 || (_configs$order_types_3 = configs.order_types_allowed) === null || _configs$order_types_3 === void 0 ? void 0 : _configs$order_types_3.value]);
   (0, _react.useEffect)(function () {
     getBusiness();
     getPaymentMethod();

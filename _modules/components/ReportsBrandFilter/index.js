@@ -228,12 +228,12 @@ var ReportsBrandFilter = function ReportsBrandFilter(props) {
   }, []);
   (0, _react.useEffect)(function () {
     var _brandList$brands, _brandList$brands2, _filterList$franchise;
-    if ((brandList === null || brandList === void 0 ? void 0 : (_brandList$brands = brandList.brands) === null || _brandList$brands === void 0 ? void 0 : _brandList$brands.length) === 0) return;
+    if ((brandList === null || brandList === void 0 || (_brandList$brands = brandList.brands) === null || _brandList$brands === void 0 ? void 0 : _brandList$brands.length) === 0) return;
     var _brandIds = (_brandList$brands2 = brandList.brands) === null || _brandList$brands2 === void 0 ? void 0 : _brandList$brands2.reduce(function (prev, cur) {
       return [].concat(_toConsumableArray(prev), [cur.id]);
     }, []);
     setBrandIds(_toConsumableArray((filterList === null || filterList === void 0 ? void 0 : filterList.franchises_id) || _brandIds));
-    if (!(filterList !== null && filterList !== void 0 && filterList.franchises_id) || (filterList === null || filterList === void 0 ? void 0 : (_filterList$franchise = filterList.franchises_id) === null || _filterList$franchise === void 0 ? void 0 : _filterList$franchise.length) === (brandList === null || brandList === void 0 ? void 0 : brandList.brands.length)) setIsAllCheck(true);
+    if (!(filterList !== null && filterList !== void 0 && filterList.franchises_id) || (filterList === null || filterList === void 0 || (_filterList$franchise = filterList.franchises_id) === null || _filterList$franchise === void 0 ? void 0 : _filterList$franchise.length) === (brandList === null || brandList === void 0 ? void 0 : brandList.brands.length)) setIsAllCheck(true);
   }, [brandList === null || brandList === void 0 ? void 0 : brandList.brands]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     brandList: brandList,

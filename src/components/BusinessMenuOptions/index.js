@@ -92,7 +92,7 @@ export const BusinessMenuOptions = (props) => {
       })
 
       if (!content.error) {
-        const menus = menuList.menus.filter(menu => {
+        const menus = menuList?.menus?.filter(menu => {
           if (menu.id === content.result.id) {
             Object.assign(menu, content.result)
             const isUpdatedProducts = typeof (changes?.products) !== 'undefined'
@@ -186,7 +186,7 @@ export const BusinessMenuOptions = (props) => {
           products = allProducts.filter(product => _menu.products.includes(product.id))
         }
         _menu = { ..._menu, products: products }
-        const menusArray = menuList.menus
+        const menusArray = menuList?.menus
         menusArray.push(_menu)
         setMenuList({
           ...menuList,
@@ -225,13 +225,13 @@ export const BusinessMenuOptions = (props) => {
         })
         let menus, menusShared
         if (isSelectedSharedMenus) {
-          menusShared = menuList.menusShared.filter(_menu => _menu.id !== menu.id)
+          menusShared = menuList?.menusShared?.filter(_menu => _menu.id !== menu.id)
           setMenuList({
             ...menuList,
             menusShared
           })
         } else {
-          menus = menuList.menus.filter(_menu => _menu.id !== menu.id)
+          menus = menuList?.menus?.filter(_menu => _menu.id !== menu.id)
           setMenuList({
             ...menuList,
             menus
@@ -350,7 +350,7 @@ export const BusinessMenuOptions = (props) => {
   }, [menu])
 
   const handleSetSubCategoryList = (_selectedProductsIds) => {
-    if (business?.categories.length) {
+    if (business?.categories?.length) {
       const _subCategoriesList = []
       const iterateCategories = (categories) => {
         return (

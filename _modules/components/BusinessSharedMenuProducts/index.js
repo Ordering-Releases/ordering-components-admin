@@ -37,7 +37,8 @@ var BusinessSharedMenuProducts = function BusinessSharedMenuProducts(props) {
   var menu = props.menu,
     UIComponent = props.UIComponent,
     business = props.business,
-    handleUpdateBusinessState = props.handleUpdateBusinessState;
+    setMenuList = props.setMenuList,
+    menuList = props.menuList;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -73,7 +74,7 @@ var BusinessSharedMenuProducts = function BusinessSharedMenuProducts(props) {
    */
   var handleUpdateBusinessSharedMenuProduct = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(productId, changes) {
-      var requestOptions, response, content, menusShared, _business;
+      var requestOptions, response, content, _menuList$menusShared, menusShared;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -99,7 +100,7 @@ var BusinessSharedMenuProducts = function BusinessSharedMenuProducts(props) {
           case 9:
             content = _context.sent;
             if (!content.error) {
-              menusShared = business.menus_shared.filter(function (sharedMenu) {
+              menusShared = menuList === null || menuList === void 0 || (_menuList$menusShared = menuList.menusShared) === null || _menuList$menusShared === void 0 ? void 0 : _menuList$menusShared.filter(function (sharedMenu) {
                 var products = sharedMenu.products.map(function (product) {
                   if (product.id === productId) {
                     return _objectSpread(_objectSpread({}, product), changes);
@@ -109,15 +110,14 @@ var BusinessSharedMenuProducts = function BusinessSharedMenuProducts(props) {
                 sharedMenu.products = _toConsumableArray(products);
                 return true;
               });
-              _business = _objectSpread(_objectSpread({}, business), {}, {
-                menus_shared: menusShared
-              });
-              handleUpdateBusinessState && handleUpdateBusinessState(_business);
               showToast(_ToastContext.ToastType.Success, t('PRODUCT_SAVED', 'Product saved'));
               setActionState({
                 loading: false,
                 error: null
               });
+              setMenuList(_objectSpread(_objectSpread({}, menuList), {}, {
+                menusShared: menusShared
+              }));
             } else {
               setActionState({
                 loading: false,

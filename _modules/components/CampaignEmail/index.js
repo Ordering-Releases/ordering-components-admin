@@ -170,7 +170,7 @@ var CampaignEmail = function CampaignEmail(props) {
                 images: _images
               }));
               showToast(_ToastContext.ToastType.Success, t('GALLERY_IMAGE_ADDED', 'Business gallery image added'));
-              setSelectedImageUrl(content === null || content === void 0 ? void 0 : (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.source);
+              setSelectedImageUrl(content === null || content === void 0 || (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.source);
             } else {
               setInsertImageState(_objectSpread(_objectSpread({}, insertImageState), {}, {
                 loading: false,

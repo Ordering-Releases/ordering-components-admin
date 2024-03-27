@@ -175,12 +175,12 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
   }, [circleZone]);
   (0, _react.useEffect)(function () {
     var _data$distance, _data$distance2;
-    if (distanceBased && !clearState && data !== null && data !== void 0 && data.distance && (data === null || data === void 0 ? void 0 : (_data$distance = data.distance) === null || _data$distance === void 0 ? void 0 : _data$distance.toString().slice(-1)) !== '.') {
+    if (distanceBased && !clearState && data !== null && data !== void 0 && data.distance && (data === null || data === void 0 || (_data$distance = data.distance) === null || _data$distance === void 0 ? void 0 : _data$distance.toString().slice(-1)) !== '.') {
       handleData(_objectSpread(_objectSpread({}, data), {}, {
         distance: distanceBased.getRadius() / units[data === null || data === void 0 ? void 0 : data.unit]
       }));
     }
-    if (distanceBased && clearState || distanceBased && !clearState && data !== null && data !== void 0 && data.distance && (data === null || data === void 0 ? void 0 : (_data$distance2 = data.distance) === null || _data$distance2 === void 0 ? void 0 : _data$distance2.toString().slice(-1)) === '.') {
+    if (distanceBased && clearState || distanceBased && !clearState && data !== null && data !== void 0 && data.distance && (data === null || data === void 0 || (_data$distance2 = data.distance) === null || _data$distance2 === void 0 ? void 0 : _data$distance2.toString().slice(-1)) === '.') {
       handleData(data);
     }
   }, [distanceBased]);
@@ -220,7 +220,7 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
     var _window$google;
     if (!((_window$google = window.google) !== null && _window$google !== void 0 && _window$google.maps)) return;
     if (clearState) {
-      var _window$google$maps, _window$google$maps$d;
+      var _window$google$maps;
       if (circleZone) {
         circleZone.setMap(null);
         setCircleZone(null);
@@ -237,7 +237,7 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
       if (drawingManager) {
         drawingManager.setMap(null);
       }
-      if ((_window$google$maps = window.google.maps) !== null && _window$google$maps !== void 0 && (_window$google$maps$d = _window$google$maps.drawing) !== null && _window$google$maps$d !== void 0 && _window$google$maps$d.DrawingManager) {
+      if ((_window$google$maps = window.google.maps) !== null && _window$google$maps !== void 0 && (_window$google$maps = _window$google$maps.drawing) !== null && _window$google$maps !== void 0 && _window$google$maps.DrawingManager) {
         var _drawingManager = new window.google.maps.drawing.DrawingManager({
           drawingControl: isDriverGroup !== null && isDriverGroup !== void 0 ? isDriverGroup : disabled && type !== 5,
           drawingControlOptions: {
@@ -325,7 +325,7 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
   }, [isAddMode, kmlData, googleMap]);
   (0, _react.useEffect)(function () {
     if (googleReady) {
-      var _location$zoom, _window$google$maps2, _window$google$maps2$;
+      var _location$zoom, _window$google$maps2;
       var map = new window.google.maps.Map(divRef.current, {
         zoom: (_location$zoom = location === null || location === void 0 ? void 0 : location.zoom) !== null && _location$zoom !== void 0 ? _location$zoom : mapControls.defaultZoom,
         center: center,
@@ -384,7 +384,7 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
           _infoWindow.open(map);
         }
       }
-      if ((_window$google$maps2 = window.google.maps) !== null && _window$google$maps2 !== void 0 && (_window$google$maps2$ = _window$google$maps2.drawing) !== null && _window$google$maps2$ !== void 0 && _window$google$maps2$.DrawingManager) {
+      if ((_window$google$maps2 = window.google.maps) !== null && _window$google$maps2 !== void 0 && (_window$google$maps2 = _window$google$maps2.drawing) !== null && _window$google$maps2 !== void 0 && _window$google$maps2.DrawingManager) {
         var _drawingManager = new window.google.maps.drawing.DrawingManager({
           drawingControl: isDriverGroup !== null && isDriverGroup !== void 0 ? isDriverGroup : disabled && type !== 5,
           drawingMode: type === 1 ? window.google.maps.drawing.OverlayType.CIRCLE : type === 2 ? window.google.maps.drawing.OverlayType.POLYGON : null,
@@ -427,7 +427,7 @@ var BusinessZoneGoogleMaps = function BusinessZoneGoogleMaps(props) {
               var _newCircleZone2 = new window.google.maps.Circle(_objectSpread(_objectSpread({}, greenFillStyle), {}, {
                 editable: false,
                 center: center,
-                radius: (deliveryZone === null || deliveryZone === void 0 ? void 0 : deliveryZone.data.distance) * units[deliveryZone === null || deliveryZone === void 0 ? void 0 : (_deliveryZone$data4 = deliveryZone.data) === null || _deliveryZone$data4 === void 0 ? void 0 : _deliveryZone$data4.unit]
+                radius: (deliveryZone === null || deliveryZone === void 0 ? void 0 : deliveryZone.data.distance) * units[deliveryZone === null || deliveryZone === void 0 || (_deliveryZone$data4 = deliveryZone.data) === null || _deliveryZone$data4 === void 0 ? void 0 : _deliveryZone$data4.unit]
               }));
               _newCircleZone2.setMap(map);
               bounds.union(_newCircleZone2.getBounds());

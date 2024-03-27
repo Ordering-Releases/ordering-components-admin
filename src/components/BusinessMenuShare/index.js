@@ -12,7 +12,8 @@ export const BusinessMenuShare = (props) => {
     menu,
     businesses,
     busienssesPropsToFetch,
-    handleUpdateBusinessState
+    setMenuList,
+    menuList
   } = props
 
   const [ordering] = useApi()
@@ -90,14 +91,16 @@ export const BusinessMenuShare = (props) => {
           })
         }
         const _businessMenu = { ...menu, businesses: menuBusinesses }
-        const menus = business.menus.filter(_menu => {
+        const menus = menuList?.menus?.filter(_menu => {
           if (_menu.id === _businessMenu.id) {
             Object.assign(_menu, _businessMenu)
           }
           return true
         })
-        const _business = { ...business, menus: menus }
-        handleUpdateBusinessState && handleUpdateBusinessState(_business)
+        setMenuList({
+          ...menuList,
+          menus
+        })
         setActionState({ loading: false, result: { error: false } })
         showToast(ToastType.Success, t('BUSINESS_SAVED', 'Business saved'))
       }

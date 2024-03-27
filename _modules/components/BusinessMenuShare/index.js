@@ -40,7 +40,8 @@ var BusinessMenuShare = function BusinessMenuShare(props) {
     menu = props.menu,
     businesses = props.businesses,
     busienssesPropsToFetch = props.busienssesPropsToFetch,
-    handleUpdateBusinessState = props.handleUpdateBusinessState;
+    setMenuList = props.setMenuList,
+    menuList = props.menuList;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -162,7 +163,7 @@ var BusinessMenuShare = function BusinessMenuShare(props) {
    */
   var handleShareBusinesses = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var changes, content, menuBusinesses, _iterator, _step, _loop, _businessMenu, menus, _business;
+      var changes, content, _menuList$menus, menuBusinesses, _iterator, _step, _loop, _businessMenu, menus;
       return _regeneratorRuntime().wrap(function _callee2$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
@@ -180,7 +181,7 @@ var BusinessMenuShare = function BusinessMenuShare(props) {
           case 6:
             content = _context3.sent;
             if (content.error) {
-              _context3.next = 31;
+              _context3.next = 30;
               break;
             }
             menuBusinesses = [];
@@ -234,16 +235,15 @@ var BusinessMenuShare = function BusinessMenuShare(props) {
             _businessMenu = _objectSpread(_objectSpread({}, menu), {}, {
               businesses: menuBusinesses
             });
-            menus = business.menus.filter(function (_menu) {
+            menus = menuList === null || menuList === void 0 || (_menuList$menus = menuList.menus) === null || _menuList$menus === void 0 ? void 0 : _menuList$menus.filter(function (_menu) {
               if (_menu.id === _businessMenu.id) {
                 Object.assign(_menu, _businessMenu);
               }
               return true;
             });
-            _business = _objectSpread(_objectSpread({}, business), {}, {
+            setMenuList(_objectSpread(_objectSpread({}, menuList), {}, {
               menus: menus
-            });
-            handleUpdateBusinessState && handleUpdateBusinessState(_business);
+            }));
             setActionState({
               loading: false,
               result: {
@@ -251,11 +251,11 @@ var BusinessMenuShare = function BusinessMenuShare(props) {
               }
             });
             showToast(_ToastContext.ToastType.Success, t('BUSINESS_SAVED', 'Business saved'));
-          case 31:
-            _context3.next = 36;
+          case 30:
+            _context3.next = 35;
             break;
-          case 33:
-            _context3.prev = 33;
+          case 32:
+            _context3.prev = 32;
             _context3.t2 = _context3["catch"](0);
             setActionState({
               loading: false,
@@ -263,11 +263,11 @@ var BusinessMenuShare = function BusinessMenuShare(props) {
                 error: false
               }
             });
-          case 36:
+          case 35:
           case "end":
             return _context3.stop();
         }
-      }, _callee2, null, [[0, 33], [10, 19, 22, 25]]);
+      }, _callee2, null, [[0, 32], [10, 19, 22, 25]]);
     }));
     return function handleShareBusinesses() {
       return _ref2.apply(this, arguments);
