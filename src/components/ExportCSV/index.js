@@ -45,24 +45,111 @@ export const ExportCSV = (props) => {
       if (filterApply) {
         if (Object.keys(filterValues).length) {
           if (filterValues.statuses !== undefined) {
-            if (filterValues.statuses.length > 0) {
+            if (filterValues.statuses?.length > 0) {
               filterConditons.push({ attribute: 'status', value: filterValues.statuses })
             } else {
               filterConditons.push({ attribute: 'status', value: selectedSubOrderStatus[ordersStatusGroup] || [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] })
             }
           }
-          if (filterValues.deliveryFromDatetime !== undefined) {
-            if (filterValues.deliveryFromDatetime !== null) {
+          if (filterValues?.externalId) {
+            filterConditons.push(
+              {
+                attribute: 'external_id',
+                value: {
+                  condition: 'ilike',
+                  value: encodeURIComponent(`%${filterValues?.externalId}%`)
+                }
+              }
+            )
+          }
+          if (filterValues?.orderId) {
+            filterConditons.push(
+              {
+                attribute: 'id',
+                value: {
+                  condition: 'ilike',
+                  value: encodeURI(`%${filterValues?.orderId}%`)
+                }
+              }
+            )
+          }
+          if (filterValues?.logisticStatus !== null) {
+            filterConditons.push(
+              {
+                attribute: 'logistic_status',
+                value: filterValues?.logisticStatus
+              }
+            )
+          }
+          if (filterValues?.assigned !== null) {
+            if (filterValues?.assigned === 0) {
               filterConditons.push(
                 {
-                  attribute: 'delivery_datetime',
+                  attribute: 'driver_id',
                   value: {
                     condition: '>=',
-                    value: encodeURI(filterValues.deliveryFromDatetime)
+                    value: 0
                   }
                 }
               )
             }
+            if (filterValues?.assigned === 1) {
+              filterConditons.push(
+                {
+                  attribute: 'driver_id',
+                  value: null
+                }
+              )
+            }
+          }
+          if (filterValues?.externalId) {
+            filterConditons.push(
+              {
+                attribute: 'external_id',
+                value: {
+                  condition: 'ilike',
+                  value: encodeURIComponent(`%${filterValues?.externalId}%`)
+                }
+              }
+            )
+          }
+          if (filterValues.deliveryFromDatetime !== null) {
+            filterConditons.push(
+              {
+                attribute: 'delivery_datetime',
+                value: {
+                  condition: '>=',
+                  value: encodeURI(filterValues.deliveryFromDatetime)
+                }
+              }
+            )
+          }
+          if (filterValues.deliveryEndDatetime !== null) {
+            filterConditons.push(
+              {
+                attribute: 'delivery_datetime',
+                value: {
+                  condition: '<=',
+                  value: filterValues.deliveryEndDatetime
+                }
+              }
+            )
+          }
+          if (filterValues?.countryCode?.length !== 0) {
+            filterConditons.push(
+              {
+                attribute: 'country_code',
+                value: filterValues?.countryCode
+              }
+            )
+          }
+          if (filterValues?.currency?.length !== 0) {
+            filterConditons.push(
+              {
+                attribute: 'currency',
+                value: filterValues?.currency
+              }
+            )
           }
           if (filterValues.deliveryEndDatetime !== undefined) {
             if (filterValues.deliveryEndDatetime !== null) {
@@ -78,7 +165,7 @@ export const ExportCSV = (props) => {
             }
           }
           if (filterValues.businessIds !== undefined) {
-            if (filterValues.businessIds.length !== 0) {
+            if (filterValues.businessIds?.length !== 0) {
               filterConditons.push(
                 {
                   attribute: 'business_id',
@@ -88,7 +175,7 @@ export const ExportCSV = (props) => {
             }
           }
           if (filterValues.driverIds !== undefined) {
-            if (filterValues.driverIds.length !== 0) {
+            if (filterValues.driverIds?.length !== 0) {
               filterConditons.push(
                 {
                   attribute: 'driver_id',
@@ -98,7 +185,7 @@ export const ExportCSV = (props) => {
             }
           }
           if (filterValues.deliveryTypes !== undefined) {
-            if (filterValues.deliveryTypes.length !== 0) {
+            if (filterValues.deliveryTypes?.length !== 0) {
               filterConditons.push(
                 {
                   attribute: 'delivery_type',
@@ -107,12 +194,157 @@ export const ExportCSV = (props) => {
               )
             }
           }
+          if (filterValues.driverGroupIds?.length !== 0) {
+            filterConditons.push(
+              {
+                attribute: 'driver_group_id',
+                value: filterValues.driverGroupIds
+              }
+            )
+          }
+          if (filterValues.driverGroupBusinessIds?.length !== 0) {
+            filterConditons.push(
+              {
+                attribute: 'driver_group_business',
+                conditions: [
+                  {
+                    attribute: 'driver_group_id',
+                    value: {
+                      condition: '=',
+                      value: filterValues.driverGroupBusinessIds
+                    }
+                  }
+                ]
+              }
+            )
+          }
           if (filterValues.paymethodIds !== undefined) {
-            if (filterValues.paymethodIds.length !== 0) {
+            if (filterValues.paymethodIds?.length !== 0) {
               filterConditons.push(
                 {
                   attribute: 'paymethod_id',
                   value: filterValues.paymethodIds
+                }
+              )
+            }
+          }
+          if (filterValues?.cityIds?.length !== 0) {
+            filterConditons.push(
+              {
+                attribute: 'business',
+                conditions: [
+                  {
+                    attribute: 'city_id',
+                    value: filterValues?.cityIds
+                  }
+                ]
+              }
+            )
+          }
+          if (filterValues?.customerName) {
+            filterConditons.push(
+              {
+                attribute: 'customer',
+                conditions: [
+                  {
+                    attribute: 'name',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI(`%${filterValues?.customerName}%`)
+                    }
+                  }
+                ]
+              }
+            )
+          }
+          if (filterValues?.customerLastname) {
+            filterConditons.push(
+              {
+                attribute: 'customer',
+                conditions: [
+                  {
+                    attribute: 'lastname',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI(`%${filterValues?.customerLastname}%`)
+                    }
+                  }
+                ]
+              }
+            )
+          }
+          if (filterValues?.customerCellphone) {
+            filterConditons.push(
+              {
+                attribute: 'customer',
+                conditions: [
+                  {
+                    attribute: 'cellphone',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI(`%${filterValues?.customerCellphone}%`)
+                    }
+                  }
+                ]
+              }
+            )
+          }
+          if (filterValues?.customerEmail) {
+            filterConditons.push(
+              {
+                attribute: 'customer',
+                conditions: [
+                  {
+                    attribute: 'email',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI(`%${filterValues?.customerEmail}%`)
+                    }
+                  }
+                ]
+              }
+            )
+          }
+          if (filterValues.administratorIds?.length !== 0) {
+            filterConditons.push(
+              {
+                attribute: 'agent_id',
+                value: filterValues.administratorIds
+              }
+            )
+          }
+          if (filterValues?.offerId !== null) {
+            if (filterValues.offerId?.length !== 0) {
+              filterConditons.push(
+                {
+                  attribute: 'offers',
+                  conditions: [
+                    {
+                      attribute: 'offer_id',
+                      value: {
+                        condition: '=',
+                        value: filterValues?.offerId
+                      }
+                    }
+                  ]
+                }
+              )
+            }
+          }
+          if (filterValues.coupon !== null) {
+            if (filterValues.coupon?.length !== 0) {
+              filterConditons.push(
+                {
+                  attribute: 'offers',
+                  conditions: [
+                    {
+                      attribute: 'coupon',
+                      value: {
+                        condition: '=',
+                        value: filterValues?.coupon
+                      }
+                    }
+                  ]
                 }
               )
             }
