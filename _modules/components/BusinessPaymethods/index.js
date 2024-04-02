@@ -37,7 +37,7 @@ function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefine
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var paymethodsNotAllowed = ['paypal_express', 'authorize', 'microsoft_pay'];
 var BusinessPaymethods = function BusinessPaymethods(props) {
-  var _configState$configs, _configState$configs2, _configState$configs3;
+  var _configState$configs, _configState$configs$, _configState$configs2, _configState$configs3, _configState$configs4, _configState$configs5;
   var business = props.business,
     UIComponent = props.UIComponent,
     defaultSandboxRequiredGateways = props.defaultSandboxRequiredGateways,
@@ -111,7 +111,7 @@ var BusinessPaymethods = function BusinessPaymethods(props) {
     _useState16 = _slicedToArray(_useState15, 2),
     isSuccessDeleted = _useState16[0],
     setIsSuccessDeleted = _useState16[1];
-  var stripeClientId = (configState === null || configState === void 0 || (_configState$configs = configState.configs) === null || _configState$configs === void 0 || (_configState$configs = _configState$configs.stripe_connect_sandbox) === null || _configState$configs === void 0 ? void 0 : _configState$configs.value) === '1' ? configState === null || configState === void 0 || (_configState$configs2 = configState.configs) === null || _configState$configs2 === void 0 || (_configState$configs2 = _configState$configs2.stripe_connect_client_id_sandbox) === null || _configState$configs2 === void 0 ? void 0 : _configState$configs2.value : configState === null || configState === void 0 || (_configState$configs3 = configState.configs) === null || _configState$configs3 === void 0 || (_configState$configs3 = _configState$configs3.stripe_connect_client_id) === null || _configState$configs3 === void 0 ? void 0 : _configState$configs3.value;
+  var stripeClientId = (configState === null || configState === void 0 ? void 0 : (_configState$configs = configState.configs) === null || _configState$configs === void 0 ? void 0 : (_configState$configs$ = _configState$configs.stripe_connect_sandbox) === null || _configState$configs$ === void 0 ? void 0 : _configState$configs$.value) === '1' ? configState === null || configState === void 0 ? void 0 : (_configState$configs2 = configState.configs) === null || _configState$configs2 === void 0 ? void 0 : (_configState$configs3 = _configState$configs2.stripe_connect_client_id_sandbox) === null || _configState$configs3 === void 0 ? void 0 : _configState$configs3.value : configState === null || configState === void 0 ? void 0 : (_configState$configs4 = configState.configs) === null || _configState$configs4 === void 0 ? void 0 : (_configState$configs5 = _configState$configs4.stripe_connect_client_id) === null || _configState$configs5 === void 0 ? void 0 : _configState$configs5.value;
 
   /**
    * Clean formState

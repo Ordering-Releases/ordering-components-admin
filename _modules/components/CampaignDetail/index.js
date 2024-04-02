@@ -468,9 +468,9 @@ var CampaignDetail = function CampaignDetail(props) {
                 });
                 handleSuccessUpdateCampaign(updatedCampaigns);
               }
-              updatedConditions = campaignState === null || campaignState === void 0 || (_campaignState$campai = campaignState.campaign) === null || _campaignState$campai === void 0 ? void 0 : _campaignState$campai.conditions.filter(function (item) {
+              updatedConditions = campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai = campaignState.campaign) === null || _campaignState$campai === void 0 ? void 0 : _campaignState$campai.conditions.filter(function (item) {
                 var _content$result;
-                return item.type !== (content === null || content === void 0 || (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.type);
+                return item.type !== (content === null || content === void 0 ? void 0 : (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.type);
               });
               setCampaignState(_objectSpread(_objectSpread({}, campaignState), {}, {
                 campaign: _objectSpread(_objectSpread({}, campaignState === null || campaignState === void 0 ? void 0 : campaignState.campaign), {}, {
@@ -838,7 +838,7 @@ var CampaignDetail = function CampaignDetail(props) {
               if (_typeof(changes[key]) === 'object' && changes[key] !== null || Array.isArray(changes[key])) {
                 changes[key] = JSON.stringify(changes[key]);
               }
-              changes === null || changes === void 0 || delete changes.contact_type;
+              changes === null || changes === void 0 ? true : delete changes.contact_type;
             }
             requestOptions = {
               method: 'PUT',
@@ -849,7 +849,7 @@ var CampaignDetail = function CampaignDetail(props) {
               body: JSON.stringify(changes)
             };
             _context9.next = 8;
-            return fetch("".concat(ordering.root, "/marketing_campaigns/").concat(campaignState === null || campaignState === void 0 || (_campaignState$campai2 = campaignState.campaign) === null || _campaignState$campai2 === void 0 ? void 0 : _campaignState$campai2.id), requestOptions);
+            return fetch("".concat(ordering.root, "/marketing_campaigns/").concat(campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai2 = campaignState.campaign) === null || _campaignState$campai2 === void 0 ? void 0 : _campaignState$campai2.id), requestOptions);
           case 8:
             response = _context9.sent;
             _context9.next = 11;
@@ -864,7 +864,7 @@ var CampaignDetail = function CampaignDetail(props) {
               if (handleSuccessUpdateCampaign) {
                 updatedCampaigns = campaignList === null || campaignList === void 0 ? void 0 : campaignList.campaigns.filter(function (_campaign) {
                   var _campaignState$campai3;
-                  if (_campaign.id === (campaignState === null || campaignState === void 0 || (_campaignState$campai3 = campaignState.campaign) === null || _campaignState$campai3 === void 0 ? void 0 : _campaignState$campai3.id)) {
+                  if (_campaign.id === (campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai3 = campaignState.campaign) === null || _campaignState$campai3 === void 0 ? void 0 : _campaignState$campai3.id)) {
                     Object.assign(_campaign, content.result);
                   }
                   return true;
@@ -928,14 +928,14 @@ var CampaignDetail = function CampaignDetail(props) {
   }, [campaign, campaignId]);
   (0, _react.useEffect)(function () {
     var _campaignState$campai4, _campaignState$campai5;
-    getAudience(campaignState === null || campaignState === void 0 || (_campaignState$campai4 = campaignState.campaign) === null || _campaignState$campai4 === void 0 ? void 0 : _campaignState$campai4.conditions, campaignState === null || campaignState === void 0 || (_campaignState$campai5 = campaignState.campaign) === null || _campaignState$campai5 === void 0 ? void 0 : _campaignState$campai5.contact_type);
-  }, [JSON.stringify(campaignState === null || campaignState === void 0 || (_campaignState$campai6 = campaignState.campaign) === null || _campaignState$campai6 === void 0 ? void 0 : _campaignState$campai6.conditions)]);
+    getAudience(campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai4 = campaignState.campaign) === null || _campaignState$campai4 === void 0 ? void 0 : _campaignState$campai4.conditions, campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai5 = campaignState.campaign) === null || _campaignState$campai5 === void 0 ? void 0 : _campaignState$campai5.contact_type);
+  }, [JSON.stringify(campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai6 = campaignState.campaign) === null || _campaignState$campai6 === void 0 ? void 0 : _campaignState$campai6.conditions)]);
   (0, _react.useEffect)(function () {
-    var _formState$changes6, _formState$changes7, _campaignState$campai7, _formState$changes8, _formState$changes9;
+    var _formState$changes6, _formState$changes7, _campaignState$campai7, _formState$changes8, _formState$changes8$c, _formState$changes9;
     if (!isAddMode || !(formState !== null && formState !== void 0 && (_formState$changes6 = formState.changes) !== null && _formState$changes6 !== void 0 && _formState$changes6.conditions)) return;
-    var contactType = (formState === null || formState === void 0 || (_formState$changes7 = formState.changes) === null || _formState$changes7 === void 0 ? void 0 : _formState$changes7.contact_type) || (campaignState === null || campaignState === void 0 || (_campaignState$campai7 = campaignState.campaign) === null || _campaignState$campai7 === void 0 ? void 0 : _campaignState$campai7.contact_type);
-    if ((formState === null || formState === void 0 || (_formState$changes8 = formState.changes) === null || _formState$changes8 === void 0 || (_formState$changes8 = _formState$changes8.conditions) === null || _formState$changes8 === void 0 ? void 0 : _formState$changes8.length) > 0 && contactType) getAudience(formState === null || formState === void 0 || (_formState$changes9 = formState.changes) === null || _formState$changes9 === void 0 ? void 0 : _formState$changes9.conditions, contactType);
-  }, [JSON.stringify(formState === null || formState === void 0 || (_formState$changes10 = formState.changes) === null || _formState$changes10 === void 0 ? void 0 : _formState$changes10.conditions)]);
+    var contactType = (formState === null || formState === void 0 ? void 0 : (_formState$changes7 = formState.changes) === null || _formState$changes7 === void 0 ? void 0 : _formState$changes7.contact_type) || (campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai7 = campaignState.campaign) === null || _campaignState$campai7 === void 0 ? void 0 : _campaignState$campai7.contact_type);
+    if ((formState === null || formState === void 0 ? void 0 : (_formState$changes8 = formState.changes) === null || _formState$changes8 === void 0 ? void 0 : (_formState$changes8$c = _formState$changes8.conditions) === null || _formState$changes8$c === void 0 ? void 0 : _formState$changes8$c.length) > 0 && contactType) getAudience(formState === null || formState === void 0 ? void 0 : (_formState$changes9 = formState.changes) === null || _formState$changes9 === void 0 ? void 0 : _formState$changes9.conditions, contactType);
+  }, [JSON.stringify(formState === null || formState === void 0 ? void 0 : (_formState$changes10 = formState.changes) === null || _formState$changes10 === void 0 ? void 0 : _formState$changes10.conditions)]);
   (0, _react.useEffect)(function () {
     getParentCategory();
   }, []);
@@ -945,8 +945,8 @@ var CampaignDetail = function CampaignDetail(props) {
       var _campaignState$campai8, _campaignState$campai9;
       setContactState(_objectSpread(_objectSpread({}, contactState), {}, {
         changes: {
-          contact_type: (campaignState === null || campaignState === void 0 || (_campaignState$campai8 = campaignState.campaign) === null || _campaignState$campai8 === void 0 ? void 0 : _campaignState$campai8.contact_type) || '',
-          contact_data: (campaignState === null || campaignState === void 0 || (_campaignState$campai9 = campaignState.campaign) === null || _campaignState$campai9 === void 0 ? void 0 : _campaignState$campai9.contact_data) || {}
+          contact_type: (campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai8 = campaignState.campaign) === null || _campaignState$campai8 === void 0 ? void 0 : _campaignState$campai8.contact_type) || '',
+          contact_data: (campaignState === null || campaignState === void 0 ? void 0 : (_campaignState$campai9 = campaignState.campaign) === null || _campaignState$campai9 === void 0 ? void 0 : _campaignState$campai9.contact_data) || {}
         }
       }));
     }
@@ -957,8 +957,8 @@ var CampaignDetail = function CampaignDetail(props) {
       var _formState$changes11, _formState$changes12;
       setContactState(_objectSpread(_objectSpread({}, contactState), {}, {
         changes: {
-          contact_type: (formState === null || formState === void 0 || (_formState$changes11 = formState.changes) === null || _formState$changes11 === void 0 ? void 0 : _formState$changes11.contact_type) || '',
-          contact_data: (formState === null || formState === void 0 || (_formState$changes12 = formState.changes) === null || _formState$changes12 === void 0 ? void 0 : _formState$changes12.contact_data) || {}
+          contact_type: (formState === null || formState === void 0 ? void 0 : (_formState$changes11 = formState.changes) === null || _formState$changes11 === void 0 ? void 0 : _formState$changes11.contact_type) || '',
+          contact_data: (formState === null || formState === void 0 ? void 0 : (_formState$changes12 = formState.changes) === null || _formState$changes12 === void 0 ? void 0 : _formState$changes12.contact_data) || {}
         }
       }));
     }

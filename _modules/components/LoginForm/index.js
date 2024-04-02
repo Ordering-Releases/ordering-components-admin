@@ -109,10 +109,10 @@ var LoginForm = function LoginForm(props) {
     _useState14 = _slicedToArray(_useState13, 2),
     cellphoneStartZero = _useState14[0],
     setCellphoneStartZero = _useState14[1];
-  var useLoginOtpEmail = (configs === null || configs === void 0 || (_configs$opt_email_en = configs.opt_email_enabled) === null || _configs$opt_email_en === void 0 ? void 0 : _configs$opt_email_en.value) === '1';
-  var useLoginOptCellphone = (configs === null || configs === void 0 || (_configs$otp_cellphon = configs.otp_cellphone_enabled) === null || _configs$otp_cellphon === void 0 ? void 0 : _configs$otp_cellphon.value) === '1';
-  var useLoginByEmail = (configs === null || configs === void 0 || (_configs$email_passwo = configs.email_password_login_enabled) === null || _configs$email_passwo === void 0 ? void 0 : _configs$email_passwo.value) === '1';
-  var useLoginByCellphone = (configs === null || configs === void 0 || (_configs$phone_passwo = configs.phone_password_login_enabled) === null || _configs$phone_passwo === void 0 ? void 0 : _configs$phone_passwo.value) === '1';
+  var useLoginOtpEmail = (configs === null || configs === void 0 ? void 0 : (_configs$opt_email_en = configs.opt_email_enabled) === null || _configs$opt_email_en === void 0 ? void 0 : _configs$opt_email_en.value) === '1';
+  var useLoginOptCellphone = (configs === null || configs === void 0 ? void 0 : (_configs$otp_cellphon = configs.otp_cellphone_enabled) === null || _configs$otp_cellphon === void 0 ? void 0 : _configs$otp_cellphon.value) === '1';
+  var useLoginByEmail = (configs === null || configs === void 0 ? void 0 : (_configs$email_passwo = configs.email_password_login_enabled) === null || _configs$email_passwo === void 0 ? void 0 : _configs$email_passwo.value) === '1';
+  var useLoginByCellphone = (configs === null || configs === void 0 ? void 0 : (_configs$phone_passwo = configs.phone_password_login_enabled) === null || _configs$phone_passwo === void 0 ? void 0 : _configs$phone_passwo.value) === '1';
   var useLoginOtp = useLoginOtpEmail;
   defaultLoginTab = useLoginByEmail ? 'email' : useLoginByCellphone ? 'cellphone' : useLoginOtpEmail || useLoginOptCellphone ? 'otp' : 'email';
   var _useState15 = (0, _react.useState)(),
@@ -199,7 +199,7 @@ var LoginForm = function LoginForm(props) {
             result = _yield$ordering$users2.result;
             action = _yield$ordering$users2.action;
             if (action && (action === null || action === void 0 ? void 0 : action.type) === 'billing_autologin') {
-              window.open("".concat(billingUrl, "?token=").concat(action === null || action === void 0 || (_action$data = action.data) === null || _action$data === void 0 ? void 0 : _action$data.access_token, "&projectId=").concat(action === null || action === void 0 || (_action$data2 = action.data) === null || _action$data2 === void 0 ? void 0 : _action$data2.project_id, "&userId=").concat(action === null || action === void 0 || (_action$data3 = action.data) === null || _action$data3 === void 0 ? void 0 : _action$data3.user_id), '_blank').focus();
+              window.open("".concat(billingUrl, "?token=").concat(action === null || action === void 0 ? void 0 : (_action$data = action.data) === null || _action$data === void 0 ? void 0 : _action$data.access_token, "&projectId=").concat(action === null || action === void 0 ? void 0 : (_action$data2 = action.data) === null || _action$data2 === void 0 ? void 0 : _action$data2.project_id, "&userId=").concat(action === null || action === void 0 ? void 0 : (_action$data3 = action.data) === null || _action$data3 === void 0 ? void 0 : _action$data3.user_id), '_blank').focus();
             }
             if (isReCaptchaEnable && window.grecaptcha) {
               _credentials.recaptcha_type === 'v2' && window.grecaptcha.reset();
@@ -400,7 +400,7 @@ var LoginForm = function LoginForm(props) {
    */
   var checkVerifyPhoneCode = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(values) {
-      var _res$result, response, res, _res$result2;
+      var _res$result, response, res, _res$result2, _res$result2$session;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
@@ -425,7 +425,7 @@ var LoginForm = function LoginForm(props) {
             if (!(res !== null && res !== void 0 && res.error) && res !== null && res !== void 0 && (_res$result = res.result) !== null && _res$result !== void 0 && _res$result.id) {
               login({
                 user: res === null || res === void 0 ? void 0 : res.result,
-                token: res === null || res === void 0 || (_res$result2 = res.result) === null || _res$result2 === void 0 || (_res$result2 = _res$result2.session) === null || _res$result2 === void 0 ? void 0 : _res$result2.access_token,
+                token: res === null || res === void 0 ? void 0 : (_res$result2 = res.result) === null || _res$result2 === void 0 ? void 0 : (_res$result2$session = _res$result2.session) === null || _res$result2$session === void 0 ? void 0 : _res$result2$session.access_token,
                 project: ordering === null || ordering === void 0 ? void 0 : ordering.project
               });
               if (handleSuccessLogin) {
@@ -540,7 +540,7 @@ var LoginForm = function LoginForm(props) {
   }();
   (0, _react.useEffect)(function () {
     var _configs$security_rec;
-    setIsReCaptchaEnable((ordering === null || ordering === void 0 ? void 0 : ordering.project) && configs && Object.keys(configs).length > 0 && (configs === null || configs === void 0 || (_configs$security_rec = configs.security_recaptcha_auth) === null || _configs$security_rec === void 0 ? void 0 : _configs$security_rec.value) === '1');
+    setIsReCaptchaEnable((ordering === null || ordering === void 0 ? void 0 : ordering.project) && configs && Object.keys(configs).length > 0 && (configs === null || configs === void 0 ? void 0 : (_configs$security_rec = configs.security_recaptcha_auth) === null || _configs$security_rec === void 0 ? void 0 : _configs$security_rec.value) === '1');
   }, [configs, ordering === null || ordering === void 0 ? void 0 : ordering.project]);
   (0, _react.useEffect)(function () {
     setLoginTab(defaultLoginTab);

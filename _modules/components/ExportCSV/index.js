@@ -55,7 +55,7 @@ var ExportCSV = function ExportCSV(props) {
    */
   var getCSV = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(filterApply) {
-      var requestOptions, filterConditons, functionFetch, response, _yield$response$json, error, result;
+      var requestOptions, filterConditons, _filterValues$country, _filterValues$currenc, _filterValues$driverG, _filterValues$driverG2, _filterValues$cityIds, _filterValues$adminis, _filterValues$statuse, _filterValues$busines, _filterValues$driverI, _filterValues$deliver, _filterValues$paymeth, _filterValues$offerId, _filterValues$coupon, functionFetch, response, _yield$response$json, error, result;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -89,7 +89,7 @@ var ExportCSV = function ExportCSV(props) {
             if (filterApply) {
               if (Object.keys(filterValues).length) {
                 if (filterValues.statuses !== undefined) {
-                  if (filterValues.statuses.length > 0) {
+                  if (((_filterValues$statuse = filterValues.statuses) === null || _filterValues$statuse === void 0 ? void 0 : _filterValues$statuse.length) > 0) {
                     filterConditons.push({
                       attribute: 'status',
                       value: filterValues.statuses
@@ -101,16 +101,85 @@ var ExportCSV = function ExportCSV(props) {
                     });
                   }
                 }
-                if (filterValues.deliveryFromDatetime !== undefined) {
-                  if (filterValues.deliveryFromDatetime !== null) {
+                if (filterValues !== null && filterValues !== void 0 && filterValues.externalId) {
+                  filterConditons.push({
+                    attribute: 'external_id',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURIComponent("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.externalId, "%"))
+                    }
+                  });
+                }
+                if (filterValues !== null && filterValues !== void 0 && filterValues.orderId) {
+                  filterConditons.push({
+                    attribute: 'id',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURI("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.orderId, "%"))
+                    }
+                  });
+                }
+                if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.logisticStatus) !== null) {
+                  filterConditons.push({
+                    attribute: 'logistic_status',
+                    value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.logisticStatus
+                  });
+                }
+                if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.assigned) !== null) {
+                  if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.assigned) === 0) {
                     filterConditons.push({
-                      attribute: 'delivery_datetime',
+                      attribute: 'driver_id',
                       value: {
                         condition: '>=',
-                        value: encodeURI(filterValues.deliveryFromDatetime)
+                        value: 0
                       }
                     });
                   }
+                  if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.assigned) === 1) {
+                    filterConditons.push({
+                      attribute: 'driver_id',
+                      value: null
+                    });
+                  }
+                }
+                if (filterValues !== null && filterValues !== void 0 && filterValues.externalId) {
+                  filterConditons.push({
+                    attribute: 'external_id',
+                    value: {
+                      condition: 'ilike',
+                      value: encodeURIComponent("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.externalId, "%"))
+                    }
+                  });
+                }
+                if (filterValues.deliveryFromDatetime !== null) {
+                  filterConditons.push({
+                    attribute: 'delivery_datetime',
+                    value: {
+                      condition: '>=',
+                      value: encodeURI(filterValues.deliveryFromDatetime)
+                    }
+                  });
+                }
+                if (filterValues.deliveryEndDatetime !== null) {
+                  filterConditons.push({
+                    attribute: 'delivery_datetime',
+                    value: {
+                      condition: '<=',
+                      value: filterValues.deliveryEndDatetime
+                    }
+                  });
+                }
+                if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$country = filterValues.countryCode) === null || _filterValues$country === void 0 ? void 0 : _filterValues$country.length) !== 0) {
+                  filterConditons.push({
+                    attribute: 'country_code',
+                    value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.countryCode
+                  });
+                }
+                if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$currenc = filterValues.currency) === null || _filterValues$currenc === void 0 ? void 0 : _filterValues$currenc.length) !== 0) {
+                  filterConditons.push({
+                    attribute: 'currency',
+                    value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.currency
+                  });
                 }
                 if (filterValues.deliveryEndDatetime !== undefined) {
                   if (filterValues.deliveryEndDatetime !== null) {
@@ -124,7 +193,7 @@ var ExportCSV = function ExportCSV(props) {
                   }
                 }
                 if (filterValues.businessIds !== undefined) {
-                  if (filterValues.businessIds.length !== 0) {
+                  if (((_filterValues$busines = filterValues.businessIds) === null || _filterValues$busines === void 0 ? void 0 : _filterValues$busines.length) !== 0) {
                     filterConditons.push({
                       attribute: 'business_id',
                       value: filterValues.businessIds
@@ -132,7 +201,7 @@ var ExportCSV = function ExportCSV(props) {
                   }
                 }
                 if (filterValues.driverIds !== undefined) {
-                  if (filterValues.driverIds.length !== 0) {
+                  if (((_filterValues$driverI = filterValues.driverIds) === null || _filterValues$driverI === void 0 ? void 0 : _filterValues$driverI.length) !== 0) {
                     filterConditons.push({
                       attribute: 'driver_id',
                       value: filterValues.driverIds
@@ -140,18 +209,127 @@ var ExportCSV = function ExportCSV(props) {
                   }
                 }
                 if (filterValues.deliveryTypes !== undefined) {
-                  if (filterValues.deliveryTypes.length !== 0) {
+                  if (((_filterValues$deliver = filterValues.deliveryTypes) === null || _filterValues$deliver === void 0 ? void 0 : _filterValues$deliver.length) !== 0) {
                     filterConditons.push({
                       attribute: 'delivery_type',
                       value: filterValues.deliveryTypes
                     });
                   }
                 }
+                if (((_filterValues$driverG = filterValues.driverGroupIds) === null || _filterValues$driverG === void 0 ? void 0 : _filterValues$driverG.length) !== 0) {
+                  filterConditons.push({
+                    attribute: 'driver_group_id',
+                    value: filterValues.driverGroupIds
+                  });
+                }
+                if (((_filterValues$driverG2 = filterValues.driverGroupBusinessIds) === null || _filterValues$driverG2 === void 0 ? void 0 : _filterValues$driverG2.length) !== 0) {
+                  filterConditons.push({
+                    attribute: 'driver_group_business',
+                    conditions: [{
+                      attribute: 'driver_group_id',
+                      value: {
+                        condition: '=',
+                        value: filterValues.driverGroupBusinessIds
+                      }
+                    }]
+                  });
+                }
                 if (filterValues.paymethodIds !== undefined) {
-                  if (filterValues.paymethodIds.length !== 0) {
+                  if (((_filterValues$paymeth = filterValues.paymethodIds) === null || _filterValues$paymeth === void 0 ? void 0 : _filterValues$paymeth.length) !== 0) {
                     filterConditons.push({
                       attribute: 'paymethod_id',
                       value: filterValues.paymethodIds
+                    });
+                  }
+                }
+                if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$cityIds = filterValues.cityIds) === null || _filterValues$cityIds === void 0 ? void 0 : _filterValues$cityIds.length) !== 0) {
+                  filterConditons.push({
+                    attribute: 'business',
+                    conditions: [{
+                      attribute: 'city_id',
+                      value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.cityIds
+                    }]
+                  });
+                }
+                if (filterValues !== null && filterValues !== void 0 && filterValues.customerName) {
+                  filterConditons.push({
+                    attribute: 'customer',
+                    conditions: [{
+                      attribute: 'name',
+                      value: {
+                        condition: 'ilike',
+                        value: encodeURI("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.customerName, "%"))
+                      }
+                    }]
+                  });
+                }
+                if (filterValues !== null && filterValues !== void 0 && filterValues.customerLastname) {
+                  filterConditons.push({
+                    attribute: 'customer',
+                    conditions: [{
+                      attribute: 'lastname',
+                      value: {
+                        condition: 'ilike',
+                        value: encodeURI("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.customerLastname, "%"))
+                      }
+                    }]
+                  });
+                }
+                if (filterValues !== null && filterValues !== void 0 && filterValues.customerCellphone) {
+                  filterConditons.push({
+                    attribute: 'customer',
+                    conditions: [{
+                      attribute: 'cellphone',
+                      value: {
+                        condition: 'ilike',
+                        value: encodeURI("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.customerCellphone, "%"))
+                      }
+                    }]
+                  });
+                }
+                if (filterValues !== null && filterValues !== void 0 && filterValues.customerEmail) {
+                  filterConditons.push({
+                    attribute: 'customer',
+                    conditions: [{
+                      attribute: 'email',
+                      value: {
+                        condition: 'ilike',
+                        value: encodeURI("%".concat(filterValues === null || filterValues === void 0 ? void 0 : filterValues.customerEmail, "%"))
+                      }
+                    }]
+                  });
+                }
+                if (((_filterValues$adminis = filterValues.administratorIds) === null || _filterValues$adminis === void 0 ? void 0 : _filterValues$adminis.length) !== 0) {
+                  filterConditons.push({
+                    attribute: 'agent_id',
+                    value: filterValues.administratorIds
+                  });
+                }
+                if ((filterValues === null || filterValues === void 0 ? void 0 : filterValues.offerId) !== null) {
+                  if (((_filterValues$offerId = filterValues.offerId) === null || _filterValues$offerId === void 0 ? void 0 : _filterValues$offerId.length) !== 0) {
+                    filterConditons.push({
+                      attribute: 'offers',
+                      conditions: [{
+                        attribute: 'offer_id',
+                        value: {
+                          condition: '=',
+                          value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.offerId
+                        }
+                      }]
+                    });
+                  }
+                }
+                if (filterValues.coupon !== null) {
+                  if (((_filterValues$coupon = filterValues.coupon) === null || _filterValues$coupon === void 0 ? void 0 : _filterValues$coupon.length) !== 0) {
+                    filterConditons.push({
+                      attribute: 'offers',
+                      conditions: [{
+                        attribute: 'coupon',
+                        value: {
+                          condition: '=',
+                          value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.coupon
+                        }
+                      }]
                     });
                   }
                 }

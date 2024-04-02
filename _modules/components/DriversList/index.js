@@ -328,15 +328,15 @@ var DriversList = function DriversList(props) {
     var _onlineDrivers;
     var _offlineDrivers;
     var driversFiltered = drivers;
-    if ((filterValues === null || filterValues === void 0 || (_filterValues$driverI = filterValues.driverIds) === null || _filterValues$driverI === void 0 ? void 0 : _filterValues$driverI.length) > 0) {
+    if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$driverI = filterValues.driverIds) === null || _filterValues$driverI === void 0 ? void 0 : _filterValues$driverI.length) > 0) {
       driversFiltered = driversFiltered.filter(function (driver) {
         var _filterValues$driverI2;
-        return filterValues === null || filterValues === void 0 || (_filterValues$driverI2 = filterValues.driverIds) === null || _filterValues$driverI2 === void 0 ? void 0 : _filterValues$driverI2.includes(driver === null || driver === void 0 ? void 0 : driver.id);
+        return filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$driverI2 = filterValues.driverIds) === null || _filterValues$driverI2 === void 0 ? void 0 : _filterValues$driverI2.includes(driver === null || driver === void 0 ? void 0 : driver.id);
       });
     }
     if (isSearchFilterValue && searchFilterValue) {
       var _driverGroupList$grou;
-      var driverGroupFilter = driverGroupList === null || driverGroupList === void 0 || (_driverGroupList$grou = driverGroupList.groups) === null || _driverGroupList$grou === void 0 ? void 0 : _driverGroupList$grou.find(function (_ref3) {
+      var driverGroupFilter = driverGroupList === null || driverGroupList === void 0 ? void 0 : (_driverGroupList$grou = driverGroupList.groups) === null || _driverGroupList$grou === void 0 ? void 0 : _driverGroupList$grou.find(function (_ref3) {
         var name = _ref3.name;
         return name.toLowerCase().includes(searchFilterValue.toLowerCase());
       });
@@ -471,7 +471,7 @@ var DriversList = function DriversList(props) {
             }));
             nextPageItems = 0;
             if (pagination.current_page !== pagination.total_pages) {
-              remainingItems = pagination.total - (driversList === null || driversList === void 0 || (_driversList$drivers = driversList.drivers) === null || _driversList$drivers === void 0 ? void 0 : _driversList$drivers.length);
+              remainingItems = pagination.total - (driversList === null || driversList === void 0 ? void 0 : (_driversList$drivers = driversList.drivers) === null || _driversList$drivers === void 0 ? void 0 : _driversList$drivers.length);
               nextPageItems = remainingItems < pagination.page_size ? remainingItems : pagination.page_size;
             }
             setPaginationDrivers(_objectSpread(_objectSpread({}, paginationDrivers), {}, {
@@ -538,7 +538,7 @@ var DriversList = function DriversList(props) {
             _yield$response$json2 = _context4.sent;
             error = _yield$response$json2.error;
             result = _yield$response$json2.result;
-            _drivers2 = result === null || result === void 0 || (_result$drivers = result.drivers) === null || _result$drivers === void 0 ? void 0 : _result$drivers.map(function (driver) {
+            _drivers2 = result === null || result === void 0 ? void 0 : (_result$drivers = result.drivers) === null || _result$drivers === void 0 ? void 0 : _result$drivers.map(function (driver) {
               return _objectSpread(_objectSpread({}, driver), {}, {
                 enabled: true
               });
@@ -691,7 +691,7 @@ var DriversList = function DriversList(props) {
     setPaginationDrivers(_objectSpread(_objectSpread({}, paginationDrivers), {}, {
       currentPage: expectedPage,
       pageSize: pageSize,
-      totalPages: Math.ceil((driversList === null || driversList === void 0 || (_driversList$drivers2 = driversList.drivers) === null || _driversList$drivers2 === void 0 ? void 0 : _driversList$drivers2.length) / pageSize)
+      totalPages: Math.ceil((driversList === null || driversList === void 0 ? void 0 : (_driversList$drivers2 = driversList.drivers) === null || _driversList$drivers2 === void 0 ? void 0 : _driversList$drivers2.length) / pageSize)
     }));
   };
   (0, _react.useEffect)(function () {
@@ -867,12 +867,12 @@ var DriversList = function DriversList(props) {
       var _session$user, _session$user2;
       socket.join({
         room: 'driver_locations',
-        user_id: session === null || session === void 0 || (_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.id,
+        user_id: session === null || session === void 0 ? void 0 : (_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.id,
         role: 'manager'
       });
       socket.join({
         room: 'drivers',
-        user_id: session === null || session === void 0 || (_session$user2 = session.user) === null || _session$user2 === void 0 ? void 0 : _session$user2.id,
+        user_id: session === null || session === void 0 ? void 0 : (_session$user2 = session.user) === null || _session$user2 === void 0 ? void 0 : _session$user2.id,
         role: 'manager'
       });
     }
@@ -884,12 +884,12 @@ var DriversList = function DriversList(props) {
       var _session$user3, _session$user4;
       socket.leave({
         room: 'driver_locations',
-        user_id: session === null || session === void 0 || (_session$user3 = session.user) === null || _session$user3 === void 0 ? void 0 : _session$user3.id,
+        user_id: session === null || session === void 0 ? void 0 : (_session$user3 = session.user) === null || _session$user3 === void 0 ? void 0 : _session$user3.id,
         role: 'manager'
       });
       socket.leave({
         room: 'drivers',
-        user_id: session === null || session === void 0 || (_session$user4 = session.user) === null || _session$user4 === void 0 ? void 0 : _session$user4.id,
+        user_id: session === null || session === void 0 ? void 0 : (_session$user4 = session.user) === null || _session$user4 === void 0 ? void 0 : _session$user4.id,
         role: 'manager'
       });
     }
@@ -922,7 +922,7 @@ var DriversList = function DriversList(props) {
       totalPages: Math.ceil((drivers === null || drivers === void 0 ? void 0 : drivers.length) / 10),
       total: (drivers === null || drivers === void 0 ? void 0 : drivers.length) || 0
     });
-  }, [driversList === null || driversList === void 0 || (_driversList$drivers3 = driversList.drivers) === null || _driversList$drivers3 === void 0 ? void 0 : _driversList$drivers3.length, searchValue, useDriversByProps]);
+  }, [driversList === null || driversList === void 0 ? void 0 : (_driversList$drivers3 = driversList.drivers) === null || _driversList$drivers3 === void 0 ? void 0 : _driversList$drivers3.length, searchValue, useDriversByProps]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     driversList: driversList,
     companysList: companysList,

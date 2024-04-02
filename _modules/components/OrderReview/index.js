@@ -76,7 +76,7 @@ var OrderReview = function OrderReview(props) {
               service: stars.service,
               package: stars.packaging,
               comment: stars.comments,
-              user_id: session === null || session === void 0 || (_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.id,
+              user_id: session === null || session === void 0 ? void 0 : (_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.id,
               business_id: order.business_id
             };
             _context.next = 5;

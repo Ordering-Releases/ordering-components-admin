@@ -100,7 +100,7 @@ var LanguageSelector = function LanguageSelector(props) {
       setLanguageSelected(language);
     } else if (!(languageState !== null && languageState !== void 0 && (_languageState$langua = languageState.language) !== null && _languageState$langua !== void 0 && _languageState$langua.code) || !(languageSelected !== null && languageSelected !== void 0 && languageSelected.code)) {
       var _languageState$langua2, _languageListState$la;
-      var _language = languageState !== null && languageState !== void 0 && (_languageState$langua2 = languageState.language) !== null && _languageState$langua2 !== void 0 && _languageState$langua2.code ? languageState === null || languageState === void 0 ? void 0 : languageState.language : languageListState === null || languageListState === void 0 || (_languageListState$la = languageListState.languages) === null || _languageListState$la === void 0 ? void 0 : _languageListState$la.find(function (language) {
+      var _language = languageState !== null && languageState !== void 0 && (_languageState$langua2 = languageState.language) !== null && _languageState$langua2 !== void 0 && _languageState$langua2.code ? languageState === null || languageState === void 0 ? void 0 : languageState.language : languageListState === null || languageListState === void 0 ? void 0 : (_languageListState$la = languageListState.languages) === null || _languageListState$la === void 0 ? void 0 : _languageListState$la.find(function (language) {
         return language.default;
       });
       if (_language) {
@@ -110,7 +110,7 @@ var LanguageSelector = function LanguageSelector(props) {
     }
   }, [languages, languageListState]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
-    currentLanguage: props.handlerCustomChangeLanguage ? languageSelected === null || languageSelected === void 0 ? void 0 : languageSelected.code : languageState === null || languageState === void 0 || (_languageState$langua3 = languageState.language) === null || _languageState$langua3 === void 0 ? void 0 : _languageState$langua3.code,
+    currentLanguage: props.handlerCustomChangeLanguage ? languageSelected === null || languageSelected === void 0 ? void 0 : languageSelected.code : languageState === null || languageState === void 0 ? void 0 : (_languageState$langua3 = languageState.language) === null || _languageState$langua3 === void 0 ? void 0 : _languageState$langua3.code,
     languagesState: languageListState,
     handleChangeLanguage: onChangeLanguage
   })));
