@@ -268,7 +268,15 @@ export const BusinessDeliveryZone = (props) => {
       } else {
         setFormState(prevState => ({ ...prevState, error: t('INVALID_KML_FILE', 'Invalid KML file') }))
       }
-      if (googlePolygons.length === 1) {
+      if (googlePolygons.length === 0) {
+        setFormState(prevState => ({ ...prevState, error: t('NO_POLYGONS_FOUND', 'No polygons found in KML file') }))
+        return
+      }
+
+      const MAX_POINTS = 1000
+      const simplifiedPolygons = googlePolygons.map(polygon => simplifyPolygon(polygon, MAX_POINTS))
+
+      if (simplifiedPolygons.length === 1) {
         setFormState(prevState => {
           return {
             ...prevState,
@@ -276,17 +284,27 @@ export const BusinessDeliveryZone = (props) => {
               ...prevState.changes,
               type: 2,
               name: placeMarkName,
-              data: googlePolygons[0]
+              data: simplifiedPolygons[0]
             }
           }
         })
-        setKmlData(googlePolygons[0])
+        setKmlData(simplifiedPolygons[0])
       } else {
         setFormState(prevState => ({ ...prevState, error: t('INVALID_KML_FILE', 'Invalid KML file') }))
       }
     } catch (error) {
       setFormState(prevState => ({ ...prevState, error: t('INVALID_KML_FILE', 'Invalid KML file') }))
     }
+  }
+
+  const simplifyPolygon = (polygon, maxPoints) => {
+    const totalPoints = polygon.length
+    if (totalPoints <= maxPoints) {
+      return polygon
+    }
+
+    const interval = Math.floor(totalPoints / maxPoints)
+    return polygon.filter((point, index) => index % interval === 0)
   }
 
   useEffect(() => {
