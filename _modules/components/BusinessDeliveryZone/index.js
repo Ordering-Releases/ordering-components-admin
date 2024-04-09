@@ -489,17 +489,29 @@ var BusinessDeliveryZone = function BusinessDeliveryZone(props) {
           });
         });
       }
-      if (googlePolygons.length === 1) {
+      if (googlePolygons.length === 0) {
+        setFormState(function (prevState) {
+          return _objectSpread(_objectSpread({}, prevState), {}, {
+            error: t('NO_POLYGONS_FOUND', 'No polygons found in KML file')
+          });
+        });
+        return;
+      }
+      var MAX_POINTS = 1000;
+      var simplifiedPolygons = googlePolygons.map(function (polygon) {
+        return simplifyPolygon(polygon, MAX_POINTS);
+      });
+      if (simplifiedPolygons.length === 1) {
         setFormState(function (prevState) {
           return _objectSpread(_objectSpread({}, prevState), {}, {
             changes: _objectSpread(_objectSpread({}, prevState.changes), {}, {
               type: 2,
               name: placeMarkName,
-              data: googlePolygons[0]
+              data: simplifiedPolygons[0]
             })
           });
         });
-        setKmlData(googlePolygons[0]);
+        setKmlData(simplifiedPolygons[0]);
       } else {
         setFormState(function (prevState) {
           return _objectSpread(_objectSpread({}, prevState), {}, {
@@ -514,6 +526,16 @@ var BusinessDeliveryZone = function BusinessDeliveryZone(props) {
         });
       });
     }
+  };
+  var simplifyPolygon = function simplifyPolygon(polygon, maxPoints) {
+    var totalPoints = polygon.length;
+    if (totalPoints <= maxPoints) {
+      return polygon;
+    }
+    var interval = Math.floor(totalPoints / maxPoints);
+    return polygon.filter(function (point, index) {
+      return index % interval === 0;
+    });
   };
   (0, _react.useEffect)(function () {
     cleanFormState();
