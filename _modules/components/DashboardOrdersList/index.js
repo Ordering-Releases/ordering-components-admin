@@ -683,6 +683,18 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
         filterCheck = false;
       }
     }
+    if (filterValues !== null && filterValues !== void 0 && filterValues.customerName) {
+      var _order$customer4, _order$customer4$name;
+      if (!(order !== null && order !== void 0 && (_order$customer4 = order.customer) !== null && _order$customer4 !== void 0 && (_order$customer4$name = _order$customer4.name) !== null && _order$customer4$name !== void 0 && _order$customer4$name.toString().includes(filterValues === null || filterValues === void 0 ? void 0 : filterValues.customerName))) filterCheck = false;
+    }
+    if (filterValues !== null && filterValues !== void 0 && filterValues.customerLastname) {
+      var _order$customer5, _order$customer5$last;
+      if (!(order !== null && order !== void 0 && (_order$customer5 = order.customer) !== null && _order$customer5 !== void 0 && (_order$customer5$last = _order$customer5.lastname) !== null && _order$customer5$last !== void 0 && _order$customer5$last.toString().includes(filterValues === null || filterValues === void 0 ? void 0 : filterValues.customerLastname))) filterCheck = false;
+    }
+    if (filterValues !== null && filterValues !== void 0 && filterValues.customerCellphone) {
+      var _order$customer6, _order$customer6$cell;
+      if (!(order !== null && order !== void 0 && (_order$customer6 = order.customer) !== null && _order$customer6 !== void 0 && (_order$customer6$cell = _order$customer6.cellphone) !== null && _order$customer6$cell !== void 0 && _order$customer6$cell.toString().includes(filterValues === null || filterValues === void 0 ? void 0 : filterValues.customerCellphone))) filterCheck = false;
+    }
     if (filterValues !== null && filterValues !== void 0 && filterValues.orderId) {
       var _order$id2;
       if (!(order !== null && order !== void 0 && (_order$id2 = order.id) !== null && _order$id2 !== void 0 && _order$id2.toString().includes(filterValues === null || filterValues === void 0 ? void 0 : filterValues.orderId))) filterCheck = false;
