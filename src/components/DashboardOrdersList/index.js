@@ -264,7 +264,6 @@ export const DashboardOrdersList = (props) => {
             }
           )
         }
-
         if (isSearchByCustomerPhone) {
           searchConditions.push(
             {
@@ -680,6 +679,15 @@ export const DashboardOrdersList = (props) => {
       }
     }
 
+    if (filterValues?.customerName) {
+      if (!order?.customer?.name?.toString().includes(filterValues?.customerName)) filterCheck = false
+    }
+    if (filterValues?.customerLastname) {
+      if (!order?.customer?.lastname?.toString().includes(filterValues?.customerLastname)) filterCheck = false
+    }
+    if (filterValues?.customerCellphone) {
+      if (!order?.customer?.cellphone?.toString().includes(filterValues?.customerCellphone)) filterCheck = false
+    }
     if (filterValues?.orderId) {
       if (!order?.id?.toString().includes(filterValues?.orderId)) filterCheck = false
     }
