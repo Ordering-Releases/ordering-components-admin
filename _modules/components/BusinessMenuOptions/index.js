@@ -40,7 +40,8 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
     isSelectedSharedMenus = props.isSelectedSharedMenus,
     sitesState = props.sitesState,
     menuList = props.menuList,
-    setMenuList = props.setMenuList;
+    setMenuList = props.setMenuList,
+    setCurrentMenu = props.setCurrentMenu;
   var _useApi = (0, _ApiContext.useApi)(),
     _useApi2 = _slicedToArray(_useApi, 1),
     ordering = _useApi2[0];
@@ -424,6 +425,65 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
       })
     }));
   };
+  var getSharedMenuProducts = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      var paramsToFetch, response, _yield$response$json, result, error, _selectedProductsIds;
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.prev = 0;
+            paramsToFetch = ['id', 'name', 'enabled', 'featured', 'upselling', 'price', 'extras', 'inventoried', 'category_id'];
+            _context4.next = 4;
+            return fetch("".concat(ordering.root, "/business/").concat(business === null || business === void 0 ? void 0 : business.id, "/menus_shared/").concat(menu === null || menu === void 0 ? void 0 : menu.id, "/products?params=").concat(paramsToFetch), {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: "Bearer ".concat(token)
+              }
+            });
+          case 4:
+            response = _context4.sent;
+            _context4.next = 7;
+            return response.json();
+          case 7:
+            _yield$response$json = _context4.sent;
+            result = _yield$response$json.result;
+            error = _yield$response$json.error;
+            if (error) {
+              _context4.next = 16;
+              break;
+            }
+            _selectedProductsIds = result === null || result === void 0 ? void 0 : result.reduce(function (ids, product) {
+              return [].concat(_toConsumableArray(ids), [product.id]);
+            }, []);
+            setSelectedProductsIds(_selectedProductsIds);
+            setSelectedProducts(result);
+            setCurrentMenu(_objectSpread(_objectSpread({}, menu), {}, {
+              products: result
+            }));
+            return _context4.abrupt("return");
+          case 16:
+            setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+              error: result
+            }));
+            _context4.next = 22;
+            break;
+          case 19:
+            _context4.prev = 19;
+            _context4.t0 = _context4["catch"](0);
+            setFormState(_objectSpread(_objectSpread({}, formState), {}, {
+              error: _context4.t0.message
+            }));
+          case 22:
+          case "end":
+            return _context4.stop();
+        }
+      }, _callee4, null, [[0, 19]]);
+    }));
+    return function getSharedMenuProducts() {
+      return _ref4.apply(this, arguments);
+    };
+  }();
   (0, _react.useEffect)(function () {
     setFormState(_objectSpread(_objectSpread({}, formState), {}, {
       changes: _objectSpread(_objectSpread({}, formState.changes), {}, {
@@ -472,6 +532,11 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
     }
     handleSetSubCategoryList(_selectedProductsIds);
   }, [menu]);
+  (0, _react.useEffect)(function () {
+    if (menu !== null && menu !== void 0 && menu.id) {
+      getSharedMenuProducts();
+    }
+  }, [menu === null || menu === void 0 ? void 0 : menu.id]);
   var handleSetSubCategoryList = function handleSetSubCategoryList(_selectedProductsIds) {
     var _business$categories;
     if (business !== null && business !== void 0 && (_business$categories = business.categories) !== null && _business$categories !== void 0 && _business$categories.length) {
