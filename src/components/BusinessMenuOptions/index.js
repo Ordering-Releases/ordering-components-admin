@@ -13,7 +13,8 @@ export const BusinessMenuOptions = (props) => {
     isSelectedSharedMenus,
     sitesState,
     menuList,
-    setMenuList
+    setMenuList,
+    setCurrentMenu
   } = props
   const [ordering] = useApi()
   const [{ token }] = useSession()
@@ -303,6 +304,39 @@ export const BusinessMenuOptions = (props) => {
     })
   }
 
+  const getSharedMenuProducts = async () => {
+    try {
+      const paramsToFetch = ['id', 'name', 'enabled', 'featured', 'upselling', 'price', 'extras', 'inventoried', 'category_id']
+      const response = await fetch(`${ordering.root}/business/${business?.id}/menus_shared/${menu?.id}/products?params=${paramsToFetch}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      })
+      const { result, error } = await response.json()
+      if (!error) {
+        const _selectedProductsIds = result?.reduce((ids, product) => [...ids, product.id], [])
+        setSelectedProductsIds(_selectedProductsIds)
+        setSelectedProducts(result)
+        setCurrentMenu({
+          ...menu,
+          products: result
+        })
+        return
+      }
+      setFormState({
+        ...formState,
+        error: result
+      })
+    } catch (err) {
+      setFormState({
+        ...formState,
+        error: err.message
+      })
+    }
+  }
+
   useEffect(() => {
     setFormState({
       ...formState,
@@ -348,6 +382,12 @@ export const BusinessMenuOptions = (props) => {
     }
     handleSetSubCategoryList(_selectedProductsIds)
   }, [menu])
+
+  useEffect(() => {
+    if (menu?.id) {
+      getSharedMenuProducts()
+    }
+  }, [menu?.id])
 
   const handleSetSubCategoryList = (_selectedProductsIds) => {
     if (business?.categories?.length) {
