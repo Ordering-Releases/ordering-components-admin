@@ -744,7 +744,7 @@ var DriversList = function DriversList(props) {
       loading: false,
       error: null
     });
-  }, [driversSubfilter, filterValues === null || filterValues === void 0 ? void 0 : filterValues.driverIds, searchFilterValue, useDriversByProps]);
+  }, [JSON.stringify(drivers), driversSubfilter, filterValues === null || filterValues === void 0 ? void 0 : filterValues.driverIds, searchFilterValue, useDriversByProps]);
   /**
    * Listening driver change
    */
