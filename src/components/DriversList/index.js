@@ -490,7 +490,7 @@ export const DriversList = (props) => {
   useEffect(() => {
     if (!useDriversByProps) return
     setDriversList({ drivers: drivers, loading: false, error: null })
-  }, [driversSubfilter, filterValues?.driverIds, searchFilterValue, useDriversByProps])
+  }, [JSON.stringify(drivers), driversSubfilter, filterValues?.driverIds, searchFilterValue, useDriversByProps])
   /**
    * Listening driver change
    */
