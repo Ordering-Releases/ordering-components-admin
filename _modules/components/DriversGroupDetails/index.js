@@ -216,6 +216,9 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
             changes = _objectSpread(_objectSpread({}, _changes), {}, {
               driver_available_max_distance: (_changes === null || _changes === void 0 ? void 0 : _changes.driver_available_max_distance) || null
             });
+            if ((changes === null || changes === void 0 ? void 0 : changes.driver_available_max_distance) === null) {
+              changes === null || changes === void 0 ? true : delete changes.driver_available_max_distance;
+            }
             requestOptions = {
               method: 'PUT',
               headers: {
@@ -225,13 +228,13 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
               body: JSON.stringify(changes)
             };
             groupId = (curDriversGroup === null || curDriversGroup === void 0 ? void 0 : curDriversGroup.id) || driversGroupId;
-            _context2.next = 8;
+            _context2.next = 9;
             return fetch("".concat(ordering.root, "/drivergroups/").concat(groupId), requestOptions);
-          case 8:
+          case 9:
             response = _context2.sent;
-            _context2.next = 11;
+            _context2.next = 12;
             return response.json();
-          case 11:
+          case 12:
             content = _context2.sent;
             if (!content.error) {
               setActionState({
@@ -258,20 +261,20 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
                 error: content.result
               }));
             }
-            _context2.next = 18;
+            _context2.next = 19;
             break;
-          case 15:
-            _context2.prev = 15;
+          case 16:
+            _context2.prev = 16;
             _context2.t0 = _context2["catch"](0);
             setActionState({
               loading: false,
               error: [_context2.t0.message]
             });
-          case 18:
+          case 19:
           case "end":
             return _context2.stop();
         }
-      }, _callee2, null, [[0, 15]]);
+      }, _callee2, null, [[0, 16]]);
     }));
     return function handleUpdateDriversGroup(_x2) {
       return _ref2.apply(this, arguments);
