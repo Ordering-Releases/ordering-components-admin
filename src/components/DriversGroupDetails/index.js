@@ -107,6 +107,9 @@ export const DriversGroupDetails = (props) => {
         ..._changes,
         driver_available_max_distance: _changes?.driver_available_max_distance || null
       }
+      if (changes?.driver_available_max_distance === null) {
+        delete changes?.driver_available_max_distance
+      }
       const requestOptions = {
         method: 'PUT',
         headers: {
