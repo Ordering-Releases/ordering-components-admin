@@ -213,11 +213,11 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
               loading: true,
               error: null
             }));
-            changes = _objectSpread(_objectSpread({}, _changes), {}, {
-              driver_available_max_distance: (_changes === null || _changes === void 0 ? void 0 : _changes.driver_available_max_distance) || null
-            });
-            if ((changes === null || changes === void 0 ? void 0 : changes.driver_available_max_distance) === null) {
-              changes === null || changes === void 0 ? true : delete changes.driver_available_max_distance;
+            changes = _changes;
+            if (typeof (_changes === null || _changes === void 0 ? void 0 : _changes.driver_available_max_distance) !== 'undefined') {
+              changes = _objectSpread(_objectSpread({}, _changes), {}, {
+                driver_available_max_distance: (_changes === null || _changes === void 0 ? void 0 : _changes.driver_available_max_distance) === '' ? null : _changes === null || _changes === void 0 ? void 0 : _changes.driver_available_max_distance
+              });
             }
             requestOptions = {
               method: 'PUT',
