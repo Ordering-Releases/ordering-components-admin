@@ -103,13 +103,14 @@ export const DriversGroupDetails = (props) => {
     try {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
       setActionState({ ...actionState, loading: true, error: null })
-      const changes = {
-        ..._changes,
-        driver_available_max_distance: _changes?.driver_available_max_distance || null
+      let changes = _changes
+      if (typeof _changes?.driver_available_max_distance !== 'undefined') {
+        changes = {
+          ..._changes,
+          driver_available_max_distance: _changes?.driver_available_max_distance === '' ? null : _changes?.driver_available_max_distance
+        }
       }
-      if (changes?.driver_available_max_distance === null) {
-        delete changes?.driver_available_max_distance
-      }
+
       const requestOptions = {
         method: 'PUT',
         headers: {
