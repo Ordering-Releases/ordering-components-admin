@@ -110,6 +110,12 @@ export const DriversGroupDetails = (props) => {
           driver_available_max_distance: _changes?.driver_available_max_distance === '' ? null : _changes?.driver_available_max_distance
         }
       }
+      if (typeof _changes?.administrators !== 'undefined') {
+        changes = {
+          ..._changes,
+          administrators: _changes?.administrators === '[]' ? null : _changes?.administrators
+        }
+      }
 
       const requestOptions = {
         method: 'PUT',

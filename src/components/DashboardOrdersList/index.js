@@ -6,7 +6,11 @@ import { useWebsocket } from '../../contexts/WebsocketContext'
 import { useEvent } from '../../contexts/EventContext'
 import { useConfig } from '../../contexts/ConfigContext'
 import moment from 'moment'
-
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+dayjs.extend(utc)
+dayjs.extend(timezone)
 export const DashboardOrdersList = (props) => {
   const {
     UIComponent,
@@ -42,6 +46,7 @@ export const DashboardOrdersList = (props) => {
   const [ordering] = useApi()
   const [events] = useEvent()
   const [configState] = useConfig()
+  const [{ user }] = useSession()
 
   const [orderList, setOrderList] = useState({ loading: !orders, error: null, orders: [] })
   const [pagination, setPagination] = useState({
@@ -55,6 +60,8 @@ export const DashboardOrdersList = (props) => {
   const requestsState = {}
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
   const firstRender = useRef(true)
+  const filterDefaultOrderDate = configState?.configs?.filter_default_order_date?.value
+  const filterDefaultOrderValues = ['today', 'last_seven_days']
 
   const sortOrdersArray = (option, array) => {
     if (option === 'id') {
@@ -399,13 +406,28 @@ export const DashboardOrdersList = (props) => {
           conditions: metafieldConditions
         })
       }
-      if (filterValues.deliveryFromDatetime !== null) {
+      if (filterValues.deliveryFromDatetime !== null || filterDefaultOrderValues.includes(filterDefaultOrderDate)) {
+        const now = dayjs()
+        let defaultDateFilter
+        if (filterDefaultOrderDate === 'today') {
+          if (user?.timezone && user?.timezone !== 'UTC') {
+            const nowInUserTimezone = now.tz(user?.timezone).startOf('day')
+            defaultDateFilter = nowInUserTimezone.utc().format('YYYY-MM-DD HH:mm:ss')
+          } else {
+            const today = now.format('YYYY-MM-DD')
+            defaultDateFilter = dayjs(today).format('YYYY-MM-DD HH:mm:ss')
+          }
+        }
+        if (filterDefaultOrderDate === 'last_seven_days') {
+          const last7day = now.subtract('7', 'day').format('YYYY-MM-DD')
+          defaultDateFilter = dayjs(last7day).format('YYYY-MM-DD HH:mm:ss')
+        }
         filterConditons.push(
           {
             attribute: 'delivery_datetime',
             value: {
               condition: '>=',
-              value: encodeURI(filterValues.deliveryFromDatetime)
+              value: encodeURI(filterValues.deliveryFromDatetime || defaultDateFilter)
             }
           }
         )
