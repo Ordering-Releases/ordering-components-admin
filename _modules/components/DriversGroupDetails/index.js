@@ -219,6 +219,11 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
                 driver_available_max_distance: (_changes === null || _changes === void 0 ? void 0 : _changes.driver_available_max_distance) === '' ? null : _changes === null || _changes === void 0 ? void 0 : _changes.driver_available_max_distance
               });
             }
+            if (typeof (_changes === null || _changes === void 0 ? void 0 : _changes.administrators) !== 'undefined') {
+              changes = _objectSpread(_objectSpread({}, _changes), {}, {
+                administrators: (_changes === null || _changes === void 0 ? void 0 : _changes.administrators) === '[]' ? null : _changes === null || _changes === void 0 ? void 0 : _changes.administrators
+              });
+            }
             requestOptions = {
               method: 'PUT',
               headers: {
@@ -228,13 +233,13 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
               body: JSON.stringify(changes)
             };
             groupId = (curDriversGroup === null || curDriversGroup === void 0 ? void 0 : curDriversGroup.id) || driversGroupId;
-            _context2.next = 9;
+            _context2.next = 10;
             return fetch("".concat(ordering.root, "/drivergroups/").concat(groupId), requestOptions);
-          case 9:
+          case 10:
             response = _context2.sent;
-            _context2.next = 12;
+            _context2.next = 13;
             return response.json();
-          case 12:
+          case 13:
             content = _context2.sent;
             if (!content.error) {
               setActionState({
@@ -261,20 +266,20 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
                 error: content.result
               }));
             }
-            _context2.next = 19;
+            _context2.next = 20;
             break;
-          case 16:
-            _context2.prev = 16;
+          case 17:
+            _context2.prev = 17;
             _context2.t0 = _context2["catch"](0);
             setActionState({
               loading: false,
               error: [_context2.t0.message]
             });
-          case 19:
+          case 20:
           case "end":
             return _context2.stop();
         }
-      }, _callee2, null, [[0, 16]]);
+      }, _callee2, null, [[0, 17]]);
     }));
     return function handleUpdateDriversGroup(_x2) {
       return _ref2.apply(this, arguments);

@@ -13,6 +13,9 @@ var _WebsocketContext = require("../../contexts/WebsocketContext");
 var _EventContext = require("../../contexts/EventContext");
 var _ConfigContext = require("../../contexts/ConfigContext");
 var _moment = _interopRequireDefault(require("moment"));
+var _dayjs = _interopRequireDefault(require("dayjs"));
+var _utc = _interopRequireDefault(require("dayjs/plugin/utc"));
+var _timezone = _interopRequireDefault(require("dayjs/plugin/timezone"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -35,8 +38,10 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+_dayjs.default.extend(_utc.default);
+_dayjs.default.extend(_timezone.default);
 var DashboardOrdersList = function DashboardOrdersList(props) {
-  var _paginationSettings$p;
+  var _paginationSettings$p, _configState$configs, _configState$configs$;
   var UIComponent = props.UIComponent,
     propsToFetch = props.propsToFetch,
     orders = props.orders,
@@ -74,6 +79,9 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
   var _useConfig = (0, _ConfigContext.useConfig)(),
     _useConfig2 = _slicedToArray(_useConfig, 1),
     configState = _useConfig2[0];
+  var _useSession = (0, _SessionContext.useSession)(),
+    _useSession2 = _slicedToArray(_useSession, 1),
+    user = _useSession2[0].user;
   var _useState = (0, _react.useState)({
       loading: !orders,
       error: null,
@@ -89,9 +97,9 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
     _useState4 = _slicedToArray(_useState3, 2),
     pagination = _useState4[0],
     setPagination = _useState4[1];
-  var _useSession = (0, _SessionContext.useSession)(),
-    _useSession2 = _slicedToArray(_useSession, 1),
-    session = _useSession2[0];
+  var _useSession3 = (0, _SessionContext.useSession)(),
+    _useSession4 = _slicedToArray(_useSession3, 1),
+    session = _useSession4[0];
   var socket = (0, _WebsocketContext.useWebsocket)();
   var accessToken = useDefualtSessionManager ? session.token : props.accessToken;
   var isAlsea = ['alsea', 'alsea-staging'].includes(ordering.project);
@@ -104,6 +112,8 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
     actionStatus = _useState6[0],
     setActionStatus = _useState6[1];
   var firstRender = (0, _react.useRef)(true);
+  var filterDefaultOrderDate = configState === null || configState === void 0 ? void 0 : (_configState$configs = configState.configs) === null || _configState$configs === void 0 ? void 0 : (_configState$configs$ = _configState$configs.filter_default_order_date) === null || _configState$configs$ === void 0 ? void 0 : _configState$configs$.value;
+  var filterDefaultOrderValues = ['today', 'last_seven_days'];
   var sortOrdersArray = function sortOrdersArray(option, array) {
     if (option === 'id') {
       if (orderDirection === 'desc') {
@@ -188,7 +198,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
    */
   var getOrders = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(pageSize, page) {
-      var where, conditions, options, getFilterStatusInOrderStatus, searchConditions, _filterValues$metafie, filterConditons, metafieldConditions, source, functionFetch;
+      var where, conditions, options, getFilterStatusInOrderStatus, searchConditions, _filterValues$metafie, filterConditons, metafieldConditions, now, defaultDateFilter, nowInUserTimezone, today, last7day, source, functionFetch;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -443,12 +453,26 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
                   conditions: metafieldConditions
                 });
               }
-              if (filterValues.deliveryFromDatetime !== null) {
+              if (filterValues.deliveryFromDatetime !== null || filterDefaultOrderValues.includes(filterDefaultOrderDate)) {
+                now = (0, _dayjs.default)();
+                if (filterDefaultOrderDate === 'today') {
+                  if (user !== null && user !== void 0 && user.timezone && (user === null || user === void 0 ? void 0 : user.timezone) !== 'UTC') {
+                    nowInUserTimezone = now.tz(user === null || user === void 0 ? void 0 : user.timezone).startOf('day');
+                    defaultDateFilter = nowInUserTimezone.utc().format('YYYY-MM-DD HH:mm:ss');
+                  } else {
+                    today = now.format('YYYY-MM-DD');
+                    defaultDateFilter = (0, _dayjs.default)(today).format('YYYY-MM-DD HH:mm:ss');
+                  }
+                }
+                if (filterDefaultOrderDate === 'last_seven_days') {
+                  last7day = now.subtract('7', 'day').format('YYYY-MM-DD');
+                  defaultDateFilter = (0, _dayjs.default)(last7day).format('YYYY-MM-DD HH:mm:ss');
+                }
                 filterConditons.push({
                   attribute: 'delivery_datetime',
                   value: {
                     condition: '>=',
-                    value: encodeURI(filterValues.deliveryFromDatetime)
+                    value: encodeURI(filterValues.deliveryFromDatetime || defaultDateFilter)
                   }
                 });
               }
