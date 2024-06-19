@@ -361,12 +361,13 @@ export const ExportCSV = (props) => {
         setActionStatus({
           ...actionStatus,
           loading: false,
-          result: result
+          result: result,
+          error: null
         })
       } else {
         setActionStatus({
           ...actionStatus,
-          loading: true,
+          loading: false,
           error: result
         })
       }
