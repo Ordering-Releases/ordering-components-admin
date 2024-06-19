@@ -349,11 +349,12 @@ var ExportCSV = function ExportCSV(props) {
             if (!error) {
               setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
                 loading: false,
-                result: result
+                result: result,
+                error: null
               }));
             } else {
               setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
-                loading: true,
+                loading: false,
                 error: result
               }));
             }
