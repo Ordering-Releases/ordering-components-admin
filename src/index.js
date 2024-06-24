@@ -102,6 +102,7 @@ import { DriverGroupDeliveryDetails } from './components/DriverGroupDeliveryDeta
 import { DriversGroupOrders } from './components/DriversGroupOrders'
 import { DriversGroupsList } from './components/DriversGroupsList'
 import { DriversGroupLogs } from './components/DriversGroupLogs'
+import { DriversAdvancedLogs } from './components/DriversAdvancedLogs'
 import { DriversLogs } from './components/DriversLogs'
 import { SettingsLogs } from './components/SettingsLogs'
 import { DriverTips } from './components/DriverTips'
@@ -381,6 +382,7 @@ export {
   DriverGroupDeliveryZone,
   DriversGroupsList,
   DriversGroupLogs,
+  DriversAdvancedLogs,
   DriversLogs,
   EnterprisePromotionList,
   EnterprisePromotionDetails,
