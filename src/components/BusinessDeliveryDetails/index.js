@@ -244,5 +244,5 @@ BusinessDeliveryDetails.defaultProps = {
   afterComponents: [],
   beforeElements: [],
   afterElements: [],
-  propsToFetch: ['id', 'zones', 'header', 'logo']
+  propsToFetch: ['id', 'zones', 'header', 'logo', 'timezone']
 }

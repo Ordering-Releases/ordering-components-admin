@@ -313,5 +313,5 @@ BusinessMenu.defaultProps = {
   afterComponents: [],
   beforeElements: [],
   afterElements: [],
-  propsToFetch: ['id', 'categories', 'categories_shared', 'header', 'logo']
+  propsToFetch: ['id', 'categories', 'categories_shared', 'header', 'logo', 'timezone']
 }
