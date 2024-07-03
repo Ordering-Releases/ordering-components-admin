@@ -107,6 +107,13 @@ export const BusinessMenuOptions = (props) => {
           ...menuList,
           menus
         })
+        setBusinessMenuState({
+          ...businessMenuState,
+          menu: {
+            ...businessMenuState.menu,
+            ...content.result
+          }
+        })
         showToast(ToastType.Success, t('MENU_SAVED', 'Products catalog saved'))
       }
     } catch (err) {
