@@ -156,7 +156,7 @@ var ProductExtras = function ProductExtras(props) {
    */
   var handleProductExtraState = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(extraIds) {
-      var changes, requestOptions, response, content, extras, updatedProduct;
+      var changes, requestOptions, response, content, _productState$product, extrasFromProductState, extras, combinedExtras, updatedProduct;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -188,11 +188,23 @@ var ProductExtras = function ProductExtras(props) {
           case 10:
             content = _context2.sent;
             if (!content.error) {
+              extrasFromProductState = productState === null || productState === void 0 ? void 0 : (_productState$product = productState.product) === null || _productState$product === void 0 ? void 0 : _productState$product.extras.filter(function (extra) {
+                return extraIds.includes(extra.id);
+              });
               extras = extrasState === null || extrasState === void 0 ? void 0 : extrasState.extras.filter(function (extra) {
                 return extraIds.includes(extra.id);
               });
+              combinedExtras = extras.map(function (extra) {
+                var extraFromProduct = extrasFromProductState.find(function (ep) {
+                  return ep.id === extra.id;
+                });
+                if (extraFromProduct) {
+                  return _objectSpread(_objectSpread({}, extraFromProduct), extra);
+                }
+                return extra;
+              });
               updatedProduct = _objectSpread(_objectSpread({}, productState.product), {}, {
-                extras: extras
+                extras: combinedExtras
               });
               setProductState(_objectSpread(_objectSpread({}, productState), {}, {
                 loading: false,

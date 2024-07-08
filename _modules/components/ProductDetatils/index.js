@@ -580,7 +580,8 @@ var ProductDetatils = function ProductDetatils(props) {
     showProductOption: showProductOption,
     handleChangeFormState: handleChangeFormState,
     handleSuccessUpdate: handleSuccessUpdate,
-    handleDuplicateProduct: handleDuplicateProduct
+    handleDuplicateProduct: handleDuplicateProduct,
+    getProduct: getProduct
   })));
 };
 exports.ProductDetatils = ProductDetatils;
