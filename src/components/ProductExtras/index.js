@@ -93,8 +93,19 @@ export const ProductExtras = (props) => {
       const response = await fetch(`${ordering.root}/business/${business.id}/categories/${product?.category_id}/products/${product.id}`, requestOptions)
       const content = await response.json()
       if (!content.error) {
+        const extrasFromProductState = productState?.product?.extras.filter(extra => extraIds.includes(extra.id))
         const extras = extrasState?.extras.filter(extra => extraIds.includes(extra.id))
-        const updatedProduct = { ...productState.product, extras: extras }
+        const combinedExtras = extras.map(extra => {
+          const extraFromProduct = extrasFromProductState.find(ep => ep.id === extra.id)
+          if (extraFromProduct) {
+            return {
+              ...extraFromProduct,
+              ...extra
+            }
+          }
+          return extra
+        })
+        const updatedProduct = { ...productState.product, extras: combinedExtras }
         setProductState({
           ...productState,
           loading: false,

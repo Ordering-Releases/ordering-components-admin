@@ -426,6 +426,7 @@ export const ProductDetatils = (props) => {
           handleChangeFormState={handleChangeFormState}
           handleSuccessUpdate={handleSuccessUpdate}
           handleDuplicateProduct={handleDuplicateProduct}
+          getProduct={getProduct}
         />
       )}
     </>
