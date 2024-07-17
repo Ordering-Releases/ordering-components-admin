@@ -78,7 +78,7 @@ var BusinessFormDetails = function BusinessFormDetails(props) {
     addressChange = _useState6[0],
     setAddressChange = _useState6[1];
   var timeout = null;
-  var googleMapsApiKey = configs === null || configs === void 0 ? void 0 : (_configs$google_maps_ = configs.google_maps_api_key) === null || _configs$google_maps_ === void 0 ? void 0 : _configs$google_maps_.value;
+  var googleMapsApiKey = configs === null || configs === void 0 || (_configs$google_maps_ = configs.google_maps_api_key) === null || _configs$google_maps_ === void 0 ? void 0 : _configs$google_maps_.value;
 
   /**
    * Clean formState
@@ -97,7 +97,7 @@ var BusinessFormDetails = function BusinessFormDetails(props) {
     tax_type: 1,
     service_fee: 0,
     enabled: true,
-    owner_id: session === null || session === void 0 ? void 0 : (_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.id,
+    owner_id: session === null || session === void 0 || (_session$user = session.user) === null || _session$user === void 0 ? void 0 : _session$user.id,
     schedule: [{
       enabled: true,
       lapses: [{
@@ -205,7 +205,7 @@ var BusinessFormDetails = function BusinessFormDetails(props) {
    */
   var handleUpdateClick = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var changes, response, originalChanges, _originalChanges$ribb, _originalChanges$ribb2, _response$content, _response$content$res, _response$content$res2, updatedChanges, _response;
+      var changes, response, originalChanges, _originalChanges$ribb, _originalChanges$ribb2, _response$content, updatedChanges, _response;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -231,7 +231,7 @@ var BusinessFormDetails = function BusinessFormDetails(props) {
               _context.next = 20;
               break;
             }
-            if (!(typeof (originalChanges === null || originalChanges === void 0 ? void 0 : (_originalChanges$ribb = originalChanges.ribbon) === null || _originalChanges$ribb === void 0 ? void 0 : _originalChanges$ribb.enabled) !== 'undefined' && !(originalChanges !== null && originalChanges !== void 0 && (_originalChanges$ribb2 = originalChanges.ribbon) !== null && _originalChanges$ribb2 !== void 0 && _originalChanges$ribb2.enabled) && (_response$content = response.content) !== null && _response$content !== void 0 && (_response$content$res = _response$content.result) !== null && _response$content$res !== void 0 && (_response$content$res2 = _response$content$res.ribbon) !== null && _response$content$res2 !== void 0 && _response$content$res2.enabled)) {
+            if (!(typeof (originalChanges === null || originalChanges === void 0 || (_originalChanges$ribb = originalChanges.ribbon) === null || _originalChanges$ribb === void 0 ? void 0 : _originalChanges$ribb.enabled) !== 'undefined' && !(originalChanges !== null && originalChanges !== void 0 && (_originalChanges$ribb2 = originalChanges.ribbon) !== null && _originalChanges$ribb2 !== void 0 && _originalChanges$ribb2.enabled) && (_response$content = response.content) !== null && _response$content !== void 0 && (_response$content = _response$content.result) !== null && _response$content !== void 0 && (_response$content = _response$content.ribbon) !== null && _response$content !== void 0 && _response$content.enabled)) {
               _context.next = 18;
               break;
             }
@@ -382,7 +382,7 @@ var BusinessFormDetails = function BusinessFormDetails(props) {
    */
   var handleChangeRibbon = function handleChangeRibbon(changes) {
     var _formState$changes, _formState$changes2;
-    var ribbonChanges = formState !== null && formState !== void 0 && (_formState$changes = formState.changes) !== null && _formState$changes !== void 0 && _formState$changes.ribbon ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.ribbon), changes) : _objectSpread({}, changes);
+    var ribbonChanges = formState !== null && formState !== void 0 && (_formState$changes = formState.changes) !== null && _formState$changes !== void 0 && _formState$changes.ribbon ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 || (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.ribbon), changes) : _objectSpread({}, changes);
     var currentChanges = _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), {}, {
       ribbon: ribbonChanges
     });
@@ -435,7 +435,7 @@ var BusinessFormDetails = function BusinessFormDetails(props) {
         while (1) switch (_context4.prev = _context4.next) {
           case 0:
             _context4.next = 2;
-            return getTimeZone(address === null || address === void 0 ? void 0 : (_address$location = address.location) === null || _address$location === void 0 ? void 0 : _address$location.lat, address === null || address === void 0 ? void 0 : (_address$location2 = address.location) === null || _address$location2 === void 0 ? void 0 : _address$location2.lng);
+            return getTimeZone(address === null || address === void 0 || (_address$location = address.location) === null || _address$location === void 0 ? void 0 : _address$location.lat, address === null || address === void 0 || (_address$location2 = address.location) === null || _address$location2 === void 0 ? void 0 : _address$location2.lng);
           case 2:
             timezone = _context4.sent;
             setAddressChange({

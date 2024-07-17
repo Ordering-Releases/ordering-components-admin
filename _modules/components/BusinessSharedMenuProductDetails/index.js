@@ -110,7 +110,7 @@ var BusinessSharedMenuProductDetails = function BusinessSharedMenuProductDetails
               setProductState(_objectSpread(_objectSpread({}, productState), {}, {
                 product: _objectSpread(_objectSpread({}, productState.product), changes)
               }));
-              menusShared = menuList === null || menuList === void 0 ? void 0 : (_menuList$menusShared = menuList.menusShared) === null || _menuList$menusShared === void 0 ? void 0 : _menuList$menusShared.filter(function (sharedMenu) {
+              menusShared = menuList === null || menuList === void 0 || (_menuList$menusShared = menuList.menusShared) === null || _menuList$menusShared === void 0 ? void 0 : _menuList$menusShared.filter(function (sharedMenu) {
                 var products = sharedMenu.products.map(function (_product) {
                   if (_product.id === (product === null || product === void 0 ? void 0 : product.id)) {
                     return _objectSpread(_objectSpread({}, _product), changes);
@@ -202,7 +202,7 @@ var BusinessSharedMenuProductDetails = function BusinessSharedMenuProductDetails
               setProductState(_objectSpread(_objectSpread({}, productState), {}, {
                 product: _objectSpread(_objectSpread({}, productState.product), updatedProduct)
               }));
-              menusShared = menuList === null || menuList === void 0 ? void 0 : (_menuList$menusShared2 = menuList.menusShared) === null || _menuList$menusShared2 === void 0 ? void 0 : _menuList$menusShared2.filter(function (sharedMenu) {
+              menusShared = menuList === null || menuList === void 0 || (_menuList$menusShared2 = menuList.menusShared) === null || _menuList$menusShared2 === void 0 ? void 0 : _menuList$menusShared2.filter(function (sharedMenu) {
                 var products = sharedMenu.products.map(function (_product) {
                   if (_product.id === (product === null || product === void 0 ? void 0 : product.id)) {
                     return _objectSpread(_objectSpread({}, _product), updatedProduct);
@@ -300,7 +300,7 @@ var BusinessSharedMenuProductDetails = function BusinessSharedMenuProductDetails
               setProductState(_objectSpread(_objectSpread({}, productState), {}, {
                 product: _objectSpread(_objectSpread({}, productState.product), updatedProduct)
               }));
-              menusShared = menuList === null || menuList === void 0 ? void 0 : (_menuList$menusShared3 = menuList.menusShared) === null || _menuList$menusShared3 === void 0 ? void 0 : _menuList$menusShared3.filter(function (sharedMenu) {
+              menusShared = menuList === null || menuList === void 0 || (_menuList$menusShared3 = menuList.menusShared) === null || _menuList$menusShared3 === void 0 ? void 0 : _menuList$menusShared3.filter(function (sharedMenu) {
                 var products = sharedMenu.products.map(function (_product) {
                   if (_product.id === (product === null || product === void 0 ? void 0 : product.id)) {
                     return _objectSpread(_objectSpread({}, _product), updatedProduct);
@@ -403,7 +403,7 @@ var BusinessSharedMenuProductDetails = function BusinessSharedMenuProductDetails
               setProductState(_objectSpread(_objectSpread({}, productState), {}, {
                 product: _objectSpread(_objectSpread({}, productState.product), updatedProduct)
               }));
-              menusShared = menuList === null || menuList === void 0 ? void 0 : (_menuList$menusShared4 = menuList.menusShared) === null || _menuList$menusShared4 === void 0 ? void 0 : _menuList$menusShared4.filter(function (sharedMenu) {
+              menusShared = menuList === null || menuList === void 0 || (_menuList$menusShared4 = menuList.menusShared) === null || _menuList$menusShared4 === void 0 ? void 0 : _menuList$menusShared4.filter(function (sharedMenu) {
                 var products = sharedMenu.products.map(function (_product) {
                   if (_product.id === (product === null || product === void 0 ? void 0 : product.id)) {
                     return _objectSpread(_objectSpread({}, _product), updatedProduct);

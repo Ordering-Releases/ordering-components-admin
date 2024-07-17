@@ -38,7 +38,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  * Component to manage custom order details behavior without UI component
  */
 var CustomOrderDetails = function CustomOrderDetails(props) {
-  var _orderState$options4, _orderState$options5, _orderState$options5$;
+  var _orderState$options4, _orderState$options5;
   var UIComponent = props.UIComponent,
     businessPropsToFetch = props.businessPropsToFetch,
     onClose = props.onClose,
@@ -477,7 +477,7 @@ var CustomOrderDetails = function CustomOrderDetails(props) {
         error: null
       });
     }
-  }, [selectedBusiness, orderState === null || orderState === void 0 ? void 0 : (_orderState$options4 = orderState.options) === null || _orderState$options4 === void 0 ? void 0 : _orderState$options4.type, orderState === null || orderState === void 0 ? void 0 : (_orderState$options5 = orderState.options) === null || _orderState$options5 === void 0 ? void 0 : (_orderState$options5$ = _orderState$options5.address) === null || _orderState$options5$ === void 0 ? void 0 : _orderState$options5$.location, orderState === null || orderState === void 0 ? void 0 : orderState.loading]);
+  }, [selectedBusiness, orderState === null || orderState === void 0 || (_orderState$options4 = orderState.options) === null || _orderState$options4 === void 0 ? void 0 : _orderState$options4.type, orderState === null || orderState === void 0 || (_orderState$options5 = orderState.options) === null || _orderState$options5 === void 0 || (_orderState$options5 = _orderState$options5.address) === null || _orderState$options5 === void 0 ? void 0 : _orderState$options5.location, orderState === null || orderState === void 0 ? void 0 : orderState.loading]);
   (0, _react.useEffect)(function () {
     if (selectedUser) {
       handleDisableToast(false);

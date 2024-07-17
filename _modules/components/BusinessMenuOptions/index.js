@@ -157,7 +157,7 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
               loading: false
             }));
             if (!content.error) {
-              menus = menuList === null || menuList === void 0 ? void 0 : (_menuList$menus = menuList.menus) === null || _menuList$menus === void 0 ? void 0 : _menuList$menus.filter(function (menu) {
+              menus = menuList === null || menuList === void 0 || (_menuList$menus = menuList.menus) === null || _menuList$menus === void 0 ? void 0 : _menuList$menus.filter(function (menu) {
                 if (menu.id === content.result.id) {
                   Object.assign(menu, content.result);
                   var isUpdatedProducts = typeof (changes === null || changes === void 0 ? void 0 : changes.products) !== 'undefined';
@@ -347,14 +347,14 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
                 error: null
               }));
               if (isSelectedSharedMenus) {
-                menusShared = menuList === null || menuList === void 0 ? void 0 : (_menuList$menusShared = menuList.menusShared) === null || _menuList$menusShared === void 0 ? void 0 : _menuList$menusShared.filter(function (_menu) {
+                menusShared = menuList === null || menuList === void 0 || (_menuList$menusShared = menuList.menusShared) === null || _menuList$menusShared === void 0 ? void 0 : _menuList$menusShared.filter(function (_menu) {
                   return _menu.id !== menu.id;
                 });
                 setMenuList(_objectSpread(_objectSpread({}, menuList), {}, {
                   menusShared: menusShared
                 }));
               } else {
-                menus = menuList === null || menuList === void 0 ? void 0 : (_menuList$menus2 = menuList.menus) === null || _menuList$menus2 === void 0 ? void 0 : _menuList$menus2.filter(function (_menu) {
+                menus = menuList === null || menuList === void 0 || (_menuList$menus2 = menuList.menus) === null || _menuList$menus2 === void 0 ? void 0 : _menuList$menus2.filter(function (_menu) {
                   return _menu.id !== menu.id;
                 });
                 setMenuList(_objectSpread(_objectSpread({}, menuList), {}, {
@@ -397,7 +397,7 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
   };
   var handleChangeMenuSite = function handleChangeMenuSite(site) {
     var _menu$sites;
-    var sites = [].concat(_toConsumableArray(menu === null || menu === void 0 ? void 0 : (_menu$sites = menu.sites) === null || _menu$sites === void 0 ? void 0 : _menu$sites.map(function (s) {
+    var sites = [].concat(_toConsumableArray(menu === null || menu === void 0 || (_menu$sites = menu.sites) === null || _menu$sites === void 0 ? void 0 : _menu$sites.map(function (s) {
       return s.id;
     }).filter(function (s) {
       var _formState$changes$si;

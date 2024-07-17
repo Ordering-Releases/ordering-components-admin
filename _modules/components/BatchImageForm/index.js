@@ -134,7 +134,7 @@ var BatchImageForm = function BatchImageForm(props) {
                   categories: _categories
                 }));
               }
-              photos = formState === null || formState === void 0 ? void 0 : (_formState$photos = formState.photos) === null || _formState$photos === void 0 ? void 0 : _formState$photos.filter(function (photo) {
+              photos = formState === null || formState === void 0 || (_formState$photos = formState.photos) === null || _formState$photos === void 0 ? void 0 : _formState$photos.filter(function (photo) {
                 return (photo === null || photo === void 0 ? void 0 : photo.name) !== (result === null || result === void 0 ? void 0 : result.id);
               });
               if (photos.length > 0) {
@@ -257,7 +257,7 @@ var BatchImageForm = function BatchImageForm(props) {
   }, [categorySelected]);
   (0, _react.useEffect)(function () {
     var _formState$photos2;
-    if (formState !== null && formState !== void 0 && formState.API && (formState === null || formState === void 0 ? void 0 : (_formState$photos2 = formState.photos) === null || _formState$photos2 === void 0 ? void 0 : _formState$photos2.length) > 0) {
+    if (formState !== null && formState !== void 0 && formState.API && (formState === null || formState === void 0 || (_formState$photos2 = formState.photos) === null || _formState$photos2 === void 0 ? void 0 : _formState$photos2.length) > 0) {
       var _photo = formState === null || formState === void 0 ? void 0 : formState.photos[0];
       var params = {
         images: _photo === null || _photo === void 0 ? void 0 : _photo.base64

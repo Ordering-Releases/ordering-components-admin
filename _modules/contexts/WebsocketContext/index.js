@@ -72,7 +72,7 @@ var WebsocketProvider = function WebsocketProvider(_ref) {
     return function () {
       socket && socket.close();
     };
-  }, [socket, session === null || session === void 0 ? void 0 : (_session$user2 = session.user) === null || _session$user2 === void 0 ? void 0 : _session$user2.id]);
+  }, [socket, session === null || session === void 0 || (_session$user2 = session.user) === null || _session$user2 === void 0 ? void 0 : _session$user2.id]);
   (0, _react.useEffect)(function () {
     if (!(socket !== null && socket !== void 0 && socket.socket)) return;
     var disconnectTimeout = null;

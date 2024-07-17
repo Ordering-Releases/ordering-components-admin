@@ -179,7 +179,7 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
     } else {
       if (promotion !== null && promotion !== void 0 && promotion.sites) {
         var _promotion$sites;
-        sites = promotion === null || promotion === void 0 ? void 0 : (_promotion$sites = promotion.sites) === null || _promotion$sites === void 0 ? void 0 : _promotion$sites.reduce(function (ids, site) {
+        sites = promotion === null || promotion === void 0 || (_promotion$sites = promotion.sites) === null || _promotion$sites === void 0 ? void 0 : _promotion$sites.reduce(function (ids, site) {
           return [].concat(_toConsumableArray(ids), [site.id]);
         }, []);
       }
@@ -200,7 +200,7 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
   };
   var handleSelectAllBusiness = function handleSelectAllBusiness(isAll) {
     var _businessesList$busin;
-    var businessIds = businessesList === null || businessesList === void 0 ? void 0 : (_businessesList$busin = businessesList.businesses) === null || _businessesList$busin === void 0 ? void 0 : _businessesList$busin.reduce(function (ids, business) {
+    var businessIds = businessesList === null || businessesList === void 0 || (_businessesList$busin = businessesList.businesses) === null || _businessesList$busin === void 0 ? void 0 : _businessesList$busin.reduce(function (ids, business) {
       return [].concat(_toConsumableArray(ids), [business.id]);
     }, []);
     var filteredIds = [];
@@ -260,7 +260,7 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
     } else {
       if (promotion !== null && promotion !== void 0 && promotion.users) {
         var _promotion$users;
-        users = promotion === null || promotion === void 0 ? void 0 : (_promotion$users = promotion.users) === null || _promotion$users === void 0 ? void 0 : _promotion$users.reduce(function (ids, user) {
+        users = promotion === null || promotion === void 0 || (_promotion$users = promotion.users) === null || _promotion$users === void 0 ? void 0 : _promotion$users.reduce(function (ids, user) {
           return [].concat(_toConsumableArray(ids), [user.id]);
         }, []);
       }
@@ -296,7 +296,7 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
     } else {
       if (promotion !== null && promotion !== void 0 && promotion.loyalty_levels) {
         var _promotion$loyalty_le;
-        loyaltyLevels = promotion === null || promotion === void 0 ? void 0 : (_promotion$loyalty_le = promotion.loyalty_levels) === null || _promotion$loyalty_le === void 0 ? void 0 : _promotion$loyalty_le.reduce(function (ids, level) {
+        loyaltyLevels = promotion === null || promotion === void 0 || (_promotion$loyalty_le = promotion.loyalty_levels) === null || _promotion$loyalty_le === void 0 ? void 0 : _promotion$loyalty_le.reduce(function (ids, level) {
           return [].concat(_toConsumableArray(ids), [level.id]);
         }, []);
       }
@@ -531,27 +531,27 @@ var EnterprisePromotionDetails = function EnterprisePromotionDetails(props) {
   }();
   var initSetting = function initSetting(promotion) {
     var _promotion$businesses, _promotion$sites2, _promotion$products, _promotion$categories, _promotion$users2, _promotion$loyalty_le2;
-    var businessIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$businesses = promotion.businesses) === null || _promotion$businesses === void 0 ? void 0 : _promotion$businesses.reduce(function (ids, business) {
+    var businessIds = promotion === null || promotion === void 0 || (_promotion$businesses = promotion.businesses) === null || _promotion$businesses === void 0 ? void 0 : _promotion$businesses.reduce(function (ids, business) {
       return [].concat(_toConsumableArray(ids), [business.id]);
     }, []);
     setSelectedBusinessIds(businessIds || []);
-    var sitesIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$sites2 = promotion.sites) === null || _promotion$sites2 === void 0 ? void 0 : _promotion$sites2.reduce(function (ids, site) {
+    var sitesIds = promotion === null || promotion === void 0 || (_promotion$sites2 = promotion.sites) === null || _promotion$sites2 === void 0 ? void 0 : _promotion$sites2.reduce(function (ids, site) {
       return [].concat(_toConsumableArray(ids), [site.id]);
     }, []);
     setSelectedSitesIds(sitesIds || []);
-    var _selectedProductsIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$products = promotion.products) === null || _promotion$products === void 0 ? void 0 : _promotion$products.reduce(function (ids, product) {
+    var _selectedProductsIds = promotion === null || promotion === void 0 || (_promotion$products = promotion.products) === null || _promotion$products === void 0 ? void 0 : _promotion$products.reduce(function (ids, product) {
       return [].concat(_toConsumableArray(ids), [product.id]);
     }, []);
     setSelectedProductsIds(_selectedProductsIds);
-    var _selectedCategoryIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$categories = promotion.categories) === null || _promotion$categories === void 0 ? void 0 : _promotion$categories.reduce(function (ids, category) {
+    var _selectedCategoryIds = promotion === null || promotion === void 0 || (_promotion$categories = promotion.categories) === null || _promotion$categories === void 0 ? void 0 : _promotion$categories.reduce(function (ids, category) {
       return [].concat(_toConsumableArray(ids), [category.id]);
     }, []);
     setSelectedCategoryIds(_selectedCategoryIds);
-    var userIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$users2 = promotion.users) === null || _promotion$users2 === void 0 ? void 0 : _promotion$users2.reduce(function (ids, user) {
+    var userIds = promotion === null || promotion === void 0 || (_promotion$users2 = promotion.users) === null || _promotion$users2 === void 0 ? void 0 : _promotion$users2.reduce(function (ids, user) {
       return [].concat(_toConsumableArray(ids), [user.id]);
     }, []);
     setSelectedUserIds(userIds || []);
-    var LoyaltyLevelIds = promotion === null || promotion === void 0 ? void 0 : (_promotion$loyalty_le2 = promotion.loyalty_levels) === null || _promotion$loyalty_le2 === void 0 ? void 0 : _promotion$loyalty_le2.reduce(function (ids, level) {
+    var LoyaltyLevelIds = promotion === null || promotion === void 0 || (_promotion$loyalty_le2 = promotion.loyalty_levels) === null || _promotion$loyalty_le2 === void 0 ? void 0 : _promotion$loyalty_le2.reduce(function (ids, level) {
       return [].concat(_toConsumableArray(ids), [level.id]);
     }, []);
     setSelectedLoyaltyLevelIds(LoyaltyLevelIds || []);

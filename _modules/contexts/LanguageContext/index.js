@@ -318,8 +318,9 @@ var LanguageProvider = function LanguageProvider(_ref) {
     refreshLanguages();
   }, [ordering === null || ordering === void 0 ? void 0 : ordering.language, ordering === null || ordering === void 0 ? void 0 : ordering.project]);
   var t = function t(key) {
+    var _ref7, _state$dictionary$key;
     var fallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-    return (state === null || state === void 0 ? void 0 : state.dictionary) && Object.keys(state === null || state === void 0 ? void 0 : state.dictionary).length > 0 && state.dictionary[key] || fallback || key;
+    return (_ref7 = (_state$dictionary$key = state.dictionary[key]) !== null && _state$dictionary$key !== void 0 ? _state$dictionary$key : fallback) !== null && _ref7 !== void 0 ? _ref7 : key;
   };
   var functions = {
     setLanguage: setLanguage,

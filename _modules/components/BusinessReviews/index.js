@@ -97,7 +97,7 @@ var BusinessReviews = function BusinessReviews(props) {
               business: result,
               error: null
             });
-            list = result === null || result === void 0 ? void 0 : (_result$reviews = result.reviews) === null || _result$reviews === void 0 ? void 0 : _result$reviews.reviews;
+            list = result === null || result === void 0 || (_result$reviews = result.reviews) === null || _result$reviews === void 0 ? void 0 : _result$reviews.reviews;
             list.sort(function (a, b) {
               return new Date(b.created_at) - new Date(a.created_at);
             });

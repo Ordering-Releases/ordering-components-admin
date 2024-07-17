@@ -86,11 +86,11 @@ var SettingsLogs = function SettingsLogs(props) {
               error: res.error ? Array.isArray(res.result) ? res.result[0] : res.result : null
             });
             setPaginationProps(_objectSpread(_objectSpread({}, paginationProps), {}, {
-              currentPage: res === null || res === void 0 ? void 0 : (_res$pagination = res.pagination) === null || _res$pagination === void 0 ? void 0 : _res$pagination.current_page,
-              totalPages: res === null || res === void 0 ? void 0 : (_res$pagination2 = res.pagination) === null || _res$pagination2 === void 0 ? void 0 : _res$pagination2.total_pages,
-              totalItems: res === null || res === void 0 ? void 0 : (_res$pagination3 = res.pagination) === null || _res$pagination3 === void 0 ? void 0 : _res$pagination3.total,
-              from: res === null || res === void 0 ? void 0 : (_res$pagination4 = res.pagination) === null || _res$pagination4 === void 0 ? void 0 : _res$pagination4.from,
-              to: res === null || res === void 0 ? void 0 : (_res$pagination5 = res.pagination) === null || _res$pagination5 === void 0 ? void 0 : _res$pagination5.to
+              currentPage: res === null || res === void 0 || (_res$pagination = res.pagination) === null || _res$pagination === void 0 ? void 0 : _res$pagination.current_page,
+              totalPages: res === null || res === void 0 || (_res$pagination2 = res.pagination) === null || _res$pagination2 === void 0 ? void 0 : _res$pagination2.total_pages,
+              totalItems: res === null || res === void 0 || (_res$pagination3 = res.pagination) === null || _res$pagination3 === void 0 ? void 0 : _res$pagination3.total,
+              from: res === null || res === void 0 || (_res$pagination4 = res.pagination) === null || _res$pagination4 === void 0 ? void 0 : _res$pagination4.from,
+              to: res === null || res === void 0 || (_res$pagination5 = res.pagination) === null || _res$pagination5 === void 0 ? void 0 : _res$pagination5.to
             }));
             _context.next = 15;
             break;

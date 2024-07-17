@@ -188,7 +188,7 @@ var ProductExtras = function ProductExtras(props) {
           case 10:
             content = _context2.sent;
             if (!content.error) {
-              extrasFromProductState = productState === null || productState === void 0 ? void 0 : (_productState$product = productState.product) === null || _productState$product === void 0 ? void 0 : _productState$product.extras.filter(function (extra) {
+              extrasFromProductState = productState === null || productState === void 0 || (_productState$product = productState.product) === null || _productState$product === void 0 ? void 0 : _productState$product.extras.filter(function (extra) {
                 return extraIds.includes(extra.id);
               });
               extras = extrasState === null || extrasState === void 0 ? void 0 : extrasState.extras.filter(function (extra) {

@@ -235,7 +235,7 @@ var BusinessMenuShare = function BusinessMenuShare(props) {
             _businessMenu = _objectSpread(_objectSpread({}, menu), {}, {
               businesses: menuBusinesses
             });
-            menus = menuList === null || menuList === void 0 ? void 0 : (_menuList$menus = menuList.menus) === null || _menuList$menus === void 0 ? void 0 : _menuList$menus.filter(function (_menu) {
+            menus = menuList === null || menuList === void 0 || (_menuList$menus = menuList.menus) === null || _menuList$menus === void 0 ? void 0 : _menuList$menus.filter(function (_menu) {
               if (_menu.id === _businessMenu.id) {
                 Object.assign(_menu, _businessMenu);
               }

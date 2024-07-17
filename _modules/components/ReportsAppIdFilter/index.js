@@ -201,12 +201,12 @@ var ReportsAppIdFilter = function ReportsAppIdFilter(props) {
   }, []);
   (0, _react.useEffect)(function () {
     var _appIdList$appIds, _appIdList$appIds2, _filterList$app_ids;
-    if ((appIdList === null || appIdList === void 0 ? void 0 : (_appIdList$appIds = appIdList.appIds) === null || _appIdList$appIds === void 0 ? void 0 : _appIdList$appIds.length) === 0) return;
+    if ((appIdList === null || appIdList === void 0 || (_appIdList$appIds = appIdList.appIds) === null || _appIdList$appIds === void 0 ? void 0 : _appIdList$appIds.length) === 0) return;
     var _appIds = (_appIdList$appIds2 = appIdList.appIds) === null || _appIdList$appIds2 === void 0 ? void 0 : _appIdList$appIds2.reduce(function (prev, cur) {
       return [].concat(_toConsumableArray(prev), [cur.id]);
     }, []);
     setAppIds(_toConsumableArray((filterList === null || filterList === void 0 ? void 0 : filterList.app_ids) || _appIds));
-    if (!(filterList !== null && filterList !== void 0 && filterList.app_ids) || (filterList === null || filterList === void 0 ? void 0 : (_filterList$app_ids = filterList.app_ids) === null || _filterList$app_ids === void 0 ? void 0 : _filterList$app_ids.length) === (appIdList === null || appIdList === void 0 ? void 0 : appIdList.appIds.length)) setIsAllCheck(true);
+    if (!(filterList !== null && filterList !== void 0 && filterList.app_ids) || (filterList === null || filterList === void 0 || (_filterList$app_ids = filterList.app_ids) === null || _filterList$app_ids === void 0 ? void 0 : _filterList$app_ids.length) === (appIdList === null || appIdList === void 0 ? void 0 : appIdList.appIds.length)) setIsAllCheck(true);
   }, [appIdList === null || appIdList === void 0 ? void 0 : appIdList.appIds]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     appIdList: appIdList,

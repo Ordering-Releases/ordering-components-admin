@@ -169,13 +169,13 @@ var ExportCSV = function ExportCSV(props) {
                     }
                   });
                 }
-                if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$country = filterValues.countryCode) === null || _filterValues$country === void 0 ? void 0 : _filterValues$country.length) !== 0) {
+                if ((filterValues === null || filterValues === void 0 || (_filterValues$country = filterValues.countryCode) === null || _filterValues$country === void 0 ? void 0 : _filterValues$country.length) !== 0) {
                   filterConditons.push({
                     attribute: 'country_code',
                     value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.countryCode
                   });
                 }
-                if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$currenc = filterValues.currency) === null || _filterValues$currenc === void 0 ? void 0 : _filterValues$currenc.length) !== 0) {
+                if ((filterValues === null || filterValues === void 0 || (_filterValues$currenc = filterValues.currency) === null || _filterValues$currenc === void 0 ? void 0 : _filterValues$currenc.length) !== 0) {
                   filterConditons.push({
                     attribute: 'currency',
                     value: filterValues === null || filterValues === void 0 ? void 0 : filterValues.currency
@@ -242,7 +242,7 @@ var ExportCSV = function ExportCSV(props) {
                     });
                   }
                 }
-                if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$cityIds = filterValues.cityIds) === null || _filterValues$cityIds === void 0 ? void 0 : _filterValues$cityIds.length) !== 0) {
+                if ((filterValues === null || filterValues === void 0 || (_filterValues$cityIds = filterValues.cityIds) === null || _filterValues$cityIds === void 0 ? void 0 : _filterValues$cityIds.length) !== 0) {
                   filterConditons.push({
                     attribute: 'business',
                     conditions: [{
