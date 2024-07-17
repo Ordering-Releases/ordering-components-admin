@@ -48,30 +48,30 @@ export const LanguageProvider = ({ children, strategy }) => {
 
   const setLanguage = async (language, fromSelector) => {
     if (!language || language.id === state.language?.id) return
-      try {
-        const _localLanguage = await strategy.getItem('language', true)
-        const { content: { error, result } } = (_localLanguage && fromSelector) ? await ordering.languages().where([{ attribute: 'id', value: language.id }]).get() : await ordering.languages(language.id).save({ default: true })
+    try {
+      const _localLanguage = await strategy.getItem('language', true)
+      const { content: { error, result } } = (_localLanguage && fromSelector) ? await ordering.languages().where([{ attribute: 'id', value: language.id }]).get() : await ordering.languages(language.id).save({ default: true })
 
-        if (!error) {
-          let defaultLanguage = {}
-          if (_localLanguage && fromSelector) {
-            defaultLanguage = { id: result[0].id, code: result[0].code, rtl: result[0].rtl }
-          } else {
-            defaultLanguage = { id: result.id, code: result.code, rtl: result.rtl }
-          }
-          await strategy.setItem('language', defaultLanguage, true)
-          const _languageList = state.languageList.filter(_language => {
-            if (_language.id === language.id) {
-              Object.assign(_language, language)
-            }
-            return true
-          })
-          setState({ ...state, language: defaultLanguage, languageList: _languageList })
-          apiHelper.setLanguage(language?.code)
+      if (!error) {
+        let defaultLanguage = {}
+        if (_localLanguage && fromSelector) {
+          defaultLanguage = { id: result[0].id, code: result[0].code, rtl: result[0].rtl }
+        } else {
+          defaultLanguage = { id: result.id, code: result.code, rtl: result.rtl }
         }
-      } catch (err) {
-        setState({ ...state, loading: false })
+        await strategy.setItem('language', defaultLanguage, true)
+        const _languageList = state.languageList.filter(_language => {
+          if (_language.id === language.id) {
+            Object.assign(_language, language)
+          }
+          return true
+        })
+        setState({ ...state, language: defaultLanguage, languageList: _languageList })
+        apiHelper.setLanguage(language?.code)
       }
+    } catch (err) {
+      setState({ ...state, loading: false })
+    }
 
     location.reload()
   }
@@ -129,7 +129,7 @@ export const LanguageProvider = ({ children, strategy }) => {
   }, [ordering?.language, ordering?.project])
 
   const t = (key, fallback = null) => {
-    return (state?.dictionary && Object.keys(state?.dictionary).length > 0 && state.dictionary[key]) || fallback || key
+    return state.dictionary[key] ?? fallback ?? key
   }
 
   const functions = {
@@ -150,5 +150,5 @@ export const LanguageProvider = ({ children, strategy }) => {
  */
 export const useLanguage = () => {
   const languageManager = useContext(LanguageContext)
-  return languageManager || [{}, (key, fallback = null) => fallback || key, async () => {}, async () => {}]
+  return languageManager || [{}, (key, fallback = null) => fallback || key, async () => { }, async () => { }]
 }
