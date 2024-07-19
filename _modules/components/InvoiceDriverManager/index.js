@@ -50,8 +50,8 @@ var InvoiceDriverManager = function InvoiceDriverManager(props) {
   var _useConfig = (0, _ConfigContext.useConfig)(),
     _useConfig2 = _slicedToArray(_useConfig, 1),
     configs = _useConfig2[0].configs;
-  var isCashWalletEnabled = (configs === null || configs === void 0 || (_configs$wallet_cash_ = configs.wallet_cash_enabled) === null || _configs$wallet_cash_ === void 0 ? void 0 : _configs$wallet_cash_.value) === '1';
-  var isCreditPointEnabled = (configs === null || configs === void 0 || (_configs$wallet_credi = configs.wallet_credit_point_enabled) === null || _configs$wallet_credi === void 0 ? void 0 : _configs$wallet_credi.value) === '1';
+  var isCashWalletEnabled = (configs === null || configs === void 0 ? void 0 : (_configs$wallet_cash_ = configs.wallet_cash_enabled) === null || _configs$wallet_cash_ === void 0 ? void 0 : _configs$wallet_cash_.value) === '1';
+  var isCreditPointEnabled = (configs === null || configs === void 0 ? void 0 : (_configs$wallet_credi = configs.wallet_credit_point_enabled) === null || _configs$wallet_credi === void 0 ? void 0 : _configs$wallet_credi.value) === '1';
   var _useState = (0, _react.useState)({
       loading: false,
       drivers: [],
@@ -349,12 +349,12 @@ var InvoiceDriverManager = function InvoiceDriverManager(props) {
       date = new Date(date[0].split('-')[0], date[0].split('-')[1] - 1, date[0].split('-')[2], 0, 0, 0, 0);
       var orderPaymethodIds = order.payment_events.reduce(function (ids, event) {
         var _event$paymethod;
-        return [].concat(_toConsumableArray(ids), [event === null || event === void 0 || (_event$paymethod = event.paymethod) === null || _event$paymethod === void 0 ? void 0 : _event$paymethod.id]);
+        return [].concat(_toConsumableArray(ids), [event === null || event === void 0 ? void 0 : (_event$paymethod = event.paymethod) === null || _event$paymethod === void 0 ? void 0 : _event$paymethod.id]);
       }, []);
       orderPaymethodIds.push(order.paymethod_id);
       if (isCashWalletEnabled || isCreditPointEnabled) {
-        var _order$payment_events, _order$payment_events2;
-        if ((order === null || order === void 0 || (_order$payment_events = order.payment_events) === null || _order$payment_events === void 0 || (_order$payment_events = _order$payment_events.data) === null || _order$payment_events === void 0 ? void 0 : _order$payment_events.wallet_currency) === 'cash_wallet' || (order === null || order === void 0 || (_order$payment_events2 = order.payment_events) === null || _order$payment_events2 === void 0 || (_order$payment_events2 = _order$payment_events2.data) === null || _order$payment_events2 === void 0 ? void 0 : _order$payment_events2.wallet_currency) === 'credit_points') {
+        var _order$payment_events, _order$payment_events2, _order$payment_events3, _order$payment_events4;
+        if ((order === null || order === void 0 ? void 0 : (_order$payment_events = order.payment_events) === null || _order$payment_events === void 0 ? void 0 : (_order$payment_events2 = _order$payment_events.data) === null || _order$payment_events2 === void 0 ? void 0 : _order$payment_events2.wallet_currency) === 'cash_wallet' || (order === null || order === void 0 ? void 0 : (_order$payment_events3 = order.payment_events) === null || _order$payment_events3 === void 0 ? void 0 : (_order$payment_events4 = _order$payment_events3.data) === null || _order$payment_events4 === void 0 ? void 0 : _order$payment_events4.wallet_currency) === 'credit_points') {
           valid = true;
         }
       } else if (!orderPaymethodIds.some(function (id) {
@@ -455,7 +455,7 @@ var InvoiceDriverManager = function InvoiceDriverManager(props) {
       var fixOrderSummary = true;
       if (configs !== null && configs !== void 0 && configs.project_fix_order_summary) {
         var _configs$project_fix_;
-        fixOrderSummary = (configs === null || configs === void 0 || (_configs$project_fix_ = configs.project_fix_order_summary) === null || _configs$project_fix_ === void 0 ? void 0 : _configs$project_fix_.value) === '1';
+        fixOrderSummary = (configs === null || configs === void 0 ? void 0 : (_configs$project_fix_ = configs.project_fix_order_summary) === null || _configs$project_fix_ === void 0 ? void 0 : _configs$project_fix_.value) === '1';
       }
       if (order.tax_type === 1 && !fixOrderSummary) {
         return order.summary.subtotal + order.summary.tax;
@@ -492,7 +492,7 @@ var InvoiceDriverManager = function InvoiceDriverManager(props) {
    */
   var roundPrice = function roundPrice(value) {
     var _configs$format_numbe;
-    var power = Math.pow(10, configs === null || configs === void 0 || (_configs$format_numbe = configs.format_number_decimal_length) === null || _configs$format_numbe === void 0 ? void 0 : _configs$format_numbe.value);
+    var power = Math.pow(10, configs === null || configs === void 0 ? void 0 : (_configs$format_numbe = configs.format_number_decimal_length) === null || _configs$format_numbe === void 0 ? void 0 : _configs$format_numbe.value);
     var poweredVal = Math.round(value * power);
     return poweredVal / power;
   };

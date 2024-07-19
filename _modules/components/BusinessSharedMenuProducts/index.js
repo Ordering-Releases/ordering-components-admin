@@ -100,7 +100,7 @@ var BusinessSharedMenuProducts = function BusinessSharedMenuProducts(props) {
           case 9:
             content = _context.sent;
             if (!content.error) {
-              menusShared = menuList === null || menuList === void 0 || (_menuList$menusShared = menuList.menusShared) === null || _menuList$menusShared === void 0 ? void 0 : _menuList$menusShared.filter(function (sharedMenu) {
+              menusShared = menuList === null || menuList === void 0 ? void 0 : (_menuList$menusShared = menuList.menusShared) === null || _menuList$menusShared === void 0 ? void 0 : _menuList$menusShared.filter(function (sharedMenu) {
                 var products = sharedMenu.products.map(function (product) {
                   if (product.id === productId) {
                     return _objectSpread(_objectSpread({}, product), changes);

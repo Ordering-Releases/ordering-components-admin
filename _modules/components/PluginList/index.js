@@ -260,7 +260,7 @@ var PluginList = function PluginList(props) {
               sysPlugins = pluginListState.sysPlugins.map(function (p) {
                 var _content$result;
                 return _objectSpread(_objectSpread({}, p), {}, {
-                  installed: p.id === (content === null || content === void 0 || (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.system_plugin_id) ? false : p.installed
+                  installed: p.id === (content === null || content === void 0 ? void 0 : (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.system_plugin_id) ? false : p.installed
                 });
               });
               setPluginListState(_objectSpread(_objectSpread({}, pluginListState), {}, {
@@ -405,7 +405,7 @@ var PluginList = function PluginList(props) {
                 sysPlugins: pluginListState.sysPlugins.map(function (p) {
                   var _content$result2;
                   return _objectSpread(_objectSpread({}, p), {}, {
-                    installed: (content === null || content === void 0 || (_content$result2 = content.result) === null || _content$result2 === void 0 ? void 0 : _content$result2.system_plugin_id) === p.id
+                    installed: (content === null || content === void 0 ? void 0 : (_content$result2 = content.result) === null || _content$result2 === void 0 ? void 0 : _content$result2.system_plugin_id) === p.id
                   });
                 })
               }));

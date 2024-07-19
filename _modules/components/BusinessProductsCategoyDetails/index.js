@@ -132,7 +132,7 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
    */
   var handleChangeRibbon = function handleChangeRibbon(changes) {
     var _formState$changes, _formState$changes2;
-    var ribbonChanges = formState !== null && formState !== void 0 && (_formState$changes = formState.changes) !== null && _formState$changes !== void 0 && _formState$changes.ribbon ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 || (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.ribbon), changes) : _objectSpread({}, changes);
+    var ribbonChanges = formState !== null && formState !== void 0 && (_formState$changes = formState.changes) !== null && _formState$changes !== void 0 && _formState$changes.ribbon ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : (_formState$changes2 = formState.changes) === null || _formState$changes2 === void 0 ? void 0 : _formState$changes2.ribbon), changes) : _objectSpread({}, changes);
     var currentChanges = _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), {}, {
       ribbon: ribbonChanges
     });
@@ -170,7 +170,7 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
                 if (Array.isArray(category === null || category === void 0 ? void 0 : category.subcategories)) {
                   var found = category.subcategories.find(function (subCategory) {
                     var _content$result;
-                    return (subCategory === null || subCategory === void 0 ? void 0 : subCategory.id) === (content === null || content === void 0 || (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.id);
+                    return (subCategory === null || subCategory === void 0 ? void 0 : subCategory.id) === (content === null || content === void 0 ? void 0 : (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.id);
                   });
                   if (!found) {
                     category.subcategories.push(content === null || content === void 0 ? void 0 : content.result);
@@ -178,14 +178,14 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
                 }
               }
               var categoryKeyOptions = ['name', 'enabled', 'header', 'description', 'ribbon', 'image', 'slug', 'seo_image', 'seo_title', 'seo_description'];
-              if ((category === null || category === void 0 ? void 0 : category.id) === (content === null || content === void 0 || (_content$result2 = content.result) === null || _content$result2 === void 0 ? void 0 : _content$result2.id) && category.parent_category_id === (content === null || content === void 0 ? void 0 : content.result.parent_category_id)) {
+              if ((category === null || category === void 0 ? void 0 : category.id) === (content === null || content === void 0 ? void 0 : (_content$result2 = content.result) === null || _content$result2 === void 0 ? void 0 : _content$result2.id) && category.parent_category_id === (content === null || content === void 0 ? void 0 : content.result.parent_category_id)) {
                 Object.keys(category).forEach(function (key) {
                   if (categoryKeyOptions.includes(key) && content.result[key] !== undefined) {
                     category[key] = content === null || content === void 0 ? void 0 : content.result[key];
                   }
                 });
               }
-              if ((category === null || category === void 0 ? void 0 : category.id) === (content === null || content === void 0 || (_content$result3 = content.result) === null || _content$result3 === void 0 ? void 0 : _content$result3.id) && category.parent_category_id !== (content === null || content === void 0 ? void 0 : content.result.parent_category_id)) {
+              if ((category === null || category === void 0 ? void 0 : category.id) === (content === null || content === void 0 ? void 0 : (_content$result3 = content.result) === null || _content$result3 === void 0 ? void 0 : _content$result3.id) && category.parent_category_id !== (content === null || content === void 0 ? void 0 : content.result.parent_category_id)) {
                 object.splice(index, 1);
               }
               Array.isArray(category === null || category === void 0 ? void 0 : category.subcategories) && category.subcategories.forEach(iterate);
@@ -210,7 +210,7 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
   */
   var handleUpdateClick = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var id, _businessState$busine, changes, key, _yield$ordering$busin, content, _formState$changes3, _formState$changes4, _content$result4, _businessState$busine2, updatedChanges, _yield$ordering$busin2, _content, updatedBusiness, _updatedBusiness;
+      var id, _businessState$busine, changes, key, _yield$ordering$busin, content, _formState$changes3, _formState$changes3$r, _formState$changes4, _formState$changes4$r, _content$result4, _content$result4$ribb, _businessState$busine2, updatedChanges, _yield$ordering$busin2, _content, updatedBusiness, _updatedBusiness;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -237,7 +237,7 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
               }
             }
             _context2.next = 11;
-            return ordering.businesses(businessState === null || businessState === void 0 || (_businessState$busine = businessState.business) === null || _businessState$busine === void 0 ? void 0 : _businessState$busine.id).categories(parseInt(id)).save(changes);
+            return ordering.businesses(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine = businessState.business) === null || _businessState$busine === void 0 ? void 0 : _businessState$busine.id).categories(parseInt(id)).save(changes);
           case 11:
             _yield$ordering$busin = _context2.sent;
             content = _yield$ordering$busin.content;
@@ -245,7 +245,7 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
               _context2.next = 39;
               break;
             }
-            if (!(typeof ((_formState$changes3 = formState.changes) === null || _formState$changes3 === void 0 || (_formState$changes3 = _formState$changes3.ribbon) === null || _formState$changes3 === void 0 ? void 0 : _formState$changes3.enabled) !== 'undefined' && !((_formState$changes4 = formState.changes) !== null && _formState$changes4 !== void 0 && (_formState$changes4 = _formState$changes4.ribbon) !== null && _formState$changes4 !== void 0 && _formState$changes4.enabled) && content !== null && content !== void 0 && (_content$result4 = content.result) !== null && _content$result4 !== void 0 && (_content$result4 = _content$result4.ribbon) !== null && _content$result4 !== void 0 && _content$result4.enabled)) {
+            if (!(typeof ((_formState$changes3 = formState.changes) === null || _formState$changes3 === void 0 ? void 0 : (_formState$changes3$r = _formState$changes3.ribbon) === null || _formState$changes3$r === void 0 ? void 0 : _formState$changes3$r.enabled) !== 'undefined' && !((_formState$changes4 = formState.changes) !== null && _formState$changes4 !== void 0 && (_formState$changes4$r = _formState$changes4.ribbon) !== null && _formState$changes4$r !== void 0 && _formState$changes4$r.enabled) && content !== null && content !== void 0 && (_content$result4 = content.result) !== null && _content$result4 !== void 0 && (_content$result4$ribb = _content$result4.ribbon) !== null && _content$result4$ribb !== void 0 && _content$result4$ribb.enabled)) {
               _context2.next = 29;
               break;
             }
@@ -255,7 +255,7 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
               }
             };
             _context2.next = 18;
-            return ordering.businesses(businessState === null || businessState === void 0 || (_businessState$busine2 = businessState.business) === null || _businessState$busine2 === void 0 ? void 0 : _businessState$busine2.id).categories(parseInt(id)).save(updatedChanges);
+            return ordering.businesses(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine2 = businessState.business) === null || _businessState$busine2 === void 0 ? void 0 : _businessState$busine2.id).categories(parseInt(id)).save(updatedChanges);
           case 18:
             _yield$ordering$busin2 = _context2.sent;
             _content = _yield$ordering$busin2.content;
@@ -355,11 +355,11 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
               loading: true
             }));
             changes = _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), {}, {
-              slug: (0, _utils.stringToSlug)((formState === null || formState === void 0 || (_formState$changes5 = formState.changes) === null || _formState$changes5 === void 0 ? void 0 : _formState$changes5.name) || '')
+              slug: (0, _utils.stringToSlug)((formState === null || formState === void 0 ? void 0 : (_formState$changes5 = formState.changes) === null || _formState$changes5 === void 0 ? void 0 : _formState$changes5.name) || '')
             });
             if (typeof (changes === null || changes === void 0 ? void 0 : changes.ribbon) !== 'undefined' && !(changes !== null && changes !== void 0 && (_changes$ribbon = changes.ribbon) !== null && _changes$ribbon !== void 0 && _changes$ribbon.enabled)) delete changes.ribbon;
             _context3.next = 9;
-            return ordering.businesses(parseInt(businessState === null || businessState === void 0 || (_businessState$busine3 = businessState.business) === null || _businessState$busine3 === void 0 ? void 0 : _businessState$busine3.id)).categories().save(changes);
+            return ordering.businesses(parseInt(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine3 = businessState.business) === null || _businessState$busine3 === void 0 ? void 0 : _businessState$busine3.id)).categories().save(changes);
           case 9:
             _yield$ordering$busin3 = _context3.sent;
             content = _yield$ordering$busin3.content;

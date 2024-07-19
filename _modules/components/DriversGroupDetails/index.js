@@ -103,16 +103,16 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
     setSelectedDriverManager = _useState18[1];
   var initSet = function initSet(driversGroup) {
     var _driversGroup$busines, _driversGroup$drivers, _driversGroup$drivers2, _driversGroup$driver_, _driversGroup$adminis;
-    var businessIds = driversGroup === null || driversGroup === void 0 || (_driversGroup$busines = driversGroup.business) === null || _driversGroup$busines === void 0 ? void 0 : _driversGroup$busines.reduce(function (ids, business) {
+    var businessIds = driversGroup === null || driversGroup === void 0 ? void 0 : (_driversGroup$busines = driversGroup.business) === null || _driversGroup$busines === void 0 ? void 0 : _driversGroup$busines.reduce(function (ids, business) {
       return [].concat(_toConsumableArray(ids), [business.id]);
     }, []);
     setSelectedBusinessIds(businessIds);
     setSelectedPaymethodIds((driversGroup === null || driversGroup === void 0 ? void 0 : driversGroup.allowed_paymethods) || []);
-    var drivers = driversGroup === null || driversGroup === void 0 || (_driversGroup$drivers = driversGroup.drivers) === null || _driversGroup$drivers === void 0 ? void 0 : _driversGroup$drivers.reduce(function (ids, driver) {
+    var drivers = driversGroup === null || driversGroup === void 0 ? void 0 : (_driversGroup$drivers = driversGroup.drivers) === null || _driversGroup$drivers === void 0 ? void 0 : _driversGroup$drivers.reduce(function (ids, driver) {
       return [].concat(_toConsumableArray(ids), [driver.id]);
     }, []);
     setSelectedDriverIds(drivers);
-    var driversTemporary = driversGroup === null || driversGroup === void 0 || (_driversGroup$drivers2 = driversGroup.drivers) === null || _driversGroup$drivers2 === void 0 ? void 0 : _driversGroup$drivers2.reduce(function (driverData, driver) {
+    var driversTemporary = driversGroup === null || driversGroup === void 0 ? void 0 : (_driversGroup$drivers2 = driversGroup.drivers) === null || _driversGroup$drivers2 === void 0 ? void 0 : _driversGroup$drivers2.reduce(function (driverData, driver) {
       if (driver !== null && driver !== void 0 && driver.temporary_at) {
         return [].concat(_toConsumableArray(driverData), [{
           id: driver === null || driver === void 0 ? void 0 : driver.id,
@@ -124,11 +124,11 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
       }
     }, []);
     setSelectedDriverTemporaryIds(driversTemporary);
-    var companyIds = driversGroup === null || driversGroup === void 0 || (_driversGroup$driver_ = driversGroup.driver_companies) === null || _driversGroup$driver_ === void 0 ? void 0 : _driversGroup$driver_.reduce(function (ids, company) {
+    var companyIds = driversGroup === null || driversGroup === void 0 ? void 0 : (_driversGroup$driver_ = driversGroup.driver_companies) === null || _driversGroup$driver_ === void 0 ? void 0 : _driversGroup$driver_.reduce(function (ids, company) {
       return [].concat(_toConsumableArray(ids), [company.id]);
     }, []);
     setSelectedDriversCompanyIds(companyIds);
-    var managersIds = driversGroup === null || driversGroup === void 0 || (_driversGroup$adminis = driversGroup.administrators) === null || _driversGroup$adminis === void 0 ? void 0 : _driversGroup$adminis.reduce(function (ids, manager) {
+    var managersIds = driversGroup === null || driversGroup === void 0 ? void 0 : (_driversGroup$adminis = driversGroup.administrators) === null || _driversGroup$adminis === void 0 ? void 0 : _driversGroup$adminis.reduce(function (ids, manager) {
       return [].concat(_toConsumableArray(ids), [manager.id]);
     }, []);
     setSelectedDriverManager(managersIds);

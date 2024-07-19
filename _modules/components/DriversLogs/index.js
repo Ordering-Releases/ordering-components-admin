@@ -84,11 +84,11 @@ var DriversLogs = function DriversLogs(props) {
               error: content.error ? Array.isArray(content.result) ? content.result[0] : content.result : null
             });
             setPaginationProps(_objectSpread(_objectSpread({}, paginationProps), {}, {
-              currentPage: content === null || content === void 0 || (_content$pagination = content.pagination) === null || _content$pagination === void 0 ? void 0 : _content$pagination.current_page,
-              totalPages: content === null || content === void 0 || (_content$pagination2 = content.pagination) === null || _content$pagination2 === void 0 ? void 0 : _content$pagination2.total_pages,
-              totalItems: content === null || content === void 0 || (_content$pagination3 = content.pagination) === null || _content$pagination3 === void 0 ? void 0 : _content$pagination3.total,
-              from: content === null || content === void 0 || (_content$pagination4 = content.pagination) === null || _content$pagination4 === void 0 ? void 0 : _content$pagination4.from,
-              to: content === null || content === void 0 || (_content$pagination5 = content.pagination) === null || _content$pagination5 === void 0 ? void 0 : _content$pagination5.to
+              currentPage: content === null || content === void 0 ? void 0 : (_content$pagination = content.pagination) === null || _content$pagination === void 0 ? void 0 : _content$pagination.current_page,
+              totalPages: content === null || content === void 0 ? void 0 : (_content$pagination2 = content.pagination) === null || _content$pagination2 === void 0 ? void 0 : _content$pagination2.total_pages,
+              totalItems: content === null || content === void 0 ? void 0 : (_content$pagination3 = content.pagination) === null || _content$pagination3 === void 0 ? void 0 : _content$pagination3.total,
+              from: content === null || content === void 0 ? void 0 : (_content$pagination4 = content.pagination) === null || _content$pagination4 === void 0 ? void 0 : _content$pagination4.from,
+              to: content === null || content === void 0 ? void 0 : (_content$pagination5 = content.pagination) === null || _content$pagination5 === void 0 ? void 0 : _content$pagination5.to
             }));
             _context.next = 16;
             break;

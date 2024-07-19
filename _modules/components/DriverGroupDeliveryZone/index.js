@@ -122,7 +122,7 @@ var DriverGroupDeliveryZone = function DriverGroupDeliveryZone(props) {
                 loading: false,
                 changes: {}
               }));
-              zones = driverGroupsZones === null || driverGroupsZones === void 0 || (_driverGroupsZones$zo = driverGroupsZones.zones) === null || _driverGroupsZones$zo === void 0 ? void 0 : _driverGroupsZones$zo.filter(function (_zone) {
+              zones = driverGroupsZones === null || driverGroupsZones === void 0 ? void 0 : (_driverGroupsZones$zo = driverGroupsZones.zones) === null || _driverGroupsZones$zo === void 0 ? void 0 : _driverGroupsZones$zo.filter(function (_zone) {
                 if ((_zone === null || _zone === void 0 ? void 0 : _zone.id) === zone.id) {
                   Object.assign(zone, content.result);
                 }
@@ -353,7 +353,7 @@ var DriverGroupDeliveryZone = function DriverGroupDeliveryZone(props) {
           case 9:
             content = _context3.sent;
             if (!content.error) {
-              zones = driverGroupsZones === null || driverGroupsZones === void 0 || (_driverGroupsZones$zo2 = driverGroupsZones.zones) === null || _driverGroupsZones$zo2 === void 0 ? void 0 : _driverGroupsZones$zo2.filter(function (_zone) {
+              zones = driverGroupsZones === null || driverGroupsZones === void 0 ? void 0 : (_driverGroupsZones$zo2 = driverGroupsZones.zones) === null || _driverGroupsZones$zo2 === void 0 ? void 0 : _driverGroupsZones$zo2.filter(function (_zone) {
                 return (_zone === null || _zone === void 0 ? void 0 : _zone.id) !== zone.id;
               });
               setFormState(_objectSpread(_objectSpread({}, formState), {}, {

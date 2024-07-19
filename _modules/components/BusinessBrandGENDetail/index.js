@@ -191,7 +191,7 @@ var BusinessBrandGENDetail = function BusinessBrandGENDetail(props) {
    */
   var updateBrand = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var changes, key, requestOptions, response, content, _formState$changes, _formState$changes2, _content$result, updatedChanges, Options, _response, _content;
+      var changes, key, requestOptions, response, content, _formState$changes, _formState$changes$ri, _formState$changes2, _formState$changes2$r, _content$result, _content$result$ribbo, updatedChanges, Options, _response, _content;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
@@ -226,7 +226,7 @@ var BusinessBrandGENDetail = function BusinessBrandGENDetail(props) {
               _context3.next = 29;
               break;
             }
-            if (!(typeof ((_formState$changes = formState.changes) === null || _formState$changes === void 0 || (_formState$changes = _formState$changes.ribbon) === null || _formState$changes === void 0 ? void 0 : _formState$changes.enabled) !== 'undefined' && !((_formState$changes2 = formState.changes) !== null && _formState$changes2 !== void 0 && (_formState$changes2 = _formState$changes2.ribbon) !== null && _formState$changes2 !== void 0 && _formState$changes2.enabled) && content !== null && content !== void 0 && (_content$result = content.result) !== null && _content$result !== void 0 && (_content$result = _content$result.ribbon) !== null && _content$result !== void 0 && _content$result.enabled)) {
+            if (!(typeof ((_formState$changes = formState.changes) === null || _formState$changes === void 0 ? void 0 : (_formState$changes$ri = _formState$changes.ribbon) === null || _formState$changes$ri === void 0 ? void 0 : _formState$changes$ri.enabled) !== 'undefined' && !((_formState$changes2 = formState.changes) !== null && _formState$changes2 !== void 0 && (_formState$changes2$r = _formState$changes2.ribbon) !== null && _formState$changes2$r !== void 0 && _formState$changes2$r.enabled) && content !== null && content !== void 0 && (_content$result = content.result) !== null && _content$result !== void 0 && (_content$result$ribbo = _content$result.ribbon) !== null && _content$result$ribbo !== void 0 && _content$result$ribbo.enabled)) {
               _context3.next = 25;
               break;
             }
@@ -330,7 +330,7 @@ var BusinessBrandGENDetail = function BusinessBrandGENDetail(props) {
    */
   var handleChangeRibbon = function handleChangeRibbon(changes) {
     var _formState$changes3, _formState$changes4;
-    var ribbonChanges = formState !== null && formState !== void 0 && (_formState$changes3 = formState.changes) !== null && _formState$changes3 !== void 0 && _formState$changes3.ribbon ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 || (_formState$changes4 = formState.changes) === null || _formState$changes4 === void 0 ? void 0 : _formState$changes4.ribbon), changes) : _objectSpread({}, changes);
+    var ribbonChanges = formState !== null && formState !== void 0 && (_formState$changes3 = formState.changes) !== null && _formState$changes3 !== void 0 && _formState$changes3.ribbon ? _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : (_formState$changes4 = formState.changes) === null || _formState$changes4 === void 0 ? void 0 : _formState$changes4.ribbon), changes) : _objectSpread({}, changes);
     var currentChanges = _objectSpread(_objectSpread({}, formState === null || formState === void 0 ? void 0 : formState.changes), {}, {
       ribbon: ribbonChanges
     });

@@ -52,11 +52,9 @@ var WebsocketStatus = function WebsocketStatus(props) {
     }
   };
   var connectListener = function connectListener() {
-    if (socket.socket.connected) {
-      setReconnectAttemptCount(0);
-      setSocketStatus(1);
-      setConnectedDate(new Date());
-    }
+    setReconnectAttemptCount(0);
+    setSocketStatus(1);
+    setConnectedDate(new Date());
   };
   var disconnectListener = function disconnectListener() {
     setSocketStatus(2);

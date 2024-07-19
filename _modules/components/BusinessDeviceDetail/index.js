@@ -178,9 +178,9 @@ var BusinessDeviceDetail = function BusinessDeviceDetail(props) {
                 result: content.result,
                 loading: false
               }));
-              business = businessList === null || businessList === void 0 || (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.find(function (item) {
+              business = businessList === null || businessList === void 0 ? void 0 : (_businessList$busines = businessList.businesses) === null || _businessList$busines === void 0 ? void 0 : _businessList$busines.find(function (item) {
                 var _content$result;
-                return (item === null || item === void 0 ? void 0 : item.id) === (content === null || content === void 0 || (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.business_id);
+                return (item === null || item === void 0 ? void 0 : item.id) === (content === null || content === void 0 ? void 0 : (_content$result = content.result) === null || _content$result === void 0 ? void 0 : _content$result.business_id);
               });
               updatedDevices = [].concat(_toConsumableArray(devices), [_objectSpread(_objectSpread({}, content === null || content === void 0 ? void 0 : content.result), {}, {
                 business: business
