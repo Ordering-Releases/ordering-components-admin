@@ -13,8 +13,10 @@ export const OrdersManage = (props) => {
     statusGroup,
     driversPropsToFetch,
     disableSocketRoomDriver,
-    useBatchSockets,
-    useFranchiseImages
+    useFranchiseImages,
+    defaultFilterValues,
+    getDriversByControls,
+    disableDriverLocationsSockets
   } = props
 
   const [ordering] = useApi()
@@ -34,7 +36,7 @@ export const OrdersManage = (props) => {
 
   const [searchValue, setSearchValue] = useState(null)
   const [ordersStatusGroup, setOrdersStatusGroup] = useState(statusGroup || 'pending')
-  const [filterValues, setFilterValues] = useState({})
+  const [filterValues, setFilterValues] = useState(defaultFilterValues || {})
   const [timeStatus, setTimeStatus] = useState(null)
   const [updateStatus, setUpdateStatus] = useState(null)
   const [startMulitOrderStatusChange, setStartMulitOrderStatusChange] = useState(false)
@@ -67,12 +69,16 @@ export const OrdersManage = (props) => {
    */
   const [driverGroupList, setDriverGroupList] = useState({ groups: [], loading: false, error: null })
   /**
+  * Object to save driver group list
+  */
+  const [assignableDriverGroupList, setAssignableDriverGroupList] = useState({ groups: [], loading: false, error: null })
+  /**
    * Object to save drivers
    */
   const [driversList, setDriversList] = useState({ drivers: [], loading: true, error: null })
   /**
-   * Object to save admins
-   */
+ * Object to save admins
+ */
   const [adminsList, setAdminsList] = useState({ admins: [], loading: true, error: null })
   /**
    * Object to save paymethods
@@ -270,7 +276,7 @@ export const OrdersManage = (props) => {
           Authorization: `Bearer ${token}`
         }
       }
-      const response = await fetch(`${ordering.root}/controls/orders`, requestOptions)
+      const response = await fetch(`${ordering.root}/controls/orders?version=v2`, requestOptions)
       const content = await response.json()
       if (!content.error) {
         setCitiesList(content.result.cities)
@@ -278,6 +284,11 @@ export const OrdersManage = (props) => {
           ...driverGroupList,
           loading: false,
           groups: content.result.driver_groups
+        })
+        setAssignableDriverGroupList({
+          ...assignableDriverGroupList,
+          loading: false,
+          groups: content.result.assignable_driver_groups
         })
         setPaymethodsList({
           ...paymethodsList,
@@ -294,6 +305,13 @@ export const OrdersManage = (props) => {
           loading: false,
           admins: content.result.agents
         })
+        if (getDriversByControls) {
+          setDriversList({
+            ...driversList,
+            loading: false,
+            drivers: content.result.drivers
+          })
+        }
         setActionStatus({ ...actionStatus, loading: false })
       } else {
         setActionStatus({ loading: false, error: content?.result })
@@ -351,37 +369,31 @@ export const OrdersManage = (props) => {
   }
 
   const handleJoinMainRooms = () => {
-    if (!useBatchSockets) {
-      socket.join('drivers')
-    } else {
+    if (!disableDriverLocationsSockets) {
       socket.join({
         room: 'driver_locations',
         user_id: user?.id,
         role: 'manager'
       })
-      socket.join({
-        room: 'drivers',
-        user_id: user?.id,
-        role: 'manager'
-      })
     }
+    socket.join({
+      room: 'drivers',
+      user_id: user?.id,
+      role: 'manager'
+    })
   }
 
   const handleLeaveMainRooms = () => {
-    if (!useBatchSockets) {
-      socket.leave('drivers')
-    } else {
-      socket.leave({
-        room: 'driver_locations',
-        user_id: user?.id,
-        role: 'manager'
-      })
-      socket.leave({
-        room: 'drivers',
-        user_id: user?.id,
-        role: 'manager'
-      })
-    }
+    socket.leave({
+      room: 'driver_locations',
+      user_id: user?.id,
+      role: 'manager'
+    })
+    socket.leave({
+      room: 'drivers',
+      user_id: user?.id,
+      role: 'manager'
+    })
   }
 
   const handleSocketDisconnect = () => {
@@ -393,40 +405,6 @@ export const OrdersManage = (props) => {
    */
   useEffect(() => {
     if (loading) return
-    const handleUpdateDriver = (driver) => {
-      setDriversList(prevState => {
-        const driverIndex = prevState.drivers.findIndex(_driver => _driver.id === driver.id)
-        if (driverIndex !== -1) {
-          const updatedDrivers = [...prevState.drivers]
-          Object.assign(updatedDrivers[driverIndex], driver)
-          return { ...prevState, drivers: updatedDrivers }
-        } else {
-          const updatedDrivers = [...prevState.drivers, driver]
-          return { ...prevState, drivers: updatedDrivers }
-        }
-      })
-    }
-    const handleTrackingDriver = (trackingData) => {
-      setDriversList(prevState => {
-        const updatedDrivers = prevState.drivers.map(driver => {
-          if (driver.id === trackingData.driver_id) {
-            const updatedDriver = { ...driver }
-            if (typeof trackingData.location === 'string') {
-              const trackingLocation = trackingData.location
-              const _location = trackingLocation.replaceAll('\\', '')
-              const location = JSON.parse(_location)
-              updatedDriver.location = location
-            } else {
-              updatedDriver.location = trackingData.location
-            }
-            return updatedDriver
-          }
-          return driver
-        })
-
-        return { ...prevState, drivers: updatedDrivers }
-      })
-    }
     const handleBatchDriverChanges = (changes) => {
       setDriversList((prevState) => {
         const updatedDrivers = prevState.drivers.map((driver) => {
@@ -459,26 +437,16 @@ export const OrdersManage = (props) => {
     }
 
     if (!disableSocketRoomDriver) {
-      if (!useBatchSockets) {
-        socket.on('drivers_update', handleUpdateDriver)
-        socket.on('tracking_driver', handleTrackingDriver)
-      } else {
-        socket.on('batch_driver_locations', handleBatchDriverLocations)
-        socket.on('batch_driver_changes', handleBatchDriverChanges)
-      }
+      socket.on('batch_driver_locations', handleBatchDriverLocations)
+      socket.on('batch_driver_changes', handleBatchDriverChanges)
     }
     return () => {
       if (!disableSocketRoomDriver) {
-        if (!useBatchSockets) {
-          socket.off('drivers_update', handleUpdateDriver)
-          socket.off('tracking_driver', handleTrackingDriver)
-        } else {
-          socket.off('batch_driver_locations', handleBatchDriverLocations)
-          socket.off('batch_driver_changes', handleBatchDriverChanges)
-        }
+        socket.off('batch_driver_locations', handleBatchDriverLocations)
+        socket.off('batch_driver_changes', handleBatchDriverChanges)
       }
     }
-  }, [socket, loading, useBatchSockets])
+  }, [socket, loading])
 
   useEffect(() => {
     if (!auth || loading || !socket?.socket || disableSocketRoomDriver) return
@@ -489,7 +457,7 @@ export const OrdersManage = (props) => {
       handleLeaveMainRooms()
       socket.socket.off('disconnect', handleSocketDisconnect)
     }
-  }, [socket?.socket, auth, loading, disableSocketRoomDriver, useBatchSockets])
+  }, [socket?.socket, auth, loading, disableSocketRoomDriver])
 
   /**
    * Listening multi orders action start to change status
@@ -501,7 +469,7 @@ export const OrdersManage = (props) => {
 
   useEffect(() => {
     if (loading) return
-    if (user?.level === 0 || user?.level === 2 || user?.level === 5) {
+    if (!getDriversByControls && (user?.level === 0 || user?.level === 2 || user?.level === 5)) {
       getDrivers()
     }
     getControlsOrders()
@@ -578,6 +546,7 @@ export const OrdersManage = (props) => {
           setTimeStatus={setTimeStatus}
           franchisesList={franchisesList}
           adminsList={adminsList}
+          assignableDriverGroupList={assignableDriverGroupList}
         />
       )}
     </>
@@ -612,7 +581,7 @@ OrdersManage.propTypes = {
 }
 
 OrdersManage.defaultProps = {
-  driversPropsToFetch: ['id', 'name', 'lastname', 'assigned_orders_count', 'available', 'phone', 'cellphone', 'location', 'photo', 'qualification', 'last_order_assigned_at'],
+  driversPropsToFetch: ['id', 'name', 'lastname', 'location', 'enabled', 'available', 'busy', 'driver_groups.name', 'driver_groups.id', 'assigned_orders_count', 'photo'],
   beforeComponents: [],
   afterComponents: [],
   beforeElements: [],

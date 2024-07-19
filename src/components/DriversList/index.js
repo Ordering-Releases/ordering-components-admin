@@ -22,7 +22,8 @@ export const DriversList = (props) => {
     searchFilterValue,
     driverGroupList,
     useDriversByProps,
-    paginationSettings
+    paginationSettings,
+    disableDriverLocationsSockets
   } = props
 
   const [ordering] = useApi()
@@ -332,7 +333,7 @@ export const DriversList = (props) => {
         },
         signal
       }
-      const response = await fetch(`${ordering.root}/controls/orders/${orderId}`, requestOptions)
+      const response = await fetch(`${ordering.root}/controls/orders/${orderId}?version=v2`, requestOptions)
       const { error, result } = await response.json()
 
       const drivers = result?.drivers?.map(driver => ({ ...driver, enabled: true }))
@@ -496,45 +497,7 @@ export const DriversList = (props) => {
    */
   useEffect(() => {
     if (session?.loading) return
-    const handleUpdateDriver = (driver) => {
-      const found = driversList.drivers.find(_driver => _driver.id === driver.id)
-      let _drivers = []
-      if (found) {
-        _drivers = driversList.drivers.filter(_driver => {
-          if (_driver.id === driver.id) {
-            Object.assign(_driver, driver)
-          }
-          return true
-        })
-      } else {
-        if (!isOrderDrivers) {
-          _drivers = [...driversList.drivers, driver]
-        } else {
-          _drivers = [...driversList.drivers]
-        }
-      }
-      setDriversList({
-        ...driversList,
-        drivers: _drivers
-      })
-    }
-    const handleTrackingDriver = (trackingData) => {
-      let drivers = []
-      drivers = driversList.drivers.filter(_driver => {
-        if (_driver.id === trackingData.driver_id) {
-          if (typeof trackingData.location === 'string') {
-            const trackingLocation = trackingData.location
-            const _location = trackingLocation.replaceAll('\\', '')
-            const location = JSON.parse(_location)
-            _driver.location = location
-          } else {
-            _driver.location = trackingData.location
-          }
-        }
-        return true
-      })
-      setDriversList({ ...driversList, drivers: drivers })
-    }
+
     const handleBatchDriverChanges = (changes) => {
       setDriversList((prevState) => {
         const updatedDrivers = prevState.drivers.map((driver) => {
@@ -567,59 +530,43 @@ export const DriversList = (props) => {
     }
 
     if (!disableSocketRoomDriver) {
-      if (!useBatchSockets) {
-        socket.on('drivers_update', handleUpdateDriver)
-        socket.on('tracking_driver', handleTrackingDriver)
-      } else {
-        socket.on('batch_driver_locations', handleBatchDriverLocations)
-        socket.on('batch_driver_changes', handleBatchDriverChanges)
-      }
+      socket.on('batch_driver_locations', handleBatchDriverLocations)
+      socket.on('batch_driver_changes', handleBatchDriverChanges)
     }
     return () => {
       if (!disableSocketRoomDriver) {
-        if (!useBatchSockets) {
-          socket.off('drivers_update', handleUpdateDriver)
-          socket.off('tracking_driver', handleTrackingDriver)
-        } else {
-          socket.off('batch_driver_locations', handleBatchDriverLocations)
-          socket.off('batch_driver_changes', handleBatchDriverChanges)
-        }
+        socket.off('batch_driver_locations', handleBatchDriverLocations)
+        socket.off('batch_driver_changes', handleBatchDriverChanges)
       }
     }
   }, [socket, session?.loading, driversList.drivers])
 
   const handleJoinMainRooms = () => {
-    if (!useBatchSockets) {
-      socket.join('drivers')
-    } else {
+    if (!disableDriverLocationsSockets) {
       socket.join({
         room: 'driver_locations',
         user_id: session?.user?.id,
         role: 'manager'
       })
-      socket.join({
-        room: 'drivers',
-        user_id: session?.user?.id,
-        role: 'manager'
-      })
     }
+    socket.join({
+      room: 'drivers',
+      user_id: session?.user?.id,
+      role: 'manager'
+    })
   }
 
   const handleLeaveMainRooms = () => {
-    if (!useBatchSockets) {
-      socket.leave('drivers')
-    } else {
-      socket.leave({
-        room: 'driver_locations',
-        user_id: session?.user?.id,
-        role: 'manager'
-      })
-      socket.leave({
-        room: 'drivers',
-        user_id: session?.user?.id,
-        role: 'manager'
-      })
-    }
+    socket.leave({
+      room: 'driver_locations',
+      user_id: session?.user?.id,
+      role: 'manager'
+    })
+    socket.leave({
+      room: 'drivers',
+      user_id: session?.user?.id,
+      role: 'manager'
+    })
   }
 
   const handleSocketDisconnect = () => {

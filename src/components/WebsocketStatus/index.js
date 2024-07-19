@@ -30,11 +30,9 @@ export const WebsocketStatus = (props) => {
   }
 
   const connectListener = () => {
-    if (socket.socket.connected) {
-      setReconnectAttemptCount(0)
-      setSocketStatus(1)
-      setConnectedDate(new Date())
-    }
+    setReconnectAttemptCount(0)
+    setSocketStatus(1)
+    setConnectedDate(new Date())
   }
 
   const disconnectListener = () => {

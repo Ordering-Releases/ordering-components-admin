@@ -483,11 +483,11 @@ export const DashboardOrdersList = (props) => {
           }
         )
       }
-      if (filterValues.driverGroupIds.length !== 0) {
+      if (filterValues.groupTypesUnassigned.length !== 0) {
         filterConditons.push(
           {
             attribute: 'driver_group_id',
-            value: filterValues.driverGroupIds
+            value: filterValues.groupTypesUnassigned
           }
         )
       }
@@ -754,8 +754,7 @@ export const DashboardOrdersList = (props) => {
       }
     }
     if (filterValues?.driverGroupIds?.length > 0) {
-      const lastDriverId = lastHistoryData?.find(item => item.attribute === 'driver_id')?.old
-      if (!filterValues.driverGroupIds.includes(order.driver_id) && !filterValues.driverGroupIds.includes(lastDriverId)) {
+      if (!filterValues?.driverGroupIds?.some(driverGroup => order?.assignable_driver_groups?.includes?.(driverGroup))) {
         filterCheck = false
       }
     }
@@ -936,17 +935,19 @@ export const DashboardOrdersList = (props) => {
     })
 
     setOrderList({ ...orderList, orders })
-    setPagination({
-      ...pagination,
-      total: pagination?.total - totalDeletedCount
-    })
+    setPagination(prevPagination => ({
+      ...prevPagination,
+      total: Math.max(0, prevPagination?.total - totalDeletedCount)
+    }))
   }, [JSON.stringify(deletedOrderIds)])
 
   /**
    * Listening sesssion and filter values change
    */
   useEffect(() => {
-    if (session?.loading || configState.loading) return
+    const filterObjectValues = Object?.values(filterValues)
+    const hasFilterApplied = filterObjectValues.some(filt => filt !== null && filt?.length > 0)
+    if (session?.loading || configState.loading || hasFilterApplied || filterObjectValues?.length === 0) return
     if (orders) {
       setOrderList({
         ...orderList,
@@ -960,7 +961,21 @@ export const DashboardOrdersList = (props) => {
         requestsState.orders.cancel()
       }
     }
-  }, [session, searchValue, orderBy, filterValues, isOnlyDelivery, driverId, customerId, businessId, orders, orderStatus, timeStatus, configState.loading])
+  }, [session, orders, configState.loading, isOnlyDelivery, driverId, customerId, businessId, orderStatus, timeStatus, searchValue, orderBy, JSON.stringify(filterValues)])
+
+  useEffect(() => {
+    const filterObjectValues = Object?.values(filterValues)
+    const hasFilterApplied = filterObjectValues.some(filt => filt !== null && filt?.length > 0)
+    if (!hasFilterApplied) {
+      return
+    }
+    loadOrders()
+    return () => {
+      if (requestsState.orders) {
+        requestsState.orders.cancel()
+      }
+    }
+  }, [JSON.stringify(filterValues)])
 
   const handleUpdateOrder = (order) => {
     if (order?.products?.[0]?.type === 'gift_card') return
@@ -973,7 +988,7 @@ export const DashboardOrdersList = (props) => {
       const length = order?.history?.length
       const lastHistoryData = order?.history[length - 1]?.data
       if (isFilteredOrder(order, lastHistoryData)) {
-        setPagination(prevPagination => ({ ...prevPagination, total: prevPagination.total - 1 }))
+        setPagination(prevPagination => ({ ...prevPagination, total: Math.max(0, prevPagination.total - 1) }))
       }
       setOrderList(prevState => {
         const updatedOrders = prevState.orders.filter(_order => _order?.id !== order?.id)
@@ -1080,7 +1095,7 @@ export const DashboardOrdersList = (props) => {
         if (orderList.orders.length === 0 && ((filterValues && Object.keys(filterValues).length > 0) || !!searchValue)) {
           getPageOrders(pagination.pageSize, pagination.currentPage)
         }
-      } else {
+      } else if (pagination.currentPage - 1 > 0) {
         getPageOrders(pagination.pageSize, pagination.currentPage - 1)
       }
     }

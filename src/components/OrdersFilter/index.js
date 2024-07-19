@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -11,7 +11,6 @@ dayjs.extend(timezone)
 export const OrdersFilter = (props) => {
   const {
     UIComponent,
-    driverGroupList,
     filterValues,
     setFilterValues,
     handleFilterValues
@@ -71,7 +70,7 @@ export const OrdersFilter = (props) => {
    * * @param {object} groupType Group type
    */
   const handleChangeGroup = (groupType) => {
-    let _groupTypes = [...filterValues.groupTypes]
+    let _groupTypes = [...filterValues.driverGroupBusinessIds]
     if (!_groupTypes.includes(groupType)) {
       _groupTypes.push(groupType)
     } else {
@@ -79,7 +78,7 @@ export const OrdersFilter = (props) => {
     }
 
     // setGroupDriverIds(_driverIds)
-    setFilterValues({ ...filterValues, groupTypes: _groupTypes })
+    setFilterValues({ ...filterValues, driverGroupBusinessIds: _groupTypes })
   }
 
   /**
@@ -349,25 +348,6 @@ export const OrdersFilter = (props) => {
     setFilterValues(initialValues)
     handleFilterValues(initialValues)
   }
-
-  useEffect(() => {
-    let groupDriverIds = []
-    if (filterValues.groupTypes.length > 0) {
-      for (const groupId of filterValues.groupTypes) {
-        const selectedDriverGroup = driverGroupList.groups.find(group => group.id === groupId)
-        if (selectedDriverGroup) {
-          groupDriverIds = [...groupDriverIds, ...selectedDriverGroup?.drivers]
-        }
-      }
-    }
-
-    const uniqueDriverIds = groupDriverIds.filter((v, i, a) => a.indexOf(v) === i)
-    setFilterValues({ ...filterValues, driverGroupIds: uniqueDriverIds })
-  }, [filterValues.groupTypes])
-
-  useEffect(() => {
-    setFilterValues({ ...filterValues, driverGroupBusinessIds: filterValues.groupTypesUnassigned })
-  }, [filterValues.groupTypesUnassigned])
 
   return (
     <>

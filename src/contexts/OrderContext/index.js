@@ -1272,10 +1272,6 @@ export const OrderProvider = ({ Alert, children, strategy, isAlsea, franchiseId,
       socket.join(`orders_${session?.user?.id}`)
       socket.join(`messages_orders_${session?.user?.id}`)
     }
-    if (customerState?.user?.id || session?.user?.id) {
-      socket.join(`carts_${customerState?.user?.id || session?.user?.id}`)
-      socket.join(`orderoptions_${customerState?.user?.id || session?.user?.id}`)
-    }
   }
 
   const handleLeaveMainRooms = () => {
@@ -1290,10 +1286,6 @@ export const OrderProvider = ({ Alert, children, strategy, isAlsea, franchiseId,
     } else {
       socket.leave(`orders_${session?.user?.id}`)
       socket.leave(`messages_orders_${session?.user?.id}`)
-    }
-    if (customerState?.user?.id || session?.user?.id) {
-      socket.leave(`carts_${customerState?.user?.id || session?.user?.id}`)
-      socket.leave(`orderoptions_${customerState?.user?.id || session?.user?.id}`)
     }
   }
 
