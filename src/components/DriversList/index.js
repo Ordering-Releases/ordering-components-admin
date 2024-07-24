@@ -8,7 +8,6 @@ import { useLanguage } from '../../contexts/LanguageContext'
 
 export const DriversList = (props) => {
   const {
-    drivers,
     UIComponent,
     propsToFetch,
     isSearchByName,
@@ -52,11 +51,10 @@ export const DriversList = (props) => {
    * Get session
    */
   const [session] = useSession()
-
   /**
    * Array to save drivers
    */
-  const [driversList, setDriversList] = useState({ drivers: useDriversByProps ? drivers : [], loading: !useDriversByProps, error: null })
+  const [driversList, setDriversList] = useState({ drivers: useDriversByProps ? props.driversList?.drivers : [], loading: !useDriversByProps, error: null })
   /**
    * Array to save companys
    */
@@ -467,9 +465,9 @@ export const DriversList = (props) => {
 
   useEffect(() => {
     if (useDriversByProps) return
-    if (drivers) {
-      setDriversList({ ...driversList, drivers: drivers, loading: false })
-      getOnlineOfflineDrivers(drivers)
+    if (props.driversList?.drivers) {
+      setDriversList({ ...driversList, drivers: props.driversList?.drivers, loading: false })
+      getOnlineOfflineDrivers(props.driversList?.drivers)
     } else {
       if (isOrderDrivers) {
         getOrderDrivers()
@@ -486,12 +484,13 @@ export const DriversList = (props) => {
         controller?.abort()
       }
     }
-  }, [JSON.stringify(drivers), orderId, useDriversByProps, searchValue])
+  }, [props.driversList?.loading, orderId, useDriversByProps, searchValue])
 
   useEffect(() => {
     if (!useDriversByProps) return
-    setDriversList({ drivers: drivers, loading: false, error: null })
-  }, [JSON.stringify(drivers), driversSubfilter, filterValues?.driverIds, searchFilterValue, useDriversByProps])
+    setDriversList({ drivers: props.driversList?.drivers, loading: false, error: null })
+  }, [props.driversList?.loading, driversSubfilter, filterValues?.driverIds, searchFilterValue, useDriversByProps])
+
   /**
    * Listening driver change
    */
@@ -539,7 +538,7 @@ export const DriversList = (props) => {
         socket.off('batch_driver_changes', handleBatchDriverChanges)
       }
     }
-  }, [socket, session?.loading, driversList.drivers])
+  }, [socket, session?.loading, props.driversList?.loading])
 
   const handleJoinMainRooms = () => {
     if (!disableDriverLocationsSockets) {
