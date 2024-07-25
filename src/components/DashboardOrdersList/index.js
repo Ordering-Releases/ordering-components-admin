@@ -754,7 +754,12 @@ export const DashboardOrdersList = (props) => {
       }
     }
     if (filterValues?.driverGroupIds?.length > 0) {
-      if (!filterValues?.driverGroupIds?.some(driverGroup => order?.assignable_driver_groups?.includes?.(driverGroup))) {
+      if (!filterValues?.driverGroupIds?.some(driverGroup => order?.driver_group_id === driverGroup)) {
+        filterCheck = false
+      }
+    }
+    if (filterValues?.driverGroupBusinessIds?.length > 0) {
+      if (!filterValues?.driverGroupBusinessIds?.some(driverGroup => order?.assignable_driver_groups?.includes?.(driverGroup))) {
         filterCheck = false
       }
     }
