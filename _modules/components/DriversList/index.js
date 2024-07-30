@@ -37,13 +37,11 @@ var DriversList = function DriversList(props) {
     isSearchByName = props.isSearchByName,
     isSearchByCellphone = props.isSearchByCellphone,
     isOrderDrivers = props.isOrderDrivers,
-    isSearchFilterValue = props.isSearchFilterValue,
+    isFilterDriverGroup = props.isFilterDriverGroup,
     orderId = props.orderId,
     disableSocketRoomDriver = props.disableSocketRoomDriver,
     useBatchSockets = props.useBatchSockets,
     filterValues = props.filterValues,
-    searchFilterValue = props.searchFilterValue,
-    driverGroupList = props.driverGroupList,
     useDriversByProps = props.useDriversByProps,
     paginationSettings = props.paginationSettings,
     disableDriverLocationsSockets = props.disableDriverLocationsSockets;
@@ -319,7 +317,7 @@ var DriversList = function DriversList(props) {
    * @param {Array} drivers
    */
   var getOnlineOfflineDrivers = function getOnlineOfflineDrivers(drivers) {
-    var _filterValues$driverI;
+    var _filterValues$driverI, _filterValues$driverG;
     var _onlineDrivers;
     var _offlineDrivers;
     var driversFiltered = drivers;
@@ -329,17 +327,13 @@ var DriversList = function DriversList(props) {
         return filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$driverI2 = filterValues.driverIds) === null || _filterValues$driverI2 === void 0 ? void 0 : _filterValues$driverI2.includes(driver === null || driver === void 0 ? void 0 : driver.id);
       });
     }
-    if (isSearchFilterValue && searchFilterValue) {
-      var _driverGroupList$grou;
-      var driverGroupFilter = driverGroupList === null || driverGroupList === void 0 ? void 0 : (_driverGroupList$grou = driverGroupList.groups) === null || _driverGroupList$grou === void 0 ? void 0 : _driverGroupList$grou.find(function (_ref3) {
-        var name = _ref3.name;
-        return name.toLowerCase().includes(searchFilterValue.toLowerCase());
-      });
-      if (driverGroupFilter) {
-        driversFiltered = driversFiltered.filter(function (driver) {
-          return driverGroupFilter.drivers.includes(driver.id);
+    if (isFilterDriverGroup && (filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$driverG = filterValues.driverGroupBusinessIds) === null || _filterValues$driverG === void 0 ? void 0 : _filterValues$driverG.length) > 0) {
+      driversFiltered = driversFiltered.filter(function (driver) {
+        var _driver$drivergroups;
+        return (_driver$drivergroups = driver.drivergroups) === null || _driver$drivergroups === void 0 ? void 0 : _driver$drivergroups.some(function (driverGroup) {
+          return filterValues === null || filterValues === void 0 ? void 0 : filterValues.driverGroupBusinessIds.includes(driverGroup === null || driverGroup === void 0 ? void 0 : driverGroup.id);
         });
-      }
+      });
     }
     if (driversSubfilter.busy && driversSubfilter.notBusy) {
       _onlineDrivers = driversFiltered.filter(function (driver) {
@@ -374,7 +368,7 @@ var DriversList = function DriversList(props) {
    * Method to get drivers from API
    */
   var getDrivers = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
       var page,
         pageSize,
         paginationParams,
@@ -495,7 +489,7 @@ var DriversList = function DriversList(props) {
       }, _callee3, null, [[2, 26]]);
     }));
     return function getDrivers() {
-      return _ref4.apply(this, arguments);
+      return _ref3.apply(this, arguments);
     };
   }();
 
@@ -503,7 +497,7 @@ var DriversList = function DriversList(props) {
    * Method to get the drivers of order from API
    */
   var getOrderDrivers = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
       var _result$drivers, requestOptions, response, _yield$response$json2, error, result, drivers;
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) switch (_context4.prev = _context4.next) {
@@ -568,11 +562,11 @@ var DriversList = function DriversList(props) {
       }, _callee4, null, [[0, 17]]);
     }));
     return function getOrderDrivers() {
-      return _ref5.apply(this, arguments);
+      return _ref4.apply(this, arguments);
     };
   }();
   var getOrders = /*#__PURE__*/function () {
-    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
       var options, where, conditions, source, functionFetch;
       return _regeneratorRuntime().wrap(function _callee5$(_context5) {
         while (1) switch (_context5.prev = _context5.next) {
@@ -628,7 +622,7 @@ var DriversList = function DriversList(props) {
       }, _callee5);
     }));
     return function getOrders() {
-      return _ref6.apply(this, arguments);
+      return _ref5.apply(this, arguments);
     };
   }();
 
@@ -636,7 +630,7 @@ var DriversList = function DriversList(props) {
    * Method to get the orders assigned to the driver
    */
   var loadAssignedOrders = /*#__PURE__*/function () {
-    var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
       var response;
       return _regeneratorRuntime().wrap(function _callee6$(_context6) {
         while (1) switch (_context6.prev = _context6.next) {
@@ -670,7 +664,7 @@ var DriversList = function DriversList(props) {
       }, _callee6, null, [[0, 8]]);
     }));
     return function loadAssignedOrders() {
-      return _ref7.apply(this, arguments);
+      return _ref6.apply(this, arguments);
     };
   }();
   var handleChangePage = function handleChangePage(page) {
@@ -707,7 +701,7 @@ var DriversList = function DriversList(props) {
   (0, _react.useEffect)(function () {
     if (useDriversByProps) return;
     getOnlineOfflineDrivers(driversList.drivers);
-  }, [driversSubfilter, filterValues === null || filterValues === void 0 ? void 0 : filterValues.driverIds, searchFilterValue, useDriversByProps]);
+  }, [driversSubfilter, filterValues === null || filterValues === void 0 ? void 0 : filterValues.driverIds, filterValues === null || filterValues === void 0 ? void 0 : filterValues.driverGroupBusinessIds, useDriversByProps]);
   (0, _react.useEffect)(function () {
     var _props$driversList2;
     if (useDriversByProps) return;
@@ -742,7 +736,7 @@ var DriversList = function DriversList(props) {
       loading: false,
       error: null
     });
-  }, [(_props$driversList7 = props.driversList) === null || _props$driversList7 === void 0 ? void 0 : _props$driversList7.loading, driversSubfilter, filterValues === null || filterValues === void 0 ? void 0 : filterValues.driverIds, searchFilterValue, useDriversByProps]);
+  }, [(_props$driversList7 = props.driversList) === null || _props$driversList7 === void 0 ? void 0 : _props$driversList7.loading, driversSubfilter, filterValues === null || filterValues === void 0 ? void 0 : filterValues.driverIds, useDriversByProps]);
 
   /**
    * Listening driver change

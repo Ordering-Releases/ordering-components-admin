@@ -1,6 +1,5 @@
 "use strict";
 
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -20,6 +19,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
@@ -1127,17 +1127,46 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       }
     };
   }, [JSON.stringify(filterValues)]);
-  var handleUpdateOrder = function handleUpdateOrder(order) {
-    var _order$products, _order$products$;
-    if ((order === null || order === void 0 ? void 0 : (_order$products = order.products) === null || _order$products === void 0 ? void 0 : (_order$products$ = _order$products[0]) === null || _order$products$ === void 0 ? void 0 : _order$products$.type) === 'gift_card') return;
-    if (customerId && (order === null || order === void 0 ? void 0 : order.customer_id) !== customerId) return;
-    if (driverId && (order === null || order === void 0 ? void 0 : order.driver_id) !== driverId) return;
-    if (isOnlyDelivery && ![1, 7].includes(order === null || order === void 0 ? void 0 : order.delivery_type)) return;
+  var getLastUpdates = function getLastUpdates(history, sendOnlyStatus) {
+    var attributesToFind = ['status', 'logistic_status', 'driver_id'];
+    var foundEntries = {};
+    var foundAll = false;
+    for (var i = history.length - 1; i >= 0 && !foundAll; i--) {
+      var data = history[i].data;
+      if (data) {
+        data.forEach(function (entry) {
+          if (attributesToFind.includes(entry.attribute) && !(entry.attribute in foundEntries)) {
+            var _Object$keys;
+            foundEntries[entry.attribute] = entry;
+            if (((_Object$keys = Object.keys(foundEntries)) === null || _Object$keys === void 0 ? void 0 : _Object$keys.length) === attributesToFind.length) {
+              foundAll = true;
+            }
+          }
+        });
+      }
+    }
+    if (sendOnlyStatus) {
+      return (foundEntries === null || foundEntries === void 0 ? void 0 : foundEntries.status) || null;
+    }
+    return Object.values(foundEntries);
+  };
+  var handleUpdateOrder = function handleUpdateOrder(orderFromSocket) {
+    var _order2, _order2$products, _order2$products$, _order3, _order4, _order5, _order8, _order9;
+    var order = orderFromSocket;
+    var orderFound = orderList.orders.find(function (_order) {
+      return (_order === null || _order === void 0 ? void 0 : _order.id) === (orderFromSocket === null || orderFromSocket === void 0 ? void 0 : orderFromSocket.id);
+    });
+    if (orderFound) {
+      order = _objectSpread(_objectSpread({}, orderFound), orderFromSocket);
+    }
+    if (((_order2 = order) === null || _order2 === void 0 ? void 0 : (_order2$products = _order2.products) === null || _order2$products === void 0 ? void 0 : (_order2$products$ = _order2$products[0]) === null || _order2$products$ === void 0 ? void 0 : _order2$products$.type) === 'gift_card') return;
+    if (customerId && ((_order3 = order) === null || _order3 === void 0 ? void 0 : _order3.customer_id) !== customerId) return;
+    if (driverId && ((_order4 = order) === null || _order4 === void 0 ? void 0 : _order4.driver_id) !== driverId) return;
+    if (isOnlyDelivery && ![1, 7].includes((_order5 = order) === null || _order5 === void 0 ? void 0 : _order5.delivery_type)) return;
     if (typeof order.status === 'undefined') return;
     if (!isFilteredOrder(order)) {
-      var _order$history, _order$history2;
-      var length = order === null || order === void 0 ? void 0 : (_order$history = order.history) === null || _order$history === void 0 ? void 0 : _order$history.length;
-      var lastHistoryData = order === null || order === void 0 ? void 0 : (_order$history2 = order.history[length - 1]) === null || _order$history2 === void 0 ? void 0 : _order$history2.data;
+      var _order$history, _order6;
+      var lastHistoryData = getLastUpdates((_order$history = (_order6 = order) === null || _order6 === void 0 ? void 0 : _order6.history) !== null && _order$history !== void 0 ? _order$history : []);
       if (isFilteredOrder(order, lastHistoryData)) {
         setPagination(function (prevPagination) {
           return _objectSpread(_objectSpread({}, prevPagination), {}, {
@@ -1147,7 +1176,8 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       }
       setOrderList(function (prevState) {
         var updatedOrders = prevState.orders.filter(function (_order) {
-          return (_order === null || _order === void 0 ? void 0 : _order.id) !== (order === null || order === void 0 ? void 0 : order.id);
+          var _order7;
+          return (_order === null || _order === void 0 ? void 0 : _order.id) !== ((_order7 = order) === null || _order7 === void 0 ? void 0 : _order7.id);
         });
         return _objectSpread(_objectSpread({}, prevState), {}, {
           orders: updatedOrders
@@ -1156,9 +1186,10 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       return;
     }
     var updatedOrder = _objectSpread({}, order);
-    if (!(order !== null && order !== void 0 && order.driver) && order !== null && order !== void 0 && order.driver_id) {
+    if (!((_order8 = order) !== null && _order8 !== void 0 && _order8.driver) && (_order9 = order) !== null && _order9 !== void 0 && _order9.driver_id) {
       var updatedDriver = driversList === null || driversList === void 0 ? void 0 : driversList.drivers.find(function (driver) {
-        return driver.id === (order === null || order === void 0 ? void 0 : order.driver_id);
+        var _order10;
+        return driver.id === ((_order10 = order) === null || _order10 === void 0 ? void 0 : _order10.driver_id);
       });
       if (updatedDriver) {
         updatedOrder.driver = _objectSpread({}, updatedDriver);
@@ -1170,7 +1201,8 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
     });
     if (found) {
       var updatedOrders = orderList.orders.map(function (_order) {
-        if ((_order === null || _order === void 0 ? void 0 : _order.id) === (order === null || order === void 0 ? void 0 : order.id)) {
+        var _order11;
+        if ((_order === null || _order === void 0 ? void 0 : _order.id) === ((_order11 = order) === null || _order11 === void 0 ? void 0 : _order11.id)) {
           updatedOrder = _objectSpread(_objectSpread({}, _order), updatedOrder);
           return updatedOrder;
         }
@@ -1183,11 +1215,8 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
         });
       });
     } else {
-      var _order$history3, _order$history4, _order$history4$data, _order$history5;
-      var statusChange = order === null || order === void 0 ? void 0 : (_order$history3 = order.history) === null || _order$history3 === void 0 ? void 0 : (_order$history4 = _order$history3[(order === null || order === void 0 ? void 0 : (_order$history5 = order.history) === null || _order$history5 === void 0 ? void 0 : _order$history5.length) - 1]) === null || _order$history4 === void 0 ? void 0 : (_order$history4$data = _order$history4.data) === null || _order$history4$data === void 0 ? void 0 : _order$history4$data.find(function (_ref9) {
-        var attribute = _ref9.attribute;
-        return attribute === 'status';
-      });
+      var _order$history2, _order12;
+      var statusChange = getLastUpdates((_order$history2 = (_order12 = order) === null || _order12 === void 0 ? void 0 : _order12.history) !== null && _order$history2 !== void 0 ? _order$history2 : [], true);
       var _updatedOrders = [].concat(_toConsumableArray(orderList.orders), [order]);
       var _orders3 = sortOrdersArray(orderBy, _updatedOrders.filter(Boolean));
       setOrderList(function (prevState) {
@@ -1208,8 +1237,8 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
     }
   };
   var handleRegisterOrder = function handleRegisterOrder(order) {
-    var _order$products2, _order$products2$;
-    if ((order === null || order === void 0 ? void 0 : (_order$products2 = order.products) === null || _order$products2 === void 0 ? void 0 : (_order$products2$ = _order$products2[0]) === null || _order$products2$ === void 0 ? void 0 : _order$products2$.type) === 'gift_card') return;
+    var _order$products, _order$products$;
+    if ((order === null || order === void 0 ? void 0 : (_order$products = order.products) === null || _order$products === void 0 ? void 0 : (_order$products$ = _order$products[0]) === null || _order$products$ === void 0 ? void 0 : _order$products$.type) === 'gift_card') return;
     if (customerId && (order === null || order === void 0 ? void 0 : order.customer_id) !== customerId) return;
     if (driverId && (order === null || order === void 0 ? void 0 : order.driver_id) !== driverId) return;
     if (isOnlyDelivery && ![1, 7].includes(order === null || order === void 0 ? void 0 : order.delivery_type)) return;
@@ -1271,11 +1300,25 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       }));
     }
   };
+  var isDeepEmptyObject = function isDeepEmptyObject(obj) {
+    for (var key in obj) {
+      if (obj[key] !== null && _typeof(obj[key]) === 'object' && !isDeepEmptyObject(obj[key])) {
+        return false;
+      }
+      if (Array.isArray(obj[key]) && obj[key].length > 0) {
+        return false;
+      }
+      if (obj[key] !== null && _typeof(obj[key]) !== 'object' && obj[key] !== '') {
+        return false;
+      }
+    }
+    return true;
+  };
   (0, _react.useEffect)(function () {
     if (orderList.loading) return;
     if ((pagination === null || pagination === void 0 ? void 0 : pagination.currentPage) !== 0 && (pagination === null || pagination === void 0 ? void 0 : pagination.total) !== 0) {
       if (Math.ceil((pagination === null || pagination === void 0 ? void 0 : pagination.total) / pagination.pageSize) >= (pagination === null || pagination === void 0 ? void 0 : pagination.currentPage)) {
-        if (orderList.orders.length === 0 && (filterValues && Object.keys(filterValues).length > 0 || !!searchValue)) {
+        if (orderList.orders.length === 0 && (filterValues && !isDeepEmptyObject(filterValues) || !!searchValue)) {
           getPageOrders(pagination.pageSize, pagination.currentPage);
         }
       } else if (pagination.currentPage - 1 > 0) {
