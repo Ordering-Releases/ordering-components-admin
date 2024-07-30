@@ -982,7 +982,38 @@ export const DashboardOrdersList = (props) => {
     }
   }, [JSON.stringify(filterValues)])
 
-  const handleUpdateOrder = (order) => {
+  const getLastUpdates = (history, sendOnlyStatus) => {
+    const attributesToFind = ['status', 'logistic_status', 'driver_id']
+    const foundEntries = {}
+    let foundAll = false
+
+    for (let i = history.length - 1; i >= 0 && !foundAll; i--) {
+      const data = history[i].data
+      if (data) {
+        data.forEach(entry => {
+          if (attributesToFind.includes(entry.attribute) && !(entry.attribute in foundEntries)) {
+            foundEntries[entry.attribute] = entry
+            if (Object.keys(foundEntries)?.length === attributesToFind.length) {
+              foundAll = true
+            }
+          }
+        })
+      }
+    }
+
+    if (sendOnlyStatus) {
+      return foundEntries?.status || null
+    }
+
+    return Object.values(foundEntries)
+  }
+
+  const handleUpdateOrder = (orderFromSocket) => {
+    let order = orderFromSocket
+    const orderFound = orderList.orders.find(_order => _order?.id === orderFromSocket?.id)
+    if (orderFound) {
+      order = { ...orderFound, ...orderFromSocket }
+    }
     if (order?.products?.[0]?.type === 'gift_card') return
     if (customerId && order?.customer_id !== customerId) return
     if (driverId && order?.driver_id !== driverId) return
@@ -990,8 +1021,8 @@ export const DashboardOrdersList = (props) => {
     if (typeof order.status === 'undefined') return
 
     if (!isFilteredOrder(order)) {
-      const length = order?.history?.length
-      const lastHistoryData = order?.history[length - 1]?.data
+      const lastHistoryData = getLastUpdates(order?.history ?? [])
+
       if (isFilteredOrder(order, lastHistoryData)) {
         setPagination(prevPagination => ({ ...prevPagination, total: Math.max(0, prevPagination.total - 1) }))
       }
@@ -1024,7 +1055,7 @@ export const DashboardOrdersList = (props) => {
         orders: _orders
       }))
     } else {
-      const statusChange = order?.history?.[order?.history?.length - 1]?.data?.find(({ attribute }) => attribute === 'status')
+      const statusChange = getLastUpdates(order?.history ?? [], true)
       const updatedOrders = [...orderList.orders, order]
       const _orders = sortOrdersArray(orderBy, updatedOrders.filter(Boolean))
       setOrderList(prevState => ({
@@ -1093,11 +1124,26 @@ export const DashboardOrdersList = (props) => {
     }
   }
 
+  const isDeepEmptyObject = (obj) => {
+    for (const key in obj) {
+      if (obj[key] !== null && typeof obj[key] === 'object' && !isDeepEmptyObject(obj[key])) {
+        return false
+      }
+      if (Array.isArray(obj[key]) && obj[key].length > 0) {
+        return false
+      }
+      if (obj[key] !== null && typeof obj[key] !== 'object' && obj[key] !== '') {
+        return false
+      }
+    }
+    return true
+  }
+
   useEffect(() => {
     if (orderList.loading) return
     if (pagination?.currentPage !== 0 && pagination?.total !== 0) {
       if (Math.ceil(pagination?.total / pagination.pageSize) >= pagination?.currentPage) {
-        if (orderList.orders.length === 0 && ((filterValues && Object.keys(filterValues).length > 0) || !!searchValue)) {
+        if (orderList.orders.length === 0 && ((filterValues && !isDeepEmptyObject(filterValues)) || !!searchValue)) {
           getPageOrders(pagination.pageSize, pagination.currentPage)
         }
       } else if (pagination.currentPage - 1 > 0) {

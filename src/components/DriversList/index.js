@@ -13,13 +13,11 @@ export const DriversList = (props) => {
     isSearchByName,
     isSearchByCellphone,
     isOrderDrivers,
-    isSearchFilterValue,
+    isFilterDriverGroup,
     orderId,
     disableSocketRoomDriver,
     useBatchSockets,
     filterValues,
-    searchFilterValue,
-    driverGroupList,
     useDriversByProps,
     paginationSettings,
     disableDriverLocationsSockets
@@ -190,11 +188,8 @@ export const DriversList = (props) => {
       driversFiltered = driversFiltered.filter(driver => filterValues?.driverIds?.includes(driver?.id))
     }
 
-    if (isSearchFilterValue && searchFilterValue) {
-      const driverGroupFilter = driverGroupList?.groups?.find(({ name }) => (name.toLowerCase().includes(searchFilterValue.toLowerCase())))
-      if (driverGroupFilter) {
-        driversFiltered = driversFiltered.filter(driver => (driverGroupFilter.drivers.includes(driver.id)))
-      }
+    if (isFilterDriverGroup && filterValues?.driverGroupBusinessIds?.length > 0) {
+      driversFiltered = driversFiltered.filter(driver => (driver.drivergroups?.some(driverGroup => filterValues?.driverGroupBusinessIds.includes(driverGroup?.id))))
     }
 
     if (driversSubfilter.busy && driversSubfilter.notBusy) {
@@ -461,7 +456,7 @@ export const DriversList = (props) => {
   useEffect(() => {
     if (useDriversByProps) return
     getOnlineOfflineDrivers(driversList.drivers)
-  }, [driversSubfilter, filterValues?.driverIds, searchFilterValue, useDriversByProps])
+  }, [driversSubfilter, filterValues?.driverIds, filterValues?.driverGroupBusinessIds, useDriversByProps])
 
   useEffect(() => {
     if (useDriversByProps) return
@@ -489,7 +484,7 @@ export const DriversList = (props) => {
   useEffect(() => {
     if (!useDriversByProps) return
     setDriversList({ drivers: props.driversList?.drivers, loading: false, error: null })
-  }, [props.driversList?.loading, driversSubfilter, filterValues?.driverIds, searchFilterValue, useDriversByProps])
+  }, [props.driversList?.loading, driversSubfilter, filterValues?.driverIds, useDriversByProps])
 
   /**
    * Listening driver change
