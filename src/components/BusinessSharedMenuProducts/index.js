@@ -41,7 +41,7 @@ export const BusinessSharedMenuProducts = (props) => {
       const response = await fetch(`${ordering.root}/business/${business.id}/menus_shared/${menu.id}/products/${productId}`, requestOptions)
       const content = await response.json()
       if (!content.error) {
-        const menusShared = menuList?.menusShared?.filter(sharedMenu => {
+        const menusShared = menuList?.menusShared?.map(sharedMenu => {
           const products = sharedMenu.products.map(product => {
             if (product.id === productId) {
               return {
@@ -51,8 +51,10 @@ export const BusinessSharedMenuProducts = (props) => {
             }
             return product
           })
-          sharedMenu.products = [...products]
-          return true
+          return {
+            ...sharedMenu,
+            products
+          }
         })
         showToast(ToastType.Success, t('PRODUCT_SAVED', 'Product saved'))
         setActionState({
@@ -62,6 +64,10 @@ export const BusinessSharedMenuProducts = (props) => {
         setMenuList({
           ...menuList,
           menusShared
+        })
+        setMenuState({
+          ...menuState,
+          menu: menusShared.find(_menu => _menu?.id === menu?.id)
         })
       } else {
         setActionState({
