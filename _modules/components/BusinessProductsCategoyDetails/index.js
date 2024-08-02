@@ -210,43 +210,44 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
   */
   var handleUpdateClick = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var id, _businessState$busine, changes, key, _yield$ordering$busin, content, _formState$changes3, _formState$changes3$r, _formState$changes4, _formState$changes4$r, _content$result4, _content$result4$ribb, _businessState$busine2, updatedChanges, _yield$ordering$busin2, _content, updatedBusiness, _updatedBusiness;
+      var keysToDelete, id, _businessState$busine, changes, key, _yield$ordering$busin, content, _formState$changes3, _formState$changes3$r, _formState$changes4, _formState$changes4$r, _content$result4, _content$result4$ribb, _businessState$busine2, updatedChanges, _yield$ordering$busin2, _content, updatedBusiness, _updatedBusiness;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
+            keysToDelete = ['rank'];
             if (!category) {
-              _context2.next = 47;
+              _context2.next = 48;
               break;
             }
             id = (category === null || category === void 0 ? void 0 : category.id) || categoryId;
             if (!loading) {
-              _context2.next = 4;
+              _context2.next = 5;
               break;
             }
             return _context2.abrupt("return");
-          case 4:
-            _context2.prev = 4;
+          case 5:
+            _context2.prev = 5;
             showToast(_ToastContext.ToastType.Info, t('LOADING', 'Loading'));
             setFormState(_objectSpread(_objectSpread({}, formState), {}, {
               loading: true
             }));
             changes = _objectSpread({}, formState.changes);
             for (key in changes) {
-              if (changes[key] === null) {
+              if (changes[key] === null || keysToDelete.includes(key)) {
                 delete changes[key];
               }
             }
-            _context2.next = 11;
+            _context2.next = 12;
             return ordering.businesses(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine = businessState.business) === null || _businessState$busine === void 0 ? void 0 : _businessState$busine.id).categories(parseInt(id)).save(changes);
-          case 11:
+          case 12:
             _yield$ordering$busin = _context2.sent;
             content = _yield$ordering$busin.content;
             if (content.error) {
-              _context2.next = 39;
+              _context2.next = 40;
               break;
             }
             if (!(typeof ((_formState$changes3 = formState.changes) === null || _formState$changes3 === void 0 ? void 0 : (_formState$changes3$r = _formState$changes3.ribbon) === null || _formState$changes3$r === void 0 ? void 0 : _formState$changes3$r.enabled) !== 'undefined' && !((_formState$changes4 = formState.changes) !== null && _formState$changes4 !== void 0 && (_formState$changes4$r = _formState$changes4.ribbon) !== null && _formState$changes4$r !== void 0 && _formState$changes4$r.enabled) && content !== null && content !== void 0 && (_content$result4 = content.result) !== null && _content$result4 !== void 0 && (_content$result4$ribb = _content$result4.ribbon) !== null && _content$result4$ribb !== void 0 && _content$result4$ribb.enabled)) {
-              _context2.next = 29;
+              _context2.next = 30;
               break;
             }
             updatedChanges = {
@@ -254,9 +255,9 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
                 enabled: false
               }
             };
-            _context2.next = 18;
+            _context2.next = 19;
             return ordering.businesses(businessState === null || businessState === void 0 ? void 0 : (_businessState$busine2 = businessState.business) === null || _businessState$busine2 === void 0 ? void 0 : _businessState$busine2.id).categories(parseInt(id)).save(updatedChanges);
-          case 18:
+          case 19:
             _yield$ordering$busin2 = _context2.sent;
             _content = _yield$ordering$busin2.content;
             setFormState(_objectSpread(_objectSpread({}, formState), {}, {
@@ -269,18 +270,18 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
             }));
             setCategorySelected(_content.result);
             if (!handleUpdateBusinessState) {
-              _context2.next = 27;
+              _context2.next = 28;
               break;
             }
-            _context2.next = 25;
+            _context2.next = 26;
             return businessUpdate(_content);
-          case 25:
+          case 26:
             updatedBusiness = _context2.sent;
             handleUpdateBusinessState(updatedBusiness);
-          case 27:
-            _context2.next = 36;
+          case 28:
+            _context2.next = 37;
             break;
-          case 29:
+          case 30:
             setFormState(_objectSpread(_objectSpread({}, formState), {}, {
               changes: content.result,
               result: {
@@ -291,30 +292,30 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
             }));
             setCategorySelected(content.result);
             if (!handleUpdateBusinessState) {
-              _context2.next = 36;
+              _context2.next = 37;
               break;
             }
-            _context2.next = 34;
+            _context2.next = 35;
             return businessUpdate(content);
-          case 34:
+          case 35:
             _updatedBusiness = _context2.sent;
             handleUpdateBusinessState(_updatedBusiness);
-          case 36:
+          case 37:
             showToast(_ToastContext.ToastType.Success, t('CATEOGORY_UPDATED', 'Category updated'));
-            _context2.next = 40;
+            _context2.next = 41;
             break;
-          case 39:
+          case 40:
             setFormState(_objectSpread(_objectSpread({}, formState), {}, {
               changes: formState.changes,
               result: content,
               loading: false
             }));
-          case 40:
-            _context2.next = 45;
+          case 41:
+            _context2.next = 46;
             break;
-          case 42:
-            _context2.prev = 42;
-            _context2.t0 = _context2["catch"](4);
+          case 43:
+            _context2.prev = 43;
+            _context2.t0 = _context2["catch"](5);
             setFormState(_objectSpread(_objectSpread({}, formState), {}, {
               result: {
                 error: true,
@@ -322,16 +323,16 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
               },
               loading: false
             }));
-          case 45:
-            _context2.next = 48;
+          case 46:
+            _context2.next = 49;
             break;
-          case 47:
-            createBusinessCategory();
           case 48:
+            createBusinessCategory();
+          case 49:
           case "end":
             return _context2.stop();
         }
-      }, _callee2, null, [[4, 42]]);
+      }, _callee2, null, [[5, 43]]);
     }));
     return function handleUpdateClick() {
       return _ref2.apply(this, arguments);
