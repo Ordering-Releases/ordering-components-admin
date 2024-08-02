@@ -143,6 +143,7 @@ export const BusinessProductsCategoyDetails = (props) => {
   * Default fuction for business profile workflow
   */
   const handleUpdateClick = async () => {
+    const keysToDelete = ['rank']
     if (category) {
       const id = category?.id || categoryId
       if (loading) return
@@ -154,7 +155,7 @@ export const BusinessProductsCategoyDetails = (props) => {
         })
         const changes = { ...formState.changes }
         for (const key in changes) {
-          if (changes[key] === null) {
+          if (changes[key] === null || keysToDelete.includes(key)) {
             delete changes[key]
           }
         }
