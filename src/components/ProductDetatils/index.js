@@ -42,10 +42,14 @@ export const ProductDetatils = (props) => {
         ...productState,
         loading: true
       })
+      const params = {
+        version: 'v2'
+      }
       const { content: { error, result } } = await ordering
         .businesses(business.id)
         .categories(categoryId)
         .products(productId)
+        .parameters(params)
         .get()
       if (!error) {
         setProductState({
