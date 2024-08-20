@@ -94,7 +94,7 @@ var ProductDetatils = function ProductDetatils(props) {
    */
   var getProduct = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var _yield$ordering$busin, _yield$ordering$busin2, error, result;
+      var params, _yield$ordering$busin, _yield$ordering$busin2, error, result;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -102,9 +102,12 @@ var ProductDetatils = function ProductDetatils(props) {
             setProductState(_objectSpread(_objectSpread({}, productState), {}, {
               loading: true
             }));
-            _context.next = 4;
-            return ordering.businesses(business.id).categories(categoryId).products(productId).get();
-          case 4:
+            params = {
+              version: 'v2'
+            };
+            _context.next = 5;
+            return ordering.businesses(business.id).categories(categoryId).products(productId).parameters(params).get();
+          case 5:
             _yield$ordering$busin = _context.sent;
             _yield$ordering$busin2 = _yield$ordering$busin.content;
             error = _yield$ordering$busin2.error;
@@ -121,20 +124,20 @@ var ProductDetatils = function ProductDetatils(props) {
                 error: result
               }));
             }
-            _context.next = 14;
+            _context.next = 15;
             break;
-          case 11:
-            _context.prev = 11;
+          case 12:
+            _context.prev = 12;
             _context.t0 = _context["catch"](0);
             setProductState(_objectSpread(_objectSpread({}, productState), {}, {
               loading: false,
               error: [_context.t0.message]
             }));
-          case 14:
+          case 15:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 11]]);
+      }, _callee, null, [[0, 12]]);
     }));
     return function getProduct() {
       return _ref.apply(this, arguments);
