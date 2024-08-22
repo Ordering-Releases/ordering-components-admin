@@ -177,7 +177,7 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
                   }
                 }
               }
-              var categoryKeyOptions = ['name', 'enabled', 'header', 'description', 'ribbon', 'image', 'slug', 'seo_image', 'seo_title', 'seo_description'];
+              var categoryKeyOptions = ['name', 'enabled', 'header', 'description', 'ribbon', 'image', 'slug', 'seo_image', 'seo_title', 'seo_description', 'snooze_until'];
               if ((category === null || category === void 0 ? void 0 : category.id) === (content === null || content === void 0 ? void 0 : (_content$result2 = content.result) === null || _content$result2 === void 0 ? void 0 : _content$result2.id) && category.parent_category_id === (content === null || content === void 0 ? void 0 : content.result.parent_category_id)) {
                 Object.keys(category).forEach(function (key) {
                   if (categoryKeyOptions.includes(key) && content.result[key] !== undefined) {
@@ -233,7 +233,7 @@ var BusinessProductsCategoyDetails = function BusinessProductsCategoyDetails(pro
             }));
             changes = _objectSpread({}, formState.changes);
             for (key in changes) {
-              if (changes[key] === null || keysToDelete.includes(key)) {
+              if (!(key === 'snooze_until' && changes[key] === null) && changes[key] === null || keysToDelete.includes(key)) {
                 delete changes[key];
               }
             }

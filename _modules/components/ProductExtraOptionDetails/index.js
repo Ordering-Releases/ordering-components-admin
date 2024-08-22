@@ -911,6 +911,11 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
       respect_to: subOptionId
     });
   };
+  var handleChangeSettingsChangeState = function handleChangeSettingsChangeState(updatedChange) {
+    setSettingChangeState(_objectSpread(_objectSpread({}, settingChangeState), {}, {
+      changes: _objectSpread(_objectSpread({}, setChangesState.changes), updatedChange)
+    }));
+  };
 
   /**
    * Method to handle sub option drag start
@@ -1000,6 +1005,7 @@ var ProductExtraOptionDetails = function ProductExtraOptionDetails(props) {
     changesState: changesState,
     editSubOptionId: editSubOptionId,
     settingChangeState: settingChangeState,
+    handleChangeSettingsChangeState: handleChangeSettingsChangeState,
     handleChangeInput: handleChangeInput,
     handleChangeSubOptionImage: handleChangeSubOptionImage,
     handleChangeSubOptionEnable: handleChangeSubOptionEnable,

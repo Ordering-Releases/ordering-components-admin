@@ -114,7 +114,7 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
    */
   var handleUpdateBusinessMenuOption = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var changes, key, requestOptions, response, content, _menuList$menus, menus;
+      var changes, key, requestOptions, endPoint, response, content, _menuList$menus, menus;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -140,13 +140,14 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
               },
               body: JSON.stringify(changes)
             };
-            _context.next = 8;
-            return fetch("".concat(ordering.root, "/business/").concat(business.id, "/menus/").concat(menu === null || menu === void 0 ? void 0 : menu.id), requestOptions);
-          case 8:
+            endPoint = isSelectedSharedMenus ? "".concat(ordering.root, "/business/").concat(business.id, "/menus_shared/").concat(menu.id) : "".concat(ordering.root, "/business/").concat(business.id, "/menus/").concat(menu.id);
+            _context.next = 9;
+            return fetch(endPoint, requestOptions);
+          case 9:
             response = _context.sent;
-            _context.next = 11;
+            _context.next = 12;
             return response.json();
-          case 11:
+          case 12:
             content = _context.sent;
             setFormState(_objectSpread(_objectSpread({}, formState), {}, {
               changes: content.error ? formState.changes : {},
@@ -175,10 +176,10 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
               }));
               showToast(_ToastContext.ToastType.Success, t('MENU_SAVED', 'Products catalog saved'));
             }
-            _context.next = 19;
+            _context.next = 20;
             break;
-          case 16:
-            _context.prev = 16;
+          case 17:
+            _context.prev = 17;
             _context.t0 = _context["catch"](0);
             setFormState(_objectSpread(_objectSpread({}, formState), {}, {
               loading: false,
@@ -187,11 +188,11 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
                 result: _context.t0.message
               }
             }));
-          case 19:
+          case 20:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 16]]);
+      }, _callee, null, [[0, 17]]);
     }));
     return function handleUpdateBusinessMenuOption() {
       return _ref.apply(this, arguments);
