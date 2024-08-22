@@ -530,6 +530,16 @@ export const ProductExtraOptionDetails = (props) => {
     handleUpdateOption({ respect_to: subOptionId })
   }
 
+  const handleChangeSettingsChangeState = (updatedChange) => {
+    setSettingChangeState({
+      ...settingChangeState,
+      changes: {
+        ...setChangesState.changes,
+        ...updatedChange
+      }
+    })
+  }
+
   /**
    * Method to handle sub option drag start
    */
@@ -618,6 +628,7 @@ export const ProductExtraOptionDetails = (props) => {
           changesState={changesState}
           editSubOptionId={editSubOptionId}
           settingChangeState={settingChangeState}
+          handleChangeSettingsChangeState={handleChangeSettingsChangeState}
           handleChangeInput={handleChangeInput}
           handleChangeSubOptionImage={handleChangeSubOptionImage}
           handleChangeSubOptionEnable={handleChangeSubOptionEnable}

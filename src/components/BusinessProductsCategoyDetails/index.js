@@ -121,7 +121,7 @@ export const BusinessProductsCategoyDetails = (props) => {
           }
         }
       }
-      const categoryKeyOptions = ['name', 'enabled', 'header', 'description', 'ribbon', 'image', 'slug', 'seo_image', 'seo_title', 'seo_description']
+      const categoryKeyOptions = ['name', 'enabled', 'header', 'description', 'ribbon', 'image', 'slug', 'seo_image', 'seo_title', 'seo_description', 'snooze_until']
       if (category?.id === content?.result?.id && category.parent_category_id === content?.result.parent_category_id) {
         Object.keys(category).forEach(key => {
           if (categoryKeyOptions.includes(key) && content.result[key] !== undefined) {
@@ -155,7 +155,7 @@ export const BusinessProductsCategoyDetails = (props) => {
         })
         const changes = { ...formState.changes }
         for (const key in changes) {
-          if (changes[key] === null || keysToDelete.includes(key)) {
+          if ((!(key === 'snooze_until' && changes[key] === null) && changes[key] === null) || keysToDelete.includes(key)) {
             delete changes[key]
           }
         }

@@ -79,7 +79,10 @@ export const BusinessMenuOptions = (props) => {
         },
         body: JSON.stringify(changes)
       }
-      const response = await fetch(`${ordering.root}/business/${business.id}/menus/${menu?.id}`, requestOptions)
+      const endPoint = isSelectedSharedMenus
+        ? `${ordering.root}/business/${business.id}/menus_shared/${menu.id}`
+        : `${ordering.root}/business/${business.id}/menus/${menu.id}`
+      const response = await fetch(endPoint, requestOptions)
       const content = await response.json()
 
       setFormState({
