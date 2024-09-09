@@ -37,6 +37,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var OrdersManage = function OrdersManage(props) {
+  var _mapsData$selectedDri2;
   var UIComponent = props.UIComponent,
     statusGroup = props.statusGroup,
     driversPropsToFetch = props.driversPropsToFetch,
@@ -107,6 +108,15 @@ var OrdersManage = function OrdersManage(props) {
     _useState16 = _slicedToArray(_useState15, 2),
     deletedOrderIds = _useState16[0],
     setDeletedOrderIds = _useState16[1];
+  var _useState17 = (0, _react.useState)({
+      driversIsOnline: true,
+      onlineDrivers: [],
+      offlineDrivers: [],
+      selectedDriver: null
+    }),
+    _useState18 = _slicedToArray(_useState17, 2),
+    mapsData = _useState18[0],
+    setMapsData = _useState18[1];
   var allowColumnsModel = {
     slaBar: {
       visable: false,
@@ -245,113 +255,113 @@ var OrdersManage = function OrdersManage(props) {
       order: 14
     }
   };
-  var _useState17 = (0, _react.useState)(allowColumnsModel),
-    _useState18 = _slicedToArray(_useState17, 2),
-    allowColumns = _useState18[0],
-    setAllowColumns = _useState18[1];
-  var _useState19 = (0, _react.useState)({
+  var _useState19 = (0, _react.useState)(allowColumnsModel),
+    _useState20 = _slicedToArray(_useState19, 2),
+    allowColumns = _useState20[0],
+    setAllowColumns = _useState20[1];
+  var _useState21 = (0, _react.useState)({
       loading: false,
       franchises: [],
       error: null
     }),
-    _useState20 = _slicedToArray(_useState19, 2),
-    franchisesList = _useState20[0],
-    setFranchisesList = _useState20[1];
+    _useState22 = _slicedToArray(_useState21, 2),
+    franchisesList = _useState22[0],
+    setFranchisesList = _useState22[1];
 
   /**
    * Object to save driver group list
    */
-  var _useState21 = (0, _react.useState)({
-      groups: [],
-      loading: false,
-      error: null
-    }),
-    _useState22 = _slicedToArray(_useState21, 2),
-    driverGroupList = _useState22[0],
-    setDriverGroupList = _useState22[1];
-  /**
-  * Object to save driver group list
-  */
   var _useState23 = (0, _react.useState)({
       groups: [],
       loading: false,
       error: null
     }),
     _useState24 = _slicedToArray(_useState23, 2),
-    assignableDriverGroupList = _useState24[0],
-    setAssignableDriverGroupList = _useState24[1];
+    driverGroupList = _useState24[0],
+    setDriverGroupList = _useState24[1];
+  /**
+  * Object to save driver group list
+  */
+  var _useState25 = (0, _react.useState)({
+      groups: [],
+      loading: false,
+      error: null
+    }),
+    _useState26 = _slicedToArray(_useState25, 2),
+    assignableDriverGroupList = _useState26[0],
+    setAssignableDriverGroupList = _useState26[1];
   /**
    * Object to save drivers
    */
-  var _useState25 = (0, _react.useState)({
+  var _useState27 = (0, _react.useState)({
       drivers: [],
       loading: true,
       error: null
     }),
-    _useState26 = _slicedToArray(_useState25, 2),
-    driversList = _useState26[0],
-    setDriversList = _useState26[1];
+    _useState28 = _slicedToArray(_useState27, 2),
+    driversList = _useState28[0],
+    setDriversList = _useState28[1];
   /**
   * Object to save admins
   */
-  var _useState27 = (0, _react.useState)({
+  var _useState29 = (0, _react.useState)({
       admins: [],
       loading: true,
       error: null
     }),
-    _useState28 = _slicedToArray(_useState27, 2),
-    adminsList = _useState28[0],
-    setAdminsList = _useState28[1];
+    _useState30 = _slicedToArray(_useState29, 2),
+    adminsList = _useState30[0],
+    setAdminsList = _useState30[1];
   /**
    * Object to save paymethods
    */
-  var _useState29 = (0, _react.useState)({
+  var _useState31 = (0, _react.useState)({
       paymethods: [],
       loading: true,
       error: null
     }),
-    _useState30 = _slicedToArray(_useState29, 2),
-    paymethodsList = _useState30[0],
-    setPaymethodsList = _useState30[1];
+    _useState32 = _slicedToArray(_useState31, 2),
+    paymethodsList = _useState32[0],
+    setPaymethodsList = _useState32[1];
   /**
    * Object to save businesses
    */
-  var _useState31 = (0, _react.useState)({
+  var _useState33 = (0, _react.useState)({
       businesses: [],
       loading: true,
       error: null
     }),
-    _useState32 = _slicedToArray(_useState31, 2),
-    businessesList = _useState32[0],
-    setBusinessesList = _useState32[1];
+    _useState34 = _slicedToArray(_useState33, 2),
+    businessesList = _useState34[0],
+    setBusinessesList = _useState34[1];
   /**
    * Array to save the cities
    */
-  var _useState33 = (0, _react.useState)([]),
-    _useState34 = _slicedToArray(_useState33, 2),
-    citiesList = _useState34[0],
-    setCitiesList = _useState34[1];
+  var _useState35 = (0, _react.useState)([]),
+    _useState36 = _slicedToArray(_useState35, 2),
+    citiesList = _useState36[0],
+    setCitiesList = _useState36[1];
 
   /**
    * Object to save selected order ids
    */
-  var _useState35 = (0, _react.useState)([]),
-    _useState36 = _slicedToArray(_useState35, 2),
-    selectedOrderIds = _useState36[0],
-    setSelectedOrderIds = _useState36[1];
+  var _useState37 = (0, _react.useState)([]),
+    _useState38 = _slicedToArray(_useState37, 2),
+    selectedOrderIds = _useState38[0],
+    setSelectedOrderIds = _useState38[1];
   /**
    * Object to save order substatuses
    */
-  var _useState37 = (0, _react.useState)({
+  var _useState39 = (0, _react.useState)({
       pending: orderStatuesList === null || orderStatuesList === void 0 ? void 0 : orderStatuesList.pending,
       inProgress: orderStatuesList === null || orderStatuesList === void 0 ? void 0 : orderStatuesList.inProgress,
       completed: orderStatuesList === null || orderStatuesList === void 0 ? void 0 : orderStatuesList.completed,
       cancelled: orderStatuesList === null || orderStatuesList === void 0 ? void 0 : orderStatuesList.cancelled,
       all: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
     }),
-    _useState38 = _slicedToArray(_useState37, 2),
-    selectedSubOrderStatus = _useState38[0],
-    setSelectedSubOrderStatus = _useState38[1];
+    _useState40 = _slicedToArray(_useState39, 2),
+    selectedSubOrderStatus = _useState40[0],
+    setSelectedSubOrderStatus = _useState40[1];
 
   /**
    * Save ids of orders selected
@@ -805,22 +815,41 @@ var OrdersManage = function OrdersManage(props) {
       });
     };
     var handleBatchDriverLocations = function handleBatchDriverLocations(locations) {
-      setDriversList(function (prevState) {
-        var updatedDrivers = prevState.drivers.map(function (driver) {
-          var locationData = locations.find(function (location) {
-            return location.driver_id === driver.id;
-          });
-          if (locationData) {
-            var updatedDriver = _objectSpread({}, driver);
-            updatedDriver.location = locationData.location;
-            return updatedDriver;
-          }
-          return driver;
+      var _mapsData$selectedDri;
+      var updateDriverLocation = function updateDriverLocation(driver) {
+        var locationData = locations.find(function (location) {
+          return location.driver_id === driver.id;
         });
+        if (locationData) {
+          var updatedDriver = _objectSpread({}, driver);
+          updatedDriver.location = locationData.location;
+          return updatedDriver;
+        }
+        return driver;
+      };
+      setDriversList(function (prevState) {
+        var updatedDrivers = prevState.drivers.map(updateDriverLocation);
         return _objectSpread(_objectSpread({}, prevState), {}, {
           drivers: updatedDrivers
         });
       });
+      if (mapsData !== null && mapsData !== void 0 && (_mapsData$selectedDri = mapsData.selectedDriver) !== null && _mapsData$selectedDri !== void 0 && _mapsData$selectedDri.id) {
+        var locationData = locations.find(function (location) {
+          return location.driver_id === (mapsData === null || mapsData === void 0 ? void 0 : mapsData.selectedDriver.id);
+        });
+        locationData && setMapsData(_objectSpread(_objectSpread({}, mapsData), {}, {
+          selectedDriver: _objectSpread(_objectSpread({}, mapsData.selectedDriver), {}, {
+            location: locationData === null || locationData === void 0 ? void 0 : locationData.location
+          })
+        }));
+      } else {
+        setMapsData(function (prevState) {
+          return _objectSpread(_objectSpread({}, prevState), {}, {
+            onlineDrivers: prevState.onlineDrivers.map(updateDriverLocation),
+            offlineDrivers: prevState.offlineDrivers.map(updateDriverLocation)
+          });
+        });
+      }
     };
     if (!disableSocketRoomDriver) {
       socket.on('batch_driver_locations', handleBatchDriverLocations);
@@ -832,7 +861,7 @@ var OrdersManage = function OrdersManage(props) {
         socket.off('batch_driver_changes', handleBatchDriverChanges);
       }
     };
-  }, [socket, loading]);
+  }, [socket, loading, mapsData === null || mapsData === void 0 ? void 0 : (_mapsData$selectedDri2 = mapsData.selectedDriver) === null || _mapsData$selectedDri2 === void 0 ? void 0 : _mapsData$selectedDri2.id]);
   (0, _react.useEffect)(function () {
     if (!auth || loading || !(socket !== null && socket !== void 0 && socket.socket) || disableSocketRoomDriver) return;
     handleJoinMainRooms();
@@ -949,7 +978,9 @@ var OrdersManage = function OrdersManage(props) {
     setTimeStatus: setTimeStatus,
     franchisesList: franchisesList,
     adminsList: adminsList,
-    assignableDriverGroupList: assignableDriverGroupList
+    assignableDriverGroupList: assignableDriverGroupList,
+    mapsData: mapsData,
+    setMapsData: setMapsData
   })));
 };
 exports.OrdersManage = OrdersManage;

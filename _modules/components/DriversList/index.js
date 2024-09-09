@@ -773,6 +773,14 @@ var DriversList = function DriversList(props) {
       });
     };
     var handleBatchDriverLocations = function handleBatchDriverLocations(locations) {
+      if (selectedDriver !== null && selectedDriver !== void 0 && selectedDriver.id) {
+        var locationData = locations.find(function (location) {
+          return location.driver_id === selectedDriver.id;
+        });
+        locationData && setSelectedDriver(_objectSpread(_objectSpread({}, selectedDriver), {}, {
+          location: locationData === null || locationData === void 0 ? void 0 : locationData.location
+        }));
+      }
       setDriversList(function (prevState) {
         var updatedDrivers = prevState.drivers.map(function (driver) {
           var locationData = locations.find(function (location) {
@@ -800,7 +808,7 @@ var DriversList = function DriversList(props) {
         socket.off('batch_driver_changes', handleBatchDriverChanges);
       }
     };
-  }, [socket, session === null || session === void 0 ? void 0 : session.loading, (_props$driversList8 = props.driversList) === null || _props$driversList8 === void 0 ? void 0 : _props$driversList8.loading]);
+  }, [socket, session === null || session === void 0 ? void 0 : session.loading, (_props$driversList8 = props.driversList) === null || _props$driversList8 === void 0 ? void 0 : _props$driversList8.loading, selectedDriver === null || selectedDriver === void 0 ? void 0 : selectedDriver.id]);
   var handleJoinMainRooms = function handleJoinMainRooms() {
     var _session$user2;
     if (!disableDriverLocationsSockets) {
