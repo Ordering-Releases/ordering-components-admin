@@ -101,6 +101,10 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
     _useState18 = _slicedToArray(_useState17, 2),
     selectedDriverManager = _useState18[0],
     setSelectedDriverManager = _useState18[1];
+  var _useState19 = (0, _react.useState)(false),
+    _useState20 = _slicedToArray(_useState19, 2),
+    useAdvanced = _useState20[0],
+    setUseAdvanced = _useState20[1];
   var initSet = function initSet(driversGroup) {
     var _driversGroup$busines, _driversGroup$drivers, _driversGroup$drivers2, _driversGroup$driver_, _driversGroup$adminis;
     var businessIds = driversGroup === null || driversGroup === void 0 ? void 0 : (_driversGroup$busines = driversGroup.business) === null || _driversGroup$busines === void 0 ? void 0 : _driversGroup$busines.reduce(function (ids, business) {
@@ -123,6 +127,8 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
         return _toConsumableArray(driverData);
       }
     }, []);
+    var useAdvancedLogistics = (driversGroup === null || driversGroup === void 0 ? void 0 : driversGroup.autoassign_amount_drivers) !== 0 && (driversGroup === null || driversGroup === void 0 ? void 0 : driversGroup.orders_group_max_orders) !== 0;
+    useAdvancedLogistics ? setUseAdvanced(true) : setUseAdvanced(false);
     setSelectedDriverTemporaryIds(driversTemporary);
     var companyIds = driversGroup === null || driversGroup === void 0 ? void 0 : (_driversGroup$driver_ = driversGroup.driver_companies) === null || _driversGroup$driver_ === void 0 ? void 0 : _driversGroup$driver_.reduce(function (ids, company) {
       return [].concat(_toConsumableArray(ids), [company.id]);
@@ -203,7 +209,7 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
    */
   var handleUpdateDriversGroup = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(_changes) {
-      var changes, requestOptions, groupId, response, content, groups;
+      var _Object$keys, changes, skipeableValues, requestOptions, groupId, response, content, groups;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -214,16 +220,14 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
               error: null
             }));
             changes = _changes;
-            if (typeof (_changes === null || _changes === void 0 ? void 0 : _changes.driver_available_max_distance) !== 'undefined') {
-              changes = _objectSpread(_objectSpread({}, _changes), {}, {
-                driver_available_max_distance: (_changes === null || _changes === void 0 ? void 0 : _changes.driver_available_max_distance) === '' ? null : _changes === null || _changes === void 0 ? void 0 : _changes.driver_available_max_distance
-              });
-            }
-            if (typeof (_changes === null || _changes === void 0 ? void 0 : _changes.administrators) !== 'undefined') {
-              changes = _objectSpread(_objectSpread({}, _changes), {}, {
-                administrators: (_changes === null || _changes === void 0 ? void 0 : _changes.administrators) === '[]' ? null : _changes === null || _changes === void 0 ? void 0 : _changes.administrators
-              });
-            }
+            skipeableValues = ['', '[]'];
+            (_Object$keys = Object.keys(changes)) === null || _Object$keys === void 0 ? void 0 : _Object$keys.map(function (changeName) {
+              var _changes2;
+              if (typeof ((_changes2 = changes) === null || _changes2 === void 0 ? void 0 : _changes2[changeName]) !== 'undefined') {
+                var _changes3, _changes4;
+                changes = _objectSpread(_objectSpread({}, changes), {}, _defineProperty({}, changeName, skipeableValues.includes((_changes3 = changes) === null || _changes3 === void 0 ? void 0 : _changes3[changeName]) ? null : (_changes4 = changes) === null || _changes4 === void 0 ? void 0 : _changes4[changeName]));
+              }
+            });
             requestOptions = {
               method: 'PUT',
               headers: {
@@ -249,6 +253,8 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
               groups = driversGroupsState.groups.filter(function (group) {
                 if (group.id === groupId) {
                   Object.assign(group, content.result);
+                  var useAdvancedLogistics = (group === null || group === void 0 ? void 0 : group.autoassign_amount_drivers) !== 0 && (group === null || group === void 0 ? void 0 : group.orders_group_max_orders) !== 0;
+                  useAdvancedLogistics ? setUseAdvanced(true) : setUseAdvanced(false);
                 }
                 return true;
               });
@@ -436,7 +442,16 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
     };
   }();
   var handleChangesState = function handleChangesState(changes) {
-    setChangesState(_objectSpread(_objectSpread({}, changesState), changes));
+    var _Object$keys2;
+    var mergedChanges = _objectSpread(_objectSpread({}, changesState), changes);
+    var enterToValidation = Object === null || Object === void 0 ? void 0 : (_Object$keys2 = Object.keys(mergedChanges)) === null || _Object$keys2 === void 0 ? void 0 : _Object$keys2.filter(function (changeName) {
+      return changeName === 'autoassign_amount_drivers' || changeName === 'orders_group_max_orders';
+    });
+    if ((enterToValidation === null || enterToValidation === void 0 ? void 0 : enterToValidation.length) === 2) {
+      var useAdvancedLogistics = (mergedChanges === null || mergedChanges === void 0 ? void 0 : mergedChanges.autoassign_amount_drivers) !== 0 && (mergedChanges === null || mergedChanges === void 0 ? void 0 : mergedChanges.orders_group_max_orders) !== 0;
+      useAdvancedLogistics ? setUseAdvanced(true) : setUseAdvanced(false);
+    }
+    setChangesState(mergedChanges);
   };
   var handleChangeMaxDistance = function handleChangeMaxDistance(value) {
     var maxDistance = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
@@ -628,6 +643,13 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
       administrators: JSON.stringify(filteredIds)
     }));
   };
+  var handleLogistic = function handleLogistic(checked) {
+    var changes = {
+      autoassign_amount_drivers: checked ? 1 : 0,
+      orders_group_max_orders: checked ? 1 : 0
+    };
+    handleChangesState(changes);
+  };
   (0, _react.useEffect)(function () {
     setChangesState({});
     if (curDriversGroup) {
@@ -648,7 +670,7 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
         // default for new group
         var extraAttributes = _objectSpread({
           enabled: true,
-          autoassign_amount_drivers: 1,
+          autoassign_amount_drivers: useAdvanced ? 1 : 0,
           autoassign_autoaccept_by_driver: false,
           autoassign_autoreject_time: 30,
           autoassign_increment_radius: 100,
@@ -665,7 +687,7 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
           autoassign_max_radius: 1000,
           orders_group_max_distance_between_delivery: 200,
           orders_group_max_distance_between_pickup: 200,
-          orders_group_max_orders: 1,
+          orders_group_max_orders: useAdvanced ? 1 : 0,
           orders_group_max_time_between: 5,
           orders_group_max_time_between_delivery: 600,
           orders_group_max_time_between_pickup: 600,
@@ -698,6 +720,8 @@ var DriversGroupDetails = function DriversGroupDetails(props) {
     selectedDriverTemporaryIds: selectedDriverTemporaryIds,
     selectedDriversCompanyIds: selectedDriversCompanyIds,
     selectedDriverManager: selectedDriverManager,
+    useAdvanced: useAdvanced,
+    handleLogistic: handleLogistic,
     handleChangesState: handleChangesState,
     handleSelectBusiness: handleSelectBusiness,
     handleSelectAllBusiness: handleSelectAllBusiness,
