@@ -42,6 +42,12 @@ export const OrdersManage = (props) => {
   const [startMulitOrderStatusChange, setStartMulitOrderStatusChange] = useState(false)
   const [actionStatus, setActionStatus] = useState({ loading: false, error: null })
   const [deletedOrderIds, setDeletedOrderIds] = useState([])
+  const [mapsData, setMapsData] = useState({
+    driversIsOnline: true,
+    onlineDrivers: [],
+    offlineDrivers: [],
+    selectedDriver: null
+  })
   const allowColumnsModel = {
     slaBar: { visable: false, title: '', className: '', draggable: false, colSpan: 1, order: -2 },
     orderNumber: { visable: true, title: '', className: '', draggable: false, colSpan: 1, order: -1 },
@@ -422,18 +428,31 @@ export const OrdersManage = (props) => {
       })
     }
     const handleBatchDriverLocations = (locations) => {
+      const updateDriverLocation = (driver) => {
+        const locationData = locations.find((location) => location.driver_id === driver.id)
+        if (locationData) {
+          const updatedDriver = { ...driver }
+          updatedDriver.location = locationData.location
+          return updatedDriver
+        }
+        return driver
+      }
       setDriversList((prevState) => {
-        const updatedDrivers = prevState.drivers.map((driver) => {
-          const locationData = locations.find((location) => location.driver_id === driver.id)
-          if (locationData) {
-            const updatedDriver = { ...driver }
-            updatedDriver.location = locationData.location
-            return updatedDriver
-          }
-          return driver
-        })
+        const updatedDrivers = prevState.drivers.map(updateDriverLocation)
         return { ...prevState, drivers: updatedDrivers }
       })
+      if (mapsData?.selectedDriver?.id) {
+        const locationData = locations.find((location) => location.driver_id === mapsData?.selectedDriver.id)
+        locationData && setMapsData({ ...mapsData, selectedDriver: { ...mapsData.selectedDriver, location: locationData?.location } })
+      } else {
+        setMapsData((prevState) => {
+          return {
+            ...prevState,
+            onlineDrivers: prevState.onlineDrivers.map(updateDriverLocation),
+            offlineDrivers: prevState.offlineDrivers.map(updateDriverLocation)
+          }
+        })
+      }
     }
 
     if (!disableSocketRoomDriver) {
@@ -446,7 +465,7 @@ export const OrdersManage = (props) => {
         socket.off('batch_driver_changes', handleBatchDriverChanges)
       }
     }
-  }, [socket, loading])
+  }, [socket, loading, mapsData?.selectedDriver?.id])
 
   useEffect(() => {
     if (!auth || loading || !socket?.socket || disableSocketRoomDriver) return
@@ -547,6 +566,8 @@ export const OrdersManage = (props) => {
           franchisesList={franchisesList}
           adminsList={adminsList}
           assignableDriverGroupList={assignableDriverGroupList}
+          mapsData={mapsData}
+          setMapsData={setMapsData}
         />
       )}
     </>

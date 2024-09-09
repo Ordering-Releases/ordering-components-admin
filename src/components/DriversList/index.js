@@ -509,6 +509,10 @@ export const DriversList = (props) => {
       })
     }
     const handleBatchDriverLocations = (locations) => {
+      if (selectedDriver?.id) {
+        const locationData = locations.find((location) => location.driver_id === selectedDriver.id)
+        locationData && setSelectedDriver({ ...selectedDriver, location: locationData?.location })
+      }
       setDriversList((prevState) => {
         const updatedDrivers = prevState.drivers.map((driver) => {
           const locationData = locations.find((location) => location.driver_id === driver.id)
@@ -533,7 +537,7 @@ export const DriversList = (props) => {
         socket.off('batch_driver_changes', handleBatchDriverChanges)
       }
     }
-  }, [socket, session?.loading, props.driversList?.loading])
+  }, [socket, session?.loading, props.driversList?.loading, selectedDriver?.id])
 
   const handleJoinMainRooms = () => {
     if (!disableDriverLocationsSockets) {
