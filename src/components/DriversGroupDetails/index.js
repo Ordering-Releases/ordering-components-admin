@@ -33,6 +33,7 @@ export const DriversGroupDetails = (props) => {
   const [selectedDriverTemporaryIds, setSelectedDriverTemporaryIds] = useState([])
   const [selectedDriversCompanyIds, setSelectedDriversCompanyIds] = useState([])
   const [selectedDriverManager, setSelectedDriverManager] = useState([])
+  const [useAdvanced, setUseAdvanced] = useState(false)
 
   const initSet = (driversGroup) => {
     const businessIds = driversGroup?.business?.reduce((ids, business) => [...ids, business.id], [])
@@ -47,6 +48,8 @@ export const DriversGroupDetails = (props) => {
         return [...driverData]
       }
     }, [])
+    const useAdvancedLogistics = driversGroup?.autoassign_amount_drivers !== 0 && driversGroup?.orders_group_max_orders !== 0
+    useAdvancedLogistics ? setUseAdvanced(true) : setUseAdvanced(false)
     setSelectedDriverTemporaryIds(driversTemporary)
     const companyIds = driversGroup?.driver_companies?.reduce((ids, company) => [...ids, company.id], [])
     setSelectedDriversCompanyIds(companyIds)
@@ -104,18 +107,15 @@ export const DriversGroupDetails = (props) => {
       showToast(ToastType.Info, t('LOADING', 'Loading'))
       setActionState({ ...actionState, loading: true, error: null })
       let changes = _changes
-      if (typeof _changes?.driver_available_max_distance !== 'undefined') {
-        changes = {
-          ..._changes,
-          driver_available_max_distance: _changes?.driver_available_max_distance === '' ? null : _changes?.driver_available_max_distance
+      const skipeableValues = ['', '[]']
+      Object.keys(changes)?.map(changeName => {
+        if (typeof changes?.[changeName] !== 'undefined') {
+          changes = {
+            ...changes,
+            [changeName]: skipeableValues.includes(changes?.[changeName]) ? null : changes?.[changeName]
+          }
         }
-      }
-      if (typeof _changes?.administrators !== 'undefined') {
-        changes = {
-          ..._changes,
-          administrators: _changes?.administrators === '[]' ? null : _changes?.administrators
-        }
-      }
+      })
 
       const requestOptions = {
         method: 'PUT',
@@ -133,6 +133,8 @@ export const DriversGroupDetails = (props) => {
         const groups = driversGroupsState.groups.filter(group => {
           if (group.id === groupId) {
             Object.assign(group, content.result)
+            const useAdvancedLogistics = group?.autoassign_amount_drivers !== 0 && group?.orders_group_max_orders !== 0
+            useAdvancedLogistics ? setUseAdvanced(true) : setUseAdvanced(false)
           }
           return true
         })
@@ -226,7 +228,13 @@ export const DriversGroupDetails = (props) => {
   }
 
   const handleChangesState = (changes) => {
-    setChangesState({ ...changesState, ...changes })
+    const mergedChanges = { ...changesState, ...changes }
+    const enterToValidation = Object?.keys(mergedChanges)?.filter(changeName => changeName === 'autoassign_amount_drivers' || changeName === 'orders_group_max_orders')
+    if (enterToValidation?.length === 2) {
+      const useAdvancedLogistics = mergedChanges?.autoassign_amount_drivers !== 0 && mergedChanges?.orders_group_max_orders !== 0
+      useAdvancedLogistics ? setUseAdvanced(true) : setUseAdvanced(false)
+    }
+    setChangesState(mergedChanges)
   }
 
   const handleChangeMaxDistance = (value) => {
@@ -423,6 +431,14 @@ export const DriversGroupDetails = (props) => {
     })
   }
 
+  const handleLogistic = (checked) => {
+    const changes = {
+      autoassign_amount_drivers: checked ? 1 : 0,
+      orders_group_max_orders: checked ? 1 : 0
+    }
+    handleChangesState(changes)
+  }
+
   useEffect(() => {
     setChangesState({})
     if (curDriversGroup) {
@@ -442,7 +458,7 @@ export const DriversGroupDetails = (props) => {
         // default for new group
         const extraAttributes = {
           enabled: true,
-          autoassign_amount_drivers: 1,
+          autoassign_amount_drivers: useAdvanced ? 1 : 0,
           autoassign_autoaccept_by_driver: false,
           autoassign_autoreject_time: 30,
           autoassign_increment_radius: 100,
@@ -459,7 +475,7 @@ export const DriversGroupDetails = (props) => {
           autoassign_max_radius: 1000,
           orders_group_max_distance_between_delivery: 200,
           orders_group_max_distance_between_pickup: 200,
-          orders_group_max_orders: 1,
+          orders_group_max_orders: useAdvanced ? 1 : 0,
           orders_group_max_time_between: 5,
           orders_group_max_time_between_delivery: 600,
           orders_group_max_time_between_pickup: 600,
@@ -496,6 +512,8 @@ export const DriversGroupDetails = (props) => {
             selectedDriverTemporaryIds={selectedDriverTemporaryIds}
             selectedDriversCompanyIds={selectedDriversCompanyIds}
             selectedDriverManager={selectedDriverManager}
+            useAdvanced={useAdvanced}
+            handleLogistic={handleLogistic}
             handleChangesState={handleChangesState}
             handleSelectBusiness={handleSelectBusiness}
             handleSelectAllBusiness={handleSelectAllBusiness}
