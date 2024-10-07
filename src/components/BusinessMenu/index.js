@@ -182,6 +182,7 @@ export const BusinessMenu = (props) => {
    */
   const getBusinessMenuChannels = async () => {
     try {
+      setBusinessMenusState({ ...businessMenusState, loading: true })
       const requestOptions = {
         method: 'GET',
         headers: {
@@ -249,8 +250,11 @@ export const BusinessMenu = (props) => {
   }
 
   useEffect(() => {
-    getBusinessMenus()
-    getBusinessMenuChannels()
+    const fetchMenus = async () => {
+      await getBusinessMenus()
+      await getBusinessMenuChannels()
+    }
+    fetchMenus()
   }, [])
 
   return (
