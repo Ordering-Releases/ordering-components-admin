@@ -293,6 +293,9 @@ var BusinessMenu = function BusinessMenu(props) {
         while (1) switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
+            setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
+              loading: true
+            }));
             requestOptions = {
               method: 'GET',
               headers: {
@@ -300,18 +303,18 @@ var BusinessMenu = function BusinessMenu(props) {
                 Authorization: "Bearer ".concat(token)
               }
             };
-            _context4.next = 4;
+            _context4.next = 5;
             return fetch("".concat(ordering.root, "/business/").concat(business.id, "/menus?params=sites,products,businesses&mode=dashboard"), requestOptions);
-          case 4:
+          case 5:
             response = _context4.sent;
-            _context4.next = 7;
+            _context4.next = 8;
             return response.json();
-          case 7:
+          case 8:
             _yield$response$json = _context4.sent;
             result = _yield$response$json.result;
             error = _yield$response$json.error;
             if (error) {
-              _context4.next = 32;
+              _context4.next = 33;
               break;
             }
             sites = {};
@@ -321,8 +324,8 @@ var BusinessMenu = function BusinessMenu(props) {
                 sites: menu.sites
               }));
             });
-            _context4.prev = 13;
-            _context4.next = 16;
+            _context4.prev = 14;
+            _context4.next = 17;
             return fetch("".concat(ordering.root, "/sites"), {
               method: 'GET',
               headers: {
@@ -331,11 +334,11 @@ var BusinessMenu = function BusinessMenu(props) {
                 'x-app-x': ordering === null || ordering === void 0 ? void 0 : ordering.appId
               }
             });
-          case 16:
+          case 17:
             response2 = _context4.sent;
-            _context4.next = 19;
+            _context4.next = 20;
             return response2.json();
-          case 19:
+          case 20:
             _yield$response2$json = _context4.sent;
             sitesResult = _yield$response2$json.result;
             setSitesState(_objectSpread(_objectSpread({}, sitesState), {}, {
@@ -354,46 +357,65 @@ var BusinessMenu = function BusinessMenu(props) {
               menusShared: menusShared,
               error: null
             }));
-            _context4.next = 30;
+            _context4.next = 31;
             break;
-          case 27:
-            _context4.prev = 27;
-            _context4.t0 = _context4["catch"](13);
+          case 28:
+            _context4.prev = 28;
+            _context4.t0 = _context4["catch"](14);
             setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
               loading: false,
               error: [_context4.t0.message]
             }));
-          case 30:
-            _context4.next = 33;
+          case 31:
+            _context4.next = 34;
             break;
-          case 32:
+          case 33:
             setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
               loading: false,
               error: result
             }));
-          case 33:
-            _context4.next = 38;
+          case 34:
+            _context4.next = 39;
             break;
-          case 35:
-            _context4.prev = 35;
+          case 36:
+            _context4.prev = 36;
             _context4.t1 = _context4["catch"](0);
             setBusinessMenusState(_objectSpread(_objectSpread({}, businessMenusState), {}, {
               loading: false,
               error: [_context4.t1.message]
             }));
-          case 38:
+          case 39:
           case "end":
             return _context4.stop();
         }
-      }, _callee4, null, [[0, 35], [13, 27]]);
+      }, _callee4, null, [[0, 36], [14, 28]]);
     }));
     return function getBusinessMenuChannels() {
       return _ref4.apply(this, arguments);
     };
   }();
   (0, _react.useEffect)(function () {
-    getBusinessMenus();
-    getBusinessMenuChannels();
+    var fetchMenus = /*#__PURE__*/function () {
+      var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.next = 2;
+              return getBusinessMenus();
+            case 2:
+              _context5.next = 4;
+              return getBusinessMenuChannels();
+            case 4:
+            case "end":
+              return _context5.stop();
+          }
+        }, _callee5);
+      }));
+      return function fetchMenus() {
+        return _ref5.apply(this, arguments);
+      };
+    }();
+    fetchMenus();
   }, []);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     businessMenusState: businessMenusState,
