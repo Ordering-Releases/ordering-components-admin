@@ -252,13 +252,23 @@ export const UsersExportCSV = (props) => {
         conector: 'AND'
       }
 
+      const commonParams = {
+        mode: 'dashboard',
+        orderBy: 'id',
+        version: 'v2'
+      }
+
+      const transformedCommonParams = Object.keys(commonParams).map(key => {
+        return `${key}=${commonParams[key]}`
+      }).join('&')
+
       const functionFetch = filterApply
         ? isOrdersCountValue
-          ? `${ordering.root}/users_new.csv?mode=dashboard&orderBy=id&orders_count_condition=${(props.multiFilterValues?.ordersCount?.condition)}&orders_count_value=${(props.multiFilterValues?.ordersCount?.value)}&where=${JSON.stringify(filterConditonsObj)}`
-          : `${ordering.root}/users_new.csv?mode=dashboard&orderBy=id&where=${JSON.stringify(filterConditonsObj)}`
+          ? `${ordering.root}/users_new.csv?${transformedCommonParams}&orders_count_condition=${(props.multiFilterValues?.ordersCount?.condition)}&orders_count_value=${(props.multiFilterValues?.ordersCount?.value)}&where=${JSON.stringify(filterConditonsObj)}`
+          : `${ordering.root}/users_new.csv?${transformedCommonParams}&where=${JSON.stringify(filterConditonsObj)}`
         : defaultConditions.length > 0
-          ? `${ordering.root}/users_new.csv?mode=dashboard&orderBy=id&where=${JSON.stringify(defaultConditions)}`
-          : `${ordering.root}/users_new.csv?mode=dashboard&orderBy=id`
+          ? `${ordering.root}/users_new.csv?${transformedCommonParams}&where=${JSON.stringify(defaultConditions)}`
+          : `${ordering.root}/users_new.csv?${transformedCommonParams}`
 
       const response = await fetch(functionFetch, requestOptions)
       const content = await response.json()

@@ -79,6 +79,7 @@ export const BusinessMenuOptions = (props) => {
         },
         body: JSON.stringify(changes)
       }
+
       const endPoint = isSelectedSharedMenus
         ? `${ordering.root}/business/${business.id}/menus_shared/${menu.id}`
         : `${ordering.root}/business/${business.id}/menus/${menu.id}`
@@ -103,6 +104,7 @@ export const BusinessMenuOptions = (props) => {
             if (isUpdatedProducts) {
               menu.products = [...selectedProducts]
             }
+            setCurrentMenu(menu)
           }
           return true
         })
