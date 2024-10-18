@@ -60,7 +60,7 @@ var UsersExportCSV = function UsersExportCSV(props) {
    */
   var getCSV = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(filterApply) {
-      var _props$multiFilterVal, _props$multiFilterVal2, _props$multiFilterVal3, _props$multiFilterVal34, _props$multiFilterVal35, _props$multiFilterVal36, _props$multiFilterVal37, requestOptions, defaultConditions, filterConditons, isOrdersCountValue, _Object$keys, searchConditions, _props$multiFilterVal4, _props$multiFilterVal5, _props$multiFilterVal7, _props$multiFilterVal8, _props$multiFilterVal10, _props$multiFilterVal11, _props$multiFilterVal13, _props$multiFilterVal14, _props$multiFilterVal16, _props$multiFilterVal18, _props$multiFilterVal20, _props$multiFilterVal22, _props$multiFilterVal24, _props$multiFilterVal26, _props$multiFilterVal28, _props$multiFilterVal30, _props$multiFilterVal32, _searchConditions, _props$multiFilterVal6, _props$multiFilterVal9, _props$multiFilterVal12, _props$multiFilterVal15, _props$multiFilterVal17, _props$multiFilterVal19, _props$multiFilterVal21, _props$multiFilterVal23, _props$multiFilterVal25, _props$multiFilterVal27, _props$multiFilterVal29, _props$multiFilterVal31, _props$multiFilterVal33, filterConditonsObj, functionFetch, response, content;
+      var _props$multiFilterVal, _props$multiFilterVal2, _props$multiFilterVal3, _props$multiFilterVal34, _props$multiFilterVal35, _props$multiFilterVal36, _props$multiFilterVal37, requestOptions, defaultConditions, filterConditons, isOrdersCountValue, _Object$keys, searchConditions, _props$multiFilterVal4, _props$multiFilterVal5, _props$multiFilterVal7, _props$multiFilterVal8, _props$multiFilterVal10, _props$multiFilterVal11, _props$multiFilterVal13, _props$multiFilterVal14, _props$multiFilterVal16, _props$multiFilterVal18, _props$multiFilterVal20, _props$multiFilterVal22, _props$multiFilterVal24, _props$multiFilterVal26, _props$multiFilterVal28, _props$multiFilterVal30, _props$multiFilterVal32, _searchConditions, _props$multiFilterVal6, _props$multiFilterVal9, _props$multiFilterVal12, _props$multiFilterVal15, _props$multiFilterVal17, _props$multiFilterVal19, _props$multiFilterVal21, _props$multiFilterVal23, _props$multiFilterVal25, _props$multiFilterVal27, _props$multiFilterVal29, _props$multiFilterVal31, _props$multiFilterVal33, filterConditonsObj, commonParams, transformedCommonParams, functionFetch, response, content;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -263,34 +263,42 @@ var UsersExportCSV = function UsersExportCSV(props) {
               conditions: filterConditons,
               conector: 'AND'
             };
-            functionFetch = filterApply ? isOrdersCountValue ? "".concat(ordering.root, "/users_new.csv?mode=dashboard&orderBy=id&orders_count_condition=").concat((_props$multiFilterVal34 = props.multiFilterValues) === null || _props$multiFilterVal34 === void 0 ? void 0 : (_props$multiFilterVal35 = _props$multiFilterVal34.ordersCount) === null || _props$multiFilterVal35 === void 0 ? void 0 : _props$multiFilterVal35.condition, "&orders_count_value=").concat((_props$multiFilterVal36 = props.multiFilterValues) === null || _props$multiFilterVal36 === void 0 ? void 0 : (_props$multiFilterVal37 = _props$multiFilterVal36.ordersCount) === null || _props$multiFilterVal37 === void 0 ? void 0 : _props$multiFilterVal37.value, "&where=").concat(JSON.stringify(filterConditonsObj)) : "".concat(ordering.root, "/users_new.csv?mode=dashboard&orderBy=id&where=").concat(JSON.stringify(filterConditonsObj)) : defaultConditions.length > 0 ? "".concat(ordering.root, "/users_new.csv?mode=dashboard&orderBy=id&where=").concat(JSON.stringify(defaultConditions)) : "".concat(ordering.root, "/users_new.csv?mode=dashboard&orderBy=id");
-            _context.next = 14;
+            commonParams = {
+              mode: 'dashboard',
+              orderBy: 'id',
+              version: 'v2'
+            };
+            transformedCommonParams = Object.keys(commonParams).map(function (key) {
+              return "".concat(key, "=").concat(commonParams[key]);
+            }).join('&');
+            functionFetch = filterApply ? isOrdersCountValue ? "".concat(ordering.root, "/users_new.csv?").concat(transformedCommonParams, "&orders_count_condition=").concat((_props$multiFilterVal34 = props.multiFilterValues) === null || _props$multiFilterVal34 === void 0 ? void 0 : (_props$multiFilterVal35 = _props$multiFilterVal34.ordersCount) === null || _props$multiFilterVal35 === void 0 ? void 0 : _props$multiFilterVal35.condition, "&orders_count_value=").concat((_props$multiFilterVal36 = props.multiFilterValues) === null || _props$multiFilterVal36 === void 0 ? void 0 : (_props$multiFilterVal37 = _props$multiFilterVal36.ordersCount) === null || _props$multiFilterVal37 === void 0 ? void 0 : _props$multiFilterVal37.value, "&where=").concat(JSON.stringify(filterConditonsObj)) : "".concat(ordering.root, "/users_new.csv?").concat(transformedCommonParams, "&where=").concat(JSON.stringify(filterConditonsObj)) : defaultConditions.length > 0 ? "".concat(ordering.root, "/users_new.csv?").concat(transformedCommonParams, "&where=").concat(JSON.stringify(defaultConditions)) : "".concat(ordering.root, "/users_new.csv?").concat(transformedCommonParams);
+            _context.next = 16;
             return fetch(functionFetch, requestOptions);
-          case 14:
+          case 16:
             response = _context.sent;
-            _context.next = 17;
+            _context.next = 19;
             return response.json();
-          case 17:
+          case 19:
             content = _context.sent;
             setActionStatus({
               loading: false,
               result: content.result,
               error: null
             });
-            _context.next = 24;
+            _context.next = 26;
             break;
-          case 21:
-            _context.prev = 21;
+          case 23:
+            _context.prev = 23;
             _context.t0 = _context["catch"](2);
             setActionStatus(_objectSpread(_objectSpread({}, actionStatus), {}, {
               loading: false,
               error: _context.t0
             }));
-          case 24:
+          case 26:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[2, 21]]);
+      }, _callee, null, [[2, 23]]);
     }));
     return function getCSV(_x2) {
       return _ref.apply(this, arguments);

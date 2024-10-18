@@ -165,6 +165,7 @@ var BusinessMenuOptions = function BusinessMenuOptions(props) {
                   if (isUpdatedProducts) {
                     menu.products = _toConsumableArray(selectedProducts);
                   }
+                  setCurrentMenu(menu);
                 }
                 return true;
               });
