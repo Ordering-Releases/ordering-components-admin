@@ -776,8 +776,11 @@ var OrdersManage = function OrdersManage(props) {
       role: 'manager'
     });
   };
-  var handleSocketDisconnect = function handleSocketDisconnect() {
-    socket.socket.on('connect', handleJoinMainRooms);
+  var handleSocketDisconnect = function handleSocketDisconnect(reason) {
+    var disconnectReasons = ['io server disconnect', 'io client disconnect'];
+    if (disconnectReasons.includes(reason)) {
+      socket.socket.connect();
+    }
   };
 
   /**
@@ -816,34 +819,43 @@ var OrdersManage = function OrdersManage(props) {
     };
     var handleBatchDriverLocations = function handleBatchDriverLocations(locations) {
       var _mapsData$selectedDri;
-      var updateDriverLocation = function updateDriverLocation(driver) {
-        var locationData = locations.find(function (location) {
-          return location.driver_id === driver.id;
-        });
-        if (locationData) {
-          var updatedDriver = _objectSpread({}, driver);
-          updatedDriver.location = locationData.location;
-          return updatedDriver;
-        }
-        return driver;
-      };
+      var locationMap = new Map(locations.map(function (location) {
+        return [location.driver_id, location.location];
+      }));
       setDriversList(function (prevState) {
-        var updatedDrivers = prevState.drivers.map(updateDriverLocation);
+        var updatedDrivers = prevState.drivers.map(function (driver) {
+          if (locationMap.has(driver.id)) {
+            return _objectSpread(_objectSpread({}, driver), {}, {
+              location: locationMap.get(driver.id)
+            });
+          }
+          return driver;
+        });
         return _objectSpread(_objectSpread({}, prevState), {}, {
           drivers: updatedDrivers
         });
       });
       if (mapsData !== null && mapsData !== void 0 && (_mapsData$selectedDri = mapsData.selectedDriver) !== null && _mapsData$selectedDri !== void 0 && _mapsData$selectedDri.id) {
-        var locationData = locations.find(function (location) {
-          return location.driver_id === (mapsData === null || mapsData === void 0 ? void 0 : mapsData.selectedDriver.id);
-        });
-        locationData && setMapsData(_objectSpread(_objectSpread({}, mapsData), {}, {
-          selectedDriver: _objectSpread(_objectSpread({}, mapsData.selectedDriver), {}, {
-            location: locationData === null || locationData === void 0 ? void 0 : locationData.location
-          })
-        }));
+        var selectedDriverLocation = locationMap.get(mapsData.selectedDriver.id);
+        if (selectedDriverLocation) {
+          setMapsData(function (prevState) {
+            return _objectSpread(_objectSpread({}, prevState), {}, {
+              selectedDriver: _objectSpread(_objectSpread({}, prevState.selectedDriver), {}, {
+                location: selectedDriverLocation
+              })
+            });
+          });
+        }
       } else {
         setMapsData(function (prevState) {
+          var updateDriverLocation = function updateDriverLocation(driver) {
+            if (locationMap.has(driver.id)) {
+              return _objectSpread(_objectSpread({}, driver), {}, {
+                location: locationMap.get(driver.id)
+              });
+            }
+            return driver;
+          };
           return _objectSpread(_objectSpread({}, prevState), {}, {
             onlineDrivers: prevState.onlineDrivers.map(updateDriverLocation),
             offlineDrivers: prevState.offlineDrivers.map(updateDriverLocation)

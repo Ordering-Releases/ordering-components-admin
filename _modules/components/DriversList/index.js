@@ -773,23 +773,22 @@ var DriversList = function DriversList(props) {
       });
     };
     var handleBatchDriverLocations = function handleBatchDriverLocations(locations) {
-      if (selectedDriver !== null && selectedDriver !== void 0 && selectedDriver.id) {
-        var locationData = locations.find(function (location) {
-          return location.driver_id === selectedDriver.id;
+      var locationMap = new Map(locations.map(function (location) {
+        return [location.driver_id, location.location];
+      }));
+      if (selectedDriver !== null && selectedDriver !== void 0 && selectedDriver.id && locationMap.has(selectedDriver.id)) {
+        setSelectedDriver(function (prevState) {
+          return _objectSpread(_objectSpread({}, prevState), {}, {
+            location: locationMap.get(selectedDriver.id)
+          });
         });
-        locationData && setSelectedDriver(_objectSpread(_objectSpread({}, selectedDriver), {}, {
-          location: locationData === null || locationData === void 0 ? void 0 : locationData.location
-        }));
       }
       setDriversList(function (prevState) {
         var updatedDrivers = prevState.drivers.map(function (driver) {
-          var locationData = locations.find(function (location) {
-            return location.driver_id === driver.id;
-          });
-          if (locationData) {
-            var updatedDriver = _objectSpread({}, driver);
-            updatedDriver.location = locationData.location;
-            return updatedDriver;
+          if (locationMap.has(driver.id)) {
+            return _objectSpread(_objectSpread({}, driver), {}, {
+              location: locationMap.get(driver.id)
+            });
           }
           return driver;
         });
@@ -838,8 +837,11 @@ var DriversList = function DriversList(props) {
       role: 'manager'
     });
   };
-  var handleSocketDisconnect = function handleSocketDisconnect() {
-    socket.socket.on('connect', handleJoinMainRooms);
+  var handleSocketDisconnect = function handleSocketDisconnect(reason) {
+    var disconnectReasons = ['io server disconnect', 'io client disconnect'];
+    if (disconnectReasons.includes(reason)) {
+      socket.socket.connect();
+    }
   };
   (0, _react.useEffect)(function () {
     if (!(session !== null && session !== void 0 && session.auth) || session !== null && session !== void 0 && session.loading || !(socket !== null && socket !== void 0 && socket.socket) || disableSocketRoomDriver) return;
