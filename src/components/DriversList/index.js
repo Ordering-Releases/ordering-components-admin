@@ -509,17 +509,16 @@ export const DriversList = (props) => {
       })
     }
     const handleBatchDriverLocations = (locations) => {
-      if (selectedDriver?.id) {
-        const locationData = locations.find((location) => location.driver_id === selectedDriver.id)
-        locationData && setSelectedDriver({ ...selectedDriver, location: locationData?.location })
+      const locationMap = new Map(locations.map(location => [location.driver_id, location.location]))
+
+      if (selectedDriver?.id && locationMap.has(selectedDriver.id)) {
+        setSelectedDriver((prevState) => ({ ...prevState, location: locationMap.get(selectedDriver.id) }))
       }
+
       setDriversList((prevState) => {
         const updatedDrivers = prevState.drivers.map((driver) => {
-          const locationData = locations.find((location) => location.driver_id === driver.id)
-          if (locationData) {
-            const updatedDriver = { ...driver }
-            updatedDriver.location = locationData.location
-            return updatedDriver
+          if (locationMap.has(driver.id)) {
+            return { ...driver, location: locationMap.get(driver.id) }
           }
           return driver
         })
@@ -567,8 +566,11 @@ export const DriversList = (props) => {
     })
   }
 
-  const handleSocketDisconnect = () => {
-    socket.socket.on('connect', handleJoinMainRooms)
+  const handleSocketDisconnect = (reason) => {
+    const disconnectReasons = ['io server disconnect', 'io client disconnect']
+    if (disconnectReasons.includes(reason)) {
+      socket.socket.connect()
+    }
   }
 
   useEffect(() => {

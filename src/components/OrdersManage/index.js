@@ -402,8 +402,11 @@ export const OrdersManage = (props) => {
     })
   }
 
-  const handleSocketDisconnect = () => {
-    socket.socket.on('connect', handleJoinMainRooms)
+  const handleSocketDisconnect = (reason) => {
+    const disconnectReasons = ['io server disconnect', 'io client disconnect']
+    if (disconnectReasons.includes(reason)) {
+      socket.socket.connect()
+    }
   }
 
   /**
@@ -428,24 +431,33 @@ export const OrdersManage = (props) => {
       })
     }
     const handleBatchDriverLocations = (locations) => {
-      const updateDriverLocation = (driver) => {
-        const locationData = locations.find((location) => location.driver_id === driver.id)
-        if (locationData) {
-          const updatedDriver = { ...driver }
-          updatedDriver.location = locationData.location
-          return updatedDriver
-        }
-        return driver
-      }
+      const locationMap = new Map(locations.map(location => [location.driver_id, location.location]))
       setDriversList((prevState) => {
-        const updatedDrivers = prevState.drivers.map(updateDriverLocation)
+        const updatedDrivers = prevState.drivers.map(driver => {
+          if (locationMap.has(driver.id)) {
+            return { ...driver, location: locationMap.get(driver.id) }
+          }
+          return driver
+        })
         return { ...prevState, drivers: updatedDrivers }
       })
+
       if (mapsData?.selectedDriver?.id) {
-        const locationData = locations.find((location) => location.driver_id === mapsData?.selectedDriver.id)
-        locationData && setMapsData({ ...mapsData, selectedDriver: { ...mapsData.selectedDriver, location: locationData?.location } })
+        const selectedDriverLocation = locationMap.get(mapsData.selectedDriver.id)
+        if (selectedDriverLocation) {
+          setMapsData(prevState => ({
+            ...prevState,
+            selectedDriver: { ...prevState.selectedDriver, location: selectedDriverLocation }
+          }))
+        }
       } else {
         setMapsData((prevState) => {
+          const updateDriverLocation = (driver) => {
+            if (locationMap.has(driver.id)) {
+              return { ...driver, location: locationMap.get(driver.id) }
+            }
+            return driver
+          }
           return {
             ...prevState,
             onlineDrivers: prevState.onlineDrivers.map(updateDriverLocation),
