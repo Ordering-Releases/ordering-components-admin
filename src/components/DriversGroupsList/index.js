@@ -129,7 +129,7 @@ export const DriversGroupsList = (props) => {
   /**
    * Method to get the drivers groups from API
    */
-  const getDriversGroups = async () => {
+  const getDriversGroups = async (page, pageSize) => {
     try {
       if (business?.drivergroups) {
         setDriversGroupsState({ ...driversGroupsState, groups: business?.drivergroups })
@@ -143,18 +143,33 @@ export const DriversGroupsList = (props) => {
           Authorization: `Bearer ${token}`
         }
       }
-      const response = await fetch(`${ordering.root}/drivergroups`, requestOptions)
-      const content = await response.json()
-      if (!content.error) {
-        setDriversGroupsState({ ...driversGroupsState, groups: content.result, loading: false })
+      const response = await fetch(`${ordering.root}/drivergroups?page=${page}&page_size=${pageSize}`, requestOptions)
+      const { result, error, pagination } = await response.json()
+      if (!error) {
+        setDriversGroupsState({ ...driversGroupsState, groups: result, loading: false })
         if (user?.level === 5) {
-          const found = content.result.find(group => group?.administrator_id === user?.id)
+          const found = result.find(group => group?.administrator_id === user?.id)
           if (found) setActionDisabled(false)
           else setActionDisabled(true)
         } else {
           setActionDisabled(false)
         }
       }
+      let nextPageItems = 0
+      if (pagination.current_page !== pagination.total_pages) {
+        const remainingItems = pagination.total - pagination.page_size * pagination.current_page
+        nextPageItems = remainingItems < pagination.page_size ? remainingItems : pagination.page_size
+      }
+      setPaginationProps({
+        ...paginationProps,
+        currentPage: pagination.current_page,
+        pageSize: pagination.page_size === 0 ? paginationProps.pageSize : pagination.page_size,
+        totalPages: pagination.total_pages,
+        totalItems: pagination.total,
+        from: pagination.from,
+        to: pagination.to,
+        nextPageItems
+      })
     } catch (err) {
       setDriversGroupsState({ ...driversGroupsState, loading: false, error: [err.message] })
     }
@@ -365,9 +380,12 @@ export const DriversGroupsList = (props) => {
   }, [selectedGroupList, startSeveralDeleteStart])
 
   useEffect(() => {
+    if (!searchValue) return
     getHeaderDriversGroups(paginationSettings?.initialPage, paginationProps?.pageSize)
+  }, [searchValue])
+
+  useEffect(() => {
     if (isHeaderComponent) return
-    getDriversGroups()
     if (isDriversMangersRequired) {
       getDriverManagers()
     }
@@ -375,7 +393,12 @@ export const DriversGroupsList = (props) => {
     getBusinesses()
     getPaymethods()
     getDriversCompanies()
-  }, [searchValue])
+  }, [])
+
+  useEffect(() => {
+    if (isHeaderComponent) return
+    getDriversGroups(paginationProps?.currentPage, paginationProps?.pageSize)
+  }, [paginationProps?.currentPage, paginationProps?.pageSize])
 
   return (
     <>
@@ -400,6 +423,7 @@ export const DriversGroupsList = (props) => {
             actionDisabled={actionDisabled}
             getHeaderDriversGroups={getHeaderDriversGroups}
             pagination={paginationProps}
+            setPagination={setPaginationProps}
             onSearch={setSearchValue}
             searchValue={searchValue}
           />

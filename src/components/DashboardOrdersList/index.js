@@ -763,6 +763,11 @@ export const DashboardOrdersList = (props) => {
         filterCheck = false
       }
     }
+    if (filterValues?.groupTypesUnassigned?.length > 0) {
+      if (!filterValues?.groupTypesUnassigned?.some(driverGroup => order?.driver_group_id === driverGroup)) {
+        filterCheck = false
+      }
+    }
     if (filterValues?.currency?.length > 0) {
       if (!filterValues.currency.includes(order?.currency)) filterCheck = false
     }
