@@ -252,8 +252,8 @@ var DriversGroupsList = function DriversGroupsList(props) {
    * Method to get the drivers groups from API
    */
   var getDriversGroups = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var requestOptions, response, content, found;
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(page, pageSize) {
+      var requestOptions, response, _yield$response$json, result, error, pagination, found, nextPageItems, remainingItems;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -278,20 +278,23 @@ var DriversGroupsList = function DriversGroupsList(props) {
               }
             };
             _context2.next = 8;
-            return fetch("".concat(ordering.root, "/drivergroups"), requestOptions);
+            return fetch("".concat(ordering.root, "/drivergroups?page=").concat(page, "&page_size=").concat(pageSize), requestOptions);
           case 8:
             response = _context2.sent;
             _context2.next = 11;
             return response.json();
           case 11:
-            content = _context2.sent;
-            if (!content.error) {
+            _yield$response$json = _context2.sent;
+            result = _yield$response$json.result;
+            error = _yield$response$json.error;
+            pagination = _yield$response$json.pagination;
+            if (!error) {
               setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
-                groups: content.result,
+                groups: result,
                 loading: false
               }));
               if ((user === null || user === void 0 ? void 0 : user.level) === 5) {
-                found = content.result.find(function (group) {
+                found = result.find(function (group) {
                   return (group === null || group === void 0 ? void 0 : group.administrator_id) === (user === null || user === void 0 ? void 0 : user.id);
                 });
                 if (found) setActionDisabled(false);else setActionDisabled(true);
@@ -299,22 +302,36 @@ var DriversGroupsList = function DriversGroupsList(props) {
                 setActionDisabled(false);
               }
             }
-            _context2.next = 18;
+            nextPageItems = 0;
+            if (pagination.current_page !== pagination.total_pages) {
+              remainingItems = pagination.total - pagination.page_size * pagination.current_page;
+              nextPageItems = remainingItems < pagination.page_size ? remainingItems : pagination.page_size;
+            }
+            setPaginationProps(_objectSpread(_objectSpread({}, paginationProps), {}, {
+              currentPage: pagination.current_page,
+              pageSize: pagination.page_size === 0 ? paginationProps.pageSize : pagination.page_size,
+              totalPages: pagination.total_pages,
+              totalItems: pagination.total,
+              from: pagination.from,
+              to: pagination.to,
+              nextPageItems: nextPageItems
+            }));
+            _context2.next = 24;
             break;
-          case 15:
-            _context2.prev = 15;
+          case 21:
+            _context2.prev = 21;
             _context2.t0 = _context2["catch"](0);
             setDriversGroupsState(_objectSpread(_objectSpread({}, driversGroupsState), {}, {
               loading: false,
               error: [_context2.t0.message]
             }));
-          case 18:
+          case 24:
           case "end":
             return _context2.stop();
         }
-      }, _callee2, null, [[0, 15]]);
+      }, _callee2, null, [[0, 21]]);
     }));
-    return function getDriversGroups() {
+    return function getDriversGroups(_x4, _x5) {
       return _ref2.apply(this, arguments);
     };
   }();
@@ -640,7 +657,7 @@ var DriversGroupsList = function DriversGroupsList(props) {
         }
       }, _callee8, null, [[0, 13]]);
     }));
-    return function handleUpdateDriversGroup(_x4, _x5) {
+    return function handleUpdateDriversGroup(_x6, _x7) {
       return _ref8.apply(this, arguments);
     };
   }();
@@ -717,7 +734,7 @@ var DriversGroupsList = function DriversGroupsList(props) {
         }
       }, _callee9, null, [[0, 13]]);
     }));
-    return function handleDeleteDriversGroup(_x6) {
+    return function handleDeleteDriversGroup(_x8) {
       return _ref9.apply(this, arguments);
     };
   }();
@@ -748,9 +765,11 @@ var DriversGroupsList = function DriversGroupsList(props) {
     handleDeleteDriversGroup(selectedGroupList[0]);
   }, [selectedGroupList, startSeveralDeleteStart]);
   (0, _react.useEffect)(function () {
+    if (!searchValue) return;
     getHeaderDriversGroups(paginationSettings === null || paginationSettings === void 0 ? void 0 : paginationSettings.initialPage, paginationProps === null || paginationProps === void 0 ? void 0 : paginationProps.pageSize);
+  }, [searchValue]);
+  (0, _react.useEffect)(function () {
     if (isHeaderComponent) return;
-    getDriversGroups();
     if (isDriversMangersRequired) {
       getDriverManagers();
     }
@@ -758,7 +777,11 @@ var DriversGroupsList = function DriversGroupsList(props) {
     getBusinesses();
     getPaymethods();
     getDriversCompanies();
-  }, [searchValue]);
+  }, []);
+  (0, _react.useEffect)(function () {
+    if (isHeaderComponent) return;
+    getDriversGroups(paginationProps === null || paginationProps === void 0 ? void 0 : paginationProps.currentPage, paginationProps === null || paginationProps === void 0 ? void 0 : paginationProps.pageSize);
+  }, [paginationProps === null || paginationProps === void 0 ? void 0 : paginationProps.currentPage, paginationProps === null || paginationProps === void 0 ? void 0 : paginationProps.pageSize]);
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, UIComponent && /*#__PURE__*/_react.default.createElement(UIComponent, _extends({}, props, {
     driversGroupsState: driversGroupsState,
     setDriversGroupsState: setDriversGroupsState,
@@ -779,6 +802,7 @@ var DriversGroupsList = function DriversGroupsList(props) {
     actionDisabled: actionDisabled,
     getHeaderDriversGroups: getHeaderDriversGroups,
     pagination: paginationProps,
+    setPagination: setPaginationProps,
     onSearch: setSearchValue,
     searchValue: searchValue
   })));

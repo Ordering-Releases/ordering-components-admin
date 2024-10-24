@@ -667,7 +667,7 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
    * @param {Object} order incoming order and update order
    */
   var isFilteredOrder = function isFilteredOrder(order, lastHistoryData) {
-    var _filterValues$country, _filterValues$cityIds, _filterValues$driverG, _filterValues$driverG3, _filterValues$currenc, _filterValues$metafie2;
+    var _filterValues$country, _filterValues$cityIds, _filterValues$driverG, _filterValues$driverG3, _filterValues$groupTy, _filterValues$currenc, _filterValues$metafie2;
     var filterCheck = true;
     if (searchValue) {
       var searchCheck = false;
@@ -780,6 +780,14 @@ var DashboardOrdersList = function DashboardOrdersList(props) {
       if (!(filterValues !== null && filterValues !== void 0 && (_filterValues$driverG4 = filterValues.driverGroupBusinessIds) !== null && _filterValues$driverG4 !== void 0 && _filterValues$driverG4.some(function (driverGroup) {
         var _order$assignable_dri, _order$assignable_dri2;
         return order === null || order === void 0 ? void 0 : (_order$assignable_dri = order.assignable_driver_groups) === null || _order$assignable_dri === void 0 ? void 0 : (_order$assignable_dri2 = _order$assignable_dri.includes) === null || _order$assignable_dri2 === void 0 ? void 0 : _order$assignable_dri2.call(_order$assignable_dri, driverGroup);
+      }))) {
+        filterCheck = false;
+      }
+    }
+    if ((filterValues === null || filterValues === void 0 ? void 0 : (_filterValues$groupTy = filterValues.groupTypesUnassigned) === null || _filterValues$groupTy === void 0 ? void 0 : _filterValues$groupTy.length) > 0) {
+      var _filterValues$groupTy2;
+      if (!(filterValues !== null && filterValues !== void 0 && (_filterValues$groupTy2 = filterValues.groupTypesUnassigned) !== null && _filterValues$groupTy2 !== void 0 && _filterValues$groupTy2.some(function (driverGroup) {
+        return (order === null || order === void 0 ? void 0 : order.driver_group_id) === driverGroup;
       }))) {
         filterCheck = false;
       }
